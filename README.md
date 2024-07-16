@@ -1,6 +1,8 @@
 # Spatial Design System Docs
 
-This repository contains code for Spatial Design System documentation website. It's built with [Vitepress](https://vitepress.dev/guide/what-is-vitepress).
+<img src="src/public/spatial-design-system-logo-dark.png" alt="Spatial Design System logo" height="100" />
+
+This repository contains code for [Spatial Design System](https://github.com/SpatialHub-MENDELU/spatial-design-system) documentation website. It's built with [Vitepress](https://vitepress.dev/guide/what-is-vitepress).
 
 ## Project setup
 
