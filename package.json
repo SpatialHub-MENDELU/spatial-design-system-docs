@@ -1,0 +1,16 @@
+{
+    "name": "spatial-design-system-docs",
+    "version": "1.0.0",
+    "private": true,
+    "devDependencies": {
+        "vitepress": "^1.0.0-rc.28"
+    },
+    "scripts": {
+        "dev":"vitepress dev",
+        "build":"vitepress build",
+        "preview":"vitepress preview"
+    },
+    "dependencies": {
+        "spatial-design-system":"^1.2.0"
+    }
+}

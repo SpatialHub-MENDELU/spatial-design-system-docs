@@ -1,0 +1,37 @@
+:root {
+    --vp-c-brand-1: #00ba92;
+    --vp-c-brand-2: #005f4c;
+    --vp-c-brand-3: #00ba92;
+
+    --vp-custom-block-tip-bg: #e5f8f1;
+}
+
+.dark {
+    --vp-c-brand-1: #03FCC6;
+    --vp-c-brand-2: #00ba92;
+    --vp-c-brand-3: #00ba92;
+
+    --vp-custom-block-tip-bg: #00392d;
+
+    --vp-button-brand-active-bg: var(--vp-c-brand-3);
+}
+
+/* Vitepress elements */
+
+@media (min-width: 960px) {
+    .tagline {
+        width: 80%;
+    }
+}
+
+@media (min-width: 1200px) {
+    .tagline {
+        width: unset;
+    }
+}
+
+@media (max-width: 576px) {
+    .do-dont-picture {
+        max-width: 70vw;
+    }
+}
