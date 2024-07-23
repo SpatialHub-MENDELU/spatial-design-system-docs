@@ -43,6 +43,7 @@ export default defineConfig({
           { text: 'billboard', link: '/ar-vr-components/billboard' },
           { text: 'circle', link: '/ar-vr-components/circle' },
           { text: 'fit-into-fov', link: '/ar-vr-components/fit-into-fov' },
+          { text: 'flexbox', link: '/ar-vr-components/flexbox'},
           { text: 'follow-camera', link: '/ar-vr-components/follow-camera' },
           { text: 'grid', link: '/ar-vr-components/grid' }
         ]
