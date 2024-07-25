@@ -11,6 +11,6 @@
         "preview":"vitepress preview"
     },
     "dependencies": {
-        "spatial-design-system":"^1.4.9"
+        "spatial-design-system":"^1.5.0"
     }
 }
