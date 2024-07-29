@@ -30,9 +30,9 @@ See [adaptive guidelines](/guidelines/adaptive) for more information.
 
 ## Example
 
-Applying fit-into-fov to a plane with margin set to 10. Initially, the plane will take up the full screen's height, and then the margin will add space on the *x* and *y* axes. 
+Applying fit-into-fov to a plane with the margin set to 10. Initially the plane will take up the full screen's height or width, depending on the device (mobile, desktop), and then margin (space) is added. 
 
-The margin value is a percentage value and is applied to the scale of the object by scaling it down. The actual space (scale reduction) is calculated as `visibleWidth * margin` and `visibleHeight * margin`, which are then subtracted from the object's scale.
+The margin value is a percentage value and is applied to the scale of the object by scaling it down. The actual space (scale reduction) is calculated as `visibleScreenWidth * margin` or `visibleScreenHeight * margin`, depending on the device. Before calculation margin is multiplied by 2, similar to CSS. So here margin is 10, then the plane's scale will take 80% and margin 20% in total (10% for each side on the axis). 
 
 The fitting happens once when the component is mounted and loaded. Emit `fit` event on the element to perform fitting manually whenever you want. 
 Or combine it with [auto-scale](/ar-vr-components/auto-scale) to fit the object into the screen when the camera moves.
@@ -111,7 +111,7 @@ import "spatial-design-system/components/position.js";
 
 | Property       | Type    | Default | Description                                                                                                                                                                 |
 |----------------|---------|---------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| _margin_   | number  | 0     | Percentage value that sets horizontal and vertical space. Basically it affects object's scale. For example, if `margin` is `20` then object's scale in both axes will be reduced by 20%. <br><br> The margin is calculated from screen dimensions and its value can be between 0 to 100.              |
+| _margin_   | number (percentage)  | 0     | Adds space. Basically it affects object's scale. For example, if `margin: 10`, then object's scale will take 80% and margin 20% in total (10% for each side on the axis). <br><br> The margin is calculated from screen dimensions and its value can be between 0 and 100.              |
 | _useFrontFace_ | boolean | false   | If `false`, the center of the object is used for calculation. For objects with bigger depth, set to `true` and see [Fitting deeper objects](#fitting-deeper-objects) below. |
 
 ## Events
