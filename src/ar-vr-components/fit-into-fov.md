@@ -111,7 +111,7 @@ import "spatial-design-system/components/position.js";
 
 | Property       | Type    | Default | Description                                                                                                                                                                 |
 |----------------|---------|---------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| _margin_   | number (percentage)  | 0     | Adds space. Basically it affects object's scale. For example, if `margin: 10`, then object's scale will take 80% and margin 20% in total (10% for each side on the axis). <br><br> The margin is calculated from screen dimensions and its value can be between 0 and 100.              |
+| _margin_   | number (percentage)  | 0     | Adds space. Basically it affects object's scale. For example, if `margin: 10`, then object's scale will take 80% and margin 20% in total (10% for each side on the axis). <br><br> The margin is calculated from screen dimensions and its value should be between 0 and 50.              |
 | _useFrontFace_ | boolean | false   | If `false`, the center of the object is used for calculation. For objects with bigger depth, set to `true` and see [Fitting deeper objects](#fitting-deeper-objects) below. |
 
 ## Events
