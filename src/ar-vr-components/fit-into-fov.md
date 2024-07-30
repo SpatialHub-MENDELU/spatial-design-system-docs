@@ -30,18 +30,20 @@ See [adaptive guidelines](/guidelines/adaptive) for more information.
 
 ## Example
 
-Applying fit-into-fov to a plane with percentage set to 90. The plane will take up max. 90% of the screen's width or height.
+Applying fit-into-fov to a plane with the margin set to 10. Initially the plane will take up the full screen's height or width, depending on the device (mobile, desktop), and then margin (space) is added. 
 
-The fitting happens once when the component is mounted and loaded. Emit `fit` event on the element to peform fitting manually whenever you want. 
+The margin value is a percentage value and is applied to the scale of the object by scaling it down. The actual space (scale reduction) is calculated as `visibleScreenWidth * margin` or `visibleScreenHeight * margin`, depending on the device. Before calculation margin is multiplied by 2, similar to CSS. So here margin is 10, then the plane's scale will take 80% and margin 20% in total (10% for each side on the axis). 
+
+The fitting happens once when the component is mounted and loaded. Emit `fit` event on the element to perform fitting manually whenever you want. 
 Or combine it with [auto-scale](/ar-vr-components/auto-scale) to fit the object into the screen when the camera moves.
 
 <ComponentExample :fixed="true">
 
 <template #output v-if="renderScene">
 <a-plane
-position="0 1.6 -4"
-color="#03FCC6"
-fit-into-fov="percentage: 90;"
+    position="0 1.6 -4"
+    color="#03FCC6"
+    fit-into-fov="margin: 10"
 ></a-plane>
 </template>
 
@@ -53,11 +55,10 @@ import "spatial-design-system/components/position.js";
 
 ```html-vue
 <a-plane
-    position="0 1.6 -4" 
-    color="#03FCC6" 
-    fit-into-fov="percentage: 90;"
->
-</a-plane>
+    position="0 1.6 -4"
+    color="#03FCC6"
+    fit-into-fov="margin: 10"
+></a-plane>
 ```
 
 </template>
@@ -79,7 +80,7 @@ Rotate the camera using your mouse or touch to see the effect.
     color="#03FCC6"
     auto-scale
     billboard
-    fit-into-fov="percentage: 70;"
+    fit-into-fov="margin: 10;"
     follow-camera="angle: 1;"
 ></a-plane>
 <a-box position="0 -0.7 0" width="14" height="0.1" depth="14" src="../grid-light-1850w.png"></a-box>
@@ -92,15 +93,14 @@ import "spatial-design-system/components/position.js";
 ```
 
 ```html-vue
-<a-plane
+<a-plane 
     position="0 1.6 -4" 
-    color="#03FCC6" 
+    color="#03FCC6"
     auto-scale
     billboard
-    fit-into-fov="percentage: 70;"
+    fit-into-fov="margin: 10;"
     follow-camera="angle: 1;"
->
-</a-plane>
+></a-plane>
 ```
 
 </template>
@@ -111,7 +111,7 @@ import "spatial-design-system/components/position.js";
 
 | Property       | Type    | Default | Description                                                                                                                                                                 |
 |----------------|---------|---------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| _percentage_   | number  | 100     | How much of the screen's width or height is occupied by the object. For example, if you set the percentage to 50, the object would take up 50% of the screen.               |
+| _margin_   | number (percentage)  | 0     | Adds space. Basically it affects object's scale. For example, if `margin: 10`, then object's scale will take 80% and margin 20% in total (10% for each side on the axis). <br><br> The margin is calculated from screen dimensions and its value should be between 0 and 50.              |
 | _useFrontFace_ | boolean | false   | If `false`, the center of the object is used for calculation. For objects with bigger depth, set to `true` and see [Fitting deeper objects](#fitting-deeper-objects) below. |
 
 ## Events

@@ -15,5 +15,5 @@ hero:
       link: /getting-started/introduction
     - theme: alt
       text: View on GitHub
-      link: https://github.com/vuejs/vitepress
+      link: https://github.com/SpatialHub-MENDELU/spatial-design-system
 
