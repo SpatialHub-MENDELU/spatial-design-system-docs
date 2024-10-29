@@ -64,7 +64,8 @@ export const files = {
   "version": "1.0.0",
   "type": "module",
   "dependencies": {
-    "nodemon": "^2.0.0"
+    "nodemon": "^2.0.0",
+    "spatial-design-system": "^1.6.3",
   },
   "devDependencies": {
     "vite": "5.4.9" 
