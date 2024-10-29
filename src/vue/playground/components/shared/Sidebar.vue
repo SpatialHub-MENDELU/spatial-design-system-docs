@@ -3,8 +3,7 @@
   import { sidebarData } from '../../data/sidebar-data.ts';
 
   const activeRoute = ref('');
-
-  // Set the active route based on the current URL
+  
   onMounted(() => {
     activeRoute.value = window.location.pathname;
   });
