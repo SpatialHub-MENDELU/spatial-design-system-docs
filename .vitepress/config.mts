@@ -1,5 +1,7 @@
 import { defineConfig } from 'vitepress'
 
+import crossOriginIsolation from 'vite-plugin-cross-origin-isolation'
+
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "Spatial Design System",
@@ -84,5 +86,8 @@ export default defineConfig({
     // socialLinks: [
     //   { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
     // ]
-  }
+  },
+  vite: {
+    plugins: [crossOriginIsolation()]
+  },
 })
