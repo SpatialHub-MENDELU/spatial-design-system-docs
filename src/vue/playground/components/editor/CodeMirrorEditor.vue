@@ -18,34 +18,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, reactive } from 'vue';
-import { WebContainer } from '@webcontainer/api';
-import { files } from './files';
+import { ref, onMounted, reactive, inject } from 'vue';
 import { Codemirror } from 'vue-codemirror';
 import { basicSetup } from 'codemirror';
 import { javascript } from '@codemirror/lang-javascript';
-import {EditorView, keymap} from "@codemirror/view"
+import { EditorView } from '@codemirror/view';
 import EditorOutput from './EditorOutput.vue';
-import { ILoading } from '../../types/loading-types'
-import { autocompletion } from '@codemirror/autocomplete'
+import { ILoading } from '../../types/loading-types';
+import { autocompletion } from '@codemirror/autocomplete';
+import { WebContainerService } from '../../services/webContainersService';
+import {files} from './files'
 
 const code = ref('');
 const output = ref('');
 const loading = reactive<ILoading>({
   installing: true,
   running: false
-})
+});
 
-const editorOptions = {
-  lineWrapping: true, // Enable line wrapping
-  theme: 'material', // Change to a more visually appealing theme
-  tabSize: 2, // Set the size of tabs
-  indentWithTab: true, // Use tabs for indentation
-};
+const webContainersService = inject<WebContainerService>('webContainersService');
 
 const extensions = [basicSetup, javascript(), EditorView.lineWrapping, autocompletion()];
-
-let webcontainerInstance;
 let debounceTimer = null;
 
 const updateCode = (newCode) => {
@@ -60,48 +53,31 @@ const updateCode = (newCode) => {
 
 onMounted(async () => {
   try {
-    webcontainerInstance = await WebContainer.boot();
-
-    await webcontainerInstance.mount(files);
-
-    const indexHtmlContent = await webcontainerInstance.fs.readFile('index.html', 'utf-8');
-    code.value = indexHtmlContent;
-
-    const exitCode = await installDependencies();
-    if (exitCode !== 0) {
-      throw new Error('Dependency installation failed');
-    }
-
+    await webContainersService?.ensureInitialized();
+    await webContainersService?.mountFiles(files);
+    const indexHtmlContent = await webContainersService?.readFile('index.html');
+    code.value = indexHtmlContent as string;
+    await webContainersService?.installDependencies();
     loading.installing = false;
     runCode();
   } catch (error) {
+    console.error("Error during onMounted:", error);
     output.value = `Error: ${error.message}`;
   }
 });
 
-async function installDependencies() {
-  const installProcess = await webcontainerInstance.spawn('npm', ['install', '--verbose']);
-
-  installProcess.output.pipeTo(new WritableStream({
-    write(data) {
-      console.log(data);
-    }
-  }));
-
-  return installProcess.exit;
-}
-
 const runCode = async () => {
+  if (!webContainersService) return
+
   loading.running = true;
   try {
-    await webcontainerInstance.fs.writeFile('index.html', code.value);
-
-    const htmlContent = await webcontainerInstance.fs.readFile('index.html', 'utf-8');
-    output.value = htmlContent;
+    await webContainersService.writeFile('index.html', code.value);
+    const htmlContent = await webContainersService.readFile('index.html');
+    output.value = htmlContent as string;
   } catch (error) {
     output.value = `Chyba: ${error.message}`;
   } finally {
-    loading.running = false; 
+    loading.running = false;
   }
 };
 </script>

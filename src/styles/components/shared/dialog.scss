@@ -1,0 +1,48 @@
+.p-dialog {
+  min-width: 15rem;
+
+  @media screen and (min-width: $breakpointLg) {
+    min-width: 20rem;
+  }
+
+  &-header {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+
+    border-bottom: 1px solid $border-color;
+  }
+
+  &-content {
+    padding-top: 1rem;
+
+    input {
+      padding: 0.25rem 0.5rem;
+      width: 100%;
+
+      border-bottom: 1px solid $primary;
+      border-radius: 0;
+
+      &:focus {
+        box-shadow: none;
+      }
+    }
+
+    .flex {
+      gap: 0.5rem;
+    }
+
+    button {
+      margin-top: 2rem;
+      padding: 0.25rem 1rem;
+      color: white;
+
+      &[aria-label="Cancel"] {
+        background-color: $red;
+      }
+
+      &[aria-label="Create"] {
+        background-color: $primary;
+      }
+    }
+  }
+}
