@@ -1,7 +1,7 @@
 <template>
   <div class="flex gap-0">
     <codemirror
-      class="editor w-[50px] max-w-md"
+      class="editor w-1/2"
       v-model="code"
       :extensions="extensions"
       @update:modelValue="updateCode"
@@ -105,13 +105,3 @@ const runCode = async () => {
   }
 };
 </script>
-
-<style>
-.output {
-  margin-top: 20px;
-  background-color: #f9f9f9; 
-  padding: 10px; 
-  border: 1px solid #ddd; 
-  border-radius: 5px; 
-}
-</style>
