@@ -18,7 +18,7 @@ const toggleVisibility = () => {
 
 <template>
     <div
-        class="output duration-300 w-1/2 h-full border-l border-border-color"
+        class="output duration-300 lg:w-1/2 lg:border-l border-border-color lg:border-0 border border-border-color border-t-0 lg:h-full h-1/2"
         :class="{ 'overflow-hidden w-[3rem]': !outputState.isVisible }"
     >
         <div
@@ -36,7 +36,7 @@ const toggleVisibility = () => {
                     :class="[
                         'pi',
                         outputState.isVisible
-                            ? 'pi-angle-down'
+                            ? 'pi-angle-right'
                             : 'pi-angle-left',
                         'text-primary',
                         'text-[20px]',
@@ -46,10 +46,10 @@ const toggleVisibility = () => {
             </div>
         </div>
 
-        <div v-if="outputState.isVisible" class="h-full">
+        <div v-if="outputState.isVisible" class="lg:h-full lg:px-0 px-8">
             <div
                 v-if="props.loading.installing || props.loading.running"
-                class="h-full flex flex-col items-center justify-center"
+                class="lg:h-full flex flex-col items-center justify-center"
             >
                 <div class="spinner" />
                 <p

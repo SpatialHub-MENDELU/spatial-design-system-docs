@@ -1,9 +1,5 @@
-<script setup lang="ts">
-    import { sidebarData } from "../../data/sidebar-data.ts";
-</script>
-
 <template>
-    <div class="sidebar h-full w-auto flex flex-col justify-between">
+    <div class="sidebar h-full w-auto flex flex-col justify-between 2xl:pr-0 pr-[32px] lg:block hidden">
         <nav
             class="flex flex-col justify-between items-start h-full border-l border-border-color px-2"
         >
@@ -24,7 +20,7 @@
                         <i
                             class="pi pi-github text-dark-text text-[20px] duration-300"
                         />
-                        <span>Github</span>
+                        <span class="2xl:text-[16px] text-[14px]">Github</span>
                     </a>
                 </li>
             </ul>

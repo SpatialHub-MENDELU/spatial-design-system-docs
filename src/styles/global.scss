@@ -8,6 +8,21 @@
 
 .page {
   max-height: calc(100vh - $header-height) !important;
+
+  @media (max-width: $breakpoint2Xl) {
+    margin: auto;
+    max-width: $max-width;
+  }
+
+  @media screen and (max-width: $breakpointLg) {
+    padding: 32px;
+    margin: auto;
+  }
+
+  @media screen and (max-width: $breakpointMd) {
+    padding: 0 24px 24px 24px;
+    margin: auto;
+  }
 }
 
 .container {
@@ -17,26 +32,11 @@
 }
 
 .main-content {
-  max-width: calc($max-width - 64px);
-  height: calc(100vh - $header-height) !important;
-  width: 100%;
-  margin-left: 0;
-  margin-right: auto;
-
-  @media (min-width: $breakpointMd) {
-    .wrapper {
-      padding: 0 32px;
-    }
-  }
-}
-
-@media (max-width: 768px) {
-  .wrapper {
-    flex-direction: column;
-  }
-
-  .main-content {
-    margin-left: 0;
+  @media screen and (min-width: $breakpointLg) {
+    max-width: calc($max-width - 64px);
+    height: calc(100vh - $header-height) !important;
     width: 100%;
+    margin-left: 0;
+    margin-right: auto;
   }
 }

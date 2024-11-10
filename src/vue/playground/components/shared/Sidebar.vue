@@ -10,40 +10,40 @@
 </script>
 
 <template>
-    <div class="sidebar h-full w-auto flex flex-col justify-between">
+    <div class="sidebar lg:h-full h-[3.5rem] w-auto flex flex-col lg:justify-between 2xl:pl-0 lg:pl-[32px] overflow-x-auto max-w-full">
         <nav
-            class="flex flex-col justify-between items-end h-full border-r border-border-color px-2"
+            class="flex lg:flex-col lg:gap-0 gap-5 lg:justify-between lg:items-end items-center lg:h-full h-[3.5rem] lg:border-r border-border-color lg:px-2 w-full "
         >
-            <ul class="flex flex-col h-full">
+            <ul class="flex lg:flex-col lg:h-full lg:gap-0 gap-5">
                 <li
                     v-for="(item, index) in sidebarData.slice(0, -1)"
                     :key="index"
-                    class="py-4"
+                    class="lg:py-4 py-3"
                 >
                     <a
                         :href="item.route"
-                        class="flex items-center gap-1 flex-col"
+                        class="flex items-center lg:gap-1 gap-2 lg:flex-col"
                         target="_self"
                     >
                         <i
                             :class="`pi pi-${item.icon} ${activeRoute === item.route ? 'text-primary' : 'text-grey'} text-[20px] duration-300`"
                         />
-                        <span>{{ item.text }}</span>
+                        <span class="2xl:text-[16px] text-[14px]">{{ item.text }}</span>
                     </a>
                 </li>
             </ul>
 
             <ul class="flex flex-col">
-                <li class="py-4">
+                <li class="lg:py-4 py-3">
                     <a
                         :href="sidebarData[sidebarData.length - 1].route"
-                        class="flex items-center gap-2 flex-col"
+                        class="flex items-center lg:gap-1 gap-2 lg:flex-col"
                         target="_self"
                     >
                         <i
-                            :class="`pi pi-${sidebarData[sidebarData.length - 1].icon}`"
+                            :class="`pi pi-${sidebarData[sidebarData.length - 1].icon} ${activeRoute === sidebarData[sidebarData.length - 1].route ? 'text-primary' : 'text-grey'} text-[20px] duration-300`"
                         />
-                        <span>{{
+                        <span class="2xl:text-[16px] text-[14px]">{{
                             sidebarData[sidebarData.length - 1].text
                         }}</span>
                     </a>

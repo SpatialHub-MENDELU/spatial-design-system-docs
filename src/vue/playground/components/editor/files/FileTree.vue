@@ -1,10 +1,9 @@
 <template>
-    <div class="border-r border-border-color">
-        <div
-            class="flex justify-between p-3 min-w-[15rem] border-b border-border-color"
-        >
-            <span class="font-bold lg:text-[20px] text-[16px]">Files</span>
-            <div class="flex gap-1.5">
+    <div class="border-r border-border-color relative overflow-visible duration-300 lg:block hidden">
+        <div class="flex justify-between p-3 border-b border-border-color duration-300">
+            <span class="font-bold 2xl:text-[20px] lg:text-[18px] text-[16px]">Files</span>
+            <div class="flex gap-1.5 overflow-hidden"
+                :class="{ 'max-w-0': !fileTreeState.isVisible, 'max-w-full': fileTreeState.isVisible }">
                 <button @click="openDialog(FileType.FOLDER)">
                     <i class="pi pi-folder text-[16px]"></i>
                 </button>
@@ -19,14 +18,15 @@
 
         <Tree
             :value="folders"
-            class="overflow-y-auto max-h-full"
+            class="overflow-y-auto max-h-full duration-300"
+            :class="{ 'max-w-0': !fileTreeState.isVisible, 'max-w-[35rem]': fileTreeState.isVisible }"
         >
-        <template #default="{ node }">
-            <div class="tree-node" @contextmenu="showContextMenu($event, node)">
-                <span>{{ node.label }}</span>
-            </div>
-        </template>
-    </Tree>
+            <template #default="{ node }">
+                <div class="tree-node" @contextmenu="showContextMenu($event, node)">
+                    <span class="whitespace-nowrap block">{{ node.label }}</span>
+                </div>
+            </template>
+        </Tree>
     
         <ContextMenu
             :model="contextMenuItems"
@@ -41,11 +41,23 @@
             @rename-item="fetchItems"
             :itemToRename="currentItem"
         />
+        
+        <button class="absolute bottom-12 -right-6 h-12 w-12 cursor-pointer block z-40"
+            @click="toggleVisibility">
+            <i :class="[
+                'pi',
+                fileTreeState.isVisible
+                    ? 'pi-angle-left'
+                    : 'pi-angle-right',
+                'text-primary border border-primary text-[20px] duration-300 rounded-xl p-1.5 bg-white'
+            ]"
+            />
+        </button>
     </div>
 </template>
 
 <script setup lang="ts">
-    import { inject, ref, watch } from "vue";
+    import { inject, ref, watch, reactive } from "vue";
     import Tree from "primevue/tree";
     import ContextMenu from "primevue/contextmenu";
     import NewItemDialog from "../NewItemDialog.vue";
@@ -62,6 +74,14 @@
     const props = defineProps<{
         loading: ILoading;
     }>();
+
+    const fileTreeState = reactive({
+        isVisible: true,
+    });
+
+    const toggleVisibility = () => {
+        fileTreeState.isVisible = !fileTreeState.isVisible;
+    };
 
     const menu = ref()
     const contextMenuVisible = ref(false);

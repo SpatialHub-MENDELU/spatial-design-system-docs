@@ -1,9 +1,15 @@
+/***************** SIZES *****************/
 $max-width: 1440px;
 $header-height: 64px;
 
+/***************** BREAKPOINTS *****************/
+$breakpoint2Xl: 1536px;
+$breakpointXl: 1280px;
 $breakpointLg: 1024px;
 $breakpointMd: 768px;
+$breakpointSm: 640px;
 
+/***************** COLORS *****************/
 $border-color: #e5e7eb;
 $dark-text: #3c3c43;
 $primary: #00ba92;

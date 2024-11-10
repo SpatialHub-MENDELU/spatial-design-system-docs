@@ -1,7 +1,7 @@
 <template>
-    <div class="flex gap-0">
+    <div class="flex gap-0 lg:flex-row flex-col h-full">
         <codemirror
-            class="editor w-1/2 block overflow-y-auto"
+            class="editor lg:w-1/2 block overflow-y-auto lg:border-0 border border-border-color lg:h-full h-1/2"
             v-model="code"
             :extensions="extensions"
             @update:modelValue="updateCode"
