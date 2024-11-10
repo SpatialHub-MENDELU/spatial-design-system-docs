@@ -1,5 +1,20 @@
+<script setup lang="ts">
+    import { ref, onMounted, reactive } from "vue";
+
+    onMounted(() => {
+        if (window.location.pathname === '/playground/') {
+            sidebarState.isEditor = true
+        }
+    });
+
+    const sidebarState = reactive({
+        isEditor: true,
+    });
+</script>
+
 <template>
-    <div class="sidebar h-full w-auto flex flex-col justify-between 2xl:pr-0 pr-[32px] lg:block hidden">
+    <div class="sidebar h-full w-auto flex flex-col justify-between 2xl:pr-0 pr-[32px] lg:block hidden"
+        :class="{' max-w-full sidebar-grow ': sidebarState.isEditor}">
         <nav
             class="flex flex-col justify-between items-start h-full border-l border-border-color px-2"
         >

@@ -1,29 +1,29 @@
 <script lang="ts" setup>
-import { defineProps, reactive } from "vue";
-import { ILoading } from "../../types/loading";
+    import { defineProps, reactive } from "vue";
+    import { ILoading } from "../../types/loading";
 
-const props = defineProps<{
-    output: string;
-    loading: ILoading;
-}>();
+    const props = defineProps<{
+        output: string;
+        loading: ILoading;
+    }>();
 
-const outputState = reactive({
-    isVisible: true,
-});
+    const outputState = reactive({
+        isVisible: true,
+    });
 
-const toggleVisibility = () => {
-    outputState.isVisible = !outputState.isVisible;
-};
+    const toggleVisibility = () => {
+        outputState.isVisible = !outputState.isVisible;
+    };
 </script>
 
 <template>
     <div
-        class="output duration-300 lg:w-1/2 lg:border-l border-border-color lg:border-0 border border-border-color border-t-0 lg:h-full h-1/2"
-        :class="{ 'overflow-hidden w-[3rem]': !outputState.isVisible }"
+        class="output duration-300 lg:w-full block lg:border-l border-border-color lg:border-0 border border-border-color border-t-0 lg:h-full h-1/2"
+        :class="{ 'hidden-output': !outputState.isVisible }"
     >
         <div
-            class="w-full px-2 py-1 flex justify-between"
-            :class="{ 'border-b border-border-color': outputState.isVisible }"
+            class="w-full px-2 py-1 justify-between flex"
+            :class="{ 'border-b border-border-color': outputState.isVisible, 'hidden' : props.loading.installing || props.loading.running }"
         >
             <h2
                 v-if="outputState.isVisible"

@@ -1,7 +1,4 @@
 .sidebar {
-  flex-grow: 1;
-  height: calc(100vh - $header-height);
-
   @media (max-width: $breakpointMd) {
     width: 100%;
     height: auto;
@@ -12,4 +9,10 @@
       color: $dark-text;
     }
   }
+}
+
+
+.sidebar-grow {
+  flex-grow: 1 !important;
+  height: calc(100vh - $header-height);
 }

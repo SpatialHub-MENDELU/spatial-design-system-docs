@@ -1,3 +1,9 @@
 .output {
   overflow-y: hidden !important;
+  width: 100% !important;
+}
+
+.hidden-output {
+  overflow: hidden;
+  width: 3rem !important;
 }

@@ -1,7 +1,7 @@
 <template>
     <Dialog
         :visible="showDialog"
-        :header="dialogHeader"
+        :header="state.dialogHeader"
         modal
         maximizable
         :closable="false"
@@ -42,8 +42,8 @@
         <div class="flex justify-end mt-2">
             <Button label="Cancel" icon="pi pi-times" @click="closeDialog" />
             <Button 
-                :label="buttonLabel" 
-                :icon="buttonIcon" 
+                :label="state.buttonLabel" 
+                :icon="state.buttonIcon" 
                 @click="handleAction" 
             />
         </div>
@@ -51,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, defineProps, inject, defineEmits, onMounted, watch } from "vue";
+    import { ref, defineProps, inject, defineEmits, onMounted, watch, reactive } from "vue";
     import Dialog from "primevue/dialog";
     import InputText from "primevue/inputtext";
     import Button from "primevue/button";
@@ -82,24 +82,29 @@
         { label: 'JS', value: 'js' }
     ];
 
-    if (props.dialogType === FileType.FILE && fileNameExtensions.length > 0) {
-        newFileExtension.value = fileNameExtensions[0].value;
-    }
+    const state = reactive({
+        dialogHeader: '',
+        buttonLabel: 'Create',
+        buttonIcon: 'pi pi-check'
+    });
 
-    const dialogHeader = ref(`New ${props.dialogType}`);
-    const buttonLabel = ref("Create");
-    const buttonIcon = ref("pi pi-check");
+    watch(() => props, (newValue) => {
+        if (newValue && newValue.itemToRename) {
+            newItemName.value = folderService.getFileWithoutExtension(newValue.itemToRename)
+            newFileExtension.value = folderService.getFileExtension(newValue.itemToRename);
+            state.dialogHeader = `Rename ${props.dialogType}`;
+            state.buttonLabel = "Rename";
+            state.buttonIcon = "pi pi-pencil";
+        }
 
-    if (props.itemToRename) {
-        dialogHeader.value = `Rename ${props.dialogType}`;
-        buttonLabel.value = "Rename";
-        buttonIcon.value = "pi pi-pencil";
-    }
+        if (newValue.dialogType === FileType.FILE && fileNameExtensions.length > 0) {
+            newFileExtension.value = fileNameExtensions[0].value;
+        }
 
-    watch(() => props.itemToRename, (newValue) => {
-        if (newValue && newValue.name) {
-            newItemName.value = folderService.getFileWithoutExtension(newValue)
-            newFileExtension.value = folderService.getFileExtension(newValue);
+        if (newValue.dialogType === FileType.FILE && !newValue.itemToRename) {
+            state.dialogHeader = 'New file'
+        } else {
+            state.dialogHeader = 'New folder'
         }
     }, { immediate: true });
 

@@ -1,14 +1,17 @@
 @import "./variables.scss";
 @import "./global.scss";
 
-// COMPONENTS
+// components
 @import "./components/shared/sidebar.scss";
 @import "./components/shared/loading.scss";
 @import "./components/shared/dialog.scss";
+@import "./components/shared/switcher.scss";
+@import "./components/shared/dropdown.scss";
 
 @import "./components/editor/output.scss";
 @import "./components/editor/codemirror.scss";
 @import "./components/editor/files.scss";
 
-// PAGES
+// pages
 @import "./pages/editor.scss";
+@import "./pages/settings.scss";

@@ -1,7 +1,9 @@
 <template>
-    <div class="border-r border-border-color relative overflow-visible duration-300 lg:block hidden">
+    <div class="border-r border-border-color relative overflow-visible duration-300 lg:block hidden"
+        :class="{' filetree--hidden ': fileTreeState.isHidden } ">
         <div class="flex justify-between p-3 border-b border-border-color duration-300">
-            <span class="font-bold 2xl:text-[20px] lg:text-[18px] text-[16px]">Files</span>
+            <span class="font-bold 2xl:text-[20px] lg:text-[18px] text-[16px]"
+            :class="{' w-0 overflow-hidden opacity-hidden ': fileTreeState.isHidden } ">Files</span>
             <div class="flex gap-1.5 overflow-hidden"
                 :class="{ 'max-w-0': !fileTreeState.isVisible, 'max-w-full': fileTreeState.isVisible }">
                 <button @click="openDialog(FileType.FOLDER)">
@@ -19,7 +21,7 @@
         <Tree
             :value="folders"
             class="overflow-y-auto max-h-full duration-300"
-            :class="{ 'max-w-0': !fileTreeState.isVisible, 'max-w-[35rem]': fileTreeState.isVisible }"
+            :class="{ 'max-w-0': !fileTreeState.isVisible, 'max-w-[20rem] w-[15rem]': fileTreeState.isVisible }"
         >
             <template #default="{ node }">
                 <div class="tree-node" @contextmenu="showContextMenu($event, node)">
@@ -34,8 +36,8 @@
         />
 
         <NewItemDialog
-            :showDialog="showDialog"
-            :dialogType="dialogType"
+            :showDialog="fileTreeState.showDialog"
+            :dialogType="fileTreeState.dialogType"
             :closeDialog="closeDialog"
             @new-item="fetchItems"
             @rename-item="fetchItems"
@@ -77,6 +79,9 @@
 
     const fileTreeState = reactive({
         isVisible: true,
+        isHidden: true,
+        showDialog: false,
+        dialogType: FileType.FILE
     });
 
     const toggleVisibility = () => {
@@ -87,8 +92,6 @@
     const contextMenuVisible = ref(false);
     const currentItem = ref<{ name: string; type: FileType } | null>(null);
     const folders = ref<TreeNode[]>([]);
-    const showDialog = ref(false);
-    const dialogType = ref<FileType>(FileType.FOLDER);
 
     const contextMenuItems = ref([
         {
@@ -147,8 +150,8 @@
 
     const renameItem = () => {
         if (currentItem.value) {
-        showDialog.value = true
-        dialogType.value = currentItem.value.type
+            fileTreeState.showDialog = true
+            fileTreeState.dialogType = currentItem.value.type
         }
 
         closeContextMenu();
@@ -166,12 +169,13 @@
     };
 
     const openDialog = (type: FileType) => {
-        dialogType.value = type;
-        showDialog.value = true;
+        fileTreeState.dialogType = type;
+        fileTreeState.showDialog = true;
+        currentItem.value = null;
     };
 
     const closeDialog = () => {
-        showDialog.value = false;
+        fileTreeState.showDialog = false;
     };
 
     const downloadFileSystem = async () => {
@@ -180,6 +184,9 @@
 
     watch(props.loading, async () => {
         await fetchFolders();
+        if (!props.loading.installing && !props.loading.running) {
+            fileTreeState.isHidden = false
+        }
     });
 
     fetchFolders();
