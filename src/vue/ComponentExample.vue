@@ -5,21 +5,21 @@ import { VPButton } from "vitepress/theme";
 const props = defineProps({
     fixed: {
         type: Boolean,
-        default: false
+        default: false,
     },
 });
 
 enum Tab {
     Output = "output",
-    Code = "code"
-};
+    Code = "code",
+}
 
 enum CameraMoveDirection {
     Forward = "forward",
     Right = "right",
     Backward = "backward",
-    Left = "left"
-};
+    Left = "left",
+}
 
 const selectedTab = ref(Tab.Output);
 // Below boolean is needed to avoid this problem: https://github.com/aframevr/aframe/issues/4038
@@ -29,8 +29,10 @@ const showMoveControllers = ref(false);
 const moveControllersIcons = {
     left: "<img class='move-icon move-icon_white' src='../arrow_left_alt_fill_opsz40.svg' alt='Left'>",
     right: "<img class='move-icon move-icon_white' src='../arrow_right_alt_fill_opsz40.svg' alt='Right'>",
-    forward: "<img class='move-icon move-icon_white' src='../arrow_upward_alt_fill_opsz40.svg' alt='Forward'>",
-    backward: "<img class='move-icon move-icon_white' src='../arrow_downward_alt_fill_opsz40.svg' alt='Backward'>"
+    forward:
+        "<img class='move-icon move-icon_white' src='../arrow_upward_alt_fill_opsz40.svg' alt='Forward'>",
+    backward:
+        "<img class='move-icon move-icon_white' src='../arrow_downward_alt_fill_opsz40.svg' alt='Backward'>",
 };
 
 function selectTab(tab: Tab) {
@@ -50,13 +52,13 @@ function registerPointerChange() {
 }
 
 function handlePointerChange(e) {
-    showMoveControllers.value = e.matches && !props.fixed || false;
+    showMoveControllers.value = (e.matches && !props.fixed) || false;
 }
 
 function moveCamera(direction: CameraMoveDirection) {
     // @ts-ignore
     const cameraEl = aframeScene.value?.camera?.el;
-    if (!cameraEl) return
+    if (!cameraEl) return;
 
     let offsetX = 0;
     let offsetZ = 0;
@@ -81,13 +83,13 @@ function moveCamera(direction: CameraMoveDirection) {
     const cameraZ = cameraEl.object3D.position.z + offsetZ;
 
     cameraEl.setAttribute("animation__position", {
-        "property": "position",
-        "to": {
+        property: "position",
+        to: {
             x: cameraX,
             y: cameraY,
-            z: cameraZ
+            z: cameraZ,
         },
-        "dur": 500
+        dur: 500,
     });
 }
 </script>
@@ -97,22 +99,40 @@ function moveCamera(direction: CameraMoveDirection) {
         <div class="tabs__row">
             <button
                 @click="selectTab(Tab.Output)"
-                :class="{ 'tabs__button_selected': selectedTab === Tab.Output }"
+                :class="{ tabs__button_selected: selectedTab === Tab.Output }"
                 type="button"
                 class="tabs__button"
-            >Output</button>
+            >
+                Output
+            </button>
 
             <button
                 @click="selectTab(Tab.Code)"
-                :class="{ 'tabs__button_selected': selectedTab === Tab.Code }"
+                :class="{ tabs__button_selected: selectedTab === Tab.Code }"
                 type="button"
                 class="tabs__button"
-            >Code</button>
+            >
+                Code
+            </button>
         </div>
 
-        <div v-if="isAframeImported" v-show="selectedTab === Tab.Output" class="tabs__content">
-            <a-scene embedded xr-mode-ui="enabled: false" :device-orientation-permission-ui="{enabled: false}" ref="aframeScene">
-                <a-camera fov="60" :touchEnabled="!props.fixed" :wasd-controls-enabled="!props.fixed" :look-controls-enabled="!props.fixed"></a-camera>
+        <div
+            v-if="isAframeImported"
+            v-show="selectedTab === Tab.Output"
+            class="tabs__content"
+        >
+            <a-scene
+                embedded
+                xr-mode-ui="enabled: false"
+                :device-orientation-permission-ui="{ enabled: false }"
+                ref="aframeScene"
+            >
+                <a-camera
+                    fov="60"
+                    :touchEnabled="!props.fixed"
+                    :wasd-controls-enabled="!props.fixed"
+                    :look-controls-enabled="!props.fixed"
+                ></a-camera>
                 <slot name="output"></slot>
                 <a-sky color="#4a4a4a"></a-sky>
             </a-scene>
@@ -122,7 +142,10 @@ function moveCamera(direction: CameraMoveDirection) {
             <slot name="code"></slot>
         </div>
 
-        <div class="move-controls tabs__move-controls" v-if="showMoveControllers">
+        <div
+            class="move-controls tabs__move-controls"
+            v-if="showMoveControllers"
+        >
             <VPButton
                 class="move-controls__button move-controls__button_forward"
                 v-html="moveControllersIcons.forward"
@@ -196,6 +219,7 @@ function moveCamera(direction: CameraMoveDirection) {
 }
 
 .move-icon_white {
-    filter: invert(100%) sepia(15%) saturate(2%) hue-rotate(265deg) brightness(108%) contrast(101%);
+    filter: invert(100%) sepia(15%) saturate(2%) hue-rotate(265deg)
+        brightness(108%) contrast(101%);
 }
 </style>

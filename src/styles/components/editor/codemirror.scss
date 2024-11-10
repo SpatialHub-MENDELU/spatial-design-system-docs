@@ -13,3 +13,8 @@
   background-color: $light-primary !important;
   color: $dark-text !important;
 }
+
+.v-codemirror {
+  overflow-y: auto !important;
+  display: block !important;
+}

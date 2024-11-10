@@ -1,14 +1,13 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
-
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 .wrapper {
   display: flex;
 }
 
 .page {
-  max-height: calc(100vh - $header-height) !important
+  max-height: calc(100vh - $header-height) !important;
 }
 
 .container {
@@ -22,7 +21,7 @@
   height: calc(100vh - $header-height) !important;
   width: 100%;
   margin-left: 0;
-  margin-right: auto; 
+  margin-right: auto;
 
   @media (min-width: $breakpointMd) {
     .wrapper {
@@ -33,7 +32,7 @@
 
 @media (max-width: 768px) {
   .wrapper {
-    flex-direction: column; 
+    flex-direction: column;
   }
 
   .main-content {

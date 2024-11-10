@@ -11,4 +11,3 @@ sidebar: false
 <Layout>
   <Editor />
 </Layout>
-

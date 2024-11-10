@@ -1,9 +1,9 @@
 /** @satisfies {import('@webcontainer/api').FileSystemTree} */
 
 export const files = {
-  "index.html": {
-    file: {
-      contents: `
+    "index.html": {
+        file: {
+            contents: `
       <!DOCTYPE html>
       <html lang="en">
       <head>
@@ -54,11 +54,11 @@ export const files = {
       </html>
       
       `,
+        },
     },
-  },
-  "package.json": {
-    file: {
-      contents: `
+    "package.json": {
+        file: {
+            contents: `
 {
   "name": "example-app",
   "version": "1.0.0",
@@ -73,6 +73,6 @@ export const files = {
     "start": "nodemon index.js"
   }
 }`,
+        },
     },
-  },
 };
