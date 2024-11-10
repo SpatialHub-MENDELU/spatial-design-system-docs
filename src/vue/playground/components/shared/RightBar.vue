@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { sidebarData } from "../../data/sidebar-data.ts";
+    import { sidebarData } from "../../data/sidebar-data.ts";
 </script>
 
 <template>

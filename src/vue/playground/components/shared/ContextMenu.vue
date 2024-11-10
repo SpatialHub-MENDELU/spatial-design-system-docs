@@ -18,33 +18,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps } from "vue";
-import { ContextMenuOption } from "../../types/context-menu-types";
+    import { defineProps } from "vue";
+    import { ContextMenuOption } from "../../types/contextMenu";
 
-const props = defineProps<{
-    visible: boolean;
-    position: { x: number; y: number };
-    options: ContextMenuOption[];
-    closeMenu: () => void;
-}>();
+    const props = defineProps<{
+        visible: boolean;
+        position: { x: number; y: number };
+        options: ContextMenuOption[];
+        closeMenu: () => void;
+    }>();
 
-const onOptionClick = (action: () => void) => {
-    action();
-    props.closeMenu();
-};
 </script>
 
-<style scoped>
-/* Add styles for your context menu here */
-ul {
-    list-style-type: none;
-    padding: 10px;
-}
-li {
-    padding: 5px 10px;
-    cursor: pointer;
-}
-li:hover {
-    background-color: #f0f0f0;
-}
-</style>

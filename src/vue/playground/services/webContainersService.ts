@@ -173,9 +173,27 @@ export class WebContainerService {
                             : "pi pi-folder",
                     data: { name: folder.name, type: folder.type },
                     children: children,
+                    type: folder.type
                 } as TreeNode;
             }),
         );
+    }
+
+    public async renameItem(oldPath: string, newName: string): Promise<{ success: boolean, message: string }> {
+        await this.ensureInitialized();
+    
+        try {
+            const dirPath = oldPath.substring(0, oldPath.lastIndexOf('/'));
+            const newPath = `${dirPath}/${newName}`;
+            
+            await this.webContainerInstance?.fs.rename(oldPath, newPath);
+            
+            console.log(`Item renamed from ${oldPath} to ${newPath}`);
+            return { success: true, message: `Item renamed from ${oldPath} to ${newPath}` };
+        } catch (error) {
+            console.error(`Failed to rename item from ${oldPath} to ${newName}:`, error);
+            return { success: false, message: `Failed to rename item from ${oldPath} to ${newName}: ${error.message}` };
+        }
     }
 
     public async removeItem(item: FolderItem): Promise<TreeNode[]> {
@@ -226,9 +244,11 @@ export class WebContainerService {
                     );
                 } else if (item.type === FileType.FILE) {
                     const fileContent = await this.readFile(currentPath);
-                    console.log(fileContent);
-                    zip.file(currentPath, fileContent);
-                    console.log(`Added file: ${currentPath}`);
+                    if (fileContent !== undefined) {
+                        zip.file(currentPath, fileContent);
+                    } else {
+                        console.error(`Failed to read file: ${currentPath}`);
+                    }
                 }
             }
             return { success: true };

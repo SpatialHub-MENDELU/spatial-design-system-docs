@@ -1,6 +1,6 @@
 import { inject, ref } from "vue";
 import { FolderItem } from "../types/fileItem";
-import { FileType } from "../types/fileType";
+import { FileExtensions, FileType } from "../types/fileType";
 import { WebContainerService } from "./webContainersService";
 
 export class FolderService {
@@ -70,7 +70,7 @@ export class FolderService {
                 await this.webContainersService?.writeFile(
                     `/${newItem.name}`,
                     "",
-                ); // Create file at root
+                );
             }
 
             return { item: newItem };
@@ -78,5 +78,36 @@ export class FolderService {
             console.error("Error creating new item in WebContainer:", error);
             return { error: "Failed to create item in WebContainer." };
         }
+    }
+
+    async renameItem(oldName: string, newName: string) {
+        try {
+
+            const result = await this.webContainersService.renameItem(oldName, newName); 
+            if (result.success) {
+                return { success: true };
+            } else {
+                return { error: "Failed to rename item" };
+            }
+        } catch (error) {
+            return { error: "An error occurred while renaming the item" };
+        }
+    }
+
+    public getFileExtension(file: FolderItem): FileExtensions {
+        const fileExtension = file.name.slice(file.name.lastIndexOf(".") + 1).toLowerCase();
+    
+        switch (fileExtension) {
+            case FileExtensions.CSS:
+                return FileExtensions.CSS;
+            case FileExtensions.HTML:
+                return FileExtensions.HTML;
+            default:
+                return FileExtensions.JS;
+        }
+    }
+
+    public getFileWithoutExtension(file: FolderItem): string {
+        return file.name.slice(0, file.name.lastIndexOf("."));
     }
 }

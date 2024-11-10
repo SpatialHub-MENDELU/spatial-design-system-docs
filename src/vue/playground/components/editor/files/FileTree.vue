@@ -19,131 +19,148 @@
 
         <Tree
             :value="folders"
-            @contextMenu="showContextMenu"
             class="overflow-y-auto max-h-full"
-        />
-
+        >
+        <template #default="{ node }">
+            <div class="tree-node" @contextmenu="showContextMenu($event, node)">
+                <span>{{ node.label }}</span>
+            </div>
+        </template>
+    </Tree>
+    
         <ContextMenu
             :model="contextMenuItems"
-            :visible="contextMenuVisible"
-            @hide="closeContextMenu"
+            ref="menu"
         />
 
         <NewItemDialog
             :showDialog="showDialog"
             :dialogType="dialogType"
             :closeDialog="closeDialog"
-            @new-item="onNewItem"
+            @new-item="fetchItems"
+            @rename-item="fetchItems"
+            :itemToRename="currentItem"
         />
     </div>
 </template>
 
 <script setup lang="ts">
-import { inject, ref, watch, watchEffect } from "vue";
-import Tree from "primevue/tree";
-import ContextMenu from "primevue/contextmenu";
-import NewItemDialog from "../NewItemDialog.vue";
-import { WebContainerService } from "../../../services/webContainersService";
-import { FileType } from "../../../types/fileType";
-import { FolderItem } from "../../../types/fileItem";
-import { ILoading } from "../../../types/loading";
-import { TreeNode } from "primevue/treenode";
+    import { inject, ref, watch } from "vue";
+    import Tree from "primevue/tree";
+    import ContextMenu from "primevue/contextmenu";
+    import NewItemDialog from "../NewItemDialog.vue";
+    import { WebContainerService } from "../../../services/webContainersService";
+    import { FileType } from "../../../types/fileType";
+    import { FolderItem } from "../../../types/fileItem";
+    import { ILoading } from "../../../types/loading";
+    import { TreeNode } from "primevue/treenode";
 
-const webContainersService = inject<WebContainerService>(
-    "webContainersService",
-);
+    const webContainersService = inject<WebContainerService>(
+        "webContainersService",
+    );
 
-const props = defineProps<{
-    loading: ILoading;
-}>();
+    const props = defineProps<{
+        loading: ILoading;
+    }>();
 
-const contextMenuVisible = ref(false);
-const currentItem = ref<{ name: string; type: FileType } | null>(null);
-const folders = ref<TreeNode[]>([]);
-const showDialog = ref(false);
-const dialogType = ref<FileType>(FileType.FOLDER);
+    const menu = ref()
+    const contextMenuVisible = ref(false);
+    const currentItem = ref<{ name: string; type: FileType } | null>(null);
+    const folders = ref<TreeNode[]>([]);
+    const showDialog = ref(false);
+    const dialogType = ref<FileType>(FileType.FOLDER);
 
-const contextMenuItems = ref([
-    {
-        label: "Open",
-        icon: "pi pi-folder-open",
-        command: () => openItem(currentItem.value),
-    },
-    {
-        label: "Delete",
-        icon: "pi pi-trash",
-        command: () => deleteItem(currentItem.value),
-    },
-]);
+    const contextMenuItems = ref([
+        {
+            label: "Open",
+            icon: "pi pi-folder-open",
+            command: () => openItem(currentItem.value),
+        },
+        {
+            label: "Rename",
+            icon: "pi pi-pencil",
+            command: () => renameItem()
+        },
+        {
+            label: "Delete",
+            icon: "pi pi-trash",
+            command: () => deleteItem(currentItem.value),
+        },
+    ]);
 
-const onNewItem = async () => {
-    console.log("newItemAdded");
-    await fetchFolders();
-};
+    const fetchItems = async () => {
+        await fetchFolders();
+    };
 
-const fetchFolders = async () => {
-    if (!webContainersService) return;
-    try {
-        const folderStructure =
-            await webContainersService.fetchFolderStructureInTreeNode("/");
-        folders.value = folderStructure as TreeNode[];
-    } catch (error) {
-        console.error("Error fetching folder structure:", error);
-    }
-};
+    const fetchFolders = async () => {
+        if (!webContainersService) return;
+        try {
+            const folderStructure = await webContainersService.fetchFolderStructureInTreeNode("/");
+            folders.value = folderStructure as TreeNode[];
+        } catch (error) {
+            console.error("Error fetching folder structure:", error);
+        }
+    };
 
-const showContextMenu = (event: MouseEvent, node: TreeNode) => {
-    event.preventDefault();
-    contextMenuVisible.value = true;
-    currentItem.value = node.data || null;
-};
+    const showContextMenu = (event: any, node: TreeNode) => {
+        currentItem.value = { name: node.label ?? "", type: node.type as FileType ?? FileType.FILE}
+        menu.value.show(event);
+    };
 
-const closeContextMenu = () => {
-    contextMenuVisible.value = false;
-};
+    const closeContextMenu = () => {
+        contextMenuVisible.value = false;
+    };
 
-const openItem = (item: any) => {
-    if (item) {
-        console.log(`Opening ${item.name}`);
-    }
-    closeContextMenu();
-};
+    const openItem = (item: any) => {
+        if (item) {
+            console.log(`Opening ${item.name}`);
+        }
+        closeContextMenu();
+    };
 
-const deleteItem = (item: any) => {
-    if (item) {
-        console.log(`Deleting ${item.name}`);
-        removeItem(item);
-    }
-    closeContextMenu();
-};
+    const deleteItem = (item: any) => {
+        if (item) {
+            removeItem(item);
+        }
+        closeContextMenu();
+    };
 
-const removeItem = async (item: FolderItem) => {
-    if (!webContainersService) return;
+    const renameItem = () => {
+        if (currentItem.value) {
+        showDialog.value = true
+        dialogType.value = currentItem.value.type
+        }
 
-    try {
-        const filteredItems = await webContainersService.removeItem(item);
-        folders.value = filteredItems as TreeNode[];
-    } catch (error) {
-        console.error("Failed to delete item", error);
-    }
-};
+        closeContextMenu();
+    };
 
-const openDialog = (type: FileType) => {
-    dialogType.value = type;
-    showDialog.value = true;
-};
+    const removeItem = async (item: FolderItem) => {
+        if (!webContainersService) return;
 
-const closeDialog = () => {
-    showDialog.value = false;
-};
+        try {
+            const filteredItems = await webContainersService.removeItem(item);
+            folders.value = filteredItems as TreeNode[];
+        } catch (error) {
+            console.error("Failed to delete item", error);
+        }
+    };
 
-const downloadFileSystem = async () => {
-    await webContainersService?.installAllFiles();
-};
+    const openDialog = (type: FileType) => {
+        dialogType.value = type;
+        showDialog.value = true;
+    };
 
-watch(props.loading, async () => {
-    await fetchFolders();
-});
+    const closeDialog = () => {
+        showDialog.value = false;
+    };
 
-fetchFolders();
+    const downloadFileSystem = async () => {
+        await webContainersService?.installAllFiles();
+    };
+
+    watch(props.loading, async () => {
+        await fetchFolders();
+    });
+
+    fetchFolders();
 </script>

@@ -15,74 +15,75 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, inject } from "vue";
-import { Codemirror } from "vue-codemirror";
-import { basicSetup } from "codemirror";
-import { javascript } from "@codemirror/lang-javascript";
-import { EditorView } from "@codemirror/view";
-import EditorOutput from "./EditorOutput.vue";
-import { ILoading } from "../../types/loading";
-import { autocompletion } from "@codemirror/autocomplete";
-import { WebContainerService } from "../../services/webContainersService";
-import { files } from "./files";
+    import { ref, onMounted, inject } from "vue";
+    import { Codemirror } from "vue-codemirror";
+    import { basicSetup } from "codemirror";
+    import { javascript } from "@codemirror/lang-javascript";
+    import { EditorView } from "@codemirror/view";
+    import EditorOutput from "./EditorOutput.vue";
+    import { ILoading } from "../../types/loading";
+    import { autocompletion } from "@codemirror/autocomplete";
+    import { WebContainerService } from "../../services/webContainersService";
+    import { files } from "./files";
 
-const code = ref("");
-const output = ref("");
+    const code = ref("");
+    const output = ref("");
 
-const props = defineProps<{
-    loading: ILoading;
-}>();
+    const props = defineProps<{
+        loading: ILoading;
+    }>();
 
-const webContainersService = inject<WebContainerService>(
-    "webContainersService",
-);
+    const webContainersService = inject<WebContainerService>(
+        "webContainersService",
+    );
 
-const extensions = [
-    basicSetup,
-    javascript(),
-    EditorView.lineWrapping,
-    autocompletion(),
-];
-let debounceTimer = null;
+    const extensions = [
+        basicSetup,
+        javascript(),
+        EditorView.lineWrapping,
+        autocompletion(),
+    ];
 
-const updateCode = (newCode) => {
-    code.value = newCode;
+    let debounceTimer: any = null;
 
-    if (debounceTimer) clearTimeout(debounceTimer);
+    const updateCode = (newCode) => {
+        code.value = newCode;
 
-    debounceTimer = setTimeout(() => {
-        runCode();
-    }, 1000);
-};
+        if (debounceTimer) clearTimeout(debounceTimer);
 
-onMounted(async () => {
-    try {
-        await webContainersService?.ensureInitialized();
-        await webContainersService?.mountFiles(files);
-        const indexHtmlContent =
-            await webContainersService?.readFile("index.html");
-        code.value = indexHtmlContent as string;
-        await webContainersService?.installDependencies();
-        props.loading.installing = false;
-        runCode();
-    } catch (error) {
-        console.error("Error during onMounted:", error);
-        output.value = `Error: ${error.message}`;
-    }
-});
+        debounceTimer = setTimeout(() => {
+            runCode();
+        }, 1000);
+    };
 
-const runCode = async () => {
-    if (!webContainersService) return;
+    onMounted(async () => {
+        try {
+            await webContainersService?.ensureInitialized();
+            await webContainersService?.mountFiles(files);
+            const indexHtmlContent =
+                await webContainersService?.readFile("index.html");
+            code.value = indexHtmlContent as string;
+            await webContainersService?.installDependencies();
+            props.loading.installing = false;
+            runCode();
+        } catch (error) {
+            console.error("Error during onMounted:", error);
+            output.value = `Error: ${error.message}`;
+        }
+    });
 
-    props.loading.running = true;
-    try {
-        await webContainersService.writeFile("index.html", code.value);
-        const htmlContent = await webContainersService.readFile("index.html");
-        output.value = htmlContent as string;
-    } catch (error) {
-        output.value = `Chyba: ${error.message}`;
-    } finally {
-        props.loading.running = false;
-    }
-};
+    const runCode = async () => {
+        if (!webContainersService) return;
+
+        props.loading.running = true;
+        try {
+            await webContainersService.writeFile("index.html", code.value);
+            const htmlContent = await webContainersService.readFile("index.html");
+            output.value = htmlContent as string;
+        } catch (error) {
+            output.value = `Failed to read this file: ${error.message}`;
+        } finally {
+            props.loading.running = false;
+        }
+    };
 </script>

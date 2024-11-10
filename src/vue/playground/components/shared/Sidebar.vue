@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { sidebarData } from "../../data/sidebar-data.ts";
+    import { ref, onMounted } from "vue";
+    import { sidebarData } from "../../data/sidebar-data.ts";
 
-const activeRoute = ref("");
+    const activeRoute = ref("");
 
-onMounted(() => {
-    activeRoute.value = window.location.pathname;
-});
+    onMounted(() => {
+        activeRoute.value = window.location.pathname;
+    });
 </script>
 
 <template>

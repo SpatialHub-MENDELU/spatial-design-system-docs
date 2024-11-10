@@ -1,8 +1,13 @@
 .p-dialog {
-  min-width: 15rem;
+  min-width: 20rem;
+  max-width: 90vw;
+
+  @media screen and (min-width: $breakpointMd) {
+    min-width: 25rem;
+  }
 
   @media screen and (min-width: $breakpointLg) {
-    min-width: 20rem;
+    min-width: 30rem;
   }
 
   &-header {
@@ -15,14 +20,44 @@
   &-content {
     padding-top: 1rem;
 
-    input {
+    input, .p-dropdown {
       padding: 0.25rem 0.5rem;
-      width: 100%;
+      height: 100%;
 
       border-bottom: 1px solid $primary;
       border-radius: 0;
 
       &:focus {
+        box-shadow: none;
+        outline: none;
+      }
+
+      &.p-invalid {
+        border-color: $red;
+      }
+    }
+
+    .p-dropdown {
+      padding: 0 !important;
+      padding-right: 0.5rem !important;
+      max-width: 7rem;
+
+      @media screen and (min-width: $breakpointMd) {
+        width: 9rem;
+      }
+    
+      @media screen and (min-width: $breakpointLg) {
+        width: 10rem;
+      }
+
+      span {
+        padding-bottom: 0.25rem !important;
+        display: block !important;
+
+        line-height: 1 !important;
+      }
+
+      &.p-focus {
         box-shadow: none;
       }
     }
@@ -44,5 +79,11 @@
         background-color: $primary;
       }
     }
+  }
+}
+
+.p-dropdown-items-wrapper .p-dropdown-item {
+  &.p-highlight {
+    background-color: lighten($color: $primary, $amount: 50%) !important;
   }
 }

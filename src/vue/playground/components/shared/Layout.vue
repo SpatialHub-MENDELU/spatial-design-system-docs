@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import "primeicons/primeicons.css";
-import "primevue/resources/primevue.min.css";
-import "primevue/resources/themes/saga-blue/theme.css";
+    import "primeicons/primeicons.css";
+    import "primevue/resources/primevue.min.css";
+    import "primevue/resources/themes/saga-blue/theme.css";
 
-import "../../../../styles/app.scss";
+    import "../../../../styles/app.scss";
 
-import Sidebar from "./Sidebar.vue";
-import RightBar from "./RightBar.vue";
+    import Sidebar from "./Sidebar.vue";
+    import RightBar from "./RightBar.vue";
 </script>
 
 <template>

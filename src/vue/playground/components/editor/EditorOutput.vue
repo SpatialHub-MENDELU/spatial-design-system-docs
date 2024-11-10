@@ -74,10 +74,3 @@ const toggleVisibility = () => {
         </div>
     </div>
 </template>
-
-<style scoped>
-.hidden-output {
-    width: 2.5rem;
-    overflow: hidden;
-}
-</style>
