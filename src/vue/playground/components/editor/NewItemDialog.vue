@@ -59,6 +59,7 @@
     import { FolderService } from "../../services/folderService";
     import { FileType } from "../../types/fileType";
     import { WebContainerService } from "../../services/webContainersService";
+import { FolderItem } from "../../types/fileItem";
 
     const emit = defineEmits();
     const webContainersService = inject<WebContainerService>("webContainersService");
@@ -68,7 +69,7 @@
         showDialog: boolean;
         dialogType: FileType;
         closeDialog: () => void;
-        itemToRename: { name: string; type: FileType } | null;
+        itemToRename: FolderItem | null;
     }>();
 
     const newItemName = ref(props.itemToRename?.name || "");
@@ -88,25 +89,27 @@
         buttonIcon: 'pi pi-check'
     });
 
-    watch(() => props, (newValue) => {
-        if (newValue && newValue.itemToRename) {
-            newItemName.value = folderService.getFileWithoutExtension(newValue.itemToRename)
-            newFileExtension.value = folderService.getFileExtension(newValue.itemToRename);
+    watch(() => props.itemToRename, (newValue) => {
+        if (newValue) {
+            newItemName.value = folderService.getFileWithoutExtension(newValue);
+            newFileExtension.value = folderService.getFileExtension(newValue);
             state.dialogHeader = `Rename ${props.dialogType}`;
             state.buttonLabel = "Rename";
             state.buttonIcon = "pi pi-pencil";
         }
+    }, {immediate: true});
 
-        if (newValue.dialogType === FileType.FILE && fileNameExtensions.length > 0) {
+    watch(() => props.dialogType, (newDialogType) => {
+        if (newDialogType === FileType.FILE && fileNameExtensions.length > 0) {
             newFileExtension.value = fileNameExtensions[0].value;
         }
 
-        if (newValue.dialogType === FileType.FILE && !newValue.itemToRename) {
-            state.dialogHeader = 'New file'
+        if (newDialogType === FileType.FILE && !props.itemToRename) {
+            state.dialogHeader = 'New file';
         } else {
-            state.dialogHeader = 'New folder'
+            state.dialogHeader = 'New folder';
         }
-    }, { immediate: true });
+    }, {immediate: true});
 
     const handleAction = async () => {
         errorMessage.value = "";

@@ -25,8 +25,6 @@ export class WebContainerService {
         }
 
         if (this.isBooting) {
-            console.log("WebContainer is currently booting. Please wait.");
-            // Consider returning a promise here if desired
             return new Promise((resolve, reject) => {
                 const checkInstance = setInterval(() => {
                     if (this.webContainerInstance) {
@@ -38,14 +36,9 @@ export class WebContainerService {
         }
 
         this.isBooting = true;
-        console.log("Booting WebContainer...");
 
         try {
             this.webContainerInstance = await WebContainer.boot();
-            console.log(
-                "WebContainer successfully booted:",
-                this.webContainerInstance,
-            );
         } catch (error) {
             console.error("Failed to boot WebContainer:", error);
             this.isBooting = false;
@@ -58,7 +51,6 @@ export class WebContainerService {
 
     public async ensureInitialized() {
         if (!this.webContainerInstance) {
-            console.log("Initializing WebContainer...");
             await this.init();
             if (!this.webContainerInstance) {
                 console.error(
@@ -84,10 +76,15 @@ export class WebContainerService {
         await this.webContainerInstance?.fs.writeFile(filePath, content);
     }
 
-    public async createFolder(folderPath: string) {
-        console.log(folderPath);
+    public async createFolder(folderPath: string, children: FolderItem[] = []) {
         await this.ensureInitialized();
         await this.webContainerInstance?.fs.mkdir(folderPath);
+
+        console.log('new folder')
+
+        for (const child of children) { 
+            this.writeFile(`${child.webkitRelativePath}`, child.content);
+        }
     }
 
     public async installDependencies() {
@@ -256,15 +253,6 @@ export class WebContainerService {
             console.error("Error installing file system:", error);
             return { success: false, error };
         }
-    }
-
-    public async fetchFileContent(path: string): Promise<string> {
-        const response = await fetch(`/api/files${path}`);
-        if (!response.ok) {
-            throw new Error(`Failed to fetch file content at ${path}`);
-        }
-        const content = await response.text();
-        return content;
     }
 
     private async downloadZip(fileStructure: any) {

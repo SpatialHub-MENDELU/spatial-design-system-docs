@@ -6,5 +6,7 @@ export enum FileType {
 export enum FileExtensions {
     HTML = "html",
     CSS = "css",
-    JS = "js"
+    JS = "js",
+    TS = "ts",
+    FOLDER = "folder"
 }
