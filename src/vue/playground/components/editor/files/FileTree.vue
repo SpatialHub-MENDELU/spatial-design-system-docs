@@ -53,7 +53,7 @@
       :closeDialog="closeDialog"
       @new-item="fetchItems"
       @rename-item="fetchItems"
-      :itemToRename="currentItem"
+      :itemToRename="fileTreeState.currentItem"
     />
 
     <button
@@ -74,6 +74,7 @@
       :is-dialog-visible="fileTreeState.showUploadDialog"
       :uploadType="fileTreeState.dialogType"
       @new-item="fetchItems"
+      :parent-node="fileTreeState.parentItemNode"
     />
   </div>
 </template>
@@ -122,6 +123,7 @@ const newFileContextMenuItems: MenuItem[] = [
 ];
 
 const newFileContextMenu = ref<ContextMenu | null>(null);
+const contextMenuItems = ref<MenuItem[]>([]);
 
 const showNewFileMenu = (event) => {
   newFileContextMenu.value?.show(event);
@@ -135,13 +137,30 @@ const props = defineProps<{
   loading: ILoading;
 }>();
 
-const fileTreeState = reactive({
+const fileTreeState = reactive<{
+  isVisible: boolean;
+  isHidden: boolean;
+  showDialog: boolean;
+  dialogType: FileType;
+  showUploadDialog: boolean;
+  contextMenuVisible: boolean;
+  currentItem: FolderItem;
+  parentItemNode: TreeNode | null;
+}>({
   isVisible: true,
   isHidden: true,
   showDialog: false,
   dialogType: FileType.FILE,
   showUploadDialog: false,
   contextMenuVisible: false,
+  currentItem: {
+    name: '',
+    type: FileType.FILE,
+    children: [],
+    size: 0,
+    webkitRelativePath: '',
+  },
+  parentItemNode: null
 });
 
 const toggleVisibility = () => {
@@ -149,28 +168,52 @@ const toggleVisibility = () => {
 };
 
 const menu = ref();
-const currentItem = ref<FolderItem | null>(
-  new File([], '', { type: 'text-plain' }) as FolderItem
-);
 const folders = ref<TreeNode[]>([]);
 
-const contextMenuItems = ref([
-  {
-    label: 'Open',
-    icon: 'pi pi-folder-open',
-    command: () => openItem(currentItem.value),
-  },
-  {
-    label: 'Rename',
-    icon: 'pi pi-pencil',
-    command: () => renameItem(),
-  },
-  {
-    label: 'Delete',
-    icon: 'pi pi-trash',
-    command: () => deleteItem(currentItem.value),
-  },
-]);
+const getContextMenuItems = (node: TreeNode): MenuItem[] => {
+  const contextMenuItems: MenuItem[] = [
+    {
+      label: 'Open',
+      icon: 'pi pi-folder-open',
+      command: () => openItem(fileTreeState.currentItem),
+    },
+    {
+      label: 'Rename',
+      icon: 'pi pi-pencil',
+      command: () => renameItem(),
+    },
+    {
+      label: 'Delete',
+      icon: 'pi pi-trash',
+      command: () => deleteItem(fileTreeState.currentItem),
+    },
+  ];
+
+  const contextMenuItemsFolder: MenuItem[] = [
+    {
+      label: 'New file',
+      icon: 'pi pi-file',
+      command: () => {
+        fileTreeState.showUploadDialog = true;
+        fileTreeState.dialogType = FileType.FILE;
+      },
+    },
+    {
+      label: 'New folder',
+      icon: 'pi pi-folder',
+      command: () => {
+        fileTreeState.showUploadDialog = true;
+        fileTreeState.dialogType = FileType.FOLDER;
+      },
+    },
+  ];
+
+  if (node.type === FileType.FOLDER) {
+    contextMenuItems.push(...contextMenuItemsFolder);
+  }
+
+  return contextMenuItems;
+};
 
 const fetchItems = async () => {
   await fetchFolders();
@@ -189,11 +232,16 @@ const fetchFolders = async () => {
 };
 
 const showContextMenu = (event: any, node: TreeNode) => {
-  if (currentItem.value) {
-    currentItem.value.name = node.label ?? '';
-    currentItem.value.type = (node.type as FileType) ?? FileType.FILE;
+    const item = {
+      name: node.label ?? '',
+      type: (node.type as FileType) ?? FileType.FILE,
+    } as FolderItem;
+
+    fileTreeState.currentItem = item; // Reassign currentItem to trigger reactivity
+    fileTreeState.parentItemNode = item.type === FileType.FILE ? null : node;
+
+    contextMenuItems.value = getContextMenuItems(node);
     menu.value.show(event);
-  }
 };
 
 const closeContextMenu = () => {
@@ -215,10 +263,8 @@ const deleteItem = (item: any) => {
 };
 
 const renameItem = () => {
-  if (currentItem.value) {
-    fileTreeState.showDialog = true;
-    fileTreeState.dialogType = currentItem.value.type;
-  }
+  fileTreeState.showDialog = true;
+  fileTreeState.dialogType = fileTreeState.currentItem.type;
 
   closeContextMenu();
 };
@@ -237,7 +283,9 @@ const removeItem = async (item: FolderItem) => {
 const openDialog = (type: FileType) => {
   fileTreeState.dialogType = type;
   fileTreeState.showDialog = true;
-  currentItem.value = null;
+  fileTreeState.currentItem = new File([], '', {
+    type: 'text/plain',
+  }) as FolderItem;
 };
 
 const closeDialog = () => {

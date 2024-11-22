@@ -9,6 +9,7 @@
       :multiple="true"
       :accept="'.html, .css, .js, .ts, .jsx, .tsx'"
       :folderUploader="folderFileUplaoderState.isFolder"
+      :parent-node="parentNode"
       @new-item="handleNewItem"
     />
 
@@ -29,6 +30,7 @@ import Dialog from 'primevue/dialog';
 import { defineEmits, watch, reactive } from 'vue';
 import Button from 'primevue/button';
 import { FileType } from '../../../types/fileType';
+import { TreeNode } from 'primevue/treenode';
 
 const emit = defineEmits();
 const folderFileUplaoderState = reactive({
@@ -40,6 +42,7 @@ const props = defineProps<{
   isDialogVisible: boolean;
   closeDialog: () => void;
   uploadType: FileType;
+  parentNode: TreeNode | null
 }>();
 
 const handleNewItem = () => {
@@ -50,7 +53,6 @@ const handleNewItem = () => {
 watch(
   () => props.uploadType,
   (uploadType) => {
-    console.log(uploadType);
     folderFileUplaoderState.dialogHeader = `Upload ${uploadType === FileType.FOLDER ? 'folders' : 'files'}`;
     folderFileUplaoderState.isFolder = uploadType === FileType.FOLDER;
   },

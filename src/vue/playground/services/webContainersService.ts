@@ -3,6 +3,7 @@ import { TreeNode } from "primevue/treenode";
 import { FileType } from "../types/fileType";
 import { FolderItem } from "../types/fileItem";
 import JSZip from "jszip";
+import { getFileIcon } from "../utils/FileExtensionsAndIcons";
 
 export class WebContainerService {
     private static instance: WebContainerService;
@@ -20,7 +21,6 @@ export class WebContainerService {
 
     private async init() {
         if (this.webContainerInstance) {
-            console.log("WebContainer already initialized");
             return this.webContainerInstance;
         }
 
@@ -159,13 +159,11 @@ export class WebContainerService {
                 return {
                     key: folder.name,
                     label: folder.name,
-                    icon:
-                        folder.type === FileType.FILE
-                            ? "pi pi-file"
-                            : "pi pi-folder",
+                    icon: getFileIcon(folder),
                     data: { name: folder.name, type: folder.type },
                     children: children,
-                    type: folder.type
+                    type: folder.type,
+                    parent: folder
                 } as TreeNode;
             }),
         );
@@ -180,7 +178,6 @@ export class WebContainerService {
             
             await this.webContainerInstance?.fs.rename(oldPath, newPath);
             
-            console.log(`Item renamed from ${oldPath} to ${newPath}`);
             return { success: true, message: `Item renamed from ${oldPath} to ${newPath}` };
         } catch (error) {
             console.error(`Failed to rename item from ${oldPath} to ${newName}:`, error);

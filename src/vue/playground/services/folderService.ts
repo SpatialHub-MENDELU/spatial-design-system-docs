@@ -109,7 +109,6 @@ export class FolderService {
           }
           
           const result = await this.createNewItem(f.name, f.type, undefined, '', f.children)
-          console.log(result)
           return result
      
         } else {
@@ -122,7 +121,6 @@ export class FolderService {
                 : btoa(fileContent as unknown as string);
     
             const result = await this.createNewItem(f.name, f.type, parentFolder, content)
-            console.log(result)
             return result
           };
     

@@ -102,6 +102,7 @@ import { WebContainerService } from '../../../services/webContainersService';
 import { FolderItem } from '../../../types/fileItem';
 import { formatSize } from '../../../utils/SizeFormatter';
 import { getFileIcon } from '../../../utils/FileExtensionsAndIcons';
+import { TreeNode } from 'primevue/treenode';
 
 const folderInput = ref<HTMLElement | null>(null);
 const emit = defineEmits();
@@ -129,10 +130,11 @@ const props = defineProps<{
   accept: string;
   multiple: boolean;
   folderUploader: boolean;
+  parentNode: TreeNode | null
 }>();
 
 const onRemoveTemplatingFile = (
-  file: File,
+  file: FolderItem,
   removeFileCallback: (index: number) => void,
   index: number
 ) => {
@@ -148,8 +150,10 @@ const onSelectedFiles = (event: FileUploadSelectEvent) => {
 };
 
 const handleUpload = async () => {
+  console.log(props.parentNode?.parent);
+
   for (const f of fileUploadState.files) {
-    await folderService?.uploadItem(f).then(result => console.log(result))
+    await folderService?.uploadItem(f, props.parentNode?.parent)
   }
 
   await webContainersService?.fetchFolderStructure('/')
