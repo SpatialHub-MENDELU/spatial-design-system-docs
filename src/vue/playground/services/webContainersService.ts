@@ -74,17 +74,12 @@ export class WebContainerService {
     public async writeFile(filePath: string, content: string) {
         await this.ensureInitialized();
         await this.webContainerInstance?.fs.writeFile(filePath, content);
+        await this.fetchFolderStructureInTreeNode('/');
     }
 
-    public async createFolder(folderPath: string, children: FolderItem[] = []) {
+    public async createFolder(folderPath: string) {
         await this.ensureInitialized();
         await this.webContainerInstance?.fs.mkdir(folderPath);
-
-        console.log('new folder')
-
-        for (const child of children) { 
-            this.writeFile(`${child.webkitRelativePath}`, child.content);
-        }
     }
 
     public async installDependencies() {

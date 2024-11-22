@@ -11,7 +11,6 @@
 
   <FileUpload
     name="fileUploader[]"
-    @upload="onTemplatedUpload()"
     :multiple="multiple"
     :accept="accept"
     :maxFileSize="1000000"
@@ -48,7 +47,7 @@
                 <div
                   class="bg-primary rounded-full p-2 text-white h-8 w-8 flex items-center justify-center"
                 >
-                  <i :class="folderService?.getFileIcon(file)" />
+                  <i :class="getFileIcon(file)" />
                 </div>
                 <span
                   class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden"
@@ -97,14 +96,14 @@
 import FileUpload, { FileUploadSelectEvent } from 'primevue/fileupload';
 import { inject, reactive, defineEmits, ref, onMounted } from 'vue';
 import Button from 'primevue/button';
-import { useToast } from 'primevue/usetoast';
-import { usePrimeVue } from 'primevue/config';
 import { FolderService } from '../../../services/folderService';
 import { FileType } from '../../../types/fileType';
 import { WebContainerService } from '../../../services/webContainersService';
 import { FolderItem } from '../../../types/fileItem';
-const folderInput = ref<HTMLElement | null>(null);
+import { formatSize } from '../../../utils/SizeFormatter';
+import { getFileIcon } from '../../../utils/FileExtensionsAndIcons';
 
+const folderInput = ref<HTMLElement | null>(null);
 const emit = defineEmits();
 
 const triggerFolderInput = () => {
@@ -118,16 +117,11 @@ const folderService = new FolderService(
   webContainersService as WebContainerService
 );
 
-const toast = useToast();
-const $primevue = usePrimeVue();
-
 const fileUploadState = reactive<{
   totalSize: number;
-  totalSizePercent: number;
   files: FolderItem[];
 }>({
   totalSize: 0,
-  totalSizePercent: 0,
   files: [],
 });
 
@@ -144,7 +138,6 @@ const onRemoveTemplatingFile = (
 ) => {
   removeFileCallback(index);
   fileUploadState.totalSize -= parseInt(formatSize(file.size));
-  fileUploadState.totalSizePercent = fileUploadState.totalSize / 10;
 };
 
 const onSelectedFiles = (event: FileUploadSelectEvent) => {
@@ -156,41 +149,18 @@ const onSelectedFiles = (event: FileUploadSelectEvent) => {
 
 const handleUpload = async () => {
   for (const f of fileUploadState.files) {
-    if (f.type === FileType.FOLDER) {
-      const children = fileUploadState.files.map(f => ({ name: f.name, type: FileType.FILE, content: "", webkitRelativePath: f.webkitRelativePath }))
-      await folderService
-        ?.createNewItem(f.name, f.type, undefined, '', f.children)
-        .then(() => {
-          emit('new-item');
-        });
-    } else {
-      const reader = new FileReader();
-      reader.onload = async () => {
-        const fileContent = reader.result as string | ArrayBuffer;
-        const content =
-          typeof fileContent === 'string'
-            ? fileContent
-            : btoa(fileContent as unknown as string);
-        await folderService
-          ?.createNewItem(f.name, FileType.FILE, undefined, content)
-          .then(() => {
-            emit('new-item');
-          });
-      };
-
-      if (f.type.startsWith('text/')) {
-        reader.readAsText(f as File);
-      } else {
-        reader.readAsArrayBuffer(f as File);
-      }
-    }
+    await folderService?.uploadItem(f).then(result => console.log(result))
   }
+
+  await webContainersService?.fetchFolderStructure('/')
+  emit('new-item');
 };
 
 const onFolderSelected = (event) => {
   const files = Array.from(event.target.files) as File[];
   const folder = files[0]?.webkitRelativePath.split('/')[0] || 'Unknown Folder';
   const totalSize = files.map((f) => f.size).reduce((sum, f) => sum + f, 0);
+  
   fileUploadState.files = [
     ...fileUploadState.files,
     {
@@ -203,29 +173,5 @@ const onFolderSelected = (event) => {
   ] as FolderItem[];
 
   fileUploadState.totalSize = fileUploadState.totalSize + totalSize
-};
-
-const onTemplatedUpload = () => {
-  toast.add({
-    severity: 'info',
-    summary: 'Success',
-    detail: 'File Uploaded',
-    life: 3000,
-  });
-};
-
-const formatSize = (bytes: number) => {
-  const k = 1024;
-  const dm = 3;
-  const sizes = $primevue.config.locale?.fileSizeTypes;
-
-  if (bytes === 0 && sizes) {
-    return `0 ${sizes[0]}`;
-  }
-
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
-
-  return `${formattedSize} ${sizes ? sizes[i] : ''}`;
 };
 </script>

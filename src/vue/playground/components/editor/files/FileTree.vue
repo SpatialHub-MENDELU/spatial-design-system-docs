@@ -149,7 +149,9 @@ const toggleVisibility = () => {
 };
 
 const menu = ref();
-const currentItem = ref<FolderItem | null>(new File([], '', { type: 'text-plain' }) as FolderItem);
+const currentItem = ref<FolderItem | null>(
+  new File([], '', { type: 'text-plain' }) as FolderItem
+);
 const folders = ref<TreeNode[]>([]);
 
 const contextMenuItems = ref([
@@ -180,17 +182,18 @@ const fetchFolders = async () => {
     const folderStructure =
       await webContainersService.fetchFolderStructureInTreeNode('/');
     folders.value = folderStructure as TreeNode[];
+    folders.value = [...folders.value];
   } catch (error) {
     console.error('Error fetching folder structure:', error);
   }
 };
 
 const showContextMenu = (event: any, node: TreeNode) => {
-    if (currentItem.value) {
-        currentItem.value.name = node.label ?? ''
-        currentItem.value.type = node.type as FileType ?? FileType.FILE
-        menu.value.show(event);
-    }
+  if (currentItem.value) {
+    currentItem.value.name = node.label ?? '';
+    currentItem.value.type = (node.type as FileType) ?? FileType.FILE;
+    menu.value.show(event);
+  }
 };
 
 const closeContextMenu = () => {

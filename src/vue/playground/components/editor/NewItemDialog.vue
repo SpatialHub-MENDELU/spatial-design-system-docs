@@ -60,6 +60,7 @@
     import { FileType } from "../../types/fileType";
     import { WebContainerService } from "../../services/webContainersService";
 import { FolderItem } from "../../types/fileItem";
+import { getFileExtension, getFileWithoutExtension } from "../../utils/FileExtensionsAndIcons";
 
     const emit = defineEmits();
     const webContainersService = inject<WebContainerService>("webContainersService");
@@ -91,8 +92,8 @@ import { FolderItem } from "../../types/fileItem";
 
     watch(() => props.itemToRename, (newValue) => {
         if (newValue) {
-            newItemName.value = folderService.getFileWithoutExtension(newValue);
-            newFileExtension.value = folderService.getFileExtension(newValue);
+            newItemName.value = getFileWithoutExtension(newValue);
+            newFileExtension.value = getFileExtension(newValue);
             state.dialogHeader = `Rename ${props.dialogType}`;
             state.buttonLabel = "Rename";
             state.buttonIcon = "pi pi-pencil";
