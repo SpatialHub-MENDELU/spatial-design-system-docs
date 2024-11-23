@@ -9,7 +9,6 @@
       :multiple="true"
       :accept="'.html, .css, .js, .ts, .jsx, .tsx'"
       :folderUploader="folderFileUplaoderState.isFolder"
-      :parent-node="parentNode"
       @new-item="handleNewItem"
     />
 
@@ -42,7 +41,6 @@ const props = defineProps<{
   isDialogVisible: boolean;
   closeDialog: () => void;
   uploadType: FileType;
-  parentNode: TreeNode | null
 }>();
 
 const handleNewItem = () => {

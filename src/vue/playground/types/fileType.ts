@@ -8,5 +8,6 @@ export enum FileExtensions {
     CSS = "css",
     JS = "js",
     TS = "ts",
+    JSON = "json",
     FOLDER = "folder"
 }

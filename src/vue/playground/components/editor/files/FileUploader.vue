@@ -130,7 +130,6 @@ const props = defineProps<{
   accept: string;
   multiple: boolean;
   folderUploader: boolean;
-  parentNode: TreeNode | null
 }>();
 
 const onRemoveTemplatingFile = (
@@ -150,10 +149,9 @@ const onSelectedFiles = (event: FileUploadSelectEvent) => {
 };
 
 const handleUpload = async () => {
-  console.log(props.parentNode?.parent);
 
   for (const f of fileUploadState.files) {
-    await folderService?.uploadItem(f, props.parentNode?.parent)
+    await folderService?.uploadItem(f)
   }
 
   await webContainersService?.fetchFolderStructure('/')

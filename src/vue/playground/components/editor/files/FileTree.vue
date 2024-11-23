@@ -53,7 +53,8 @@
       :closeDialog="closeDialog"
       @new-item="fetchItems"
       @rename-item="fetchItems"
-      :itemToRename="fileTreeState.currentItem"
+      :itemToRename="fileTreeState.itemToRename"
+      :parent-node="fileTreeState.parentItemNode"
     />
 
     <button
@@ -74,7 +75,6 @@
       :is-dialog-visible="fileTreeState.showUploadDialog"
       :uploadType="fileTreeState.dialogType"
       @new-item="fetchItems"
-      :parent-node="fileTreeState.parentItemNode"
     />
   </div>
 </template>
@@ -126,6 +126,7 @@ const newFileContextMenu = ref<ContextMenu | null>(null);
 const contextMenuItems = ref<MenuItem[]>([]);
 
 const showNewFileMenu = (event) => {
+	fileTreeState.itemToRename = null
   newFileContextMenu.value?.show(event);
 };
 
@@ -146,6 +147,7 @@ const fileTreeState = reactive<{
   contextMenuVisible: boolean;
   currentItem: FolderItem;
   parentItemNode: TreeNode | null;
+  itemToRename: FolderItem | null
 }>({
   isVisible: true,
   isHidden: true,
@@ -160,7 +162,8 @@ const fileTreeState = reactive<{
     size: 0,
     webkitRelativePath: '',
   },
-  parentItemNode: null
+  parentItemNode: null,
+  itemToRename: null
 });
 
 const toggleVisibility = () => {
@@ -194,7 +197,8 @@ const getContextMenuItems = (node: TreeNode): MenuItem[] => {
       label: 'New file',
       icon: 'pi pi-file',
       command: () => {
-        fileTreeState.showUploadDialog = true;
+				fileTreeState.itemToRename = null;
+        fileTreeState.showDialog = true;
         fileTreeState.dialogType = FileType.FILE;
       },
     },
@@ -202,7 +206,8 @@ const getContextMenuItems = (node: TreeNode): MenuItem[] => {
       label: 'New folder',
       icon: 'pi pi-folder',
       command: () => {
-        fileTreeState.showUploadDialog = true;
+				fileTreeState.itemToRename = null;
+        fileTreeState.showDialog = true;
         fileTreeState.dialogType = FileType.FOLDER;
       },
     },
@@ -216,6 +221,7 @@ const getContextMenuItems = (node: TreeNode): MenuItem[] => {
 };
 
 const fetchItems = async () => {
+	console.log('fetch')
   await fetchFolders();
 };
 
@@ -232,12 +238,14 @@ const fetchFolders = async () => {
 };
 
 const showContextMenu = (event: any, node: TreeNode) => {
+	fileTreeState.itemToRename = null;
+
     const item = {
       name: node.label ?? '',
       type: (node.type as FileType) ?? FileType.FILE,
     } as FolderItem;
 
-    fileTreeState.currentItem = item; // Reassign currentItem to trigger reactivity
+    fileTreeState.currentItem = item;
     fileTreeState.parentItemNode = item.type === FileType.FILE ? null : node;
 
     contextMenuItems.value = getContextMenuItems(node);
@@ -263,6 +271,7 @@ const deleteItem = (item: any) => {
 };
 
 const renameItem = () => {
+  fileTreeState.itemToRename = fileTreeState.currentItem
   fileTreeState.showDialog = true;
   fileTreeState.dialogType = fileTreeState.currentItem.type;
 

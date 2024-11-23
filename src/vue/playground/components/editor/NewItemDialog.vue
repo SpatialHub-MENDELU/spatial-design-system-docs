@@ -75,6 +75,7 @@ import {
   getFileExtension,
   getFileWithoutExtension,
 } from '../../utils/FileExtensionsAndIcons';
+import { TreeNode } from 'primevue/treenode';
 
 const emit = defineEmits();
 const webContainersService = inject<WebContainerService>(
@@ -89,6 +90,7 @@ const props = defineProps<{
   dialogType: FileType;
   closeDialog: () => void;
   itemToRename: FolderItem | null;
+  parentNode: TreeNode | null
 }>();
 
 const fileNameExtensions = [
@@ -125,6 +127,8 @@ watch(
         
         state.newItemName = ''
         state.dialogHeader = newDialogType === FileType.FILE ? 'New file' : 'New folder'
+        state.buttonLabel = 'Create';
+        state.buttonIcon = 'pi pi-check';
     }
   },
   { immediate: true, deep: true }
@@ -149,10 +153,9 @@ const handleAction = async () => {
       ? `${state.newItemName}.${state.newFileExtension}`
       : state.newItemName;
 
-  const parentFolder =
-    props.dialogType === 'file' ? folderService?.getOpenFolder() : undefined;
+  const parentFolder = props.parentNode?.parent;
 
-  if (props.itemToRename && props.itemToRename.name != '') {
+  if (props.itemToRename) {
     const result = await folderService?.renameItem(
       props.itemToRename.name,
       fullName
@@ -169,6 +172,7 @@ const handleAction = async () => {
       props.dialogType,
       parentFolder
     );
+
     if (result?.error) {
       state.errorMessage = result.error;
     } else {
