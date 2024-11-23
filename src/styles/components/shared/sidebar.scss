@@ -13,10 +13,12 @@
 
 
 .sidebar-grow {
-  flex-grow: 1 !important;
-  height: calc(100vh - $header-height);
-
   @media (max-width: $breakpointLg) {
     height: fit-content;
+  }
+
+  @media (min-width: $breakpointLg) {
+    flex-grow: 1 !important;
+    height: calc(100vh - $header-height);
   }
 }

@@ -12,7 +12,7 @@ export function checkDuplicity(
       ? `${parentPath}/${folder.name}`
       : folder.name;
 
-    if (currentPath === newItem.webkitRelativePath) {
+    if (currentPath === newItem.path) {
       return true; 
     }
 

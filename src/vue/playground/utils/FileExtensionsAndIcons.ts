@@ -22,7 +22,7 @@ export const getFileExtension = (fileName: string, fileType: FileType): FileExte
 };
 
 export const getFileIcon = (file: FolderItem) => {
-  const extension = getFileExtension(file.name, file.type);
+  const extension = getFileExtension(file.name ?? "", file.type);
   switch (extension) {
     case 'html':
       return 'fab fa-html5';

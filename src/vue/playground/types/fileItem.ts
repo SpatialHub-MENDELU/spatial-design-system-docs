@@ -6,6 +6,6 @@ export interface FolderItem extends Omit<File, 'name' | 'type' | 'webkitRelative
     children?: FolderItem[];
     isOpen?: boolean;
     size: number;
-    webkitRelativePath: string;
     content?: any
+    path?: string
 }

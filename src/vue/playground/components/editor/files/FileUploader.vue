@@ -149,20 +149,20 @@ const onSelectedFiles = (event: FileUploadSelectEvent) => {
 };
 
 const handleUpload = async () => {
-
   for (const f of fileUploadState.files) {
-    await folderService?.uploadItem(f)
+    await folderService?.uploadItem(f);
   }
 
-  await webContainersService?.fetchFolderStructure('/')
+  await webContainersService?.fetchFolderStructure('/');
   emit('new-item');
 };
 
 const onFolderSelected = (event) => {
   const files = Array.from(event.target.files) as File[];
+
   const folder = files[0]?.webkitRelativePath.split('/')[0] || 'Unknown Folder';
   const totalSize = files.map((f) => f.size).reduce((sum, f) => sum + f, 0);
-  
+
   fileUploadState.files = [
     ...fileUploadState.files,
     {
@@ -170,10 +170,10 @@ const onFolderSelected = (event) => {
       children: files,
       type: FileType.FOLDER,
       size: totalSize,
-      webkitRelativePath: files[0]?.webkitRelativePath
+      path: folder,
     },
   ] as FolderItem[];
 
-  fileUploadState.totalSize = fileUploadState.totalSize + totalSize
+  fileUploadState.totalSize = fileUploadState.totalSize + totalSize;
 };
 </script>

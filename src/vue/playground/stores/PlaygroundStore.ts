@@ -1,23 +1,33 @@
 import { createStore } from 'vuex';
+import { ProjectType } from '../types/projectType';
 import { FolderItem } from '../types/fileItem';
 
 export interface State {
+  projectType: ProjectType | null
   openedFiles: FolderItem[];
   currentFileContent: string;
   currentFilePath: string;
   output: string;
 }
 
-const fileStore = createStore({
+const playgroundStore = createStore({
   state: {
+    projectType: null,
     openedFiles: [] as FolderItem[],
     currentFileContent: '',
     currentFilePath: '',
     output: '',
   } as State,
   mutations: {
-    addFile(state: State, file: FolderItem) {
-      if (state.openedFiles.indexOf(file) < 0) state.openedFiles.push(file);
+    updateProjectType(state: State, projectType: ProjectType) {
+      state.projectType = projectType
+    },
+    addFile(state: State, payload: { file: FolderItem, path: string }) {
+      const folderPath = state.openedFiles.map(f => f.path as string)
+      if (folderPath.indexOf(payload.path) < 0) state.openedFiles.push({
+        ...payload.file,
+        path: payload.path
+      });
     },
     setOpenedFiles(state: State, files: FolderItem[]) {
       state.openedFiles = files;
@@ -34,6 +44,9 @@ const fileStore = createStore({
     },
   },
   getters: {
+    projectType(state: State) {
+      return state.projectType;
+    },
     openedFiles(state: State) {
       return state.openedFiles;
     },
@@ -60,11 +73,11 @@ const fileStore = createStore({
         const newOpenItem = state.openedFiles.length > 0 ? state.openedFiles[0] : null;
     
         if (newOpenItem) {
-          state.currentFilePath = newOpenItem.webkitRelativePath ?? newOpenItem.name;
+          state.currentFilePath = newOpenItem.path ?? newOpenItem.name;
     
           if (payload.update) {
             try {
-              const content = await payload.update(newOpenItem.webkitRelativePath ?? newOpenItem.name);
+              const content = await payload.update(newOpenItem.path ?? newOpenItem.name);
               commit('updateCurrentFileContent', content);
             } catch (error) {
               console.error('Error updating file content:', error); 
@@ -76,8 +89,7 @@ const fileStore = createStore({
         }
       }
     }
-    
   }      
 });
 
-export default fileStore;
+export default playgroundStore;

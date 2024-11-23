@@ -22,11 +22,13 @@
       >
         <Button @click="downloadFileSystem" icon="pi pi-download" class="w-4" />
         <Button @click="showNewFileMenu" icon="pi pi-plus" class="w-4" />
-				<Button
-					@click="toggleVisibility"
-					:icon="fileTreeState.isVisible ? 'pi pi-angle-up' : 'pi pi-angle-down'"
-					class="w-4 lg:hidden block" 
-				/>
+        <Button
+          @click="toggleVisibility"
+          :icon="
+            fileTreeState.isVisible ? 'pi pi-angle-up' : 'pi pi-angle-down'
+          "
+          class="w-4 lg:hidden block"
+        />
 
         <ContextMenu
           :model="newFileContextMenuItems"
@@ -40,7 +42,8 @@
       class="overflow-y-auto max-h-full duration-300"
       :class="{
         'lg:max-w-0 lg:max-h-full lg:h-full h-0': !fileTreeState.isVisible,
-        'lg:max-w-[20rem] lg:w-[15rem] lg:h-full lg:max-h-full h-max max-h-max': fileTreeState.isVisible,
+        'lg:max-w-[20rem] lg:w-[15rem] lg:h-full lg:max-h-full h-max max-h-max':
+          fileTreeState.isVisible,
       }"
     >
       <template #default="{ node }">
@@ -103,7 +106,6 @@ import { MenuItem } from 'primevue/menuitem';
 import FolderFileUploader from './FolderFileUploader.vue';
 import { useStore } from 'vuex';
 import { getFileExtension } from '../../../utils/FileExtensionsAndIcons';
-import Tooltip from 'primevue/tooltip';
 
 const newFileContextMenuItems: MenuItem[] = [
   {
@@ -136,7 +138,7 @@ const newFileContextMenuItems: MenuItem[] = [
 
 const newFileContextMenu = ref<ContextMenu | null>(null);
 const contextMenuItems = ref<MenuItem[]>([]);
-const fileStore = useStore();
+const playgroundStore = useStore();
 
 const showNewFileMenu = (event) => {
   fileTreeState.itemToRename = null;
@@ -173,7 +175,7 @@ const fileTreeState = reactive<{
     type: FileType.FILE,
     children: [],
     size: 0,
-    webkitRelativePath: '',
+    path: ''
   },
   parentItemNode: null,
   itemToRename: null,
@@ -184,20 +186,23 @@ const toggleVisibility = () => {
 };
 
 const openFile = async (node: TreeNode) => {
-	if (node.type === FileType.FOLDER) return
-	
-  fileStore.commit('addFile', node.parent);
+  if (node.type === FileType.FOLDER) return;
+
+  playgroundStore.commit('addFile', {
+    file: node.parent,
+    path: node.data.path
+  });
   const path =
-    node.parent.webkitRelativePath ?? node.parent.label ?? node.label;
+    node.data.path ?? node.parent.label ?? node.label;
 
   if (getFileExtension(path, FileType.FILE) === FileExtensions.HTML) {
     const htmlContent = await webContainersService?.readFile(path);
-    fileStore.commit('setOuput', htmlContent as string);
-	}
+    playgroundStore.commit('setOuput', htmlContent as string);
+  }
 
   try {
     const content = await webContainersService?.readFile(path);
-    fileStore.commit('readFile', { content, path });
+    playgroundStore.commit('readFile', { content, path });
   } catch (error) {
     console.error('Error reading file:', error);
   }

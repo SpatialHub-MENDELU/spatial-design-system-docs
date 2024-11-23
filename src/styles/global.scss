@@ -7,7 +7,7 @@
 }
 
 .page {
-  max-height: calc(100vh - $header-height) !important;
+  height: calc(100vh - $header-height) !important;
 
   @media (max-width: $breakpoint2Xl) {
     margin: auto;

@@ -6,7 +6,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import { WebContainerService } from "../../src/vue/playground/services/webContainersService";
 import { FolderService } from "../../src/vue/playground/services/folderService";
 import { SessionService } from "../../src/vue/playground/services/sessionService";
-import fileStore from "../../src/vue/playground/stores/FileStore";
+import playgroundStore from "../../src/vue/playground/stores/PlaygroundStore";
 
 import Tooltip from 'primevue/tooltip';
 import ToastService from 'primevue/toastservice';
@@ -21,7 +21,7 @@ export default {
         app.provide("folderService", new FolderService());
         app.provide("sessionService", new SessionService())
         app.use(ToastService)
-        app.use(fileStore)
+        app.use(playgroundStore)
         app.directive('tooltip', Tooltip);
     },
 };
