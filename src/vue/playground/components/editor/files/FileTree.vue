@@ -7,7 +7,7 @@
       class="flex justify-between p-3 border-b border-border-color duration-300"
     >
       <span
-        class="font-bold 2xl:text-[20px] lg:text-[18px] text-[16px]"
+        class="font-bold 2xl:text-[20px] lg:text-[18px] text-[16px] leading-0"
         :class="{
           ' w-0 overflow-hidden opacity-hidden ': fileTreeState.isHidden,
         }"
@@ -39,7 +39,11 @@
       }"
     >
       <template #default="{ node }">
-        <div class="tree-node" @contextmenu="showContextMenu($event, node)">
+        <div
+          class="cursor-pointer"
+          @contextmenu="showContextMenu($event, node)"
+          @click="openFile(node)"
+        >
           <span class="whitespace-nowrap block">{{ node.label }}</span>
         </div>
       </template>
@@ -86,12 +90,14 @@ import ContextMenu from 'primevue/contextmenu';
 import Button from 'primevue/button';
 import NewItemDialog from '../NewItemDialog.vue';
 import { WebContainerService } from '../../../services/webContainersService';
-import { FileType } from '../../../types/fileType';
+import { FileExtensions, FileType } from '../../../types/fileType';
 import { FolderItem } from '../../../types/fileItem';
 import { ILoading } from '../../../types/loading';
 import { TreeNode } from 'primevue/treenode';
 import { MenuItem } from 'primevue/menuitem';
 import FolderFileUploader from './FolderFileUploader.vue';
+import { useStore } from 'vuex';
+import { getFileExtension } from '../../../utils/FileExtensionsAndIcons';
 
 const newFileContextMenuItems: MenuItem[] = [
   {
@@ -124,9 +130,10 @@ const newFileContextMenuItems: MenuItem[] = [
 
 const newFileContextMenu = ref<ContextMenu | null>(null);
 const contextMenuItems = ref<MenuItem[]>([]);
+const fileStore = useStore();
 
 const showNewFileMenu = (event) => {
-	fileTreeState.itemToRename = null
+  fileTreeState.itemToRename = null;
   newFileContextMenu.value?.show(event);
 };
 
@@ -147,7 +154,7 @@ const fileTreeState = reactive<{
   contextMenuVisible: boolean;
   currentItem: FolderItem;
   parentItemNode: TreeNode | null;
-  itemToRename: FolderItem | null
+  itemToRename: FolderItem | null;
 }>({
   isVisible: true,
   isHidden: true,
@@ -163,11 +170,31 @@ const fileTreeState = reactive<{
     webkitRelativePath: '',
   },
   parentItemNode: null,
-  itemToRename: null
+  itemToRename: null,
 });
 
 const toggleVisibility = () => {
   fileTreeState.isVisible = !fileTreeState.isVisible;
+};
+
+const openFile = async (node: TreeNode) => {
+	if (node.type === FileType.FOLDER) return
+	
+  fileStore.commit('addFile', node.parent);
+  const path =
+    node.parent.webkitRelativePath ?? node.parent.label ?? node.label;
+
+  if (getFileExtension(path, FileType.FILE) === FileExtensions.HTML) {
+    const htmlContent = await webContainersService?.readFile(path);
+    fileStore.commit('setOuput', htmlContent as string);
+	}
+
+  try {
+    const content = await webContainersService?.readFile(path);
+    fileStore.commit('readFile', { content, path });
+  } catch (error) {
+    console.error('Error reading file:', error);
+  }
 };
 
 const menu = ref();
@@ -197,7 +224,7 @@ const getContextMenuItems = (node: TreeNode): MenuItem[] => {
       label: 'New file',
       icon: 'pi pi-file',
       command: () => {
-				fileTreeState.itemToRename = null;
+        fileTreeState.itemToRename = null;
         fileTreeState.showDialog = true;
         fileTreeState.dialogType = FileType.FILE;
       },
@@ -206,7 +233,7 @@ const getContextMenuItems = (node: TreeNode): MenuItem[] => {
       label: 'New folder',
       icon: 'pi pi-folder',
       command: () => {
-				fileTreeState.itemToRename = null;
+        fileTreeState.itemToRename = null;
         fileTreeState.showDialog = true;
         fileTreeState.dialogType = FileType.FOLDER;
       },
@@ -221,7 +248,7 @@ const getContextMenuItems = (node: TreeNode): MenuItem[] => {
 };
 
 const fetchItems = async () => {
-	console.log('fetch')
+  console.log('fetch');
   await fetchFolders();
 };
 
@@ -238,18 +265,18 @@ const fetchFolders = async () => {
 };
 
 const showContextMenu = (event: any, node: TreeNode) => {
-	fileTreeState.itemToRename = null;
+  fileTreeState.itemToRename = null;
 
-    const item = {
-      name: node.label ?? '',
-      type: (node.type as FileType) ?? FileType.FILE,
-    } as FolderItem;
+  const item = {
+    name: node.label ?? '',
+    type: (node.type as FileType) ?? FileType.FILE,
+  } as FolderItem;
 
-    fileTreeState.currentItem = item;
-    fileTreeState.parentItemNode = item.type === FileType.FILE ? null : node;
+  fileTreeState.currentItem = item;
+  fileTreeState.parentItemNode = item.type === FileType.FILE ? null : node;
 
-    contextMenuItems.value = getContextMenuItems(node);
-    menu.value.show(event);
+  contextMenuItems.value = getContextMenuItems(node);
+  menu.value.show(event);
 };
 
 const closeContextMenu = () => {
@@ -271,7 +298,7 @@ const deleteItem = (item: any) => {
 };
 
 const renameItem = () => {
-  fileTreeState.itemToRename = fileTreeState.currentItem
+  fileTreeState.itemToRename = fileTreeState.currentItem;
   fileTreeState.showDialog = true;
   fileTreeState.dialogType = fileTreeState.currentItem.type;
 

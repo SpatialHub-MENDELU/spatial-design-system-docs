@@ -1,11 +1,11 @@
 import { FolderItem } from '../types/fileItem';
 import { FileExtensions, FileType } from '../types/fileType';
 
-export const getFileExtension = (file: FolderItem): FileExtensions => {
-  const fileExtension = file.name
-    .slice(file.name.lastIndexOf('.') + 1)
+export const getFileExtension = (fileName: string, fileType: FileType): FileExtensions => {
+  const fileExtension = fileName
+    .slice(fileName.lastIndexOf('.') + 1)
     .toLowerCase();
-  if (file.type === FileType.FOLDER) return FileExtensions.FOLDER;
+  if (fileType === FileType.FOLDER) return FileExtensions.FOLDER;
 
   switch (fileExtension) {
     case FileExtensions.CSS:
@@ -22,7 +22,7 @@ export const getFileExtension = (file: FolderItem): FileExtensions => {
 };
 
 export const getFileIcon = (file: FolderItem) => {
-  const extension = getFileExtension(file);
+  const extension = getFileExtension(file.name, file.type);
   switch (extension) {
     case 'html':
       return 'fab fa-html5';

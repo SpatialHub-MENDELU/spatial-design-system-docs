@@ -18,11 +18,11 @@
 
 <template>
     <div
-        class="output duration-300 lg:w-full block lg:border-l border-border-color lg:border-0 border border-border-color border-t-0 lg:h-full h-1/2"
+        class="output duration-300 lg:w-1/2 block lg:border-l border-border-color lg:border-0 border border-border-color border-t-0 lg:h-full h-1/2"
         :class="{ 'hidden-output': !outputState.isVisible }"
     >
         <div
-            class="w-full px-2 py-1 justify-between flex"
+            class="w-full px-2 py-1 justify-between flex items-center h-8"
             :class="{ 'border-b border-border-color': outputState.isVisible, 'hidden' : props.loading.installing || props.loading.running }"
         >
             <h2
@@ -31,7 +31,7 @@
             >
                 Output
             </h2>
-            <div @click="toggleVisibility" class="cursor-pointer">
+            <div @click="toggleVisibility" class="cursor-pointer flex items-center">
                 <i
                     :class="[
                         'pi',

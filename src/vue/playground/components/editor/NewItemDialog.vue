@@ -116,7 +116,7 @@ watch(
     const newValue = newItemToRename as FolderItem;
     if (newValue && newValue.name !== '') {
       state.newItemName = getFileWithoutExtension(newValue);
-      state.newFileExtension = getFileExtension(newValue);
+      state.newFileExtension = getFileExtension(newValue.name, newValue.type);
       state.dialogHeader = `Rename ${props.dialogType}`;
       state.buttonLabel = 'Rename';
       state.buttonIcon = 'pi pi-pencil';

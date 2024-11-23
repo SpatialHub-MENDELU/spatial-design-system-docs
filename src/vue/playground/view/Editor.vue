@@ -16,8 +16,8 @@
     <div class="flex gap-0 lg:flex-row flex-col mx-auto w-full">
         <Sidebar />
 
-        <div class="main-content lg:h-full h-full editor-content">
-            <div class="flex h-full">
+        <div class="main-content h-full editor-content">
+            <div class="flex h-full max-w-full">
                 <FileTree :loading="loading" />
                 <CodeMirrorEditor :loading="loading" />
             </div>

@@ -9,6 +9,7 @@ export class WebContainerService {
     private static instance: WebContainerService;
     private webContainerInstance: WebContainer | null = null;
     private isBooting: boolean = false;
+    private openedFiles: FolderItem[] = []
 
     private constructor() {}
 
@@ -270,5 +271,18 @@ export class WebContainerService {
     public async installAllFiles() {
         const structure = await this.fetchFolderStructure("/");
         await this.downloadZip(structure);
+    }
+
+    public getAllOpenedFiles() {
+        return this.openedFiles
+    }
+
+    public openFile(file: FolderItem) {
+        if (this.openedFiles.indexOf(file) < 0) this.openedFiles.push(file)
+        console.log(this.getAllOpenedFiles())
+    }
+
+    public closeFile(file: FolderItem) {
+        this.openedFiles.filter(f => f === file)
     }
 }
