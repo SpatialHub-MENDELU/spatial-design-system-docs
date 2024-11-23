@@ -17,7 +17,7 @@
         <Sidebar />
 
         <div class="main-content h-full editor-content">
-            <div class="flex h-full max-w-full">
+            <div class="flex lg:flex-row flex-col h-full max-w-full">
                 <FileTree :loading="loading" />
                 <CodeMirrorEditor :loading="loading" />
             </div>

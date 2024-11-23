@@ -21,7 +21,7 @@
 
 <template>
     <div class="sidebar flex flex-col lg:justify-between justify-start 2xl:pl-0 lg:pl-[32px] overflow-x-auto"
-        :class="{' max-w-full sidebar-grow w-max lg:h-full h-[3.5rem]': sidebarState.isEditor, 'lg:w-[5rem] lg:h-auto h-[3.5rem]' : !sidebarState.isEditor}"
+        :class="{' max-w-full sidebar-grow w-max lg:h-auto lg:max-h-auto h-[3.5rem] h-max': sidebarState.isEditor, 'lg:w-[5rem] lg:h-auto lg:max-h-auto h-[3.5rem] h-max' : !sidebarState.isEditor}"
     >
         <nav
             class="flex lg:flex-col lg:gap-0 gap-5 lg:justify-between lg:items-end items-center lg:h-full h-[3.5rem] lg:border-r border-border-color lg:px-2 w-full "

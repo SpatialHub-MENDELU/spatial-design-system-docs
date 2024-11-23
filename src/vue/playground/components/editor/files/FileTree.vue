@@ -1,27 +1,32 @@
 <template>
   <div
-    class="border-r border-border-color relative overflow-visible duration-300 lg:block hidden"
+    class="border-r border-border-color relative overflow-visible duration-300 block lg:border-t-0 border-t lg:border-l-0 border-l"
     :class="{ ' filetree--hidden ': fileTreeState.isHidden }"
   >
     <div
-      class="flex justify-between p-3 border-b border-border-color duration-300"
+      class="flex justify-between px-3 py-1 border-b border-border-color duration-300 h-8 items-center"
     >
       <span
-        class="font-bold 2xl:text-[20px] lg:text-[18px] text-[16px] leading-0"
+        class="font-bold 2xl:text-[16px] lg:text-[15px] text-[14px] leading-0"
         :class="{
           ' w-0 overflow-hidden opacity-hidden ': fileTreeState.isHidden,
         }"
         >Files</span
       >
       <div
-        class="flex gap-2 overflow-hidden filetree__buttons"
+        class="flex gap-2 overflow-hidden filetree__buttons h-full"
         :class="{
-          'max-w-0': !fileTreeState.isVisible,
-          'max-w-full': fileTreeState.isVisible,
+          'lg:max-w-0': !fileTreeState.isVisible,
+          'lg:max-w-full': fileTreeState.isVisible,
         }"
       >
-        <Button @click="downloadFileSystem" icon="pi pi-download" class="w-5" />
-        <Button @click="showNewFileMenu" icon="pi pi-plus" class="w-5" />
+        <Button @click="downloadFileSystem" icon="pi pi-download" class="w-4" />
+        <Button @click="showNewFileMenu" icon="pi pi-plus" class="w-4" />
+				<Button
+					@click="toggleVisibility"
+					:icon="fileTreeState.isVisible ? 'pi pi-angle-up' : 'pi pi-angle-down'"
+					class="w-4 lg:hidden block" 
+				/>
 
         <ContextMenu
           :model="newFileContextMenuItems"
@@ -34,8 +39,8 @@
       :value="folders"
       class="overflow-y-auto max-h-full duration-300"
       :class="{
-        'max-w-0': !fileTreeState.isVisible,
-        'max-w-[20rem] w-[15rem]': fileTreeState.isVisible,
+        'lg:max-w-0 lg:max-h-full lg:h-full h-0': !fileTreeState.isVisible,
+        'lg:max-w-[20rem] lg:w-[15rem] lg:h-full lg:max-h-full h-max max-h-max': fileTreeState.isVisible,
       }"
     >
       <template #default="{ node }">
@@ -62,7 +67,7 @@
     />
 
     <button
-      class="absolute bottom-12 -right-6 h-12 w-12 cursor-pointer block z-40"
+      class="absolute bottom-12 -right-6 h-12 w-12 cursor-pointer block z-40 lg:block hidden"
       @click="toggleVisibility"
     >
       <i
@@ -98,6 +103,7 @@ import { MenuItem } from 'primevue/menuitem';
 import FolderFileUploader from './FolderFileUploader.vue';
 import { useStore } from 'vuex';
 import { getFileExtension } from '../../../utils/FileExtensionsAndIcons';
+import Tooltip from 'primevue/tooltip';
 
 const newFileContextMenuItems: MenuItem[] = [
   {

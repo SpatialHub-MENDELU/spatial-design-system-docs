@@ -1,6 +1,6 @@
 <template>
   <div class="flex gap-0 lg:flex-row flex-col h-full flex-1">
-    <div :class="{ ' editor-hidden': !state.editorIsShown }" class="lg:w-1/2 h-full">
+    <div :class="{ ' editor-hidden': !state.editorIsShown }" class="lg:w-1/2 h-full lg:border-0 border border-border-color">
       <EmptyState v-if="!openedFilePath" />
 
       <div v-if="openedFilePath"
