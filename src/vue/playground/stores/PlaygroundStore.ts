@@ -1,6 +1,7 @@
 import { createStore } from 'vuex';
 import { ProjectType } from '../types/projectType';
 import { FolderItem } from '../types/fileItem';
+import { Layout } from '../types/layout';
 
 export interface State {
   projectType: ProjectType | null
@@ -8,6 +9,7 @@ export interface State {
   currentFileContent: string;
   currentFilePath: string;
   output: string;
+  layout: Layout;
 }
 
 const playgroundStore = createStore({
@@ -17,6 +19,7 @@ const playgroundStore = createStore({
     currentFileContent: '',
     currentFilePath: '',
     output: '',
+    layout: Layout.HORIZONTAL
   } as State,
   mutations: {
     updateProjectType(state: State, projectType: ProjectType) {
@@ -42,6 +45,9 @@ const playgroundStore = createStore({
     updateCurrentFileContent(state: State, content: string) {
       state.currentFileContent = content;
     },
+    updateLayout(state: State, layout: Layout) {
+      state.layout = layout
+    }
   },
   getters: {
     projectType(state: State) {
@@ -59,6 +65,9 @@ const playgroundStore = createStore({
     output(state: State) {
       return state.output;
     },
+    layout(state: State) {
+      return state.layout
+    }
   },
   actions: {
     async removeFile(

@@ -1,6 +1,11 @@
 <script lang="ts" setup>
-import { defineProps, reactive } from 'vue';
+import { defineProps, reactive, computed } from 'vue';
 import { ILoading } from '../../types/loading';
+import { useStore } from 'vuex';
+import { Layout } from '../../types/layout';
+
+const playgroundStore = useStore();
+const layout = computed(() => playgroundStore.getters.layout);
 
 const props = defineProps<{
   output: string;
@@ -14,12 +19,25 @@ const outputState = reactive({
 const toggleVisibility = () => {
   outputState.isVisible = !outputState.isVisible;
 };
+
+const outputIcon = () => {
+    if (layout.value === Layout.HORIZONTAL) {
+        return outputState.isVisible ? 'pi-angle-right' : 'pi-angle-left'
+    }
+
+    return outputState.isVisible ? 'pi-angle-down' : 'pi-angle-up'
+}
 </script>
 
 <template>
   <div
-    class="output duration-300 lg:w-1/2 block lg:border-l border-border-color lg:border-0 border border-border-color lg:h-full h-1/2"
-    :class="{ 'hidden-output': !outputState.isVisible }"
+    class="output duration-300 lg:w-full block border-border-color lg:border-0 border border-border-color lg:h-full h-[30rem]"
+    :class="{
+      'hidden-output--vertical': !outputState.isVisible && layout === Layout.VERTICAL,
+      'hidden-output--horizontal': !outputState.isVisible && layout === Layout.HORIZONTAL,
+      'lg:border-l border-t-0': layout === Layout.HORIZONTAL,
+      'lg:border-t border-t-0': layout === Layout.VERTICAL,
+    }"
   >
     <div
       class="w-full px-2 py-1 justify-between flex items-center h-8"
@@ -38,7 +56,7 @@ const toggleVisibility = () => {
         <i
           :class="[
             'pi',
-            outputState.isVisible ? 'pi-angle-right' : 'pi-angle-left',
+            outputIcon(),
             'text-primary',
             'text-[20px]',
             'duration-300',
@@ -47,7 +65,10 @@ const toggleVisibility = () => {
       </div>
     </div>
 
-    <div v-if="outputState.isVisible" class="h-full lg:px-0 px-8 flex items-center justify-center">
+    <div
+      v-if="outputState.isVisible"
+      class="h-full lg:px-0 px-8 flex items-center justify-center"
+    >
       <div
         v-if="props.loading.installing || props.loading.running"
         class="lg:h-full flex flex-col items-center justify-center"

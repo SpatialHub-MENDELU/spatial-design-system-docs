@@ -18,7 +18,7 @@ const loading = reactive<ILoading>({
 </script>
 
 <template>
-  <div class="flex gap-0 lg:flex-row flex-col mx-auto w-full">
+  <div class="flex gap-0 lg:flex-row flex-col mx-auto w-full lg:overflow-y-hidden">
     <Sidebar />
 
     <WelcomeBanner v-if="!projectType" />

@@ -1,28 +1,41 @@
 <script setup lang="ts">
 import { ref, onMounted, reactive } from 'vue';
+import LayoutDialog from './LayoutDialog.vue';
 
 onMounted(() => {
   if (window.location.pathname === '/playground/') {
-    sidebarState.isEditor = true;
+    state.isEditor = true;
   }
 });
 
-const sidebarState = reactive({
+const state = reactive({
   isEditor: true,
+  showDialog: false,
 });
+
+const showDialog = () => {
+    state.showDialog = true;
+};
+
+const closeDialog = () => {
+    state.showDialog = false;
+};
 </script>
 
 <template>
   <div
     class="sidebar h-full w-auto flex flex-col justify-between 2xl:pr-0 pr-[32px] lg:block hidden"
-    :class="{ ' max-w-full sidebar-grow ': sidebarState.isEditor }"
+    :class="{ ' max-w-full sidebar-grow ': state.isEditor }"
   >
     <nav
       class="flex flex-col justify-between items-start h-full border-l border-border-color px-2"
     >
       <ul class="flex flex-col h-full items-center justify-between">
         <li class="py-4">
-          <i class="pi pi-th-large text-dark-text text-[20px] duration-300" />
+          <i
+            class="pi pi-th-large text-dark-text text-[20px] duration-300 cursor-pointer"
+            @click="showDialog"
+          />
         </li>
 
         <li class="py-4">
@@ -39,4 +52,6 @@ const sidebarState = reactive({
       </ul>
     </nav>
   </div>
+
+  <LayoutDialog :close-dialog="closeDialog" :visible="state.showDialog" />
 </template>

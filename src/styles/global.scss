@@ -7,11 +7,13 @@
 }
 
 .page {
-  height: calc(100vh - $header-height) !important;
-
   @media (max-width: $breakpoint2Xl) {
     margin: auto;
     max-width: $max-width;
+  }
+
+  @media screen and (in-width: $breakpointLg) {
+    height: calc(100vh - $header-height) !important;
   }
 
   @media screen and (max-width: $breakpointLg) {

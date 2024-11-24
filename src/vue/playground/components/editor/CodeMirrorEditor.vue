@@ -1,8 +1,12 @@
 <template>
-  <div class="flex gap-0 lg:flex-row flex-col h-full flex-1">
+  <div class="flex gap-0 h-full flex-1"
+    :class="layout === Layout.HORIZONTAL ? 'lg:flex-row flex-col' : 'flex-col'">
     <div
-      :class="{ ' editor-hidden': !state.editorIsShown }"
-      class="lg:w-1/2 h-full lg:border-0 border border-border-color"
+    :class="{
+      'editor-hidden': !state.editorIsShown,
+      [layout === Layout.HORIZONTAL ? 'lg:w-full' : ' w-full']: true
+    }"
+      class="lg:border-0 border border-border-color lg:h-full"
     >
       <EmptyState v-if="!openedFilePath" />
 
@@ -14,8 +18,11 @@
         </div>
 
         <codemirror
-          class="editor lg:w-full block overflow-y-auto lg:border-0 border border-border-color lg:h-full h-1/2"
-          :class="{ ' editor-hidden': !state.editorIsShown }"
+          class="editor lg:w-full block overflow-y-auto h-[30rem]"
+          :class="{
+            'editor-hidden': !state.editorIsShown,
+            [layout === Layout.HORIZONTAL ? '' : 'w-full vertical-editor']: true
+          }"
           v-model="openedFileContent"
           :extensions="extensions"
           @update:modelValue="updateCode"
@@ -47,6 +54,7 @@ import OpenedFiles from './files/OpenedFiles.vue';
 import { useStore } from 'vuex';
 import EmptyState from './EmptyState.vue';
 import { ProjectType } from '../../types/projectType';
+import { Layout } from '../../types/layout';
 
 const state = reactive<{
   fontSize: number;
@@ -62,6 +70,7 @@ const openedFileContent = computed(() => playgroundStore.getters.currentFileCont
 const openedFilePath = computed(() => playgroundStore.getters.currentFilePath);
 const output = computed(() => playgroundStore.getters.output);
 const projectType = computed(() => playgroundStore.getters.projectType)
+const layout = computed(() => playgroundStore.getters.layout)
 
 const props = defineProps<{
   loading: ILoading;

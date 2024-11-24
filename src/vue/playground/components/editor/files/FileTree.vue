@@ -1,10 +1,11 @@
 <template>
   <div
     class="border-r border-border-color relative overflow-visible duration-300 block lg:border-t-0 border-t lg:border-l-0 border-l"
-    :class="{ ' filetree--hidden ': fileTreeState.isHidden }"
+    :class="{ ' filetree--hidden ': fileTreeState.isHidden}"
   >
     <div
       class="flex justify-between px-3 py-1 border-b border-border-color duration-300 h-8 items-center"
+      :class="{'border-b-0' : !fileTreeState.isVisible }"
     >
       <span
         class="font-bold 2xl:text-[16px] lg:text-[15px] text-[14px] leading-0"
