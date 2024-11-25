@@ -30,7 +30,7 @@
         @click="removeFile(file)"
         icon="pi pi-times"
         class="w-2.5 h-2.5"
-        v-if="file.name === currentFilePath"
+        v-if="file.path === currentFilePath"
       />
     </div>
   </div>

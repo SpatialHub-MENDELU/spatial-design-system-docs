@@ -10,6 +10,7 @@ export interface State {
   currentFilePath: string;
   output: string;
   layout: Layout;
+  outputUrl: string | null
 }
 
 const playgroundStore = createStore({
@@ -19,7 +20,8 @@ const playgroundStore = createStore({
     currentFileContent: '',
     currentFilePath: '',
     output: '',
-    layout: Layout.HORIZONTAL
+    layout: Layout.HORIZONTAL,
+    outputUrl: null
   } as State,
   mutations: {
     updateProjectType(state: State, projectType: ProjectType) {
@@ -47,6 +49,9 @@ const playgroundStore = createStore({
     },
     updateLayout(state: State, layout: Layout) {
       state.layout = layout
+    },
+    updateOutputUrl(state: State, url: string) {
+      state.outputUrl = url
     }
   },
   getters: {
@@ -67,6 +72,9 @@ const playgroundStore = createStore({
     },
     layout(state: State) {
       return state.layout
+    },
+    outputUrl(state: State) {
+      return state.outputUrl
     }
   },
   actions: {
@@ -78,11 +86,10 @@ const playgroundStore = createStore({
         (f: FolderItem) => f.name !== payload.file.name
       );
     
-      if (payload.file.name === state.currentFilePath) {
+      if (payload.file.path === state.currentFilePath) {
         const newOpenItem = state.openedFiles.length > 0 ? state.openedFiles[0] : null;
-    
         if (newOpenItem) {
-          state.currentFilePath = newOpenItem.path ?? newOpenItem.name;
+          state.currentFilePath = newOpenItem.path;
     
           if (payload.update) {
             try {
@@ -95,6 +102,7 @@ const playgroundStore = createStore({
         } else {
           state.currentFilePath = '';
           state.currentFileContent = '';
+          state.output = '';
         }
       }
     }

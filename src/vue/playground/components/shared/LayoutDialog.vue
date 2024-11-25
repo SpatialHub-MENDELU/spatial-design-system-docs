@@ -21,8 +21,8 @@
         @click="updateLayout(Layout.HORIZONTAL)"
       >
         <div class="flex gap-2 w-full h-full">
-          <span class="bg-grey w-full h-full block"/>
-          <span class="bg-grey w-full h-full block"/>
+          <span class="bg-grey w-full h-full block" />
+          <span class="bg-grey w-full h-full block" />
         </div>
         <p class="md:text-[16px] text-[15px] duration-300">Horizontal</p>
       </div>
@@ -37,8 +37,8 @@
         @click="updateLayout(Layout.VERTICAL)"
       >
         <div class="flex gap-2 w-full h-full flex-col">
-          <span class="bg-grey w-full h-full block"/>
-          <span class="bg-grey w-full h-full block"/>
+          <span class="bg-grey w-full h-full block" />
+          <span class="bg-grey w-full h-full block" />
         </div>
         <p class="md:text-[16px] text-[15px] duration-300">Vertical</p>
       </div>
@@ -66,40 +66,49 @@
 <script lang="ts" setup>
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
-import { defineProps, reactive, computed, onMounted } from 'vue';
+import { defineProps, reactive, onMounted, inject } from 'vue';
 import { Layout } from '../../types/layout';
+import { SessionService } from '../../services/sessionService';
 import { useStore } from 'vuex';
 
-const props = defineProps<{
-  closeDialog: () => void,
-  visible: boolean
-}>()
-
+const sessionService = inject<SessionService>('sessionService');
 const playgroundStore = useStore()
+
+const props = defineProps<{
+  closeDialog: () => void;
+  visible: boolean;
+}>();
+
 const state = reactive<{
-  error: string | null,
-  layout: Layout | null
+  error: string | null;
+  layout: Layout | null;
 }>({
   error: null,
-  layout: null
-})
+  layout: null,
+});
 
 onMounted(() => {
-  const initLayout = computed(() => playgroundStore.getters.layout)
-  state.layout = initLayout.value
-})
+  const editorSettings = sessionService?.getFromSession('editorSettings');
+  if (editorSettings) {
+    state.layout = editorSettings['selectedLayout'];
+  }
+});
 
 const updateLayout = (layout: Layout) => {
-  state.layout = layout
-}
+  state.layout = layout;
+};
 
 const submitForm = () => {
   if (state.layout) {
+    const editorSettings = sessionService?.getFromSession('editorSettings') || {};
+    sessionService?.storeInSession('editorSettings', {
+      ...editorSettings,
+      selectedLayout: state.layout,
+    });
     playgroundStore.commit('updateLayout', state.layout)
-    props.closeDialog()
+    props.closeDialog();
   } else {
-    state.error = 'Please select a layout to proceed.'
+    state.error = 'Please select a layout to proceed.';
   }
-}
-
+};
 </script>

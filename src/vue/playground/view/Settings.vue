@@ -5,18 +5,21 @@ import Dropdown from 'primevue/dropdown';
 
 import { reactive, ref, watch, inject, onMounted } from 'vue';
 import { SessionService } from '../services/sessionService';
+import { Layout } from '../types/layout';
+import { useStore } from 'vuex';
 
+const playgroundStore = useStore()
 const sessionService = inject<SessionService>('sessionService');
 
 const state = reactive({
   iconsAreShown: true,
-  selectedLayout: 'default',
+  selectedLayout: Layout.HORIZONTAL,
   selectedFontSize: 14,
 });
 
 const layoutOptions = ref([
-  { label: 'Default', value: 'default' },
-  { label: 'Vertical', value: 'vertical' },
+  { label: 'Horizontal', value: Layout.HORIZONTAL },
+  { label: 'Vertical', value: Layout.VERTICAL },
 ]);
 
 const fontSizeOptions = ref([
@@ -29,6 +32,7 @@ watch(
   () => ({ ...state }),
   (newState, oldState) => {
     sessionService?.storeInSession('editorSettings', newState);
+    playgroundStore.commit('updateLayout', newState.selectedLayout)
   },
   { deep: true }
 );
@@ -39,6 +43,7 @@ onMounted(async () => {
     state.iconsAreShown = editorSettings['iconsAreShown'];
     state.selectedFontSize = editorSettings['selectedFontSize'];
     state.selectedLayout = editorSettings['selectedLayout'];
+    playgroundStore.commit('updateLayout', editorSettings['selectedLayout'])
   }
 });
 </script>

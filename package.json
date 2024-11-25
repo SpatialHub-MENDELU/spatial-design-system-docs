@@ -16,7 +16,7 @@
     "vitepress": "^1.0.0-rc.28"
   },
   "scripts": {
-    "dev": "vitepress dev",
+    "dev": "vitepress dev --port 5174",
     "build": "vitepress build",
     "preview": "vitepress preview"
   },

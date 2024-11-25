@@ -21,7 +21,7 @@
           class="editor lg:w-full block overflow-y-auto h-[30rem]"
           :class="{
             'editor-hidden': !state.editorIsShown,
-            [layout === Layout.HORIZONTAL ? '' : 'w-full vertical-editor']: true
+            [layout === Layout.HORIZONTAL ? 'lg:h-full' : 'w-full editor--vertical']: true
           }"
           v-model="openedFileContent"
           :extensions="extensions"
@@ -106,22 +106,11 @@ onMounted(async () => {
     await webContainersService?.ensureInitialized();
 
     if (projectType.value === ProjectType.VUE) {
-      // const vueInitCommand = 'npm init vue@latest my-vue-project -- --default';
-      // const process = await webContainersService?.spawnTerminalProcess();
-
-      // process.input(vueInitCommand);
-      // process.output.pipe(async (data) => {
-      //   console.log(data);
-      //   if (data.includes("done")) {
-      //     console.log("Vue project initialized successfully!");
-      //   }
-      // });
-
-      // await process.exit;
-
-      await webContainersService?.createVueProject()
+      const url = await webContainersService?.createVueProject()
+      console.log('url: ', url)
     } else if (projectType.value === ProjectType.VANILLA) {
       await webContainersService?.mountFiles(files);
+      // await webContainersService?.startServer
       await webContainersService?.installDependencies();
     }
 
@@ -135,6 +124,7 @@ onMounted(async () => {
   const editorSettings = sessionService?.getFromSession('editorSettings');
   if (editorSettings) {
     state.fontSize = editorSettings['selectedFontSize'];
+    playgroundStore.commit('updateLayout', editorSettings['selectedLayout']);
   }
 });
 
@@ -142,12 +132,12 @@ const runCode = async () => {
   if (!webContainersService) return;
   props.loading.running = true;
   try {
-    console.log(openedFilePath.value);
     if (openedFilePath.value && openedFileContent.value) {
       await webContainersService.writeFile(
         openedFilePath.value,
         openedFileContent.value
       );
+      await webContainersService.reloadServer()
       const htmlContent = await webContainersService.readFile(
         openedFilePath.value
       );

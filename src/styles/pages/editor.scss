@@ -9,7 +9,7 @@
   display: none !important;
 }
 
-.editor {
+.editor--horizontal {
   @media screen and (min-width: $breakpointLg) {
     height: calc(100% - 2rem);
   }

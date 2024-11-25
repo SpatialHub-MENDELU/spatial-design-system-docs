@@ -217,7 +217,7 @@ const getContextMenuItems = (node: TreeNode): MenuItem[] => {
     {
       label: 'Open',
       icon: 'pi pi-folder-open',
-      command: () => openItem(fileTreeState.currentItem),
+      command: () => openItem(node),
     },
     {
       label: 'Rename',
@@ -297,7 +297,7 @@ const closeContextMenu = () => {
 
 const openItem = (item: any) => {
   if (item) {
-    console.log(`Opening ${item.name}`);
+    openFile(item)
   }
   closeContextMenu();
 };

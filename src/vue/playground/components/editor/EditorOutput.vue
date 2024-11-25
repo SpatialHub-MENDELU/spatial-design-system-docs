@@ -1,11 +1,13 @@
 <script lang="ts" setup>
 import { defineProps, reactive, computed } from 'vue';
 import { ILoading } from '../../types/loading';
-import { useStore } from 'vuex';
 import { Layout } from '../../types/layout';
+import { useStore } from 'vuex';
+import { ProjectType } from '../../types/projectType';
 
-const playgroundStore = useStore();
+const playgroundStore = useStore()
 const layout = computed(() => playgroundStore.getters.layout);
+const projectType = computed(() => playgroundStore.getters.projectType)
 
 const props = defineProps<{
   output: string;
@@ -21,22 +23,24 @@ const toggleVisibility = () => {
 };
 
 const outputIcon = () => {
-    if (layout.value === Layout.HORIZONTAL) {
-        return outputState.isVisible ? 'pi-angle-right' : 'pi-angle-left'
-    }
+  if (layout.value === Layout.HORIZONTAL) {
+    return outputState.isVisible ? 'pi-angle-right' : 'pi-angle-left';
+  }
 
-    return outputState.isVisible ? 'pi-angle-down' : 'pi-angle-up'
-}
+  return outputState.isVisible ? 'pi-angle-down' : 'pi-angle-up';
+};
 </script>
 
 <template>
   <div
     class="output duration-300 lg:w-full block border-border-color lg:border-0 border border-border-color lg:h-full h-[30rem]"
     :class="{
-      'hidden-output--vertical': !outputState.isVisible && layout === Layout.VERTICAL,
-      'hidden-output--horizontal': !outputState.isVisible && layout === Layout.HORIZONTAL,
-      'lg:border-l border-t-0': layout === Layout.HORIZONTAL,
-      'lg:border-t border-t-0': layout === Layout.VERTICAL,
+      'hidden-output--vertical':
+        !outputState.isVisible && layout === Layout.VERTICAL,
+      'hidden-output--horizontal':
+        !outputState.isVisible && layout === Layout.HORIZONTAL,
+      ' lg:border-l border-t-0': layout === Layout.HORIZONTAL,
+      ' lg:border-t border-t-0 border-l-0': layout === Layout.VERTICAL,
     }"
   >
     <div
@@ -47,7 +51,7 @@ const outputIcon = () => {
       }"
     >
       <h2
-        v-if="outputState.isVisible"
+        v-if="outputState.isVisible || layout === Layout.VERTICAL"
         class="text-grey md:text-[15px] text-[14px]"
       >
         Output
@@ -90,8 +94,9 @@ const outputIcon = () => {
 
       <iframe
         v-else
-        :srcdoc="props.output"
+        :srcdoc="projectType === ProjectType.VANILLA ? props.output : undefined"
         style="width: 100%; height: 100%"
+        sandbox="allow-scripts allow-same-origin"
       ></iframe>
     </div>
   </div>

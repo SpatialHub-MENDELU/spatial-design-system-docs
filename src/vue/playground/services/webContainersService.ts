@@ -4,12 +4,15 @@ import { FileType } from '../types/fileType';
 import { FolderItem } from '../types/fileItem';
 import JSZip from 'jszip';
 import { getFileIcon } from '../utils/FileExtensionsAndIcons';
+import { useStore } from 'vuex';
+import playgroundStore from '../stores/PlaygroundStore';
 
 export class WebContainerService {
   private static instance: WebContainerService;
   private webContainerInstance: WebContainer | null = null;
   private isBooting: boolean = false;
   private openedFiles: FolderItem[] = [];
+  private playgroundStore = useStore()
 
   private constructor() {}
 
@@ -45,6 +48,14 @@ export class WebContainerService {
       this.isBooting = false;
       throw new Error('WebContainer booting failed: ' + error.message);
     }
+
+    this.webContainerInstance.on('server-ready', (port, url) => {
+        console.log(port, url)
+        const iframeEl = document.querySelector('iframe');
+        if (iframeEl) {
+          iframeEl.src = url;
+        }
+      });
 
     this.isBooting = false;
     return this.webContainerInstance;
@@ -381,20 +392,85 @@ export class WebContainerService {
       ]);
 
       let devOutput = '';
+
       devProcess.output.pipeTo(
         new WritableStream({
           write(chunk: string) {
             devOutput += chunk;
+            if (chunk.includes('http://localhost') && !chunk.includes('devtools')) {
+              const urlIndex = chunk.indexOf('http');
+              const serverUrl = chunk.slice(urlIndex).trim();
+              console.log(serverUrl)
+              playgroundStore.commit('updateOutputUrl', serverUrl)
+            }
+          },
+        })
+      );
+    } catch (error) {
+      console.error('Error creating Vue project:', error);
+      throw error;
+    }
+  }
+
+  async reloadServer() {
+    await this.ensureInitialized();
+    if (!this.webContainerInstance) return;
+
+    try {
+        await this.webContainerInstance.spawn('npm', [
+            'run',
+            'dev',
+          ]);
+    } catch (error) {
+      throw new Error(`Error during server reload: ${error.message}`);
+    }
+  }
+
+  async startServer() {
+    await this.ensureInitialized();
+    if (!this.webContainerInstance) return;
+
+    console.log('Installing dependencies...');
+      const installProcess = await this.webContainerInstance.spawn('npm', [
+        'install',
+      ]);
+
+      let installOutput = '';
+      installProcess.output.pipeTo(
+        new WritableStream({
+          write(chunk: string) {
+            installOutput += chunk;
             console.log(chunk);
           },
         })
       );
 
-      console.log('Development server started. Logs will appear below:');
-      console.log(devOutput);
-    } catch (error) {
-      console.error('Error creating Vue project:', error);
-      throw error;
-    }
+      const installExitCode = await installProcess.exit;
+      if (installExitCode !== 0) {
+        console.error(
+          'Error during npm install: ',
+          installOutput || 'Unknown error'
+        );
+        throw new Error(
+          `Dependency installation failed with exit code ${installExitCode}`
+        );
+      }
+      console.log('Dependencies installed successfully');
+
+      console.log('Starting development server...');
+      const devProcess = await this.webContainerInstance.spawn('npm', [
+        'run',
+        'dev',
+      ]);
+
+      let devOutput = '';
+
+      devProcess.output.pipeTo(
+        new WritableStream({
+          write(chunk: string) {
+            devOutput += chunk;
+          },
+        })
+      );
   }
 }
