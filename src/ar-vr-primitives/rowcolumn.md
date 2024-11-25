@@ -31,14 +31,14 @@ Below is an example of using row layout, `a-ar-row`. The column layout differs i
 <ComponentExample :fixed="true">
 
 <template #output v-if="renderScene">
-    <a-ar-row width="3" position="0 1.5 -3">
-        <a-box color="#018A6C"></a-box>
-        <a-box color="#00C170"></a-box>
-        <a-box color="#03FCC6"></a-box>
-    </a-ar-row>
+<a-ar-row width="3" position="0 1.5 -3">
+<a-box color="#018A6C"></a-box>
+<a-box color="#00C170"></a-box>
+<a-box color="#03FCC6"></a-box>
+</a-ar-row>
 </template>
 
-<template #code>  
+<template #code>
 
 ```js
 import "spatial-design-system/primitives/ar-menu.js";
@@ -47,9 +47,9 @@ import "spatial-design-system/primitives/ar-list.js";
 
 ```html
 <a-ar-row width="3" position="0 1.5 -3">
-    <a-box color="#018A6C"></a-box>
-    <a-box color="#00C170"></a-box>
-    <a-box color="#03FCC6"></a-box>
+  <a-box color="#018A6C"></a-box>
+  <a-box color="#00C170"></a-box>
+  <a-box color="#03FCC6"></a-box>
 </a-ar-row>
 ```
 
@@ -59,11 +59,11 @@ import "spatial-design-system/primitives/ar-list.js";
 
 ## Props
 
-| Property | Type      | Default | Description                    |
-|----------|-----------|---------|--------------------------------|
-| _visible_| boolean   | true    | Shows or hides the container.  |
-| _width_  | number    | 1       | Container's width.             |
-| _height_ | number    | 1       | Container's height.            |
-| _position_ | number[]| 0 0 0   | Sets container position.       |
-| _spacing_ | number   | 0       | Sets spacing between items.    |
-| _opacity_ | number   | 1       | Sets container's opacity.      |
+| Property   | Type     | Default | Description                   |
+| ---------- | -------- | ------- | ----------------------------- |
+| _visible_  | boolean  | true    | Shows or hides the container. |
+| _width_    | number   | 1       | Container's width.            |
+| _height_   | number   | 1       | Container's height.           |
+| _position_ | number[] | 0 0 0   | Sets container position.      |
+| _spacing_  | number   | 0       | Sets spacing between items.   |
+| _opacity_  | number   | 1       | Sets container's opacity.     |

@@ -4,7 +4,7 @@ title: Adaptive
 
 # {{ $frontmatter.title }}
 
-### Use cases 
+### Use cases
 
 - Use when the user can be anywhere in the room.
 - Use when the user can work with the physical object from an angle.
@@ -39,4 +39,4 @@ Use [auto-scale](/ar-vr-components/auto-scale) to apply automatic **scaling**. I
 
 Use [fit-into-fov](/ar-vr-components/fit-into-fov) to apply **scaling** of the object so that it fits into the user's **field of view**. It is calculated based on a percentage of display size. Combine it with [auto-scale](/ar-vr-components/auto-scale) to apply automatic scaling of the object.
 
-Use [billboard](/ar-vr-components/billboard) to apply automatic **rotation** so that the object is always facing the user. 
+Use [billboard](/ar-vr-components/billboard) to apply automatic **rotation** so that the object is always facing the user.

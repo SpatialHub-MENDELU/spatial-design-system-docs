@@ -1,0 +1,24 @@
+.cm-gutters {
+  background-color: white !important;
+  border: none !important;
+
+  color: $light-background !important;
+}
+
+.cm-activeLine {
+  background-color: $light-primary !important;
+}
+
+.cm-activeLineGutter {
+  background-color: $light-primary !important;
+  color: $dark-text !important;
+}
+
+.v-codemirror {
+  overflow-y: auto !important;
+  display: block !important;
+}
+
+.cm-content {
+  padding-bottom: 1rem !important;
+}

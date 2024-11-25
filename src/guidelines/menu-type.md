@@ -4,19 +4,19 @@ title: Menu type
 
 # {{ $frontmatter.title }}
 
-These guideline wil help you to decide which menu type is the best for your AR/VR application. 
+These guideline wil help you to decide which menu type is the best for your AR/VR application.
 
 Although the target platform of our system is AR and VR, using a 2D menu overlay over a AR/VR scene may be a good choice for some applications.
-Users are familiar with 2D menus from other applications, and 2D menus are more comfortable due to their static position and 
+Users are familiar with 2D menus from other applications, and 2D menus are more comfortable due to their static position and
 standard user interface.
 
-This section describes different menu types that can be used in AR/VR applications. 
+This section describes different menu types that can be used in AR/VR applications.
 The first decision you need to make is to choose whether you need a global menu or a context menu.
 
 ## Global menu
 
 Global menus are used to provide access to the most common features of the application,
- features that are **not related to a specific object** in the scene.
+features that are **not related to a specific object** in the scene.
 They are usually placed in a fixed position in the user's field of view.
 
 ### Use cases
@@ -38,11 +38,10 @@ For global menus, you can choose from the following types:
 
 ![global menu types](../assets/guidelines/global-menu-types.svg)
 
-
 ## Context menu
 
-Context menus are used to provide access to actions that are relevant to the current context, usually 
-**related to a selected object** in the scene. 
+Context menus are used to provide access to actions that are relevant to the current context, usually
+**related to a selected object** in the scene.
 
 ### Use cases
 

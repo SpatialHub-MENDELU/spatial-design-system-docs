@@ -1,0 +1,39 @@
+.p-tree {
+  @media screen and (max-width: $breakpointXl) {
+    padding: 0 1rem 0 0;
+  }
+
+  padding-bottom: 2rem;
+
+  .p-treenode {
+    box-shadow: none !important;
+
+    * {
+      box-shadow: none !important;
+    }
+  }
+}
+
+.filetree--hidden {
+  display: none !important;
+}
+
+.p-fileupload-buttonbar, .p-fileupload-content {
+  padding: 0 !important;
+
+  background-color: transparent !important;
+
+  button {
+    margin-top: 0;
+  }
+
+  .delete-button span {
+    color: $red;
+  }
+
+  .delete-button {
+    border: none;
+    box-shadow: none;
+    outline: none;
+  }
+}

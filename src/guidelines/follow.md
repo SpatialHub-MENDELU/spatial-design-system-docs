@@ -23,11 +23,10 @@ This behavior may be extremely comfortable for the user, but it may easily becom
 Use it only for use cases mentioned above. This behavior is not recommended for general use.
 :::
 
-
 ### Example
 
 This example shows an important alert dialog that an unknown person was detected in the property.
-The user changed his point of view from the plant on the left to the girl on the right, and the element should always be 
+The user changed his point of view from the plant on the left to the girl on the right, and the element should always be
 in front of the user in the center of the field of view to draw full attention to the alert.
 
 <picture>
@@ -46,4 +45,4 @@ in front of the user in the center of the field of view to draw full attention t
 ### Implementation
 
 Use [follow-camera](/ar-vr-components/follow-camera) to apply automatic **positioning** of the object so that it is always in front of the user.
-Usually *follow* is combined with [billboard](/ar-vr-components/billboard) and [fit-into-fov](/ar-vr-components/fit-into-fov).
+Usually _follow_ is combined with [billboard](/ar-vr-components/billboard) and [fit-into-fov](/ar-vr-components/fit-into-fov).

@@ -6,8 +6,8 @@ title: Color Mode
 
 ## Risks
 
-- Insufficient contrast between your elements and scene can make UI elements difficult to read and understand 
-<span style="color: orange">(not so bad)</span>
+- Insufficient contrast between your elements and scene can make UI elements difficult to read and understand
+  <span style="color: orange">(not so bad)</span>
 
 <picture>
     <source srcset="../assets/guidelines/Color-Modes/Mobile.svg" media="(max-width: 576px)">
@@ -25,8 +25,8 @@ See difference between first two pictures above.
 
 ## Specification
 
-| Scene                                 | Text/icon color        | Background color    |
-|---------------------------------------|------------------------|---------------------|
-| Default, suitable for most situations | light color like white | transparent black   |
-| Light environments                    | black                  | transparent white   |
-| Completely dark environments          | white                  | transparent gray    |
+| Scene                                 | Text/icon color        | Background color  |
+| ------------------------------------- | ---------------------- | ----------------- |
+| Default, suitable for most situations | light color like white | transparent black |
+| Light environments                    | black                  | transparent white |
+| Completely dark environments          | white                  | transparent gray  |

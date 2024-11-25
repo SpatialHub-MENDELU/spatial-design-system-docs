@@ -16,15 +16,15 @@ title: Floating buttons
 ### Risks
 
 - Floating buttons are usually small and without labels. If unfamiliar icons are used,
-    users may not understand their meaning. <span style="color: red">(bad)</span>
+  users may not understand their meaning. <span style="color: red">(bad)</span>
 - If there are too many actions, there might be too many similar buttons close to each other.
-    Users may be confused and accidentally click the wrong button. <span style="color: orange">(not so bad)</span>
+  Users may be confused and accidentally click the wrong button. <span style="color: orange">(not so bad)</span>
 - Distracts user from the AR scene and the relevant object. However, much less compared to bottom sheet and 2D menu. <span style="color: orange">(not so bad)</span>
 - Partially overlaps the AR scene, but less than bottom sheet and 2D menu. <span style="color: orange">(not so bad)</span>
 
 ### Example
 
-Quick well-known actions like adding an object, saving and undo are placed at the bottom of the screen 
+Quick well-known actions like adding an object, saving and undo are placed at the bottom of the screen
 as floating buttons (left). Using larger elements like 3D menu (middle) or bottom sheet (right) would be an overkill.
 
 <picture>
