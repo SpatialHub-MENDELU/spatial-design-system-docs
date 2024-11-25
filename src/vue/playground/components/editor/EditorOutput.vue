@@ -33,7 +33,7 @@ const outputIcon = () => {
 
 <template>
   <div
-    class="output duration-300 lg:w-full block border-border-color lg:border-0 border border-border-color lg:h-full h-[30rem]"
+    class="output duration-300 lg:w-full block border-border-color lg:border-0 border border-border-color lg:h-full h-[30rem] pb-6"
     :class="{
       'hidden-output--vertical':
         !outputState.isVisible && layout === Layout.VERTICAL,

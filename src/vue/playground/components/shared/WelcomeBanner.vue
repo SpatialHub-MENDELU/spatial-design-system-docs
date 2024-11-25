@@ -1,26 +1,38 @@
 <template>
   <div class="main-content h-full">
-    <div class="flex items-center justify-center p-8 h-full w-full flex-col">
-      <h1 class="font-bold text-center mb-4 lg:tex-[36px] md:text-[30px] text-[24px] leading-8">
-        Welcome to the Spatial Design System Playground!
-      </h1>
-      <p class="lg:text-[22px] md:text-[20px] text-[18px] font-medium text-center mb-6">
-        Explore our powerful library of components for creating AR/VR
-        experiences. You can test and customize everything in the playground.
-      </p>
-      <p class="lg:text-[18px] md:text-[17px] text-[16px] font-light text-center mb-8">
-        Before you start experimenting, create a new project to get going!
-      </p>
-      <button
-        @click="showDialog"
-        class="px-6 py-3 bg-primary text-white rounded-lg font-semibold shadow-lg transition duration-300 ease-in-out mb-4"
-      >
-        New Project
-      </button>
+    <div class="lg:p-16 px-0 md:py-32 py-16 h-full w-full flex items-center gap-16">
+      <div class="flex items-start justify-center flex-col lg:gap-y-5 gap-y-2">
+        <span class="text-primary lg:text-[18px] md:text-[17px] text-[16px] font-medium">Welcome to the</span>
+        <h1
+          class="font-bold lg:mb-4 mb-2 lg:text-[44px] md:text-[30px] text-[24px] leading-tight"
+        >
+          Spatial Design System Playground!
+        </h1>
+        <p
+          class="lg:text-[18px] md:text-[17px] text-[16px] font-medium mb-6"
+        >
+          Explore our powerful library of&nbsp;components for creating AR/VR
+          experiences. You can test and&nbsp;customize everything in&nbsp;the&nbsp;playground.
+          Before you start experimenting, create a&nbsp;new project to&nbsp;get going!
+        </p>
+        <button
+          @click="showDialog"
+          class="px-6 py-3 bg-primary text-white rounded-lg font-semibold shadow-lg transition duration-300 ease-in-out mb-4
+          md:text-[18px] text-[16px]"
+        >
+          New Project
+        </button>
+      </div>
+
+      <Image
+        src="../../../../public/spatial-design-system-logo-dark.png"
+        alt="Spatial Design System - logo"
+        class="lg:block hidden"
+      />
     </div>
   </div>
 
-  <CreateProjectDialog 
+  <CreateProjectDialog
     :visible="state.dialogIsVisible"
     :close-dialog="closeDialog"
     :create-project="createNewProject"
@@ -32,8 +44,9 @@ import { reactive } from 'vue';
 import CreateProjectDialog from './CreateProjectDialog.vue';
 import { ProjectType } from '../../types/projectType';
 import { useStore } from 'vuex';
+import Image from 'primevue/image';
 
-const playgroundStore = useStore()
+const playgroundStore = useStore();
 
 const state = reactive({
   dialogIsVisible: false,
@@ -44,11 +57,11 @@ const showDialog = () => {
 };
 
 const closeDialog = () => {
-  state.dialogIsVisible = false
-}
+  state.dialogIsVisible = false;
+};
 
 const createNewProject = (project: ProjectType) => {
-  playgroundStore.commit('updateProjectType', project)
-  closeDialog()
-}
+  playgroundStore.commit('updateProjectType', project);
+  closeDialog();
+};
 </script>

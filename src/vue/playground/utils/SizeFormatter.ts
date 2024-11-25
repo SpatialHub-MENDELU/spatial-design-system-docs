@@ -5,7 +5,7 @@ export const formatSize = (bytes: number) => {
   
   const k = 1024;
   const dm = 3;
-  const sizes = '';
+  const sizes = $primevue.config.locale?.fileSizeTypes;
 
   if (bytes === 0 && sizes) {
     return `0 ${sizes[0]}`;

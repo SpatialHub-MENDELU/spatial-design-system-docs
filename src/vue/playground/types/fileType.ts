@@ -9,5 +9,6 @@ export enum FileExtensions {
     JS = "js",
     TS = "ts",
     JSON = "json",
-    FOLDER = "folder"
+    FOLDER = "folder",
+    DEFAULT = "default"
 }

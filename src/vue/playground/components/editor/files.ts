@@ -67,7 +67,7 @@ export const files = {
     "nodemon": "^2.0.0"
   },
   "devDependencies": {
-    "vite": "5.4.9" 
+    "vite": "5.4.9",
   },
   "scripts": {
     "start": "nodemon index.js"

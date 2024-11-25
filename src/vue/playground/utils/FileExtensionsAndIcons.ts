@@ -16,8 +16,10 @@ export const getFileExtension = (fileName: string, fileType: FileType): FileExte
       return FileExtensions.TS;
     case FileExtensions.JSON:
       return FileExtensions.JSON;
-    default:
+    case FileExtensions.JS:
       return FileExtensions.JS;
+    default:
+      return FileExtensions.DEFAULT;
   }
 };
 

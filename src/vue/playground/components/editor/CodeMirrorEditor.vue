@@ -10,15 +10,17 @@
     >
       <EmptyState v-if="!openedFilePath" />
 
-      <div v-if="openedFilePath" class="h-full">
+      <div v-if="openedFilePath" class="h-full w-full">
         <div
           class="px-2 py-1 border-b border-border-color overflow-x-auto whitespace-nowrap w-full h-8 flex items-center"
         >
           <OpenedFiles />
         </div>
-
+        <div class="px-2 overflow-x-auto whitespace-nowrap w-full h-8 flex items-center">
+          <Breadcrumbs :path="openedFilePath"/>
+        </div>
         <codemirror
-          class="editor lg:w-full block overflow-y-auto h-[30rem]"
+          class="editor lg:w-full block overflow-y-auto h-[30rem] pb-5"
           :class="{
             'editor-hidden': !state.editorIsShown,
             [layout === Layout.HORIZONTAL ? 'lg:h-full' : 'w-full editor--vertical']: true
@@ -55,6 +57,7 @@ import { useStore } from 'vuex';
 import EmptyState from './EmptyState.vue';
 import { ProjectType } from '../../types/projectType';
 import { Layout } from '../../types/layout';
+import Breadcrumbs from '../shared/Breadcrumbs.vue';
 
 const state = reactive<{
   fontSize: number;

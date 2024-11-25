@@ -1,6 +1,8 @@
 <template>
+  <Toast position="bottom-center" />
+
   <div
-    class="border-r border-border-color relative overflow-visible duration-300 block lg:border-t-0 border-t lg:border-l-0 border-l"
+    class="border-r border-border-color relative overflow-visible duration-300 block lg:border-t-0 border-t lg:border-l-0 border-l pb-2"
     :class="{ ' filetree--hidden ': fileTreeState.isHidden}"
   >
     <div
@@ -40,6 +42,7 @@
 
     <Tree
       :value="folders"
+      @dragstart="dragStart"
       class="overflow-y-auto max-h-full duration-300"
       :class="{
         'lg:max-w-0 lg:max-h-full lg:h-full h-0': !fileTreeState.isVisible,
@@ -107,6 +110,10 @@ import { MenuItem } from 'primevue/menuitem';
 import FolderFileUploader from './FolderFileUploader.vue';
 import { useStore } from 'vuex';
 import { getFileExtension } from '../../../utils/FileExtensionsAndIcons';
+import { useToast } from 'primevue/usetoast';
+import Toast from 'primevue/toast';
+
+const toast = useToast();
 
 const newFileContextMenuItems: MenuItem[] = [
   {
@@ -282,6 +289,7 @@ const showContextMenu = (event: any, node: TreeNode) => {
   const item = {
     name: node.label ?? '',
     type: (node.type as FileType) ?? FileType.FILE,
+    path: node.data.path ?? ''
   } as FolderItem;
 
   fileTreeState.currentItem = item;
@@ -302,7 +310,7 @@ const openItem = (item: any) => {
   closeContextMenu();
 };
 
-const deleteItem = (item: any) => {
+const deleteItem = (item: FolderItem) => {
   if (item) {
     removeItem(item);
   }
@@ -321,8 +329,17 @@ const removeItem = async (item: FolderItem) => {
   if (!webContainersService) return;
 
   try {
+
     const filteredItems = await webContainersService.removeItem(item);
     folders.value = filteredItems as TreeNode[];
+    console.log(item)
+    playgroundStore.dispatch('closeFile', {
+    file: {...item},
+    update: async (filePath: string) => {
+      console.log(filePath);
+      return await webContainersService?.readFile(filePath);
+    },
+  });
   } catch (error) {
     console.error('Failed to delete item', error);
   }
@@ -342,6 +359,7 @@ const closeDialog = () => {
 };
 
 const downloadFileSystem = async () => {
+  toast.add({ severity: 'info', summary: 'Downloading', detail: 'Files are being prepared for download', life: 3000 });
   await webContainersService?.installAllFiles();
 };
 
@@ -353,4 +371,8 @@ watch(props.loading, async () => {
 });
 
 fetchFolders();
+
+const dragStart = (e) => {
+  console.log(e)
+}
 </script>

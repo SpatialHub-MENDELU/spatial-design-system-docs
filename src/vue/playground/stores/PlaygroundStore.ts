@@ -78,14 +78,14 @@ const playgroundStore = createStore({
     }
   },
   actions: {
-    async removeFile(
+    async closeFile(
       { state, commit },
       payload: { file: FolderItem; update?: (fileName: string) => Promise<string> }
     ) {
       state.openedFiles = state.openedFiles.filter(
         (f: FolderItem) => f.name !== payload.file.name
       );
-    
+      console.log(state.currentFilePath, payload.file.path)
       if (payload.file.path === state.currentFilePath) {
         const newOpenItem = state.openedFiles.length > 0 ? state.openedFiles[0] : null;
         if (newOpenItem) {
