@@ -3,7 +3,6 @@ import { defineProps, reactive, computed } from 'vue';
 import { ILoading } from '../../types/loading';
 import { Layout } from '../../types/layout';
 import { useStore } from 'vuex';
-import { ProjectType } from '../../types/projectType';
 
 const playgroundStore = useStore()
 const layout = computed(() => playgroundStore.getters.layout);
@@ -94,7 +93,6 @@ const outputIcon = () => {
 
       <iframe
         v-else
-        :srcdoc="projectType === ProjectType.VANILLA ? props.output : undefined"
         style="width: 100%; height: 100%"
         sandbox="allow-scripts allow-same-origin"
       ></iframe>

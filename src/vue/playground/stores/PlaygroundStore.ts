@@ -8,9 +8,7 @@ export interface State {
   openedFiles: FolderItem[];
   currentFileContent: string;
   currentFilePath: string;
-  output: string;
   layout: Layout;
-  outputUrl: string | null
 }
 
 const playgroundStore = createStore({
@@ -19,9 +17,7 @@ const playgroundStore = createStore({
     openedFiles: [] as FolderItem[],
     currentFileContent: '',
     currentFilePath: '',
-    output: '',
     layout: Layout.HORIZONTAL,
-    outputUrl: null
   } as State,
   mutations: {
     updateProjectType(state: State, projectType: ProjectType) {
@@ -41,18 +37,12 @@ const playgroundStore = createStore({
       state.currentFileContent = payload.content;
       state.currentFilePath = payload.path;
     },
-    setOuput(state: State, output: string) {
-      state.output = output;
-    },
     updateCurrentFileContent(state: State, content: string) {
       state.currentFileContent = content;
     },
     updateLayout(state: State, layout: Layout) {
       state.layout = layout
     },
-    updateOutputUrl(state: State, url: string) {
-      state.outputUrl = url
-    }
   },
   getters: {
     projectType(state: State) {
@@ -67,15 +57,9 @@ const playgroundStore = createStore({
     currentFilePath(state: State) {
       return state.currentFilePath;
     },
-    output(state: State) {
-      return state.output;
-    },
     layout(state: State) {
       return state.layout
     },
-    outputUrl(state: State) {
-      return state.outputUrl
-    }
   },
   actions: {
     async closeFile(

@@ -4,15 +4,12 @@ import { FileType } from '../types/fileType';
 import { FolderItem } from '../types/fileItem';
 import JSZip from 'jszip';
 import { getFileIcon } from '../utils/FileExtensionsAndIcons';
-import { useStore } from 'vuex';
-import playgroundStore from '../stores/PlaygroundStore';
 
 export class WebContainerService {
   private static instance: WebContainerService;
   private webContainerInstance: WebContainer | null = null;
   private isBooting: boolean = false;
   private openedFiles: FolderItem[] = [];
-  private playgroundStore = useStore()
 
   private constructor() {}
 
@@ -90,27 +87,6 @@ export class WebContainerService {
   public async createFolder(folderPath: string) {
     await this.ensureInitialized();
     await this.webContainerInstance?.fs.mkdir(folderPath);
-  }
-
-  public async installDependencies() {
-    await this.ensureInitialized();
-
-    if (!this.webContainerInstance) {
-      throw new Error('WebContainer is not initialized.');
-    }
-
-    const installProcess = await this.webContainerInstance.spawn('npm', [
-      'install',
-    ]);
-
-    const exitCode = await installProcess.exit;
-
-    if (exitCode !== 0) {
-      console.error('NPM install process failed with exit code:', exitCode);
-      throw new Error('Dependency installation failed');
-    }
-
-    return exitCode;
   }
 
   public async listFiles(directory: string) {
@@ -391,38 +367,17 @@ export class WebContainerService {
         'dev',
       ]);
 
-      let devOutput = '';
 
       devProcess.output.pipeTo(
         new WritableStream({
           write(chunk: string) {
-            devOutput += chunk;
-            if (chunk.includes('http://localhost') && !chunk.includes('devtools')) {
-              const urlIndex = chunk.indexOf('http');
-              const serverUrl = chunk.slice(urlIndex).trim();
-              console.log(serverUrl)
-              playgroundStore.commit('updateOutputUrl', serverUrl)
-            }
+            console.log(chunk)
           },
         })
       );
     } catch (error) {
       console.error('Error creating Vue project:', error);
       throw error;
-    }
-  }
-
-  async reloadServer() {
-    await this.ensureInitialized();
-    if (!this.webContainerInstance) return;
-
-    try {
-        await this.webContainerInstance.spawn('npm', [
-            'run',
-            'dev',
-          ]);
-    } catch (error) {
-      throw new Error(`Error during server reload: ${error.message}`);
     }
   }
 

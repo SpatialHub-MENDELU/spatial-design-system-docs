@@ -95,9 +95,16 @@ let debounceTimer: any = null;
 const updateCode = (newCode: string) => {
   playgroundStore.commit('updateCurrentFileContent', newCode);
   if (debounceTimer) clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(() => {
-    runCode();
-  }, 1000);
+  debounceTimer = setTimeout(async () => {
+    try {
+      await webContainersService?.writeFile(
+        openedFilePath.value,
+        openedFileContent.value
+      );
+    } catch (error) {
+      console.error('Error during runCode execution:', error.message);
+    }
+  }, 500);
 };
 
 onMounted(async () => {
@@ -113,8 +120,7 @@ onMounted(async () => {
       console.log('url: ', url)
     } else if (projectType.value === ProjectType.VANILLA) {
       await webContainersService?.mountFiles(files);
-      // await webContainersService?.startServer
-      await webContainersService?.installDependencies();
+       await webContainersService?.startServer()
     }
 
     props.loading.installing = false;
@@ -140,14 +146,9 @@ const runCode = async () => {
         openedFilePath.value,
         openedFileContent.value
       );
-      await webContainersService.reloadServer()
-      const htmlContent = await webContainersService.readFile(
-        openedFilePath.value
-      );
-      playgroundStore.commit('setOuput', htmlContent as string);
     }
   } catch (error) {
-    playgroundStore.commit('setOuput', `Failed to read this file: ${error.message}`);
+    console.log(`Failed to read this file: ${error.message}`);
   } finally {
     props.loading.running = false;
   }

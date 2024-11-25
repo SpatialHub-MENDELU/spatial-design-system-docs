@@ -68,9 +68,10 @@ export const files = {
   },
   "devDependencies": {
     "vite": "5.4.9",
+    "http-server": "^14.1.1"
   },
   "scripts": {
-    "start": "nodemon index.js"
+    "dev": "nodemon --watch . --ext js,html,css --exec 'http-server .'"
   }
 }`,
         },
