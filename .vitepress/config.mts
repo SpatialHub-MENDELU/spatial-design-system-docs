@@ -33,7 +33,8 @@ export default defineConfig({
         items: [
           { text: 'Menu', link: '/ar-vr-primitives/menu' },
           { text: 'Row, column', link: '/ar-vr-primitives/rowcolumn' },
-          { text: 'Button', link: '/ar-vr-primitives/button'}
+          { text: 'Button', link: '/ar-vr-primitives/button'},
+          { text: 'Switch', link: '/ar-vr-primitives/switch'},
         ]
       },
       {
