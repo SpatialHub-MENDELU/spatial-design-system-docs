@@ -3,6 +3,11 @@
     "version": "1.0.0",
     "private": true,
     "devDependencies": {
+        "autoprefixer": "^10.4.20",
+        "postcss": "^8.4.47",
+        "sass": "^1.79.5",
+        "tailwindcss": "^3.4.13",
+        "vite-plugin-cross-origin-isolation": "^0.1.6",
         "vitepress": "^1.0.0-rc.28"
     },
     "scripts": {
@@ -11,6 +16,17 @@
         "preview":"vitepress preview"
     },
     "dependencies": {
-        "spatial-design-system":"^1.5.0"
+        "@codemirror/autocomplete": "^6.18.1",
+        "@codemirror/lang-html": "^6.4.9",
+        "@codemirror/lang-javascript": "^6.2.2",
+        "@codemirror/view": "^6.34.1",
+        "@webcontainer/api": "^1.4.0",
+        "codemirror": "^6.0.1",
+        "primeicons": "^5.0.0",
+        "primevue": "^3.18.0",
+        "spatial-design-system": "^1.6.3",
+        "vue": "^3.5.12",
+        "vue-codemirror": "^6.1.1",
+        "vue-router": "^4.4.5"
     }
 }

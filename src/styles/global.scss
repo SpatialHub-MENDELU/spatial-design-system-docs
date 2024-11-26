@@ -1,0 +1,43 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+
+.wrapper {
+  display: flex;
+}
+
+.page {
+  max-height: calc(100vh - $header-height) !important
+}
+
+.container {
+  margin: auto;
+  max-width: $max-width;
+  width: 100%;
+}
+
+.main-content {
+  max-width: calc($max-width - 64px);
+  height: calc(100vh - $header-height) !important;
+  width: 100%;
+  margin-left: 0;
+  margin-right: auto; 
+
+  @media (min-width: $breakpointMd) {
+    .wrapper {
+      padding: 0 32px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .wrapper {
+    flex-direction: column; 
+  }
+
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+}
