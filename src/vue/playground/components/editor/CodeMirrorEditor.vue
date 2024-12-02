@@ -51,11 +51,9 @@ import { ILoading } from '../../types/loading';
 import { autocompletion } from '@codemirror/autocomplete';
 import { WebContainerService } from '../../services/webContainersService';
 import { SessionService } from '../../services/sessionService';
-import { files } from './files';
 import OpenedFiles from './files/OpenedFiles.vue';
 import { useStore } from 'vuex';
 import EmptyState from './EmptyState.vue';
-import { ProjectType } from '../../types/projectType';
 import { Layout } from '../../types/layout';
 import Breadcrumbs from '../shared/Breadcrumbs.vue';
 
@@ -112,22 +110,11 @@ onMounted(async () => {
     if (!projectType) {
       throw new Error("No project type selected.");
     }
-
     await webContainersService?.ensureInitialized();
-
-    if (projectType.value === ProjectType.VUE) {
-      const url = await webContainersService?.createVueProject()
-      console.log('url: ', url)
-    } else if (projectType.value === ProjectType.VANILLA) {
-      await webContainersService?.mountFiles(files);
-       await webContainersService?.startServer()
-    }
-
+    await webContainersService?.createProject(projectType.value)
     props.loading.installing = false;
-    runCode();
   } catch (error) {
     console.error('Error during project creation:', error);
-    playgroundStore.commit('setOutput', `Error: ${error.message}`);
   }
 
   const editorSettings = sessionService?.getFromSession('editorSettings');
@@ -136,23 +123,6 @@ onMounted(async () => {
     playgroundStore.commit('updateLayout', editorSettings['selectedLayout']);
   }
 });
-
-const runCode = async () => {
-  if (!webContainersService) return;
-  props.loading.running = true;
-  try {
-    if (openedFilePath.value && openedFileContent.value) {
-      await webContainersService.writeFile(
-        openedFilePath.value,
-        openedFileContent.value
-      );
-    }
-  } catch (error) {
-    console.log(`Failed to read this file: ${error.message}`);
-  } finally {
-    props.loading.running = false;
-  }
-};
 
 watch(props.loading, () => {
   if (!props.loading.installing && !props.loading.running) {

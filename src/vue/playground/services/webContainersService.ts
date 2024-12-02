@@ -4,6 +4,8 @@ import { FileType } from '../types/fileType';
 import { FolderItem } from '../types/fileItem';
 import JSZip from 'jszip';
 import { getFileIcon } from '../utils/FileExtensionsAndIcons';
+import { packageJsonVanilla, MainFile, packageJsonVue } from '../components/editor/files';
+import { ProjectType } from '../types/projectType';
 
 export class WebContainerService {
   private static instance: WebContainerService;
@@ -66,11 +68,6 @@ export class WebContainerService {
         throw new Error('Failed to initialize WebContainer.');
       }
     }
-  }
-
-  public async mountFiles(files: Record<string, any>) {
-    await this.ensureInitialized();
-    await this.webContainerInstance?.mount(files);
   }
 
   public async readFile(filePath: string) {
@@ -177,10 +174,6 @@ export class WebContainerService {
         message: `Item renamed from ${oldPath} to ${newPath}`,
       };
     } catch (error) {
-      console.error(
-        `Failed to rename item from ${oldPath} to ${newName}:`,
-        error
-      );
       return {
         success: false,
         message: `Failed to rename item from ${oldPath} to ${newName}: ${error.message}`,
@@ -288,17 +281,15 @@ export class WebContainerService {
     this.openedFiles.filter((f) => f === file);
   }
 
-  async createVueProject() {
+  async createProject(projectType: ProjectType) {
     await this.ensureInitialized();
     if (!this.webContainerInstance) return;
 
-    console.log('Attempting to create Vue project');
-
     try {
-      const initProcess = await this.webContainerInstance.spawn('npx', [
-        'create-vue@latest',
-        '.',
-        '--yes',
+      const initProcess = await this.webContainerInstance.spawn('npm', [
+        'create',
+        'vite@latest',
+        '.'
       ]);
 
       const inputStream = initProcess.input.getWriter();
@@ -308,12 +299,17 @@ export class WebContainerService {
         new WritableStream({
           write(chunk: string) {
             output += chunk;
-            console.log(chunk);
-            if (chunk.includes('Ok to proceed?') || chunk.includes('Add')) {
+            if (chunk.includes('Current directory is not empty')) {
+              inputStream.write('\u001B[B\u001B[B\n');
+            } else if (chunk.includes('Select a framework:') && chunk.includes('Use arrow-keys')) {
+              if (projectType === ProjectType.VANILLA) inputStream.write('\n');
+              else if (projectType === ProjectType.VUE) inputStream.write('\u001B[B\n');
+            } else if (chunk.includes('Select a variant:') && chunk.includes('Use arrow-keys')) {
+              inputStream.write('\u001B[B\n');
+            } else if (chunk.includes('Project name')) {
+              inputStream.write('sds-project\n');
+            } else if (chunk.includes('Ok to proceed?')) {
               inputStream.write('y\n');
-            }
-            if (chunk.includes('Package name')) {
-              inputStream.write('vue-project\n');
             }
           },
         })
@@ -322,19 +318,21 @@ export class WebContainerService {
       const initExitCode = await initProcess.exit;
 
       if (initExitCode !== 0) {
-        console.error(
-          'Error during Vue project creation: ',
-          output || 'Unknown error'
-        );
         throw new Error(
           `Project initialization failed with exit code ${initExitCode}`
         );
       }
 
-      console.log('Vue project initialized successfully');
-      console.log('Output:', output);
+      await this.webContainerInstance.fs.writeFile(
+        '/package.json',
+        projectType === ProjectType.VANILLA ? packageJsonVanilla : packageJsonVue
+      );
 
-      console.log('Installing dependencies...');
+      await this.webContainerInstance.fs.writeFile(
+        '/src/main.js',
+        MainFile
+      );
+
       const installProcess = await this.webContainerInstance.spawn('npm', [
         'install',
       ]);
@@ -344,7 +342,6 @@ export class WebContainerService {
         new WritableStream({
           write(chunk: string) {
             installOutput += chunk;
-            console.log(chunk);
           },
         })
       );
@@ -359,14 +356,11 @@ export class WebContainerService {
           `Dependency installation failed with exit code ${installExitCode}`
         );
       }
-      console.log('Dependencies installed successfully');
 
-      console.log('Starting development server...');
       const devProcess = await this.webContainerInstance.spawn('npm', [
         'run',
         'dev',
       ]);
-
 
       devProcess.output.pipeTo(
         new WritableStream({
@@ -376,56 +370,8 @@ export class WebContainerService {
         })
       );
     } catch (error) {
-      console.error('Error creating Vue project:', error);
+      console.error('Error creating project:', error);
       throw error;
     }
-  }
-
-  async startServer() {
-    await this.ensureInitialized();
-    if (!this.webContainerInstance) return;
-
-    console.log('Installing dependencies...');
-      const installProcess = await this.webContainerInstance.spawn('npm', [
-        'install',
-      ]);
-
-      let installOutput = '';
-      installProcess.output.pipeTo(
-        new WritableStream({
-          write(chunk: string) {
-            installOutput += chunk;
-            console.log(chunk);
-          },
-        })
-      );
-
-      const installExitCode = await installProcess.exit;
-      if (installExitCode !== 0) {
-        console.error(
-          'Error during npm install: ',
-          installOutput || 'Unknown error'
-        );
-        throw new Error(
-          `Dependency installation failed with exit code ${installExitCode}`
-        );
-      }
-      console.log('Dependencies installed successfully');
-
-      console.log('Starting development server...');
-      const devProcess = await this.webContainerInstance.spawn('npm', [
-        'run',
-        'dev',
-      ]);
-
-      let devOutput = '';
-
-      devProcess.output.pipeTo(
-        new WritableStream({
-          write(chunk: string) {
-            devOutput += chunk;
-          },
-        })
-      );
   }
 }
