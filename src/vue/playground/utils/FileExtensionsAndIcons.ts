@@ -1,7 +1,7 @@
 import { FolderItem } from '../types/fileItem';
 import { FileExtensions, FileType } from '../types/fileType';
 
-export const getFileExtension = (fileName: string, fileType: FileType): FileExtensions => {
+export const getFileExtension = (fileName: string, fileType: FileType = FileType.FILE): FileExtensions => {
   const fileExtension = fileName
     .slice(fileName.lastIndexOf('.') + 1)
     .toLowerCase();

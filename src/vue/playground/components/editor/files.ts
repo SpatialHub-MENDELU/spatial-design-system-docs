@@ -2,7 +2,7 @@
 
 export const packageJsonVanilla = `
   {
-    "name": "test-bc",
+    "name": "sds-playground",
     "private": true,
     "version": "0.0.0",
     "type": "module",
@@ -25,7 +25,7 @@ export const packageJsonVanilla = `
 `
 export const packageJsonVue = `
   {
-    "name": "test-bc",
+    "name": "sds-playground",
     "private": true,
     "version": "0.0.0",
     "type": "module",

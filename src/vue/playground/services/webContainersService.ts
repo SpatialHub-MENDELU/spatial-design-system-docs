@@ -49,8 +49,7 @@ export class WebContainerService {
     }
 
     this.webContainerInstance.on('server-ready', (port, url) => {
-        console.log(port, url)
-        const iframeEl = document.querySelector('iframe');
+      const iframeEl = document.querySelector('iframe') as unknown as HTMLIFrameElement;
         if (iframeEl) {
           iframeEl.src = url;
         }
@@ -248,7 +247,7 @@ export class WebContainerService {
     await this.installFileSystem(fileStructure, zip);
 
     zip.generateAsync({ type: 'blob' }).then((content) => {
-      const a = document.createElement('a');
+      const a = document.createElement('a') as unknown as HTMLAnchorElement;
       const url = URL.createObjectURL(content);
       a.href = url;
       a.download = 'file_structure.zip';
@@ -372,6 +371,65 @@ export class WebContainerService {
     } catch (error) {
       console.error('Error creating project:', error);
       throw error;
+    }
+  }
+
+  public async findAFrameComponents(filePath: string): Promise<string[]> {
+    try {
+      const fileContent = await this.readFile(filePath);
+      if (!fileContent) {
+        return [];
+      }
+
+      const componentNames: string[] = [];
+      const aFrameComponentRegex = /AFRAME\.registerComponent\(['"`](.+?)['"`]/g;
+      const aFramePrimitiveRegex = /AFRAME\.registerPrimitive\(['"`](.+?)['"`]/g;
+
+      let match;
+      while ((match = aFrameComponentRegex.exec(fileContent)) !== null) {
+        componentNames.push(match[1]);
+      }
+
+      while ((match = aFramePrimitiveRegex.exec(fileContent)) !== null) {
+        componentNames.push(match[1]);
+      }
+
+      return componentNames;
+    } catch (error) {
+      console.error('Error reading file:', error.message);
+      return [];
+    }
+  }
+
+  public async findAFrameComponentsInDirectory(directory: string) {
+    try {
+      const files = await this.listFiles(directory);
+
+      const results: string[] = [];
+
+      for (const file of files as string[]) {
+        const filePath = `${directory}/${file}`;
+        const isDirectory = await this.checkIfDirectory(filePath);
+
+        if (!isDirectory && file.endsWith('.js')) {
+          const components = await this.findAFrameComponents(filePath);
+          if (components.length > 0) {
+            results.push(...components);
+          }
+        }
+
+        if (isDirectory) {
+          const subDirectoryResults = await this.findAFrameComponentsInDirectory(
+            `${directory}/${file}`
+          );
+          results.push(...subDirectoryResults);
+        }
+      }
+
+      return results;
+    } catch (error) {
+      console.error(`Chyba při zpracování adresáře ${directory}:`, error);
+      return [];
     }
   }
 }

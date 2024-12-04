@@ -22,3 +22,111 @@
 .cm-content {
   padding-bottom: 1rem !important;
 }
+
+.cm-selection .cm-selected {
+  background-color: $primary;
+  color: $light-text;
+}
+
+.cm-tooltip {
+  color: $dark-text !important;
+  background-color: $light-primary !important;
+  border: 1.5px solid $primary !important;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+
+  .cm-completionMatchedText{
+    text-decoration: none !important;
+    font-weight: 600 !important;
+  }
+  .cm-completionIcon {
+    font-weight: 600 !important;
+    color: $dark-text !important;
+  }
+}
+
+.v-codemirror {
+  * {
+    font-family: 'Inter', sans-serif !important;
+  }
+
+  .cm-line {
+    *::selection {
+      background-color: $primary !important;
+      color: $light-text !important;
+    }
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: $dark-text;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: darken($color: $dark-text, $amount: 10%);
+  }
+}
+
+.cm-completionIcon-function, .cm-completionIcon-method {
+  &::after {
+    content: 'ƒ'
+  }
+}
+
+.cm-completionIcon-class::after {
+  content: '○' 
+}
+
+.cm-completionIcon-interface::after {
+  content: '◌'
+}
+
+.cm-completionIcon-component::after {
+  content: 's'
+}
+
+.cm-completionIcon-variable::after {
+  content: '𝑥'
+}
+
+.cm-completionIcon-constant::after,
+.cm-completionIcon-encs::after,
+.cm-completionIcon-bool::after {
+  content: '𝐶'
+}
+
+.cm-completionIcon-type::after,
+.cm-completionIcon-tag::after {
+  content: '𝑡'
+}
+
+.cm-completionIcon-enum::after {
+  content: '∪'
+}
+
+.cm-completionIcon-property::after,
+.cm-completionIcon-charset::after,
+.cm-completionIcon-attribute::after {
+  content: '□'
+}
+
+.cm-completionIcon-keyword::after, .cm-completionIcon-target::after {
+  content: '🔑\uFE0E'
+}
+
+.cm-completionIcon-namespace::after {
+  content: '▢'
+}
+
+.cm-completionIcon-text::after {
+  content: 'abc';
+  font-size: "50%";
+  vertical-align: "middle";
+}
