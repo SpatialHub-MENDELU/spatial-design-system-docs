@@ -13,7 +13,7 @@ module.exports = {
                 "light-background": "#e2e2e3",
                 "dark-background": "#4a4a4a",
                 "light-primary": "#e6f8f4",
-                "extra-light-background": "#1b1b1f",
+                "extra-light-background": "#F4F4F4",
                 "grey": "#b7b4b4",
                 "red": "#ba0013"
             },

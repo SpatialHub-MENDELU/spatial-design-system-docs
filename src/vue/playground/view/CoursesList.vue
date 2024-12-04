@@ -4,7 +4,7 @@ import Sidebar from '../components/shared/Sidebar.vue';
 import { CourseListData } from '../data/courses/CoursesList';
 import { reactive } from 'vue';
 import ShareCourseDialog from '../components/courses/ShareCourseDialog.vue';
-import { CourseListItem } from '../types/courses/CourseListItems';
+import { ICourseListItem } from '../types/courses/CourseListItems';
 
 const state = reactive<{
   dialogIsVisible: boolean,
@@ -14,7 +14,7 @@ const state = reactive<{
   shareUrl: ''
 })
 
-const shareCourse = (course: CourseListItem) => {
+const shareCourse = (course: ICourseListItem) => {
   state.shareUrl = `https://sds.spatialhub.cz/playground/course/${course.slug}`
   state.dialogIsVisible = true
 }

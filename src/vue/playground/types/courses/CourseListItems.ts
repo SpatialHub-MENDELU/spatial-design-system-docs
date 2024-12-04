@@ -1,4 +1,4 @@
-export interface CourseListItem {
+export interface ICourseListItem {
   id: number
   title: string
   icon: string
