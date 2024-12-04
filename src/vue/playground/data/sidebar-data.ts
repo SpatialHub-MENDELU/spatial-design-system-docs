@@ -1,5 +1,5 @@
-import { SidebarLink } from "../types/sidebar-types";
 import * as ROUTES from "../constants/routes";
+import { SidebarLink } from "../types/sidebar";
 
 export const sidebarData: SidebarLink[] = [
     {

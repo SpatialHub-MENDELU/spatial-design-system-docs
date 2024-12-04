@@ -49,14 +49,14 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex gap-0 flex mx-auto w-full justify-center">
+  <div class="flex gap-0 mx-auto w-full justify-center">
     <div
-      class="main-content settings lg:h-full h-full w-full mx-auto relative flex w-full lg:flex-row flex-col"
+      class="main-content settings lg:h-full h-full mx-auto relative flex w-full lg:flex-row flex-col"
     >
       <Sidebar />
 
       <div class="w-full xl:p-16 lg:p-12 pt-6 lg:h-auto h-full">
-        <div class="w-full border-b border-border-color pb-2 w-full">
+        <div class="w-full border-b border-border-color pb-2">
           <h1
             class="lg:text-[32px] md:text-[26px] text-[24px] font-medium mb-3"
           >

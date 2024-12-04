@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref, onMounted, reactive } from 'vue';
-import { sidebarData } from '../../data/sidebar-data.ts';
+import { sidebarData } from '../../data/sidebar-data';
 
 const activeRoute = ref('');
 
 onMounted(() => {
   activeRoute.value = window.location.pathname;
 
-  if (window.location.pathname === '/playground/') {
+  if (window.location.pathname.includes('/playground/editor')) {
     sidebarState.isEditor = true;
   } else {
     sidebarState.isEditor = false;
@@ -44,7 +44,7 @@ const sidebarState = reactive({
             target="_self"
           >
             <i
-              :class="`pi pi-${item.icon} ${activeRoute === item.route ? 'text-primary' : 'text-grey'} text-[20px] duration-300`"
+              :class="`pi pi-${item.icon} ${activeRoute.includes(item.route) ? 'text-primary' : 'text-grey'} text-[20px] duration-300`"
             />
             <span class="2xl:text-[16px] text-[14px]">{{ item.text }}</span>
           </a>
@@ -59,7 +59,7 @@ const sidebarState = reactive({
             target="_self"
           >
             <i
-              :class="`pi pi-${sidebarData[sidebarData.length - 1].icon} ${activeRoute === sidebarData[sidebarData.length - 1].route ? 'text-primary' : 'text-grey'} text-[20px] duration-300`"
+              :class="`pi pi-${sidebarData[sidebarData.length - 1].icon} ${activeRoute.includes(sidebarData[sidebarData.length - 1].route) ? 'text-primary' : 'text-grey'} text-[20px] duration-300`"
             />
             <span class="2xl:text-[16px] text-[14px]">{{
               sidebarData[sidebarData.length - 1].text

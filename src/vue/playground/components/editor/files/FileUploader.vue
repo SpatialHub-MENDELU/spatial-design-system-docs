@@ -102,7 +102,6 @@ import { WebContainerService } from '../../../services/webContainersService';
 import { FolderItem } from '../../../types/fileItem';
 import { formatSize } from '../../../utils/SizeFormatter';
 import { getFileIcon } from '../../../utils/FileExtensionsAndIcons';
-import { TreeNode } from 'primevue/treenode';
 
 const folderInput = ref<HTMLElement | null>(null);
 const emit = defineEmits();
