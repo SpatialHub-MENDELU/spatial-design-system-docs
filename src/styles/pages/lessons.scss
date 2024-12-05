@@ -1,0 +1,16 @@
+.lesson {
+  &__content {
+    p, span {
+      font-size: clamp(0.95rem, 0.95vw, 1.3rem);
+
+      &:not(&:last-of-type) {
+        margin-bottom: 1rem;
+      }
+    }
+
+    span {
+      color: $primary;
+      font-weight: 600;
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import { ICourseListItem } from "../../types/courses/CourseListItems";
 
-export const CourseListData: ICourseListItem[] = [
+export const courseListData: ICourseListItem[] = [
   {
     id: 1,
     icon: 'fab fa-js',

@@ -1,8 +1,8 @@
 import { ICourseDetail } from "../../types/courses/CourseDetail";
-import { CourseListData } from "./CoursesList";
+import { courseListData } from "./CoursesList";
 import { lessonsData } from "./Lessons";
 
-export const CourseDetailData: ICourseDetail[] = CourseListData.map(course => {
+export const courseDetailData: ICourseDetail[] = courseListData.map(course => {
   return {
     ...course,
     description: 'Ready to bring your AR/VR ideas to life? Don’t just imagine the future—create it. Take the leap into immersive technology and start your journey with Spatial Design System today. Your next breakthrough is just a click away!',

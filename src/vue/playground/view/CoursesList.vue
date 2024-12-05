@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Button from 'primevue/button';
 import Sidebar from '../components/shared/Sidebar.vue';
-import { CourseListData } from '../data/courses/CoursesList';
+import { courseListData } from '../data/courses/CoursesList';
 import { reactive } from 'vue';
 import ShareCourseDialog from '../components/courses/ShareCourseDialog.vue';
 import { ICourseListItem } from '../types/courses/CourseListItems';
@@ -37,7 +37,7 @@ const shareCourse = (course: ICourseListItem) => {
 
         <div class="lg:my-12 my-6 lg:space-y-16 space-y-10">
 
-          <div class="flex gap-4 items-start lg:flex-row flex-col" :key="course.id" v-for="course in CourseListData">
+          <div class="flex gap-4 items-start lg:flex-row flex-col" :key="course.id" v-for="course in courseListData">
             <i class="text-main-color text-primary lg:text-[64px] text-[48px] lg:block hidden" :class="course.icon" />
 
             <div class="w-full">

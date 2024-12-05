@@ -2,11 +2,13 @@
 import Sidebar from '../components/shared/Sidebar.vue';
 
 import { useData } from 'vitepress'
-import { CourseDetailData } from '../data/courses/CourseDetail';
+import { courseDetailData } from '../data/courses/CourseDetail';
 import { reactive } from 'vue';
+import { lessonByCourseVariant } from '../utils/Lessons';
+
 const { params } = useData()
 
-const activeCourse = CourseDetailData.find(c => c.slug === params.value?.slug)
+const activeCourse = courseDetailData.find(c => c.slug === params.value?.slug)
 const state = reactive<{ percentage: number }>({
   percentage: 60
 })
@@ -85,17 +87,19 @@ const state = reactive<{ percentage: number }>({
 
           <div class="w-full">
             <h2 class="text-primary lg:text-[20px] md:text-[18px] text-[17px] font-semibold">Lessons</h2>
-            <div v-for="lesson in activeCourse?.lessons"
+            <a v-for="lesson in activeCourse?.lessons"
+              :href="`/playground/course/lesson/${activeCourse?.slug}-${lesson.id}`"
               class="flex gap-2 justify-between py-1.5 border-b border-border-color">
                 <div class="flex gap-2 items-center lg:text-[16px] text-[15px]">
                   <span>Lesson {{ lesson.id }}:</span>
                   <p>{{ lesson.title }}</p>
                 </div>
-                <span class="w-6 h-6 flex items-center justify-center rounded-full border-2 border-primary md:text-[16px] text-[15px]">
+                <span class="w-6 h-6 flex items-center justify-center rounded-full border-2 border-primary md:text-[16px] text-[15px]"
+                :class="{'border-grey': !lessonByCourseVariant(String(activeCourse?.slug), lesson)?.completed}">
                   <i class="fas fa-check text-primary"
-                  :class="{hidden: !lesson.completed}"/>
+                  :class="{'hidden': !lessonByCourseVariant(String(activeCourse?.slug), lesson)?.completed}"/>
                 </span>
-            </div>
+            </a>
           </div>
         </div>
 
