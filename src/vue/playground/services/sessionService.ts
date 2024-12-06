@@ -11,15 +11,15 @@ export class SessionService {
   }
 
   public storeInSession<T>(key: string, data: T): void {
-    sessionStorage.setItem(key, JSON.stringify(data));
+    localStorage.setItem(key, JSON.stringify(data));
   }
 
   public getFromSession<T>(key: string): T | null {
-    const item = sessionStorage.getItem(key);
+    const item = localStorage.getItem(key);
     return item ? (JSON.parse(item) as T) : null;
   }
 
   public removeFromSession(key: string): void {
-    sessionStorage.removeItem(key);
+    localStorage.removeItem(key);
   }
 }

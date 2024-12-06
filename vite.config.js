@@ -17,4 +17,9 @@ export default defineConfig({
             },
         },
     },
+    vue: {
+        compilerOptions: {
+          isCustomElement: (tag) => tag.startsWith('a-')
+        }
+      }
 });

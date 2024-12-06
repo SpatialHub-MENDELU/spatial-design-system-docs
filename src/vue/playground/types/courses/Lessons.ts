@@ -6,9 +6,16 @@ export interface ILessonVariants {
 }
 
 export interface ILesson {
-  completed?: boolean
+  completed?: string
   content: string
+  contentCode?: IContentCode[]
+  contentOutput?: string
   task?: ILessonTask
+}
+
+export interface IContentCode {
+  lang: string,
+  content: string
 }
 
 export interface ILessonTask {

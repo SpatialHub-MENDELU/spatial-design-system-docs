@@ -12,13 +12,14 @@
     max-width: $max-width;
   }
 
-  @media screen and (in-width: $breakpointLg) {
+  @media screen and (min-width: $breakpointLg) {
     height: calc(100vh - $header-height) !important;
   }
 
   @media screen and (max-width: $breakpointLg) {
     padding: 32px;
     margin: auto;
+    height: full !important;
   }
 
   @media screen and (max-width: $breakpointMd) {
