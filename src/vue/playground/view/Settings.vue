@@ -7,11 +7,12 @@ import { reactive, ref, watch, inject, onMounted } from 'vue';
 import { SessionService } from '../services/sessionService';
 import { Layout } from '../types/layout';
 import { useStore } from 'vuex';
+import { IStateSettings } from '../types/States';
 
 const playgroundStore = useStore()
 const sessionService = inject<SessionService>('sessionService');
 
-const state = reactive({
+const state = reactive<IStateSettings>({
   iconsAreShown: true,
   selectedLayout: Layout.HORIZONTAL,
   selectedFontSize: 14,

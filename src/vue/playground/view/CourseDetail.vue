@@ -12,16 +12,12 @@ import { lessonsData } from '../data/courses/Lessons';
 import { lessonByCourseVariant } from '../utils/Lessons';
 import { getPluralOrSingular } from '../utils/Plurals';
 import { LESSON } from '../constants/routes';
+import { IStateCourseDetail } from '../types/States';
 
 const { params } = useData()
 const sessionService = inject<SessionService>('sessionService');
 
-const state = reactive<{ 
-  percentage: number,
-  lessonsFromSession: ILessonVariants[],
-  activeCourse: ICourseDetail | null,
-  completedLessons: number
- }>({
+const state = reactive<IStateCourseDetail>({
   percentage: 0,
   lessonsFromSession: [],
   activeCourse: null,

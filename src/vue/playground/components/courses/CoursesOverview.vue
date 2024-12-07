@@ -14,7 +14,7 @@ const props = defineProps<{
 
 <template>
   <div
-    class="absolute lg:h-screen h-full top-0 left-0 bg-white lg:border-r border-border-color flex flex-col overflow-x-hidden duration-500 lg:w-[25rem] w-full lg:p-6 pt-6"
+    class="absolute lg:h-screen h-full top-0 left-0 bg-white lg:border-r border-border-color flex flex-col overflow-x-hidden duration-500 lg:w-[25rem] w-full lg:p-6 pt-6 z-10"
     :class="{ '-translate-x-full': !props.isVisible, 'translate-x-0': props.isVisible }"
   >
     <div class="flex justify-end">

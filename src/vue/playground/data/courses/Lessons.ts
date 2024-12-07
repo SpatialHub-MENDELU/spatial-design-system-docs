@@ -1,6 +1,27 @@
 import { languages } from 'prismjs';
 import { ILesson, ILessonVariants } from '../../types/courses/Lessons';
-export const CUSTOM_CLASSES = ''
+
+export enum LanguageEnum {
+  HTML = 'html',
+  CSS = 'css',
+  JS = 'js',
+  MARKUP = 'markup'
+}
+
+export const codeLanguage = {
+  [LanguageEnum.MARKUP]: {
+    code: LanguageEnum.MARKUP,
+    label: LanguageEnum.HTML
+  },
+  [LanguageEnum.CSS]: {
+    code: LanguageEnum.CSS,
+    label: LanguageEnum.CSS
+  },
+  [LanguageEnum.JS]: {
+    code: LanguageEnum.JS,
+    label: LanguageEnum.JS
+  }
+}
 
 export const lessonsData: ILessonVariants[] = [
   {
@@ -147,38 +168,38 @@ export const lessonsData: ILessonVariants[] = [
       `,
       contentOutput:`
       <a-ar-menu
-      position="0 1.5 -3"
-      visible="true"
-      primary="#018A6C"
-      items="[
-              {'color':'white','icon':'/content-save','title':'Save','textColor':'black'},
-              {'color':'white','icon':'/close-circle','title':'Quit','textColor':'black'},
-              {'color':'white','icon':'/settings','title':'Settings','textColor':'black'},
-              {'color':'white','icon':'/file-plus','title':'New file','textColor':'black'}
-          ]"
-      variant="filled"
-      layout="circle"
-  ></a-ar-menu>`,
+        position="0 1.5 -3"
+        visible="true"
+        primary="#018A6C"
+        items="[
+                {'color':'white','icon':'/content-save','title':'Save','textColor':'black'},
+                {'color':'white','icon':'/close-circle','title':'Quit','textColor':'black'},
+                {'color':'white','icon':'/settings','title':'Settings','textColor':'black'},
+                {'color':'white','icon':'/file-plus','title':'New file','textColor':'black'}
+            ]"
+        variant="filled"
+        layout="circle"
+      ></a-ar-menu>`,
     contentCode: [
         {
-          lang: 'js',
+          lang: LanguageEnum.JS,
           content: 'import "spatial-design-system/primitives/ar-menu.js";'
         },
         {
-          lang: 'markup',
+          lang: LanguageEnum.MARKUP,
           content: `<a-ar-menu
-          position="0 1.5 -3"
-          visible="true"
-          primary="#018A6C"
-          items="[
-                    {'color':'white','icon':'/content-save','title':'Save','textColor':'black'},
-                    {'color':'white','icon':'/close-circle','title':'Quit','textColor':'black'},
-                    {'color':'white','icon':'/settings','title':'Settings','textColor':'black'},
-                    {'color':'white','icon':'/file-plus','title':'New file','textColor':'black'}
-                ]"
-          variant="filled"
-          layout="circle"
-        ></a-ar-menu>`
+  position="0 1.5 -3"
+  visible="true"
+  primary="#018A6C"
+  items="[
+    {'color':'white','icon':'/content-save','title':'Save','textColor':'black'},
+    {'color':'white','icon':'/close-circle','title':'Quit','textColor':'black'},
+    {'color':'white','icon':'/settings','title':'Settings','textColor':'black'},
+    {'color':'white','icon':'/file-plus','title':'New file','textColor':'black'}
+  ]"
+  variant="filled"
+  layout="circle"
+></a-ar-menu>`
         },
       ],
     },

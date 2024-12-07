@@ -76,6 +76,7 @@ import {
   getFileWithoutExtension,
 } from '../../utils/FileExtensionsAndIcons';
 import { TreeNode } from 'primevue/treenode';
+import { IStateNewItemDialog } from '../../types/States';
 
 const emit = defineEmits();
 const webContainersService = inject<WebContainerService>(
@@ -99,7 +100,7 @@ const fileNameExtensions = [
   { label: 'JS', value: 'js' },
 ];
 
-const state = reactive({
+const state = reactive<IStateNewItemDialog>({
   itemToRename: props.itemToRename || null,
   newItemName: '',
   newFileExtension: '',

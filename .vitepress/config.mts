@@ -1,6 +1,7 @@
 import { defineConfig } from "vitepress";
 
 import crossOriginIsolation from "vite-plugin-cross-origin-isolation";
+import { fileURLToPath } from 'node:url'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -96,6 +97,6 @@ export default defineConfig({
     // ]
   },
   vite: {
-    plugins: [crossOriginIsolation()],
+    plugins: [crossOriginIsolation()]
   },
 });

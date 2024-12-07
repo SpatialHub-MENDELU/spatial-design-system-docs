@@ -3,7 +3,7 @@ import vue from "@vitejs/plugin-vue";
 
 export default defineConfig({
     plugins: [vue()],
-    root: "src/vue/playground",
+    root: "./src/vue/playground",
     server: {
         cors: {
           origin: "http://localhost:5174",
@@ -19,7 +19,7 @@ export default defineConfig({
     },
     vue: {
         compilerOptions: {
-          isCustomElement: (tag) => tag.startsWith('a-')
+          isCustomElement: (tag) => tag.startsWith('a-') 
         }
-      }
+      },
 });

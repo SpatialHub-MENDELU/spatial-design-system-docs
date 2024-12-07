@@ -9,12 +9,10 @@ import { SessionService } from '../services/sessionService';
 import { ILessonVariants } from '../types/courses/Lessons';
 import { lessonByCourseVariant } from '../utils/Lessons';
 import { lessonsData } from '../data/courses/Lessons';
+import { IStateCoursesList } from '../types/States';
 
 const sessionService = inject<SessionService>('sessionService');
-const state = reactive<{
-  dialogIsVisible: boolean,
-  shareUrl: string,
-}>({
+const state = reactive<IStateCoursesList>({
   dialogIsVisible: false,
   shareUrl: ''
 })

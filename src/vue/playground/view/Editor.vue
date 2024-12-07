@@ -8,6 +8,7 @@ import { useStore } from 'vuex';
 import FileTree from '../components/editor/files/FileTree.vue';
 import CodeMirrorEditor from '../components/editor/CodeMirrorEditor.vue';
 import { RouteLocationNormalized, useRouter } from 'vue-router';
+import { IStateEditor } from '../types/States';
 
 const playgroundStore = useStore();
 const projectType = computed(() => playgroundStore.getters.projectType);
@@ -17,10 +18,7 @@ const loading = reactive<ILoading>({
   running: false,
 });
 
-const state = reactive<{
-    showConfirmDialog: boolean,
-    nextRoute: RouteLocationNormalized | null
-}>({
+const state = reactive<IStateEditor>({
     showConfirmDialog: false,
     nextRoute: null
 })

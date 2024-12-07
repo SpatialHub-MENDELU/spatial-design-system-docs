@@ -70,6 +70,7 @@ import { defineProps, reactive, onMounted, inject } from 'vue';
 import { Layout } from '../../types/layout';
 import { SessionService } from '../../services/sessionService';
 import { useStore } from 'vuex';
+import { IStateLayoutDialog } from '../../types/States';
 
 const sessionService = inject<SessionService>('sessionService');
 const playgroundStore = useStore()
@@ -79,10 +80,7 @@ const props = defineProps<{
   visible: boolean;
 }>();
 
-const state = reactive<{
-  error: string | null;
-  layout: Layout | null;
-}>({
+const state = reactive<IStateLayoutDialog>({
   error: null,
   layout: null,
 });

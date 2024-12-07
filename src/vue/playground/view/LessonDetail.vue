@@ -4,40 +4,28 @@ import Sidebar from '../components/shared/Sidebar.vue';
 import { useData } from 'vitepress';
 import { lessonsData } from '../data/courses/Lessons';
 import { courseDetailData } from '../data/courses/CourseDetail';
-import { lessonByCourseVariant } from '../utils/Lessons';
-import { ILesson, ILessonVariants } from '../types/courses/Lessons';
-import { render, inject, onMounted, reactive, ref, nextTick, h, Fragment } from 'vue';
+import { addCurrentLessonToSession, lessonByCourseVariant, replacePlaceholder } from '../utils/Lessons';
+import { IContentCode, ILesson, ILessonVariants } from '../types/courses/Lessons';
+import { inject, onMounted, reactive, ref, nextTick, h, Fragment } from 'vue';
 import { ICourseDetail } from '../types/courses/CourseDetail';
 import CoursesOverview from '../components/courses/CoursesOverview.vue';
-import { COURSE, LESSON } from '../constants/routes';
+import { LESSON } from '../constants/routes';
 import { SessionService } from '../services/sessionService';
-import ComponentExample from '../../../vue/ComponentExample.vue';
+import LessonError from '../components/courses/LessonError.vue';
+import { IStateLessonDetail } from '../types/States';
+
+// TODO
 import "spatial-design-system/primitives/ar-menu.js";
-
-import Prism from 'prismjs';
-import 'prismjs/themes/prism-tomorrow.css'; 
-
-import 'prismjs/components/prism-markup.js';
-import 'prismjs/components/prism-css.js';
-import 'prismjs/components/prism-javascript.js';
 
 import { useToast } from 'primevue/usetoast';
 import Toast from 'primevue/toast';
 
 const toast = useToast();
+
 const sessionService = inject<SessionService>('sessionService');
 const { params } = useData();
 
-const state = reactive<{
-  activeCourse: ICourseDetail | null;
-  lessonById: ILessonVariants | null;
-  activeLesson: ILesson | null;
-  nextLessonLink: string | null;
-  isOverviewVisible: boolean;
-  completedIn: string | null;
-  canBeDisplayed: boolean;
-  lessonsFromSession: ILessonVariants[];
-}>({
+const state = reactive<IStateLessonDetail>({
   activeCourse: null,
   lessonById: null,
   activeLesson: null,
@@ -53,6 +41,7 @@ onMounted(async () => {
   const courseSlug = params.value?.course;
 
   await import('aframe');
+
   if (!lessonId || !courseSlug) {
     state.canBeDisplayed = false;
     return;
@@ -61,6 +50,7 @@ onMounted(async () => {
   const lessonById = lessonsData.find(
     (c) => c.id === lessonId
   ) as ILessonVariants;
+
   const activeCourse = courseDetailData.find(
     (c) => c.slug === courseSlug
   ) as ICourseDetail;
@@ -106,90 +96,24 @@ onMounted(async () => {
     state.nextLessonLink = `${LESSON}/${activeCourse.slug}-${currentLessonId + 1}`;
   }
 
-  nextTick(() => replacePlaceholder());
+  nextTick(() => replacePlaceholder(
+    document.querySelector('#placeholder'),
+    String(state.activeLesson?.contentOutput),
+    state.activeLesson?.contentCode as IContentCode[],
+    toast
+  ));
 });
 
-function replacePlaceholder() {
-  const placeholder = document.querySelector('#placeholder');
-
-  if (placeholder) {
-    const vnode = h(
-      ComponentExample,
-      { fixed: true },
-      {
-        output: () => h('a-entity', { innerHTML: state.activeLesson?.contentOutput }),
-        code: () => {
-          return h('div', {}, [
-            ...(state.activeLesson?.contentCode?.map((code) =>
-              h('div', { class: 'code-block' }, [
-                h('p', { class: 'language-label' }, code.lang),
-                h(
-                  'button',
-                  {
-                    class: 'copy-button p-button p-button-text',
-                    onClick: () => copyToClipboard(code.content),
-                  },
-                  [
-                    h('i', { class: 'pi pi-copy' }),
-                  ]
-                ),
-                h('pre', [
-                  h('code', { class: `language-${code.lang}` }, code.content),
-                ]),
-              ])
-            ) || []),
-          ]);
-        },
-      }
-    );
-
-    render(vnode, placeholder);
-    Prism.highlightAll();
+const addLessonToSession = () => {
+  if (sessionService) {
+    addCurrentLessonToSession(
+      sessionService,
+      state.lessonById as ILessonVariants,
+      state.activeCourse as ICourseDetail
+    )
   }
 }
 
-function copyToClipboard(text) {
-  const textArea = document.createElement('textarea');
-  textArea.value = text;
-  document.body.appendChild(textArea);
-  textArea.select();
-  document.execCommand('copy');
-  document.body.removeChild(textArea);
-
-  toast.add({ severity: 'info', summary: 'Copied', detail: 'Code copied to clipboard!', life: 3000 });
-}
-
-function addCurrentLessonToSession() {
-  const completedLessonsFromSession =
-    (sessionService?.getFromSession('completedLessons') as ILessonVariants[]) ||
-    [];
-
-  const existingLesson = completedLessonsFromSession.find(
-    (lesson: ILessonVariants) => lesson.id === state.lessonById?.id
-  );
-
-  const currentLessonVariant = lessonByCourseVariant(
-    String(state.activeCourse?.slug),
-    state.lessonById as ILessonVariants
-  );
-  (currentLessonVariant as ILesson).completed = new Date().toLocaleString(
-    'cs-CS'
-  );
-
-  if (state.lessonById && currentLessonVariant) {
-    if (!existingLesson) {
-      completedLessonsFromSession.push({
-        ...state.lessonById,
-        ...currentLessonVariant,
-      });
-    }
-
-    sessionService?.storeInSession(
-      'completedLessons',
-      completedLessonsFromSession
-    );
-  }
-}
 </script>
 
 <template>
@@ -201,19 +125,20 @@ function addCurrentLessonToSession() {
     >
       <Sidebar />
       <div
-        class="relative w-full xl:p-16 lg:p-12 pt-6 h-auto overflow-y-hidden flex gap-16"
+        class="relative w-full xl:p-16 lg:p-12 pt-6 h-auto overflow-y-hidden flex gap-16 flex-row"
         v-if="state.canBeDisplayed"
       >
-        <CoursesOverview
+        <div class="w-1/2 h-full flex flex-col">
+          <CoursesOverview
           :is-visible="state.isOverviewVisible"
           :active-course="state.activeCourse as ICourseDetail"
           :lessons-from-session="state.lessonsFromSession"
           v-on:close="state.isOverviewVisible = false"
         />
 
-        <div class="flex flex-col w-full">
+        <div class="flex flex-col w-full h-full">
           <div
-            class="flex items-center gap-2 lg:mb-12 mb-6 cursor-pointer"
+            class="flex items-center gap-2 lg:mb-6 mb-4 cursor-pointer"
             @click="state.isOverviewVisible = true"
           >
             <i
@@ -238,7 +163,7 @@ function addCurrentLessonToSession() {
             ></div>
 
           <div v-else>
-            <p>
+            <p class="lg:text-[16px] text-[15px]">
               Lesson content could not be loaded. Please check the course and
               lesson parameters.
             </p>
@@ -247,7 +172,7 @@ function addCurrentLessonToSession() {
             <a
               class="px-6 py-1 bg-primary text-white rounded-2xl font-semibold transition duration-300 ease-in-out mt-4 md:text-[16px] text-[15px] coursor-pointer"
               :href="state.nextLessonLink"
-              @click.prevent="addCurrentLessonToSession"
+              @click.prevent="addLessonToSession"
               v-if="state.nextLessonLink && !state.activeLesson?.task"
               >Next</a
             >
@@ -258,29 +183,13 @@ function addCurrentLessonToSession() {
             >
           </div>
         </div>
+
       </div>
-      <div v-else class="flex justify-center items-center w-full h-full">
-        <div
-          class="flex flex-col items-center justify-center border border-border-color rounded-lg lg:p-8 p-6 lg:mt-0 mt-12"
-        >
-          <div class="flex items-center gap-3 mb-4">
-            <i class="pi pi-exclamation-circle text-primary text-[36px]"></i>
-            <span class="text-primary lg:text-[28px] text-[20px] font-bold"
-              >Oops...</span
-            >
-          </div>
-          <p class="text-center text-grey lg:text-[18px] text-[16px]">
-            Course or lesson data is not available.<br />
-            Please check if you have access and try again.
-          </p>
-          <a
-            class="mt-6 px-6 py-2 bg-primary text-white rounded-lg font-medium text-[16px] hover:bg-primary-dark transition-colors"
-            :href="COURSE"
-          >
-            Go to course list
-          </a>
-        </div>
+      <div class="w-1/2"></div>
+
+
       </div>
+      <LessonError v-else />
     </div>
   </div>
 </template>

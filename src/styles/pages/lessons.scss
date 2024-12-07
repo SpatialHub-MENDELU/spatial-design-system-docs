@@ -80,18 +80,18 @@
 
   .language-label {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+    top: 0.5rem;
+    right: 0.5rem;
 
-    color: white;
+    color: $grey;
     font-size: clamp(0.7rem, 0.7vw, 1.1rem);
     font-weight: 600;
   }
 
   .copy-button {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+    top: 0.5rem;
+    right: 0.5rem;
 
     padding: 0.25rem;
     opacity: 0;
@@ -113,4 +113,12 @@
       opacity: 1;
     }
   }
+
+  :not(pre) > code[class*="language-"], pre[class*="language-"] {
+    background: $extra-light-background !important; 
+    border-radius: 4px;
+    * {
+      font-size: clamp(0.85rem, 0.85vw, 1.35rem) !important;
+    }
+}
 }

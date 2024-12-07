@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, reactive } from 'vue';
 import LayoutDialog from './LayoutDialog.vue';
+import { IStateRightBar } from '../../types/States';
 
 onMounted(() => {
   if (window.location.pathname === '/playground/') {
@@ -8,7 +9,7 @@ onMounted(() => {
   }
 });
 
-const state = reactive({
+const state = reactive<IStateRightBar>({
   isEditor: true,
   showDialog: false,
 });
