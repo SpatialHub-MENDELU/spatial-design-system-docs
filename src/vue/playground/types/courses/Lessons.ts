@@ -21,9 +21,8 @@ export interface IContentCode {
 export interface ILessonTask {
   id: number
   prompt: string
-  code: string
-  hint: string
-  correctResult: string
+  code: IContentCode
+  hint: IContentCode
   testCases: ILessonTaskTestCase[]
 }
 

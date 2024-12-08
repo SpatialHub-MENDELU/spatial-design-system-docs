@@ -6,8 +6,8 @@ import RightBar from '../components/shared/RightBar.vue';
 import WelcomeBanner from '../components/shared/WelcomeBanner.vue';
 import { useStore } from 'vuex';
 import FileTree from '../components/editor/files/FileTree.vue';
-import CodeMirrorEditor from '../components/editor/CodeMirrorEditor.vue';
-import { RouteLocationNormalized, useRouter } from 'vue-router';
+import PlaygroundEditor from '../components/editor/PlaygroundEditor.vue';
+import { useRouter } from 'vue-router';
 import { IStateEditor } from '../types/States';
 
 const playgroundStore = useStore();
@@ -48,7 +48,7 @@ onBeforeUnmount(() => {
         v-if="projectType">
       <div class="flex lg:flex-row flex-col h-full max-w-full">
         <FileTree :loading="loading" />
-        <CodeMirrorEditor :loading="loading" />
+        <PlaygroundEditor :loading="loading" />
       </div>
     </div>
 

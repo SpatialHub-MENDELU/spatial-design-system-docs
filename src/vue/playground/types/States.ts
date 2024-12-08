@@ -3,6 +3,7 @@ import { ICourseDetail } from "./courses/CourseDetail";
 import { ILessonVariants, ILesson } from "./courses/Lessons";
 import { Layout } from "./layout";
 import { FolderItem } from "./fileItem";
+import { ILoading } from "./loading";
 
 export interface IStateLessonDetail {
   activeCourse: ICourseDetail | null;
@@ -13,6 +14,7 @@ export interface IStateLessonDetail {
   completedIn: string | null;
   canBeDisplayed: boolean;
   lessonsFromSession: ILessonVariants[];
+  loading: ILoading
 }
 
 export interface IStateCourseDetail {

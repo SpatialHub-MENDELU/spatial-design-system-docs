@@ -1,4 +1,5 @@
 import { ICourseListItem } from "../../types/courses/CourseListItems";
+import { ProjectType } from "../../types/projectType";
 
 export const courseListData: ICourseListItem[] = [
   {
@@ -7,7 +8,8 @@ export const courseListData: ICourseListItem[] = [
     title: 'Spatial Design System Course in Vanilla JS',
     duration: 16,
     slug: 'sds-course-vanilla-js',
-    about: 'Throughout the course, you will explore the various components in Vanilla JS that make up Spatial Design System. Each lesson is carefully structured to introduce you to new components and features, building on your knowledge as you progress.'
+    about: 'Throughout the course, you will explore the various components in Vanilla JS that make up Spatial Design System. Each lesson is carefully structured to introduce you to new components and features, building on your knowledge as you progress.',
+    type: ProjectType.VANILLA
   },
   {
     id: 2,
@@ -15,6 +17,7 @@ export const courseListData: ICourseListItem[] = [
     title: 'Spatial Design System Course in Vue',
     duration: 16,
     slug: 'sds-course-vue',
-    about: 'Throughout the course, you will explore the various components in Vue that make up Spatial Design System. Each lesson is carefully structured to introduce you to new components and features, building on your knowledge as you progress.'
+    about: 'Throughout the course, you will explore the various components in Vue that make up Spatial Design System. Each lesson is carefully structured to introduce you to new components and features, building on your knowledge as you progress.',
+    type: ProjectType.VUE
   }
 ]

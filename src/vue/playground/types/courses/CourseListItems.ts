@@ -1,3 +1,5 @@
+import { ProjectType } from "../projectType"
+
 export interface ICourseListItem {
   id: number
   title: string
@@ -5,4 +7,5 @@ export interface ICourseListItem {
   duration: number
   slug: string
   about: string
+  type: ProjectType
 }

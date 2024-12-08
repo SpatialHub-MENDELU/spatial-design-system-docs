@@ -13,6 +13,7 @@ import 'prismjs/components/prism-javascript.js';
 import { ToastServiceMethods } from "primevue/toastservice";
 import { SessionService } from "../services/sessionService";
 import { ICourseDetail } from "../types/courses/CourseDetail";
+import { ProjectType } from "../types/projectType";
 
 export const lessonByCourseVariant = (courseSlug: string, lesson: ILessonVariants) => {
   if (!lesson) return
@@ -112,5 +113,33 @@ export const addCurrentLessonToSession = (
       'completedLessons',
       completedLessonsFromSession
     );
+  }
+}
+
+export const createTaskTemplate = (
+  projectType: ProjectType,
+  prompt: string,
+  code: IContentCode
+) => {
+  if (projectType === ProjectType.VANILLA) {
+    return `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Document</title>
+    </head>
+    <body>
+    <!-- ${prompt} -->
+    <script>
+      const app = document.getElementById("app");
+      const scene = document.createElement("a-scene");
+      ${code.content}
+    </script>
+    
+    <div id="app"></div>
+    </body>
+    </html>
+`
   }
 }

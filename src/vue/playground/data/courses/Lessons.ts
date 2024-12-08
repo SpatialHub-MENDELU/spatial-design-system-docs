@@ -32,8 +32,7 @@ export const lessonsData: ILessonVariants[] = [
       <p>Welcome to the <span>Spatial Design System Course in Vue!</span> This course is designed to equip you with the essential skills and knowledge to create immersive augmented and virtual reality experiences using the <span>Spatial Design System</span> library. Whether you're a developer looking to expand your expertise or a designer eager to bring your AR/VR concepts to life, this course offers a comprehensive guide to mastering the components and functionalities of the <span>Spatial Design System</span>.</p>
       <p>Throughout the course, you’ll explore the key components that make up the <span>Spatial Design System</span>. Each lesson is thoughtfully designed to introduce new features and concepts, gradually building your expertise. Additionally, the lessons will include practical exercises to help you apply what you’ve learned and deepen your understanding.</p>
       <p>By the end of this course, you will have a strong grasp of how to use the <span>Spatial Design System</span> to create advanced AR/VR projects. You’ll be able to implement core components, tailor them to your specific needs, and confidently deploy your applications.</p>
-      </div>`,
-    },
+      </div>`    },
     vanillaJSVariant: {
       content: `<div>
       <p>Welcome to the <span>Spatial Design System Course in Vanilla JS!</span> This course is designed to equip you with the essential skills and knowledge to create immersive augmented and virtual reality experiences using the <span>Spatial Design System</span> library. Whether you're a developer looking to expand your expertise or a designer eager to bring your AR/VR concepts to life, this course offers a comprehensive guide to mastering the components and functionalities of the <span>Spatial Design System</span>.</p>
@@ -202,6 +201,36 @@ export const lessonsData: ILessonVariants[] = [
 ></a-ar-menu>`
         },
       ],
+      task: {
+        id: 1,
+        prompt: 'Create a filled 3D menu with the items listed below using the ar-menu component. The menu will be at position [3 2 -7].',
+        code: {
+          lang: LanguageEnum.MARKUP,
+          content: `items="[
+  {'color':'white','icon':'/content-save','title':'Save','textColor':'black'},
+  {'color':'white','icon':'/close-circle','title':'Quit','textColor':'black'},
+  {'color':'white','icon':'/settings','title':'Settings','textColor':'black'},
+  {'color':'white','icon':'/file-plus','title':'New file','textColor':'black'}
+]"`
+        },
+        hint: {
+          lang: LanguageEnum.MARKUP,
+          content: `<a-ar-menu
+  position="0 1.5 -3"
+  visible="true"
+  primary="#018A6C"
+  items="[
+    {'color':'white','icon':'/content-save','title':'Save','textColor':'black'},
+    {'color':'white','icon':'/close-circle','title':'Quit','textColor':'black'},
+    {'color':'white','icon':'/settings','title':'Settings','textColor':'black'},
+    {'color':'white','icon':'/file-plus','title':'New file','textColor':'black'}
+  ]"
+  variant="filled"
+  layout="circle"
+></a-ar-menu>`
+        },
+        testCases: []
+      }
     },
   },
   {

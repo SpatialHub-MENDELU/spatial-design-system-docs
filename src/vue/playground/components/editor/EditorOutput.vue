@@ -7,9 +7,9 @@ import { useStore } from 'vuex';
 const playgroundStore = useStore()
 const layout = computed(() => playgroundStore.getters.layout);
 const projectType = computed(() => playgroundStore.getters.projectType)
+const output = computed(() => playgroundStore.getters.output);
 
 const props = defineProps<{
-  output: string;
   loading: ILoading;
 }>();
 

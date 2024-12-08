@@ -6,6 +6,7 @@ import JSZip from 'jszip';
 import { getFileIcon } from '../utils/FileExtensionsAndIcons';
 import { packageJsonVanilla, MainFile, packageJsonVue } from '../components/editor/files';
 import { ProjectType } from '../types/projectType';
+import { IContentCode } from '../types/courses/Lessons';
 
 export class WebContainerService {
   private static instance: WebContainerService;
@@ -280,7 +281,7 @@ export class WebContainerService {
     this.openedFiles.filter((f) => f === file);
   }
 
-  async createProject(projectType: ProjectType) {
+  async createProject(projectType: ProjectType, task?: string) {
     await this.ensureInitialized();
     if (!this.webContainerInstance) return;
 
@@ -354,6 +355,11 @@ export class WebContainerService {
         throw new Error(
           `Dependency installation failed with exit code ${installExitCode}`
         );
+      }
+
+      if (projectType === ProjectType.VANILLA && task) {
+        await this.writeFile('/index.html', task)
+        await this.readFile('/index.html')
       }
 
       const devProcess = await this.webContainerInstance.spawn('npm', [
