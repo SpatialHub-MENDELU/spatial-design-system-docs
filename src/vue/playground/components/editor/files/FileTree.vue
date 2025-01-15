@@ -267,7 +267,6 @@ const getContextMenuItems = (node: TreeNode): MenuItem[] => {
 };
 
 const fetchItems = async () => {
-  console.log('fetch');
   await fetchFolders();
 };
 
@@ -329,14 +328,11 @@ const removeItem = async (item: FolderItem) => {
   if (!webContainersService) return;
 
   try {
-
     const filteredItems = await webContainersService.removeItem(item);
     folders.value = filteredItems as TreeNode[];
-    console.log(item)
     playgroundStore.dispatch('closeFile', {
     file: {...item},
     update: async (filePath: string) => {
-      console.log(filePath);
       return await webContainersService?.readFile(filePath);
     },
   });

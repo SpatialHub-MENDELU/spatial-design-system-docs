@@ -13,6 +13,7 @@ import { getAutompleteByFileExtension } from '../../utils/Autocomplete';
 import { useStore } from 'vuex';
 import { WebContainerService } from '../../services/webContainersService';
 import { SessionService } from '../../services/sessionService';
+import { LanguageSupport } from '@codemirror/language';
 
 const playgroundStore = useStore()
 const openedFilePath = computed(() => playgroundStore.getters.currentFilePath);
@@ -51,12 +52,23 @@ const extensions = computed(() => {
   const customAutocomplete = autocompletion({
     override: [
       (context) => {
-        const word = context.matchBefore(/\w*/);
+        const word = context.matchBefore(/[\w-]*/);
         if (!word || word.from === word.to) return null;
+        
+        // Get the code before the cursor (last 50 characters) to check the context.
+        const textBeforeCursor = context.state.sliceDoc(word.from - 50, word.from);
+        const isInsideString = /["'`]/.test(textBeforeCursor.charAt(textBeforeCursor.length - 1));
+        const isInsideTag = /<[^>]*$/.test(textBeforeCursor);
+        const autocompleteForString = (isInsideString || isInsideTag) 
+          ? getAutompleteByFileExtension(FileExtensions.HTML).filter((comp) =>
+              comp.value.startsWith(word.text)
+            )
+          : [];
 
         const matches = [
+          ...autocompleteForString,
           ...state.sdsComponentsAndPrimitives.filter((comp) =>
-            comp.value.startsWith(word.text)
+            comp.value.includes(word.text)
           ),
           ...getAutompleteByFileExtension(fileExtension).filter((comp) =>
             comp.value.startsWith(word.text)
@@ -81,8 +93,8 @@ const extensions = computed(() => {
     ],
   });
 
-  let languageExtension;
-  if (fileExtension === FileExtensions.JS || fileExtension === FileExtensions.TS) {
+  let languageExtension: LanguageSupport;
+  if ([FileExtensions.JS, FileExtensions.TS, FileExtensions.HTML].includes(fileExtension)) {
     languageExtension = javascript();
   } else if (fileExtension === FileExtensions.HTML) {
     languageExtension = html();

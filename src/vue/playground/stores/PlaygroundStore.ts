@@ -69,27 +69,25 @@ const playgroundStore = createStore({
       state.openedFiles = state.openedFiles.filter(
         (f: FolderItem) => f.name !== payload.file.name
       );
-      console.log(state.currentFilePath, payload.file.path)
-      if (payload.file.path === state.currentFilePath) {
-        const newOpenItem = state.openedFiles.length > 0 ? state.openedFiles[0] : null;
-        if (newOpenItem) {
-          state.currentFilePath = newOpenItem.path;
-    
-          if (payload.update) {
-            try {
-              const content = await payload.update(newOpenItem.path ?? newOpenItem.name);
-              commit('updateCurrentFileContent', content);
-            } catch (error) {
-              console.error('Error updating file content:', error); 
-            }
-          }
-        } else {
-          state.currentFilePath = '';
-          state.currentFileContent = '';
-          state.output = '';
+
+      const isCurrentFile = payload.file.path === state.currentFilePath;
+      const newOpenItem = state.openedFiles.length > 0 ? state.openedFiles[0] : null;
+
+      if (!isCurrentFile) return
+
+      if (newOpenItem) {
+        state.currentFilePath = newOpenItem.path;
+  
+        if (payload.update) {
+          const content = await payload.update(newOpenItem.path ?? newOpenItem.name);
+          commit('updateCurrentFileContent', content);
         }
+      } else {
+        state.currentFilePath = '';
+        state.currentFileContent = '';
+        state.output = '';
       }
-    }
+    },
   }      
 });
 

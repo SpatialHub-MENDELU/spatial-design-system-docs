@@ -7,7 +7,7 @@
       v-for="file in openedFiles"
       :key="file.name"
     >
-      <div class="flex items-center gap-0.5" @click="setOpenedFile(file)">
+      <div class="flex items-center gap-0.5 cursor-pointer" @click="setOpenedFile(file)">
         <i
           :class="
             (getFileIcon(file)),
@@ -60,7 +60,6 @@ const removeFile = (file: FolderItem) => {
   playgroundStore.dispatch('closeFile', {
     file,
     update: async (filePath: string) => {
-      console.log(filePath);
       return await webContainersService?.readFile(filePath);
     },
   });

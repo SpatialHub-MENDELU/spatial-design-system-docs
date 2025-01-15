@@ -6,8 +6,6 @@ import { useStore } from 'vuex';
 
 const playgroundStore = useStore()
 const layout = computed(() => playgroundStore.getters.layout);
-const projectType = computed(() => playgroundStore.getters.projectType)
-const output = computed(() => playgroundStore.getters.output);
 
 const props = defineProps<{
   loading: ILoading;
@@ -38,14 +36,14 @@ const outputIcon = () => {
         !outputState.isVisible && layout === Layout.VERTICAL,
       'hidden-output--horizontal':
         !outputState.isVisible && layout === Layout.HORIZONTAL,
-      ' lg:border-l border-t-0': layout === Layout.HORIZONTAL,
-      ' lg:border-t border-t-0 border-l-0': layout === Layout.VERTICAL,
+      ' lg:border-l': layout === Layout.HORIZONTAL && !props.loading.installing && !props.loading.running,
+      ' border-t-0': layout === Layout.HORIZONTAL
     }"
   >
     <div
       class="w-full px-2 py-1 justify-between flex items-center h-8"
       :class="{
-        'border-b border-border-color': outputState.isVisible,
+        'lg:border-b border-border-color': outputState.isVisible,
         hidden: props.loading.installing || props.loading.running,
       }"
     >
@@ -71,6 +69,9 @@ const outputIcon = () => {
     <div
       v-if="outputState.isVisible"
       class="h-full lg:px-0 px-8 flex items-center justify-center"
+      :class="{
+        'lg:border-t-0 border-t border-border-color': loading
+      }"
     >
       <div
         v-if="props.loading.installing || props.loading.running"

@@ -44,14 +44,14 @@ mainAlign: center;
 secondaryAlign: center;
 gap: 50 50;
 wrap: true;
-"
+">
 
-> <a-plane color="white"></a-plane>
-> <a-plane color="white"></a-plane>
-> <a-plane color="white"></a-plane>
-> <a-plane color="white"></a-plane>
-> </a-plane>
-> </template>
+  <a-plane color="white"></a-plane>
+  <a-plane color="white"></a-plane>
+  <a-plane color="white"></a-plane>
+  <a-plane color="white"></a-plane>
+</a-plane>
+</template>
 
 <template #code>
 

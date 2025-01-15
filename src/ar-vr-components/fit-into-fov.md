@@ -41,12 +41,11 @@ Or combine it with [auto-scale](/ar-vr-components/auto-scale) to fit the object 
 
 <template #output v-if="renderScene">
 <a-plane
-position="0 1.6 -4"
-color="#03FCC6"
-fit-into-fov="margin: 10"
-
-> </a-plane>
-> </template>
+    position="0 1.6 -4"
+    color="#03FCC6"
+    fit-into-fov="margin: 10"
+></a-plane>
+</template>
 
 <template #code>
 
@@ -84,9 +83,9 @@ billboard
 fit-into-fov="margin: 10;"
 follow-camera="angle: 1;"
 
-> </a-plane>
-> <a-box position="0 -0.7 0" width="14" height="0.1" depth="14" src="../grid-light-1850w.png"></a-box>
-> </template>
+</a-plane>
+<a-box position="0 -0.7 0" width="14" height="0.1" depth="14" src="../grid-light-1850w.png"></a-box>
+</template>
 
 <template #code>
 

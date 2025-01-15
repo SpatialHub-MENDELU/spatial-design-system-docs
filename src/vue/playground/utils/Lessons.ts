@@ -4,11 +4,7 @@ import ComponentExample from "../../ComponentExample.vue";
 import { h, render } from 'vue'
 import { codeLanguage } from '../data/courses/Lessons'
 
-import Prism from "prismjs";
-import 'prismjs/themes/prism.css';
-import 'prismjs/components/prism-markup.js';
-import 'prismjs/components/prism-css.js';
-import 'prismjs/components/prism-javascript.js';
+import * as shiki from 'shiki';
 
 import { ToastServiceMethods } from "primevue/toastservice";
 import { SessionService } from "../services/sessionService";
@@ -26,7 +22,7 @@ export const lessonByCourseVariant = (courseSlug: string, lesson: ILessonVariant
   }
 }
 
-export const replacePlaceholder = (
+export const replacePlaceholder = async (
   placeholder: HTMLElement,
   output: string,
   codes: IContentCode[],
@@ -65,7 +61,23 @@ export const replacePlaceholder = (
     );
 
     render(vnode, placeholder);
-    Prism.highlightAll();
+    const highlighter = await shiki.createHighlighter({
+      themes: ['github-light-default'],
+      langs: ['javascript', 'css', 'html', 'vue', 'vue-html', 'typescript'],
+    });
+    
+    codes.forEach(code => {
+      const lang = code.lang;
+      const highlightedCode = highlighter.codeToHtml(code.content, {
+        lang: 'javascript',
+        theme: 'github-light-default'
+      });
+      const codeBlock = placeholder.querySelector(`.language-${lang}`);
+      
+      if (codeBlock) {
+        codeBlock.innerHTML = highlightedCode;
+      }
+    });
   }
 }
 

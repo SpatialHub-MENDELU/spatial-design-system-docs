@@ -4,9 +4,8 @@ import { FileType } from '../types/fileType';
 import { FolderItem } from '../types/fileItem';
 import JSZip from 'jszip';
 import { getFileIcon } from '../utils/FileExtensionsAndIcons';
-import { packageJsonVanilla, MainFile, packageJsonVue } from '../components/editor/files';
+import { packageJsonVanilla, MainVanillaFile, MainVueFile, packageJsonVue } from '../components/editor/files';
 import { ProjectType } from '../types/projectType';
-import { IContentCode } from '../types/courses/Lessons';
 
 export class WebContainerService {
   private static instance: WebContainerService;
@@ -286,34 +285,11 @@ export class WebContainerService {
     if (!this.webContainerInstance) return;
 
     try {
-      const initProcess = await this.webContainerInstance.spawn('npm', [
-        'create',
-        'vite@latest',
-        '.'
+      const template = projectType === ProjectType.VANILLA ? 'vanilla' : 'vue';
+      const initProcess = await this.webContainerInstance.spawn('sh', [
+        '-c',
+        `npm init vite@latest . --yes -- --template ${template}`
       ]);
-
-      const inputStream = initProcess.input.getWriter();
-
-      let output = '';
-      initProcess.output.pipeTo(
-        new WritableStream({
-          write(chunk: string) {
-            output += chunk;
-            if (chunk.includes('Current directory is not empty')) {
-              inputStream.write('\u001B[B\u001B[B\n');
-            } else if (chunk.includes('Select a framework:') && chunk.includes('Use arrow-keys')) {
-              if (projectType === ProjectType.VANILLA) inputStream.write('\n');
-              else if (projectType === ProjectType.VUE) inputStream.write('\u001B[B\n');
-            } else if (chunk.includes('Select a variant:') && chunk.includes('Use arrow-keys')) {
-              inputStream.write('\u001B[B\n');
-            } else if (chunk.includes('Project name')) {
-              inputStream.write('sds-project\n');
-            } else if (chunk.includes('Ok to proceed?')) {
-              inputStream.write('y\n');
-            }
-          },
-        })
-      );
 
       const initExitCode = await initProcess.exit;
 
@@ -328,10 +304,9 @@ export class WebContainerService {
         projectType === ProjectType.VANILLA ? packageJsonVanilla : packageJsonVue
       );
 
-      await this.webContainerInstance.fs.writeFile(
-        '/src/main.js',
-        MainFile
-      );
+      const filePath = projectType === ProjectType.VANILLA ? '/src/main.js' : '/src/App.vue';
+      const fileContent = projectType === ProjectType.VANILLA ? MainVanillaFile : MainVueFile;
+      await this.webContainerInstance.fs.writeFile(filePath, fileContent);
 
       const installProcess = await this.webContainerInstance.spawn('npm', [
         'install',
@@ -355,12 +330,7 @@ export class WebContainerService {
         throw new Error(
           `Dependency installation failed with exit code ${installExitCode}`
         );
-      }
-
-      if (projectType === ProjectType.VANILLA && task) {
-        await this.writeFile('/index.html', task)
-        await this.readFile('/index.html')
-      }
+      }     
 
       const devProcess = await this.webContainerInstance.spawn('npm', [
         'run',

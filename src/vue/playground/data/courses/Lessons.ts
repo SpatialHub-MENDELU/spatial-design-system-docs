@@ -1,4 +1,3 @@
-import { languages } from 'prismjs';
 import { ILesson, ILessonVariants } from '../../types/courses/Lessons';
 
 export enum LanguageEnum {

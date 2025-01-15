@@ -7,7 +7,6 @@ import WelcomeBanner from '../components/shared/WelcomeBanner.vue';
 import { useStore } from 'vuex';
 import FileTree from '../components/editor/files/FileTree.vue';
 import PlaygroundEditor from '../components/editor/PlaygroundEditor.vue';
-import { useRouter } from 'vue-router';
 import { IStateEditor } from '../types/States';
 
 const playgroundStore = useStore();

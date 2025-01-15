@@ -15,7 +15,6 @@ const state = reactive<{ buttonText: string }>({
 })
 
 const copyTextToClipboard = async () => {
-  console.log('clicked')
   try {
     await navigator.clipboard.writeText(props.url);
     state.buttonText = 'Copied'
