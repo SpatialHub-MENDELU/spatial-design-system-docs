@@ -9,7 +9,7 @@ import { autocompletion } from '@codemirror/autocomplete';
 import { computed, inject, onMounted, reactive } from 'vue';
 import { AutocompleteMatch } from '../../types/autocomplete';
 import { FileExtensions } from '../../types/fileType';
-import { getAutompleteByFileExtension } from '../../utils/Autocomplete';
+import { getAframeAutocomplete, getAutompleteByFileExtension, getSDSAutocomplete } from '../../utils/Autocomplete';
 import { useStore } from 'vuex';
 import { WebContainerService } from '../../services/webContainersService';
 import { SessionService } from '../../services/sessionService';
@@ -27,11 +27,9 @@ const openedFileContent = computed(() => playgroundStore.getters.currentFileCont
 const state = reactive<{
   fontSize: number;
   editorIsShown: boolean;
-  sdsComponentsAndPrimitives: AutocompleteMatch[]
 }>({
   fontSize: 14,
   editorIsShown: false,
-  sdsComponentsAndPrimitives: []
 });
 
 const props = defineProps<{
@@ -67,9 +65,8 @@ const extensions = computed(() => {
 
         const matches = [
           ...autocompleteForString,
-          ...state.sdsComponentsAndPrimitives.filter((comp) =>
-            comp.value.includes(word.text)
-          ),
+          ...getSDSAutocomplete(),
+          ...getAframeAutocomplete(),
           ...getAutompleteByFileExtension(fileExtension).filter((comp) =>
             comp.value.startsWith(word.text)
           )
@@ -109,26 +106,6 @@ const extensions = computed(() => {
 
 const updateCode = (newCode: string) => {
   playgroundStore.commit('updateCurrentFileContent', newCode);
-  if (debounceTimer) clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(async () => {
-    try {
-      if (state.sdsComponentsAndPrimitives.length === 0) {
-        const result = await webContainersService?.findAFrameComponentsInDirectory('node_modules/spatial-design-system') as string[]
-        state.sdsComponentsAndPrimitives = result.map(r => {
-          return {
-            type: 'component',
-            value: r
-          }
-        })
-      }
-      await webContainersService?.writeFile(
-        openedFilePath.value,
-        openedFileContent.value
-      );
-    } catch (error) {
-      console.error('Error during runCode execution:', error.message);
-    }
-  }, 500);
 };
 
 </script>

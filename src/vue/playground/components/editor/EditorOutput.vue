@@ -9,6 +9,7 @@ const layout = computed(() => playgroundStore.getters.layout);
 
 const props = defineProps<{
   loading: ILoading;
+  isDetail: boolean
 }>();
 
 const outputState = reactive({
@@ -30,21 +31,23 @@ const outputIcon = () => {
 
 <template>
   <div
-    class="output duration-300 lg:w-full block border-border-color lg:border-0 border border-border-color lg:h-full h-[30rem] pb-6"
+    class="output duration-300 lg:w-full block border-border-color border-border-color lg:h-full h-[30rem] pb-6"
     :class="{
       'hidden-output--vertical':
         !outputState.isVisible && layout === Layout.VERTICAL,
       'hidden-output--horizontal':
         !outputState.isVisible && layout === Layout.HORIZONTAL,
-      ' lg:border-l': layout === Layout.HORIZONTAL && !props.loading.installing && !props.loading.running,
-      ' border-t-0': layout === Layout.HORIZONTAL
+      ' lg:border-0 lg:border-l border border-t-0': layout === Layout.HORIZONTAL && !props.isDetail && !props.loading.installing && !props.loading.running,
+      ' border border-t-0': props.isDetail && !props.loading.installing && !props.loading.running,
+      ' lg:border-0 border border-t-0': layout === Layout.VERTICAL && !props.isDetail && !props.loading.installing && !props.loading.running,
     }"
   >
     <div
       class="w-full px-2 py-1 justify-between flex items-center h-8"
       :class="{
-        'lg:border-b border-border-color': outputState.isVisible,
+        'lg:border-b lg:border-t border-border-color': outputState.isVisible,
         hidden: props.loading.installing || props.loading.running,
+        'border-t': props.isDetail,
       }"
     >
       <h2
@@ -70,7 +73,7 @@ const outputIcon = () => {
       v-if="outputState.isVisible"
       class="h-full lg:px-0 px-8 flex items-center justify-center"
       :class="{
-        'lg:border-t-0 border-t border-border-color': loading
+        'border-t-0 border-border-color': loading
       }"
     >
       <div

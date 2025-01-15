@@ -4,7 +4,6 @@ import { FileType } from '../types/fileType';
 import { FolderItem } from '../types/fileItem';
 import JSZip from 'jszip';
 import { getFileIcon } from '../utils/FileExtensionsAndIcons';
-import { packageJsonVanilla, MainVanillaFile, MainVueFile, packageJsonVue } from '../components/editor/files';
 import { ProjectType } from '../types/projectType';
 
 export class WebContainerService {
@@ -49,11 +48,13 @@ export class WebContainerService {
     }
 
     this.webContainerInstance.on('server-ready', (port, url) => {
-      const iframeEl = document.querySelector('iframe') as unknown as HTMLIFrameElement;
-        if (iframeEl) {
-          iframeEl.src = url;
-        }
-      });
+      const iframeEl = document.querySelector(
+        'iframe'
+      ) as unknown as HTMLIFrameElement;
+      if (iframeEl) {
+        iframeEl.src = url;
+      }
+    });
 
     this.isBooting = false;
     return this.webContainerInstance;
@@ -273,45 +274,51 @@ export class WebContainerService {
 
   public openFile(file: FolderItem) {
     if (this.openedFiles.indexOf(file) < 0) this.openedFiles.push(file);
-    console.log(this.getAllOpenedFiles());
   }
 
   public closeFile(file: FolderItem) {
     this.openedFiles.filter((f) => f === file);
   }
 
-  async createProject(projectType: ProjectType, task?: string) {
+  async createProject(projectType: ProjectType, task?: string): Promise<boolean> {
     await this.ensureInitialized();
-    if (!this.webContainerInstance) return;
-
+    if (!this.webContainerInstance) return false;
+  
     try {
-      const template = projectType === ProjectType.VANILLA ? 'vanilla' : 'vue';
-      const initProcess = await this.webContainerInstance.spawn('sh', [
-        '-c',
-        `npm init vite@latest . --yes -- --template ${template}`
-      ]);
-
-      const initExitCode = await initProcess.exit;
-
-      if (initExitCode !== 0) {
-        throw new Error(
-          `Project initialization failed with exit code ${initExitCode}`
-        );
-      }
-
-      await this.webContainerInstance.fs.writeFile(
-        '/package.json',
-        projectType === ProjectType.VANILLA ? packageJsonVanilla : packageJsonVue
-      );
-
-      const filePath = projectType === ProjectType.VANILLA ? '/src/main.js' : '/src/App.vue';
-      const fileContent = projectType === ProjectType.VANILLA ? MainVanillaFile : MainVueFile;
-      await this.webContainerInstance.fs.writeFile(filePath, fileContent);
-
+      const templatePath =
+        projectType === ProjectType.VANILLA
+          ? '/templates/vanilla'
+          : '/templates/vue';
+  
+      const copyTemplate = async (srcPath: string, destPath: string) => {
+        const response = await fetch(`${srcPath}/template-files.json`);
+        const fileList = await response.json();
+  
+        for (const file of fileList) {
+          const src = `${srcPath}/${file.path}`;
+          const dest = `${destPath}/${file.path}`;
+  
+          if (file.isDirectory) {
+            await this.createFolder(dest);
+          } else {
+            const contentResponse = await fetch(src);
+            if (!contentResponse.ok) {
+              throw new Error(
+                `Failed to fetch ${src}: ${contentResponse.statusText}`
+              );
+            }
+            const content = await contentResponse.text();
+            await this.writeFile(dest, content);
+          }
+        }
+      };
+  
+      await copyTemplate(templatePath, '/');
+  
       const installProcess = await this.webContainerInstance.spawn('npm', [
         'install',
       ]);
-
+  
       let installOutput = '';
       installProcess.output.pipeTo(
         new WritableStream({
@@ -320,7 +327,7 @@ export class WebContainerService {
           },
         })
       );
-
+  
       const installExitCode = await installProcess.exit;
       if (installExitCode !== 0) {
         console.error(
@@ -330,82 +337,25 @@ export class WebContainerService {
         throw new Error(
           `Dependency installation failed with exit code ${installExitCode}`
         );
-      }     
-
+      }
+  
       const devProcess = await this.webContainerInstance.spawn('npm', [
         'run',
         'dev',
       ]);
-
+  
       devProcess.output.pipeTo(
         new WritableStream({
           write(chunk: string) {
-            console.log(chunk)
+            console.log(chunk);
           },
         })
       );
+  
+      return true
     } catch (error) {
       console.error('Error creating project:', error);
       throw error;
-    }
-  }
-
-  public async findAFrameComponents(filePath: string): Promise<string[]> {
-    try {
-      const fileContent = await this.readFile(filePath);
-      if (!fileContent) {
-        return [];
-      }
-
-      const componentNames: string[] = [];
-      const aFrameComponentRegex = /AFRAME\.registerComponent\(['"`](.+?)['"`]/g;
-      const aFramePrimitiveRegex = /AFRAME\.registerPrimitive\(['"`](.+?)['"`]/g;
-
-      let match;
-      while ((match = aFrameComponentRegex.exec(fileContent)) !== null) {
-        componentNames.push(match[1]);
-      }
-
-      while ((match = aFramePrimitiveRegex.exec(fileContent)) !== null) {
-        componentNames.push(match[1]);
-      }
-
-      return componentNames;
-    } catch (error) {
-      console.error('Error reading file:', error.message);
-      return [];
-    }
-  }
-
-  public async findAFrameComponentsInDirectory(directory: string) {
-    try {
-      const files = await this.listFiles(directory);
-
-      const results: string[] = [];
-
-      for (const file of files as string[]) {
-        const filePath = `${directory}/${file}`;
-        const isDirectory = await this.checkIfDirectory(filePath);
-
-        if (!isDirectory && file.endsWith('.js')) {
-          const components = await this.findAFrameComponents(filePath);
-          if (components.length > 0) {
-            results.push(...components);
-          }
-        }
-
-        if (isDirectory) {
-          const subDirectoryResults = await this.findAFrameComponentsInDirectory(
-            `${directory}/${file}`
-          );
-          results.push(...subDirectoryResults);
-        }
-      }
-
-      return results;
-    } catch (error) {
-      console.error(`Chyba při zpracování adresáře ${directory}:`, error);
-      return [];
     }
   }
 }

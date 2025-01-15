@@ -163,15 +163,16 @@ const addLessonToSession = () => {
     <Toast position="bottom-center" />
 
     <div
-      class="main-content courses lg:h-full h-full mx-auto relative flex w-full lg:flex-row flex-col"
+      class="main-content courses lg:h-full h-full mx-auto relative flex w-full lg:flex-row flex-col w-screen"
     >
       <Sidebar />
       <div
-        class="relative w-full xl:p-16 lg:p-12 pt-6 h-auto overflow-y-hidden flex gap-16 flex-row"
-        v-if="state.canBeDisplayed"
+      class="relative w-full xl:p-16 lg:p-12 pt-6 h-auto overflow-y-hidden flex gap-16 lg:flex-row flex-col"
+      v-if="state.canBeDisplayed"
+      style="max-width: 100%;"
       >
-        <div class="w-full h-full flex flex-col">
-          <CoursesOverview
+        <div class="lg:w-1/2 w-full h-full block overflow-x-auto">
+           <CoursesOverview
             :is-visible="state.isOverviewVisible"
             :active-course="state.activeCourse as ICourseDetail"
             :lessons-from-session="state.lessonsFromSession"
@@ -226,12 +227,16 @@ const addLessonToSession = () => {
                 >Completed: {{ state.completedIn }}</span
               >
             </div>
-          </div>
+          </div> 
         </div>
-        <div class="w-full flex flex-col"
+        <div class="lg:w-1/2 w-full flex flex-col"
           v-if="state.activeLesson?.task">
-          <Codemirror />
-          <EditorOutput :loading="state.loading" />
+          <Codemirror :dynamic-class="{
+            'border border-b-0 border-border-color': !state.loading.installing && !state.loading.running,
+          }" />
+          <EditorOutput
+            :loading="state.loading"
+            :is-detail="true" />
         </div>
       </div>
       <LessonError v-else />

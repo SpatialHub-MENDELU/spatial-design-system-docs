@@ -21,7 +21,8 @@
       </div>
     </div>
 
-    <EditorOutput :loading="loading" />
+    <EditorOutput :loading="loading"
+      :is-detail="false" />
   </div>
 </template>
 
@@ -63,13 +64,18 @@ onMounted(async () => {
     if (!projectType) {
       throw new Error("No project type selected.");
     }
+
     await webContainersService?.ensureInitialized();
-    await webContainersService?.createProject(projectType.value)
+
+    await webContainersService?.createProject(projectType.value);
     props.loading.installing = false;
   } catch (error) {
-    console.error('Error during project creation:', error);
+    console.error("Error during project creation:", error);
+    props.loading.installing = false;
+    props.loading.running = false;
   }
 });
+
 
 watch(props.loading, () => {
   if (!props.loading.installing && !props.loading.running) {

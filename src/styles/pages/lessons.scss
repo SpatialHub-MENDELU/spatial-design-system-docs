@@ -121,6 +121,13 @@
     }
   }
 
+  pre code {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+  }  
+
   .code-block {
     font-weight: normal !important;
   }

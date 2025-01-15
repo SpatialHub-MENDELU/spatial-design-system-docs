@@ -1,6 +1,8 @@
+import { aframeAttributes, aframeComponentsAndPrimitives, aframeEvents, aframeProperties } from "../constants/aframeAutocomplete"
 import { atRulesCSS, pseudoClassesCSS, tagsCSS, valuesCSS } from "../constants/cssAutocomplete"
 import { BoolHTML, CharsetsHTML, EncsHTML, EventAttributesHTML, GlobalAttrsHTML, MethodsHTML, TagsHTML, TargetsHTML } from "../constants/htmlAutocomplete"
 import { keywordsJS } from "../constants/jsAutocomplete"
+import { sdsComponentsAndPrimitives, sdsEvents, sdsProperties } from "../constants/sdsAutocomplete"
 import { AutocompleteMatch } from "../types/autocomplete"
 import { FileExtensions } from "../types/fileType"
 
@@ -46,6 +48,23 @@ function getCSSAutocomplete() {
 
 function getJSAutocomplete() {
   return keywordsJS
+}
+
+export function getSDSAutocomplete() {
+  return [
+    ...sdsComponentsAndPrimitives,
+    ...sdsEvents,
+    ...sdsProperties
+  ]
+}
+
+export function getAframeAutocomplete() {
+  return [
+    ...aframeAttributes,
+    ...aframeComponentsAndPrimitives,
+    ...aframeEvents,
+    ...aframeProperties
+  ]
 }
 
 export function getAutompleteByFileExtension(extension: FileExtensions): AutocompleteMatch[] {

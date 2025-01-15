@@ -42,7 +42,6 @@
 
     <Tree
       :value="folders"
-      @dragstart="dragStart"
       class="overflow-y-auto max-h-full duration-300"
       :class="{
         'lg:max-w-0 lg:max-h-full lg:h-full h-0': !fileTreeState.isVisible,
@@ -368,7 +367,4 @@ watch(props.loading, async () => {
 
 fetchFolders();
 
-const dragStart = (e) => {
-  console.log(e)
-}
 </script>
