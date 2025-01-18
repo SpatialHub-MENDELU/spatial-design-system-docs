@@ -126,6 +126,11 @@
     word-wrap: break-word;
     overflow-wrap: break-word;
     max-width: 100%;
+    font-size: clamp(0.85rem, 0.85vw, 1.35rem) !important;
+
+    * {
+      font-size: clamp(0.85rem, 0.85vw, 1.35rem) !important;
+    }
   }  
 
   .code-block {

@@ -69,10 +69,10 @@ const setOpenedFile = async (file: FolderItem) => {
   playgroundStore.commit('addFile', file);
   const path = file.path ?? file.name;
 
-  if (getFileExtension(path, FileType.FILE) === FileExtensions.HTML) {
-    const htmlContent = await webContainersService?.readFile(path);
-    playgroundStore.commit('setOuput', htmlContent as string);
-  }
+  // if (getFileExtension(path, FileType.FILE) === FileExtensions.HTML) {
+  //   const htmlContent = await webContainersService?.readFile(path);
+  //   playgroundStore.commit('setOuput', htmlContent as string);
+  // }
 
   try {
     const content = await webContainersService?.readFile(path);

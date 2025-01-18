@@ -181,11 +181,9 @@ export const lessonsData: ILessonVariants[] = [
     contentCode: [
         {
           lang: LanguageEnum.JS,
-          content: 'import "spatial-design-system/primitives/ar-menu.js";'
-        },
-        {
-          lang: LanguageEnum.MARKUP,
-          content: `<a-ar-menu
+          content: `import "spatial-design-system/primitives/ar-menu.js
+
+<a-ar-menu
   position="0 1.5 -3"
   visible="true"
   primary="#018A6C"
@@ -205,15 +203,15 @@ export const lessonsData: ILessonVariants[] = [
         prompt: 'Create a filled 3D menu with the items listed below using the ar-menu component. The menu will be at position [3 2 -7].',
         code: {
           lang: LanguageEnum.MARKUP,
-          content: `items="[
-  {'color':'white','icon':'/content-save','title':'Save','textColor':'black'},
-  {'color':'white','icon':'/close-circle','title':'Quit','textColor':'black'},
-  {'color':'white','icon':'/settings','title':'Settings','textColor':'black'},
-  {'color':'white','icon':'/file-plus','title':'New file','textColor':'black'}
-]"`
+          content: `const items=[
+  {color:'white',icon:'/content-save',title:'Save',textColor:'black'},
+  {color:'white',icon:'/close-circle',title:'Quit',textColor:'black'},
+  {color:'white',icon:'/settings', title:'Settings',textColor:'black'},
+  {color:'white',icon:'/file-plus',title:'New file',textColor:'black'}
+]`
         },
         hint: {
-          lang: LanguageEnum.MARKUP,
+          lang: LanguageEnum.JS,
           content: `<a-ar-menu
   position="0 1.5 -3"
   visible="true"

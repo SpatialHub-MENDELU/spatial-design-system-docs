@@ -21,7 +21,7 @@ const toggleVisibility = () => {
 };
 
 const outputIcon = () => {
-  if (layout.value === Layout.HORIZONTAL) {
+  if (layout.value === Layout.HORIZONTAL && !props.isDetail) {
     return outputState.isVisible ? 'pi-angle-right' : 'pi-angle-left';
   }
 
@@ -34,12 +34,13 @@ const outputIcon = () => {
     class="output duration-300 lg:w-full block border-border-color border-border-color lg:h-full h-[30rem] pb-6"
     :class="{
       'hidden-output--vertical':
-        !outputState.isVisible && layout === Layout.VERTICAL,
+        !outputState.isVisible && (layout === Layout.VERTICAL || props.isDetail),
       'hidden-output--horizontal':
-        !outputState.isVisible && layout === Layout.HORIZONTAL,
+        !outputState.isVisible && layout === Layout.HORIZONTAL && !props.isDetail,
       ' lg:border-0 lg:border-l border border-t-0': layout === Layout.HORIZONTAL && !props.isDetail && !props.loading.installing && !props.loading.running,
       ' border border-t-0': props.isDetail && !props.loading.installing && !props.loading.running,
       ' lg:border-0 border border-t-0': layout === Layout.VERTICAL && !props.isDetail && !props.loading.installing && !props.loading.running,
+      ' border': props.isDetail && (props.loading.installing || props.loading.running)
     }"
   >
     <div
@@ -70,7 +71,7 @@ const outputIcon = () => {
     </div>
 
     <div
-      v-if="outputState.isVisible"
+      v-show="outputState.isVisible"
       class="h-full lg:px-0 px-8 flex items-center justify-center"
       :class="{
         'border-t-0 border-border-color': loading
