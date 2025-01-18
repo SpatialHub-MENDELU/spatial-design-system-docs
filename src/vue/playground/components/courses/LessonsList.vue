@@ -7,7 +7,8 @@ import { LESSON } from '../../constants/routes';
 
 const props = defineProps<{
   activeCourse: ICourseDetail;
-  lessonsFromSession: ILessonVariants[]
+  lessonsFromSession: ILessonVariants[];
+  activeLesson: ILessonVariants | null;
 }>();
 </script>
 
@@ -17,7 +18,10 @@ const props = defineProps<{
     :href="`${LESSON}/${activeCourse?.slug}-${lesson.id}`"
     class="flex gap-2 justify-between py-1.5 border-b border-border-color"
   >
-    <div class="flex gap-2 items-center lg:text-[16px] text-[15px]">
+    <div class="flex gap-2 items-center lg:text-[16px] text-[15px]"
+    :class="{
+      'text-primary': activeLesson?.id == lesson.id
+    }">
       <span>Lesson {{ lesson.id }}:</span>
       <p>{{ lesson.title  }}</p>
     </div>

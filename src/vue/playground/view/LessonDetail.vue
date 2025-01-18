@@ -14,7 +14,7 @@ import {
   ILesson,
   ILessonVariants,
 } from '../types/courses/Lessons';
-import { inject, onMounted, reactive, ref, nextTick } from 'vue';
+import { inject, onMounted, reactive, nextTick } from 'vue';
 import { ICourseDetail } from '../types/courses/CourseDetail';
 import CoursesOverview from '../components/courses/CoursesOverview.vue';
 import { LESSON } from '../constants/routes';
@@ -28,8 +28,9 @@ import Toast from 'primevue/toast';
 import { WebContainerService } from '../services/webContainersService';
 import { ProjectType } from '../types/projectType';
 
-import "spatial-design-system/primitives/ar-menu.js";
+import 'spatial-design-system/primitives/ar-menu.js';
 import playgroundStore from '../stores/PlaygroundStore';
+import HintDialog from '../components/courses/HintDialog.vue';
 
 const toast = useToast();
 
@@ -45,6 +46,8 @@ const state = reactive<IStateLessonDetail>({
   activeLesson: null,
   nextLessonLink: null,
   isOverviewVisible: false,
+  isContentVisible: true,
+  isHintVisible: false,
   completedIn: null,
   canBeDisplayed: false,
   lessonsFromSession: [],
@@ -134,12 +137,13 @@ onMounted(async () => {
         state.activeCourse?.type,
         state.activeLesson.task.prompt,
         state.activeLesson.task.code
-      )
+      );
       await webContainersService?.createProject(
         state.activeCourse?.type ?? ProjectType.VANILLA,
         template
       );
-      playgroundStore.commit('updateCurrentFileContent', template)
+
+      playgroundStore.commit('readFile', { content: template, path: '/index.html' });
       state.loading.installing = false;
     }
   } catch (error) {
@@ -156,6 +160,22 @@ const addLessonToSession = () => {
     );
   }
 };
+
+const closeHintDialog = () => {
+  state.isHintVisible = false;
+};
+
+const showHintDialog = () => {
+  if (state.activeLesson?.task?.hint) {
+    state.isHintVisible = true;
+  } else {
+    toast.add({ severity: 'info', summary: 'No hint available' });
+  }
+};
+
+const toggleVisibility = () => {
+  state.isContentVisible = !state.isContentVisible;
+};
 </script>
 
 <template>
@@ -167,18 +187,28 @@ const addLessonToSession = () => {
     >
       <Sidebar />
       <div
-      class="relative w-full xl:p-16 lg:p-12 pt-6 h-auto overflow-y-hidden flex gap-16 lg:flex-row flex-col"
-      v-if="state.canBeDisplayed"
-      style="max-width: 100%;"
+        class="relative w-full xl:p-16 lg:p-12 pt-6 h-auto overflow-y-hidden flex lg:flex-row flex-col duration-300"
+        v-if="state.canBeDisplayed"
+        style="max-width: 100%"
+        :class="{
+          ' lg:gap-16 gap-8': state.isContentVisible,
+        }"
       >
-        <div class="lg:w-1/2 w-full h-full block overflow-x-auto">
-           <CoursesOverview
-            :is-visible="state.isOverviewVisible"
-            :active-course="state.activeCourse as ICourseDetail"
-            :lessons-from-session="state.lessonsFromSession"
-            v-on:close="state.isOverviewVisible = false"
-          />
-
+        <CoursesOverview
+          :is-visible="state.isOverviewVisible"
+          :active-course="state.activeCourse as ICourseDetail"
+          :active-lesson="state.lessonById"
+          :lessons-from-session="state.lessonsFromSession"
+          v-on:close="state.isOverviewVisible = false"
+        />
+        <div
+          class="h-full block overflow-x-auto relative duration-300"
+          :class="{
+            ' w-0 overflow-hidden': !state.isContentVisible,
+            ' lg:w-1/2 w-full': state.isContentVisible && state.activeLesson?.task,
+            ' w-full': !state.activeLesson?.task
+          }"
+        >
           <div class="flex flex-col w-full h-full">
             <div
               class="flex items-center gap-2 lg:mb-6 mb-4 cursor-pointer"
@@ -213,12 +243,12 @@ const addLessonToSession = () => {
                 lesson parameters.
               </p>
             </div>
-            <div class="flex items-end justify-end flex-col gap-3">
+            <div class="flex items-end justify-end flex-col gap-3"
+              v-if="state.nextLessonLink && !state.activeLesson?.task">
               <a
                 class="px-6 py-1 bg-primary text-white rounded-2xl font-semibold transition duration-300 ease-in-out mt-4 md:text-[16px] text-[15px] coursor-pointer"
                 :href="state.nextLessonLink"
                 @click.prevent="addLessonToSession"
-                v-if="state.nextLessonLink && !state.activeLesson?.task"
                 >Next</a
               >
               <span
@@ -227,19 +257,64 @@ const addLessonToSession = () => {
                 >Completed: {{ state.completedIn }}</span
               >
             </div>
-          </div> 
+          </div>
         </div>
-        <div class="lg:w-1/2 w-full flex flex-col"
-          v-if="state.activeLesson?.task">
-          <Codemirror :dynamic-class="{
-            'border border-b-0 border-border-color': !state.loading.installing && !state.loading.running,
-          }" />
-          <EditorOutput
-            :loading="state.loading"
-            :is-detail="true" />
+
+        <div
+          class="flex flex-col relative duration-300"
+          :class="{
+            ' lg:w-1/2 w-full': state.isContentVisible,
+            ' w-full': !state.isContentVisible,
+          }"
+          v-if="state.activeLesson?.task"
+        >
+          <Codemirror
+            :dynamic-class="{
+              'border border-b-0 border-border-color lg:h-full':
+                !state.loading.installing && !state.loading.running,
+              ' editor-hidden':
+                state.loading.installing || state.loading.running,
+            }"
+          />
+          <EditorOutput :loading="state.loading" :is-detail="true" />
+
+          <button
+            class="absolute bottom-16 right-3 h-12 w-12 cursor-pointer block z-40 lg:block hidden"
+            @click="toggleVisibility"
+          >
+            <i
+              :class="[
+                'pi',
+                state.isContentVisible
+                  ? 'pi-window-maximize'
+                  : 'pi-window-minimize',
+                'text-primary border border-primary text-[20px] duration-300 rounded-xl p-1.5 bg-white',
+              ]"
+            />
+          </button>
+
+          <div v-if="state.activeLesson?.task"
+            class="flex items-center gap-3 py-2 justify-end">
+            <a
+              class="px-6 py-1 bg-primary text-white rounded-2xl transition duration-300 ease-in-out md:text-[16px] text-[15px] coursor-pointer"
+              :href="state.nextLessonLink as string"
+              @click.prevent="addLessonToSession"
+              >Submit</a>
+
+              <button
+              class="px-6 py-1 bg-extra-light-background text-black rounded-2xl transition duration-300 ease-in-out md:text-[16px] text-[15px] coursor-pointer"
+              @click="showHintDialog"
+              >Hint</button>
+          </div>
         </div>
       </div>
       <LessonError v-else />
     </div>
   </div>
+
+  <HintDialog
+    :showDialog="state.isHintVisible"
+    :closeDialog="closeHintDialog"
+    :hint="state.activeLesson?.task?.hint"
+  />
 </template>

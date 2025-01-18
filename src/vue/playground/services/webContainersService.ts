@@ -308,7 +308,8 @@ export class WebContainerService {
               );
             }
             const content = await contentResponse.text();
-            await this.writeFile(dest, content);
+            if (task && projectType === ProjectType.VANILLA && file.path === 'index.html') await this.writeFile(dest, task);
+            else await this.writeFile(dest, content);
           }
         }
       };

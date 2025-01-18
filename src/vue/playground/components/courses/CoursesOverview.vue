@@ -6,6 +6,7 @@ import { ILessonVariants } from '../../types/courses/Lessons';
 
 const props = defineProps<{
   activeCourse: ICourseDetail;
+  activeLesson: ILessonVariants | null;
   isVisible: boolean;
   onClose: () => void;
   lessonsFromSession: ILessonVariants[]
@@ -29,6 +30,7 @@ const props = defineProps<{
     <div class="h-full overflow-y-auto mb-16">
       <LessonsList
         :active-course="activeCourse"
+        :active-lesson="activeLesson"
         :lessons-from-session="lessonsFromSession"
       />
     </div>

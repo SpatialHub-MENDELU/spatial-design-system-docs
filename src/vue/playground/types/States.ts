@@ -11,6 +11,8 @@ export interface IStateLessonDetail {
   activeLesson: ILesson | null;
   nextLessonLink: string | null;
   isOverviewVisible: boolean;
+  isContentVisible: boolean;
+  isHintVisible: boolean;
   completedIn: string | null;
   canBeDisplayed: boolean;
   lessonsFromSession: ILessonVariants[];

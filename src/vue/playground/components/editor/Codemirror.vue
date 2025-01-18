@@ -11,18 +11,18 @@ import { AutocompleteMatch } from '../../types/autocomplete';
 import { FileExtensions } from '../../types/fileType';
 import { getAframeAutocomplete, getAutompleteByFileExtension, getSDSAutocomplete } from '../../utils/Autocomplete';
 import { useStore } from 'vuex';
-import { WebContainerService } from '../../services/webContainersService';
 import { SessionService } from '../../services/sessionService';
 import { LanguageSupport } from '@codemirror/language';
+import { WebContainerService } from '../../services/webContainersService';
 
 const playgroundStore = useStore()
 const openedFilePath = computed(() => playgroundStore.getters.currentFilePath);
-let debounceTimer: any = null;
-const webContainersService = inject<WebContainerService>(
+const sessionService = inject<SessionService>('sessionService');
+  const webContainersService = inject<WebContainerService>(
   'webContainersService'
 );
-const sessionService = inject<SessionService>('sessionService');
 const openedFileContent = computed(() => playgroundStore.getters.currentFileContent);
+let debounceTimer: any = null;
 
 const state = reactive<{
   fontSize: number;
@@ -33,7 +33,7 @@ const state = reactive<{
 });
 
 const props = defineProps<{
-  dynamicClass?: Record<string, boolean>
+  dynamicClass?: Record<string, boolean>,
 }>()
 
 onMounted(() => {
@@ -106,6 +106,17 @@ const extensions = computed(() => {
 
 const updateCode = (newCode: string) => {
   playgroundStore.commit('updateCurrentFileContent', newCode);
+  if (debounceTimer) clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(async () => {
+    try {
+      await webContainersService?.writeFile(
+        openedFilePath.value,
+        openedFileContent.value
+      );
+    } catch (error) {
+      console.error('Error during runCode execution:', error.message);
+    }
+  }, 500);
 };
 
 </script>
