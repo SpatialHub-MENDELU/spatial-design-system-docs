@@ -13,9 +13,11 @@ export interface IStateLessonDetail {
   isOverviewVisible: boolean;
   isContentVisible: boolean;
   isHintVisible: boolean;
+  isErrorDialogVisible: boolean;
   completedIn: string | null;
   canBeDisplayed: boolean;
   lessonsFromSession: ILessonVariants[];
+  testErrors: string[];
   loading: ILoading
 }
 

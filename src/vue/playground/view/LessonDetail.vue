@@ -13,8 +13,9 @@ import {
   IContentCode,
   ILesson,
   ILessonVariants,
+  ITaskResult,
 } from '../types/courses/Lessons';
-import { inject, onMounted, reactive, nextTick } from 'vue';
+import { inject, onMounted, reactive, nextTick, computed } from 'vue';
 import { ICourseDetail } from '../types/courses/CourseDetail';
 import CoursesOverview from '../components/courses/CoursesOverview.vue';
 import { LESSON } from '../constants/routes';
@@ -29,8 +30,9 @@ import { WebContainerService } from '../services/webContainersService';
 import { ProjectType } from '../types/projectType';
 
 import 'spatial-design-system/primitives/ar-menu.js';
-import playgroundStore from '../stores/PlaygroundStore';
 import HintDialog from '../components/courses/HintDialog.vue';
+import TaskErrorDialog from '../components/dialogs/TaskErrorDialog.vue';
+import { useStore } from 'vuex';
 
 const toast = useToast();
 
@@ -39,6 +41,9 @@ const webContainersService = inject<WebContainerService>(
   'webContainersService'
 );
 const { params } = useData();
+const playgroundStore = useStore()
+
+const openedFileContent = computed(() => playgroundStore.getters.currentFileContent);
 
 const state = reactive<IStateLessonDetail>({
   activeCourse: null,
@@ -48,9 +53,11 @@ const state = reactive<IStateLessonDetail>({
   isOverviewVisible: false,
   isContentVisible: true,
   isHintVisible: false,
+  isErrorDialogVisible: false,
   completedIn: null,
   canBeDisplayed: false,
   lessonsFromSession: [],
+  testErrors: [],
   loading: {
     installing: true,
     running: false,
@@ -143,7 +150,10 @@ onMounted(async () => {
         template
       );
 
-      playgroundStore.commit('readFile', { content: template, path: '/index.html' });
+      playgroundStore.commit('readFile', {
+        content: template,
+        path: '/index.html',
+      });
       state.loading.installing = false;
     }
   } catch (error) {
@@ -165,6 +175,10 @@ const closeHintDialog = () => {
   state.isHintVisible = false;
 };
 
+const closeErrorDialog = () => {
+  state.isErrorDialogVisible = false;
+};
+
 const showHintDialog = () => {
   if (state.activeLesson?.task?.hint) {
     state.isHintVisible = true;
@@ -176,6 +190,38 @@ const showHintDialog = () => {
 const toggleVisibility = () => {
   state.isContentVisible = !state.isContentVisible;
 };
+
+const submitTask = async () => {
+  const test = state.activeLesson?.task?.test;
+
+  if (!test) {
+    state.testErrors.push('No test found.');
+    state.isErrorDialogVisible = true;
+    return;
+  }
+
+  state.testErrors = [];
+
+  try {
+    const data = await webContainersService?.onMessage(new MessageEvent('run-test', {
+      data: test,
+      origin: '*',
+      source: window
+    }), openedFileContent.value)
+
+    if (data?.errors) {
+      state.testErrors = data?.errors as string[]
+    }
+  } catch (error) {
+    state.testErrors.push(`Test failed: ${error.message}`);
+  }
+
+  if (state.testErrors.length > 0) {
+    state.isErrorDialogVisible = true;
+  }
+};
+
+
 </script>
 
 <template>
@@ -205,8 +251,9 @@ const toggleVisibility = () => {
           class="h-full block overflow-x-auto relative duration-300"
           :class="{
             ' w-0 overflow-hidden': !state.isContentVisible,
-            ' lg:w-1/2 w-full': state.isContentVisible && state.activeLesson?.task,
-            ' w-full': !state.activeLesson?.task
+            ' lg:w-1/2 w-full':
+              state.isContentVisible && state.activeLesson?.task,
+            ' w-full': !state.activeLesson?.task,
           }"
         >
           <div class="flex flex-col w-full h-full">
@@ -243,8 +290,10 @@ const toggleVisibility = () => {
                 lesson parameters.
               </p>
             </div>
-            <div class="flex items-end justify-end flex-col gap-3"
-              v-if="state.nextLessonLink && !state.activeLesson?.task">
+            <div
+              class="flex items-end justify-end flex-col gap-3"
+              v-if="state.nextLessonLink && !state.activeLesson?.task"
+            >
               <a
                 class="px-6 py-1 bg-primary text-white rounded-2xl font-semibold transition duration-300 ease-in-out mt-4 md:text-[16px] text-[15px] coursor-pointer"
                 :href="state.nextLessonLink"
@@ -293,18 +342,23 @@ const toggleVisibility = () => {
             />
           </button>
 
-          <div v-if="state.activeLesson?.task"
-            class="flex items-center gap-3 py-2 justify-end">
-            <a
+          <div
+            v-if="state.activeLesson?.task"
+            class="flex items-center gap-3 py-2 justify-end"
+          >
+            <button
               class="px-6 py-1 bg-primary text-white rounded-2xl transition duration-300 ease-in-out md:text-[16px] text-[15px] coursor-pointer"
-              :href="state.nextLessonLink as string"
-              @click.prevent="addLessonToSession"
-              >Submit</a>
+              @click.prevent="submitTask"
+            >
+              Submit
+            </button>
 
-              <button
+            <button
               class="px-6 py-1 bg-extra-light-background text-black rounded-2xl transition duration-300 ease-in-out md:text-[16px] text-[15px] coursor-pointer"
               @click="showHintDialog"
-              >Hint</button>
+            >
+              Hint
+            </button>
           </div>
         </div>
       </div>
@@ -316,5 +370,11 @@ const toggleVisibility = () => {
     :showDialog="state.isHintVisible"
     :closeDialog="closeHintDialog"
     :hint="state.activeLesson?.task?.hint"
+  />
+
+  <TaskErrorDialog
+    :show-dialog="state.isErrorDialogVisible"
+    :close-dialog="closeErrorDialog"
+    :errors="state.testErrors"
   />
 </template>
