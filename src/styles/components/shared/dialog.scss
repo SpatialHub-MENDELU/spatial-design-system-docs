@@ -87,3 +87,25 @@
     background-color: lighten($color: $primary, $amount: 50%) !important;
   }
 }
+
+.error-dialog {
+  text-align: center;
+
+  img {
+    margin: 2rem auto;
+    max-height: 150px;
+
+    object-fit: contain;
+  }
+
+  .title {
+    font-weight: 600;
+    color: $red;
+    font-size: clamp(1.5rem, 1.7vw, 2rem);
+  }
+
+  p {
+    color: $dark-text;
+    font-size: clamp(0.9rem, 0.9vw, 1.35rem);
+  }
+}

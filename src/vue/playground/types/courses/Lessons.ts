@@ -23,11 +23,10 @@ export interface ILessonTask {
   prompt: string
   code: IContentCode
   hint: IContentCode
-  testCases: ILessonTaskTestCase[]
+  test: string
 }
 
-export interface ILessonTaskTestCase {
-  id: number
-  description: number
-  testScript: string
+export interface ITaskResult {
+  success?: boolean;
+  errors?: string[];
 }

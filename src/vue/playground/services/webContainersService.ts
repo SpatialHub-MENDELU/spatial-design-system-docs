@@ -1,4 +1,4 @@
-import { WebContainer } from '@webcontainer/api';
+import { PreviewMessage, WebContainer } from '@webcontainer/api';
 import { TreeNode } from 'primevue/treenode';
 import { FileType } from '../types/fileType';
 import { FolderItem } from '../types/fileItem';
@@ -280,24 +280,27 @@ export class WebContainerService {
     this.openedFiles.filter((f) => f === file);
   }
 
-  async createProject(projectType: ProjectType, task?: string): Promise<boolean> {
+  async createProject(
+    projectType: ProjectType,
+    task?: string
+  ): Promise<boolean> {
     await this.ensureInitialized();
     if (!this.webContainerInstance) return false;
-  
+
     try {
       const templatePath =
         projectType === ProjectType.VANILLA
           ? '/templates/vanilla'
           : '/templates/vue';
-  
+
       const copyTemplate = async (srcPath: string, destPath: string) => {
         const response = await fetch(`${srcPath}/template-files.json`);
         const fileList = await response.json();
-  
+
         for (const file of fileList) {
           const src = `${srcPath}/${file.path}`;
           const dest = `${destPath}/${file.path}`;
-  
+
           if (file.isDirectory) {
             await this.createFolder(dest);
           } else {
@@ -308,18 +311,23 @@ export class WebContainerService {
               );
             }
             const content = await contentResponse.text();
-            if (task && projectType === ProjectType.VANILLA && file.path === 'index.html') await this.writeFile(dest, task);
+            if (
+              task &&
+              projectType === ProjectType.VANILLA &&
+              file.path === 'index.html'
+            )
+              await this.writeFile(dest, task);
             else await this.writeFile(dest, content);
           }
         }
       };
-  
+
       await copyTemplate(templatePath, '/');
-  
+
       const installProcess = await this.webContainerInstance.spawn('npm', [
         'install',
       ]);
-  
+
       let installOutput = '';
       installProcess.output.pipeTo(
         new WritableStream({
@@ -328,7 +336,7 @@ export class WebContainerService {
           },
         })
       );
-  
+
       const installExitCode = await installProcess.exit;
       if (installExitCode !== 0) {
         console.error(
@@ -339,12 +347,12 @@ export class WebContainerService {
           `Dependency installation failed with exit code ${installExitCode}`
         );
       }
-  
+
       const devProcess = await this.webContainerInstance.spawn('npm', [
         'run',
         'dev',
       ]);
-  
+
       devProcess.output.pipeTo(
         new WritableStream({
           write(chunk: string) {
@@ -352,11 +360,53 @@ export class WebContainerService {
           },
         })
       );
-  
-      return true
+
+      return true;
     } catch (error) {
       console.error('Error creating project:', error);
       throw error;
     }
   }
+
+  async onMessage(message: MessageEvent, htmlContent: string) {
+    try {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(htmlContent, 'text/html');
+  
+      const updatedDoc = await this.initializeDOM(doc);
+      const code = message.data;
+
+      console.log('u', updatedDoc)
+  
+      const dynamicFunction = new Function('document', code);
+      const result = dynamicFunction(updatedDoc);
+  
+      return { success: true, output: result || '' };
+    } catch (error) {
+      console.log("Chyba během spuštění procesu:", error);
+      return { success: false, errors: [String(error.message)] };
+    }
+  }
+  
+  async initializeDOM(doc: Document): Promise<Document> {
+    return new Promise((resolve, reject) => {
+      try {
+        // Zajištění, že DOM je plně zpracován
+        requestAnimationFrame(() => {
+          // Simulujeme DOMContentLoaded
+          const domContentLoadedEvent = new Event('DOMContentLoaded');
+          doc.dispatchEvent(domContentLoadedEvent);
+          
+          // Dáme DOMu čas na zpracování, abychom se ujistili, že všechny změny jsou aplikovány
+          setTimeout(() => {
+            resolve(doc);  // Počkáme a vyřešíme promise
+          }, 100); // Můžete upravit čas podle potřeby
+        });
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+  
+  
 }

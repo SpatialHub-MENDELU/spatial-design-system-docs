@@ -97,6 +97,13 @@ export default defineConfig({
     // ]
   },
   vite: {
-    plugins: [crossOriginIsolation()]
+    plugins: [
+      crossOriginIsolation(),
+    ],
+    build: {
+      commonjsOptions: {
+        transformMixedEsModules: true,
+      },
+    }
   },
 });

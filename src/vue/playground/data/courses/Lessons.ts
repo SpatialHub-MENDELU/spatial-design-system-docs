@@ -200,7 +200,7 @@ export const lessonsData: ILessonVariants[] = [
       ],
       task: {
         id: 1,
-        prompt: 'Create a filled 3D menu with the items listed below using the ar-menu component. The menu will be at position [3 2 -7].',
+        prompt: 'Create a filled circular 3D menu with the items listed below using the ar-menu component. The menu will be at position [3 2 -7].',
         code: {
           lang: LanguageEnum.MARKUP,
           content: `const items=[
@@ -226,7 +226,53 @@ export const lessonsData: ILessonVariants[] = [
   layout="circle"
 ></a-ar-menu>`
         },
-        testCases: []
+        test: 
+          `  
+          console.log(document)
+          const scene = document.querySelector('a-scene');
+          console.log(document)
+          if (!scene) throw new Error('Scene is not found');
+          console.log('Scene found:', scene);
+          
+          const menu = scene.querySelector('a-ar-menu');
+          if (!menu) throw new Error('Menu is not found');
+          console.log('Menu found:', menu);
+          
+          const position = menu.getAttribute('position');
+          console.log(menu)
+          console.log('Menu position:', position);
+          if (!position || position.x !== 3 || position.y !== 2 || position.z !== -7) {
+            throw new Error('Position is incorrect');
+          }
+          
+          const menuVariant = menu.getAttribute('variant');
+          console.log('Menu variant:', menuVariant);
+          if (menuVariant !== "filled") throw new Error('Variant is incorrect');
+          
+          const menuItems = menu.getAttribute('items');
+          console.log('Menu items attribute:', menuItems);
+          const parsedItems = JSON.parse(menuItems);
+          console.log('Parsed menu items:', parsedItems);
+          const defaultItems = [
+            {color:'white',icon:'/content-save',title:'Save',textColor:'black'},
+            {color:'white',icon:'/close-circle',title:'Quit',textColor:'black'},
+            {color:'white',icon:'/settings',title:'Settings',textColor:'black'},
+            {color:'white',icon:'/file-plus',title:'New file',textColor:'black'}
+          ];
+          if (JSON.stringify(parsedItems) !== JSON.stringify(defaultItems)) {
+            throw new Error('Items are incorrect');
+          }
+          
+          const menuVisibility = menu.getAttribute('visible');
+          console.log('Menu visibility:', menuVisibility);
+          if (menuVisibility !== true) throw new Error('Visibility is incorrect');
+          
+          const menuLayout = menu.getAttribute('layout');
+          console.log('Menu layout:', menuLayout);
+          if (menuLayout !== "circle") throw new Error('Layout is incorrect');
+          
+          
+          `
       }
     },
   },
