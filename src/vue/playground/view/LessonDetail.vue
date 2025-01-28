@@ -13,7 +13,6 @@ import {
   IContentCode,
   ILesson,
   ILessonVariants,
-  ITaskResult,
 } from '../types/courses/Lessons';
 import { inject, onMounted, reactive, nextTick, computed } from 'vue';
 import { ICourseDetail } from '../types/courses/CourseDetail';
@@ -33,6 +32,7 @@ import 'spatial-design-system/primitives/ar-menu.js';
 import HintDialog from '../components/courses/HintDialog.vue';
 import TaskErrorDialog from '../components/dialogs/TaskErrorDialog.vue';
 import { useStore } from 'vuex';
+import TaskSuccessDialog from '../components/dialogs/TaskSuccessDialog.vue';
 
 const toast = useToast();
 
@@ -54,6 +54,7 @@ const state = reactive<IStateLessonDetail>({
   isContentVisible: true,
   isHintVisible: false,
   isErrorDialogVisible: false,
+  isSuccessDialogVisible: false,
   completedIn: null,
   canBeDisplayed: false,
   lessonsFromSession: [],
@@ -203,14 +204,11 @@ const submitTask = async () => {
   state.testErrors = [];
 
   try {
-    const data = await webContainersService?.onMessage(new MessageEvent('run-test', {
-      data: test,
-      origin: '*',
-      source: window
-    }), openedFileContent.value)
-
+    const data = await webContainersService?.checkTask(state.activeCourse?.type ?? ProjectType.VANILLA, test)
     if (data?.errors) {
       state.testErrors = data?.errors as string[]
+    } else {
+      state.isSuccessDialogVisible = true
     }
   } catch (error) {
     state.testErrors.push(`Test failed: ${error.message}`);
@@ -221,6 +219,11 @@ const submitTask = async () => {
   }
 };
 
+const continueToNextLesson = () => {
+  addLessonToSession()
+  state.isSuccessDialogVisible = false
+  window.location.href = state.nextLessonLink ?? ''
+}
 
 </script>
 
@@ -376,5 +379,11 @@ const submitTask = async () => {
     :show-dialog="state.isErrorDialogVisible"
     :close-dialog="closeErrorDialog"
     :errors="state.testErrors"
+  />
+
+  <TaskSuccessDialog
+    :show-dialog="state.isSuccessDialogVisible"
+    :continue="continueToNextLesson"
+    :link="state.nextLessonLink"
   />
 </template>

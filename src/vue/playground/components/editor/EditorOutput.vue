@@ -112,6 +112,7 @@ const outputIcon = () => {
 
       <iframe
         v-else
+        id="webContainerIframe"
         style="width: 100%; height: 100%"
         sandbox="allow-scripts allow-same-origin allow-forms"
       ></iframe>
