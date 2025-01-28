@@ -1,10 +1,11 @@
-import { PreviewMessage, WebContainer } from '@webcontainer/api';
+import { WebContainer } from '@webcontainer/api';
 import { TreeNode } from 'primevue/treenode';
 import { FileType } from '../types/fileType';
 import { FolderItem } from '../types/fileItem';
 import JSZip from 'jszip';
 import { getFileIcon } from '../utils/FileExtensionsAndIcons';
 import { ProjectType } from '../types/projectType';
+import { getMessageHandlerCode } from '../utils/MessageHandlerCode';
 
 export class WebContainerService {
   private static instance: WebContainerService;
@@ -75,10 +76,13 @@ export class WebContainerService {
     return await this.webContainerInstance?.fs.readFile(filePath, 'utf-8');
   }
 
-  public async writeFile(filePath: string, content: string) {
+  public async writeFile(filePath: string, content: string, fetchNodes = true) {
     await this.ensureInitialized();
     await this.webContainerInstance?.fs.writeFile(filePath, content);
-    await this.fetchFolderStructureInTreeNode('/');
+
+    if (fetchNodes) {
+      await this.fetchFolderStructureInTreeNode('/');
+    }
   }
 
   public async createFolder(folderPath: string) {
@@ -368,45 +372,128 @@ export class WebContainerService {
     }
   }
 
-  async onMessage(message: MessageEvent, htmlContent: string) {
+  async checkTask(projectType: ProjectType, code: string) {
     try {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(htmlContent, 'text/html');
+      const mainProjectFile = this.getMainProjectFile(projectType);
+      await this.setupMessageHandling(mainProjectFile, projectType);
   
-      const updatedDoc = await this.initializeDOM(doc);
-      const code = message.data;
-
-      console.log('u', updatedDoc)
-  
-      const dynamicFunction = new Function('document', code);
-      const result = dynamicFunction(updatedDoc);
-  
-      return { success: true, output: result || '' };
+      const iframe = this.getIframe();
+      return await this.handleIframeContent(iframe, mainProjectFile, projectType, code);
     } catch (error) {
-      console.log("Chyba během spuštění procesu:", error);
-      return { success: false, errors: [String(error.message)] };
+      return { success: false, errors: [error.message] };
     }
   }
   
-  async initializeDOM(doc: Document): Promise<Document> {
+  private getMainProjectFile(projectType: ProjectType): string {
+    return projectType === ProjectType.VANILLA ? '/index.html' : '/App.vue';
+  }
+  
+  private async setupMessageHandling(mainProjectFile: string, projectType: ProjectType) {
+    try {
+      await this.addMessageHandling(mainProjectFile, projectType);
+    } catch (error) {
+      throw new Error(`Error adding message handling: ${error.message}`);
+    }
+  }
+  
+  private getIframe(): HTMLIFrameElement {
+    const iframe = document.getElementById('webContainerIframe') as HTMLIFrameElement;
+    if (!iframe) {
+      throw new Error('Iframe was not found');
+    }
+    return iframe;
+  }
+  
+  private async handleIframeContent(
+    iframe: HTMLIFrameElement,
+    mainProjectFile: string,
+    projectType: ProjectType,
+    code: string
+  ): Promise<{ success: boolean; errors?: string[] }> {
     return new Promise((resolve, reject) => {
-      try {
-        // Zajištění, že DOM je plně zpracován
-        requestAnimationFrame(() => {
-          // Simulujeme DOMContentLoaded
-          const domContentLoadedEvent = new Event('DOMContentLoaded');
-          doc.dispatchEvent(domContentLoadedEvent);
-          
-          // Dáme DOMu čas na zpracování, abychom se ujistili, že všechny změny jsou aplikovány
-          setTimeout(() => {
-            resolve(doc);  // Počkáme a vyřešíme promise
-          }, 100); // Můžete upravit čas podle potřeby
-        });
-      } catch (error) {
-        reject(error);
-      }
+      const onMessageHandler = async (event: MessageEvent) => {
+        if (event.data.type === 'iframeContent') {
+          const iframeContent = event.data.content;
+  
+          try {
+            const document = this.parseDocument(iframeContent);
+            eval(code);
+          } catch (error) {
+            window.removeEventListener('message', onMessageHandler);
+            return reject(new Error(error.message));
+          }
+  
+          try {
+            await this.removeMessageHandling(mainProjectFile, projectType);
+            resolve({ success: true });
+          } catch (error) {
+            reject(new Error(`Error removing message handling: ${error.message}`));
+          } finally {
+            window.removeEventListener('message', onMessageHandler);
+          }
+        }
+      };
+  
+      window.addEventListener('message', onMessageHandler);
+  
+      iframe.onload = () => {
+        try {
+          this.requestIframeContent(iframe);
+        } catch (error) {
+          window.removeEventListener('message', onMessageHandler);
+          reject(new Error(error.message));
+        }
+      };
     });
   }
   
+  private parseDocument(content: string): Document {
+    const parser = new DOMParser();
+    return parser.parseFromString(content, 'text/html');
+  }
   
+  private requestIframeContent(iframe: HTMLIFrameElement) {
+    iframe.contentWindow?.postMessage({ type: 'getDocument', content: '' }, '*');
+  }
+
+  private async addMessageHandling(
+    filePath: string,
+    projectType: ProjectType
+  ) {
+    try {
+      const messageHandlerCode = getMessageHandlerCode(projectType);
+  
+      let fileContent = await this.readFile(filePath);
+      if (!fileContent) return;
+  
+      fileContent = fileContent.replace(messageHandlerCode, '');
+  
+      const updatedContent = fileContent.replace(
+        '</body>',
+        `${messageHandlerCode}</body>`
+      );
+      await this.writeFile(filePath, updatedContent, false);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+  
+  private async removeMessageHandling (
+    filePath: string,
+    projectType: ProjectType
+  ) {
+    try {
+      const messageHandlerCode = getMessageHandlerCode(projectType);
+  
+      const fileContent = await this.readFile(filePath);
+      if (!fileContent) return;
+  
+      const updatedContent = fileContent.replace(messageHandlerCode, '');
+      if (fileContent === updatedContent) return;
+  
+      await this.writeFile(filePath, updatedContent, false);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 }

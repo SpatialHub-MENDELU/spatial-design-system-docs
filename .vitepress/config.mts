@@ -1,7 +1,7 @@
 import { defineConfig } from "vitepress";
 
 import crossOriginIsolation from "vite-plugin-cross-origin-isolation";
-import { fileURLToPath } from 'node:url'
+import nodePolyfills from 'rollup-plugin-polyfill-node';
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -99,11 +99,17 @@ export default defineConfig({
   vite: {
     plugins: [
       crossOriginIsolation(),
+      nodePolyfills(),
     ],
     build: {
       commonjsOptions: {
         transformMixedEsModules: true,
       },
-    }
+    },
+    resolve: {
+      alias: {
+        global: 'global',
+      },
+    },
   },
 });
