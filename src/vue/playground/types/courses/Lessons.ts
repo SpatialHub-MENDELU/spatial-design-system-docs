@@ -15,7 +15,8 @@ export interface ILesson {
 
 export interface IContentCode {
   lang: string,
-  content: string
+  content: string,
+  imports?: string
 }
 
 export interface ILessonTask {

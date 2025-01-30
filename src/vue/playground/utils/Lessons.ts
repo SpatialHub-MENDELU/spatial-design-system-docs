@@ -104,6 +104,8 @@ export const replacePlaceholder = async (
         formattedCode = code;
       }
 
+      console.log(formattedCode)
+
       const highlightedCode = highlighter.codeToHtml(formattedCode, {
         lang,
         theme: 'github-light-default',
@@ -114,6 +116,7 @@ export const replacePlaceholder = async (
 
     if (codes) {
       codes.forEach(async (code) => {
+        console.log(code)
         const highlightedCode = await formatAndHighlightCode(code.content, code.lang);
         const codeBlock = placeholder.querySelector(`.language-${code.lang}`);
         if (codeBlock) {
@@ -192,8 +195,14 @@ export const createTaskTemplate = (
       <title>Document</title>
     </head>
     <body>
-    <!-- ${prompt} -->
     <script type="module">
+
+    /*
+      ${prompt}
+    */
+
+    // add imports
+
     document.addEventListener('DOMContentLoaded', function() {
         const app = document.getElementById("app");
         const scene = document.createElement("a-scene");
