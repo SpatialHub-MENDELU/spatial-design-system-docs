@@ -80,6 +80,14 @@
       }
     }
   }
+
+  #imports, #hint {
+    min-height: 6rem;
+  }
+
+  #hint {
+    margin-top: 1rem;
+  }
 }
 
 .p-dropdown-items-wrapper .p-dropdown-item {

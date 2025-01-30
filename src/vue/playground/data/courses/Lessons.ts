@@ -212,20 +212,25 @@ export const lessonsData: ILessonVariants[] = [
         },
         hint: {
           lang: LanguageEnum.JS,
-          content: `<a-ar-menu
-  position="0 1.5 -3"
+          imports: `import "spatial-design-system/primitives/ar-menu.js";
+import "spatial-design-system/components/position.js";
+import { stringifyForHTML } from "spatial-design-system/utils/utils.js";`,
+          content: `const menu = \`
+<a-ar-menu
+  position="3 2 -7"
   visible="true"
-  primary="#018A6C"
-  items="[
-    {'color':'white','icon':'/content-save','title':'Save','textColor':'black'},
-    {'color':'white','icon':'/close-circle','title':'Quit','textColor':'black'},
-    {'color':'white','icon':'/settings','title':'Settings','textColor':'black'},
-    {'color':'white','icon':'/file-plus','title':'New file','textColor':'black'}
-  ]"
+  primary="lightblue"
+  items="\${stringifyForHTML(items)}"
   variant="filled"
   layout="circle"
-></a-ar-menu>`
-        },
+  fit-info-fov
+  follow-camera="angle: 20"
+  billboard
+></a-ar-menu>\`;
+            
+scene.innerHTML = menu;
+app.appendChild(scene);`
+        },        
         test: 
           `  
           const sceneElement = document.querySelector('a-scene');
@@ -270,10 +275,63 @@ export const lessonsData: ILessonVariants[] = [
     id: 3,
     title: 'Row, Column',
     vueVariant: {
-      content: '',
+      content: `
+        <div>
+          <div class="bordered-section">
+            <p>If you need a one dimensional layout, you can use row or column container. Both use <a href="/ar-vr-components/grid.html">grid</a> component.</p>
+          </div>
+          <h2 tabindex="-1">
+            Example
+            <a class="header-anchor" href="#example" aria-label="Permalink to &quot;Example&quot;">&ZeroWidthSpace;</a>
+          </h2>
+          <p>Below is an example of using row layout, <code>a-ar-row</code>. The column layout differs in direction (it is vertical) and it has tag name <code>a-ar-column</code>, <a href="#props">props</a> are the same.</p>
+          <div id="placeholder"></div>
+          <div>
+            <h2 id="props" tabindex="-1">Props <a class="header-anchor" href="#props" aria-label="Permalink to &quot;Props&quot;">&ZeroWidthSpace;</a></h2>
+            <table tabindex="0"><thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody><tr><td><em>visible</em></td><td>boolean</td><td>true</td><td>Shows or hides the container.</td></tr><tr><td><em>width</em></td><td>number</td><td>1</td><td>Container's width.</td></tr><tr><td><em>height</em></td><td>number</td><td>1</td><td>Container's height.</td></tr><tr><td><em>position</em></td><td>number[]</td><td>0 0 0</td><td>Sets container position.</td></tr><tr><td><em>spacing</em></td><td>number</td><td>0</td><td>Sets spacing between items.</td></tr><tr><td><em>opacity</em></td><td>number</td><td>1</td><td>Sets container's opacity.</td></tr></tbody></table>
+            </div>
+          </div>
+      `,
+      contentOutput: ``
     },
     vanillaJSVariant: {
-      content: '',
+      content: `
+        <div>
+          <div class="bordered-section">
+            <p>If you need a one dimensional layout, you can use row or column container. Both use <a href="/ar-vr-components/grid.html">grid</a> component.</p>
+          </div>
+          <h2 tabindex="-1">
+            Example
+            <a class="header-anchor" href="#example" aria-label="Permalink to &quot;Example&quot;">&ZeroWidthSpace;</a>
+          </h2>
+          <p>Below is an example of using row layout, <code>a-ar-row</code>. The column layout differs in direction (it is vertical) and it has tag name <code>a-ar-column</code>, <a href="#props">props</a> are the same.</p>
+          <div id="placeholder"></div>
+          <div>
+            <h2 id="props" tabindex="-1">Props <a class="header-anchor" href="#props" aria-label="Permalink to &quot;Props&quot;">&ZeroWidthSpace;</a></h2>
+            <table tabindex="0"><thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody><tr><td><em>visible</em></td><td>boolean</td><td>true</td><td>Shows or hides the container.</td></tr><tr><td><em>width</em></td><td>number</td><td>1</td><td>Container's width.</td></tr><tr><td><em>height</em></td><td>number</td><td>1</td><td>Container's height.</td></tr><tr><td><em>position</em></td><td>number[]</td><td>0 0 0</td><td>Sets container position.</td></tr><tr><td><em>spacing</em></td><td>number</td><td>0</td><td>Sets spacing between items.</td></tr><tr><td><em>opacity</em></td><td>number</td><td>1</td><td>Sets container's opacity.</td></tr></tbody></table>
+            </div>
+          </div>
+      `,
+      contentOutput: `
+      <a-ar-row width="3" position="0 1.5 -3">
+  <a-box color="#018A6C"></a-box>
+  <a-box color="#00C170"></a-box>
+  <a-box color="#03FCC6"></a-box>
+</a-ar-row>`,
+      contentCode: [
+        {
+          lang: LanguageEnum.JS,
+          content: `import "spatial-design-system/primitives/ar-menu.js";
+import "spatial-design-system/primitives/ar-list.js";
+
+<a-ar-row width="3" position="0 1.5 -3">
+  <a-box color="#018A6C"></a-box>
+  <a-box color="#00C170"></a-box>
+  <a-box color="#03FCC6"></a-box>
+</a-ar-row>
+          `
+        },
+      ]
     },
   },
   {

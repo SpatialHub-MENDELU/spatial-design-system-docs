@@ -6,6 +6,7 @@
     maximizable
     :closable="false"
   >
+    <div id="imports" />
     <div id="hint" />
 
     <div class="flex justify-end mt-2">
@@ -33,17 +34,37 @@ const props = defineProps<{
 const updateHint = () => {
   nextTick(() => {
     const hintElement = document.querySelector('#hint');
+    const importsElement = document.querySelector('#imports');
+
     if (hintElement && props.hint) {
+      if (props.hint.imports) {
+        replacePlaceholder(
+          importsElement as HTMLElement,
+          '',
+          [
+            {
+              lang: 'js',
+              content: props.hint.imports,
+            },
+          ],
+          toast
+        );
+      }
+
       replacePlaceholder(hintElement as HTMLElement, '', [props.hint], toast);
     }
   });
 };
 
-watch(() => props.showDialog, (show) => {
-  if (show) {
-    updateHint();
-  }
-}, { immediate: true });
+watch(
+  () => props.showDialog,
+  (show) => {
+    if (show) {
+      updateHint();
+    }
+  },
+  { immediate: true }
+);
 
 onMounted(() => {
   updateHint();

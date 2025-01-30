@@ -6,6 +6,7 @@ import JSZip from 'jszip';
 import { getFileIcon } from '../utils/FileExtensionsAndIcons';
 import { ProjectType } from '../types/projectType';
 import { getMessageHandlerCode } from '../utils/MessageHandlerCode';
+import { reactive } from 'vue'
 
 export class WebContainerService {
   private static instance: WebContainerService;
@@ -14,6 +15,10 @@ export class WebContainerService {
   private openedFiles: FolderItem[] = [];
 
   private constructor() {}
+
+  public state = reactive({
+    isLoading: false,
+  })
 
   public static getInstance(): WebContainerService {
     if (!this.instance) {
@@ -77,11 +82,15 @@ export class WebContainerService {
   }
 
   public async writeFile(filePath: string, content: string, fetchNodes = true) {
-    await this.ensureInitialized();
-    await this.webContainerInstance?.fs.writeFile(filePath, content);
+    try {
+      await this.ensureInitialized();
+      await this.webContainerInstance?.fs.writeFile(filePath, content);
 
-    if (fetchNodes) {
-      await this.fetchFolderStructureInTreeNode('/');
+      if (fetchNodes) {
+        await this.fetchFolderStructureInTreeNode('/');
+      }
+    } catch(error) {
+      console.log(error)
     }
   }
 
@@ -414,6 +423,7 @@ export class WebContainerService {
       const onMessageHandler = async (event: MessageEvent) => {
         if (event.data.type === 'iframeContent') {
           const iframeContent = event.data.content;
+          console.log(iframeContent)
   
           try {
             const document = this.parseDocument(iframeContent);

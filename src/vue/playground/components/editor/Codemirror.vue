@@ -33,6 +33,7 @@ const state = reactive<{
 });
 
 const props = defineProps<{
+  isDetail: boolean
   dynamicClass?: Record<string, boolean>,
 }>()
 
@@ -105,18 +106,24 @@ const extensions = computed(() => {
 });
 
 const updateCode = (newCode: string) => {
+  if (!webContainersService) return
+  webContainersService.state.isLoading = true;
+
   playgroundStore.commit('updateCurrentFileContent', newCode);
   if (debounceTimer) clearTimeout(debounceTimer);
   debounceTimer = setTimeout(async () => {
     try {
       await webContainersService?.writeFile(
         openedFilePath.value,
-        openedFileContent.value
+        openedFileContent.value,
+        !props.isDetail
       );
     } catch (error) {
       console.error('Error during runCode execution:', error.message);
+    } finally {
+      webContainersService.state.isLoading = false;
     }
-  }, 500);
+  }, 100);
 };
 
 </script>
@@ -127,6 +134,7 @@ const updateCode = (newCode: string) => {
     v-model="openedFileContent"
     :extensions="extensions"
     @update:modelValue="updateCode"
+    :is-detail="props.isDetail"
     :autofocus="true"
     :indent-with-tab="true"
     :tab-size="2"

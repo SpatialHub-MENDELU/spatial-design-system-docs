@@ -29,6 +29,9 @@ import { WebContainerService } from '../services/webContainersService';
 import { ProjectType } from '../types/projectType';
 
 import 'spatial-design-system/primitives/ar-menu.js';
+import "spatial-design-system/primitives/ar-list.js";
+import 'aframe';
+
 import HintDialog from '../components/courses/HintDialog.vue';
 import TaskErrorDialog from '../components/dialogs/TaskErrorDialog.vue';
 import { useStore } from 'vuex';
@@ -44,6 +47,7 @@ const { params } = useData();
 const playgroundStore = useStore()
 
 const openedFileContent = computed(() => playgroundStore.getters.currentFileContent);
+const isLoading = computed(() => webContainersService?.state.isLoading)
 
 const state = reactive<IStateLessonDetail>({
   activeCourse: null,
@@ -195,6 +199,8 @@ const toggleVisibility = () => {
 const submitTask = async () => {
   const test = state.activeLesson?.task?.test;
 
+  if (!webContainersService) return
+
   if (!test) {
     state.testErrors.push('No test found.');
     state.isErrorDialogVisible = true;
@@ -202,6 +208,8 @@ const submitTask = async () => {
   }
 
   state.testErrors = [];
+
+  webContainersService.state.isLoading = true
 
   try {
     const data = await webContainersService?.checkTask(state.activeCourse?.type ?? ProjectType.VANILLA, test)
@@ -212,6 +220,8 @@ const submitTask = async () => {
     }
   } catch (error) {
     state.testErrors.push(`Test failed: ${error.message}`);
+  } finally {
+    webContainersService.state.isLoading = false
   }
 
   if (state.testErrors.length > 0) {
@@ -327,6 +337,7 @@ const continueToNextLesson = () => {
               ' editor-hidden':
                 state.loading.installing || state.loading.running,
             }"
+            :is-detail="true"
           />
           <EditorOutput :loading="state.loading" :is-detail="true" />
 
@@ -352,8 +363,13 @@ const continueToNextLesson = () => {
             <button
               class="px-6 py-1 bg-primary text-white rounded-2xl transition duration-300 ease-in-out md:text-[16px] text-[15px] coursor-pointer"
               @click.prevent="submitTask"
+              :disabled="isLoading"
             >
-              Submit
+              <span v-if="!isLoading">Submit</span>
+              <svg v-else class="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+              </svg>
             </button>
 
             <button
