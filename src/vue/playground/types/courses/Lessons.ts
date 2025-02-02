@@ -22,7 +22,7 @@ export interface IContentCode {
 export interface ILessonTask {
   id: number
   prompt: string
-  code: IContentCode
+  codes: IContentCode[]
   hint: IContentCode
   test: string
 }
