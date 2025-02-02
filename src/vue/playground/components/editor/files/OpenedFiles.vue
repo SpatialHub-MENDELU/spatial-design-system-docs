@@ -18,7 +18,7 @@
         <p
           class="md:text-[14px] text-[13px] truncate max-w-[150px]"
           :class="{
-            'text-black': file.path === currentFilePath,
+            'text--mainColor': file.path === currentFilePath,
             'text-grey': file.path !== currentFilePath,
           }"
           title="file.name"

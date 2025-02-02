@@ -16,7 +16,7 @@
         v-for="(item, index) of createProjectData"
         :class="
           state.projectType === item.projectType
-            ? 'border-primary'
+            ? 'primaryBorder'
             : 'border-border-color'
         "
         :key="index"

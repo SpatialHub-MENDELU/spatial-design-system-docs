@@ -44,9 +44,15 @@ const resetSession = () => {
     [];
 
     const courseKey = state.activeCourse?.slug === 'sds-course-vanilla-js' ? 'vanillaJSVariant' : 'vueVariant'
-    //const modifiedLessons = completedLessonsFromSession.map(l => l[courseKey].completed = undefined)
-    console.log(completedLessonsFromSession)
-    //sessionService?.storeInSession('completedLessons', modifiedLessons)
+    const modifiedLessons = completedLessonsFromSession.map(l => ({
+      ...l,
+      [courseKey]: { 
+        ...l[courseKey], 
+        completed: undefined 
+      }
+    }));
+
+    sessionService?.storeInSession('completedLessons', modifiedLessons)
 }
 
 </script>

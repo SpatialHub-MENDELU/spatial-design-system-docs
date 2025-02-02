@@ -51,10 +51,9 @@ const getCompletedPercentage = (course: ICourseListItem) => {
 
             <div class="w-full">
               <h2
-                class="lg:text-[24px] text-[22px] font-medium leading-8 lg:w-max w-4/5 duration-300 hover:text-primary text-dark-text">
+                class="lg:text-[24px] text-[22px] font-medium leading-8 lg:w-max w-4/5 duration-300 hover:text-primary">
                 <a :href="`/playground/course/${course.slug}`">{{ course.title }}</a>
               </h2>
-              <!-- TODO -->
               <div class="flex items-center lg:gap-x-3 gap-x-5 my-2">
                 <p class="lg:text-[16px] text-[15px] font-medium">Completed: {{getCompletedPercentage(course)}}%</p>
                 <p class="lg:text-[16px] text-[15px] font-medium flex gap-1"><span class="lg:block hidden">Duration:
@@ -66,7 +65,7 @@ const getCompletedPercentage = (course: ICourseListItem) => {
                       class="lg:block hidden">course</span></Button>
                 </div>
               </div>
-              <p class="lg:text-[16px] text-[15px] text-dark-text">{{ course.about }}</p>
+              <p class="lg:text-[16px] text-[15px]">{{ course.about }}</p>
             </div>
 
             <a class="px-4 py-2 bg-primary text-white rounded-lg font-semibold transition duration-300 ease-in-out

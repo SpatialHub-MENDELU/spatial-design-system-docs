@@ -72,11 +72,50 @@ export const replacePlaceholder = async (
 
     render(vnode, placeholder);
 
+    const getCurrentTheme = () => {
+      if (document.documentElement.classList.contains('dark')) {
+        return 'github-dark-default';
+      } else {
+        return 'github-light-default';
+      }
+    };
+    
     const highlighter = await shiki.createHighlighter({
-      themes: ['github-light-default'],
       langs: ['javascript', 'css', 'html', 'vue', 'vue-html', 'typescript'],
+      themes: []
+    });
+    
+    const loadThemes = async () => {
+      const currentTheme = getCurrentTheme();
+      await highlighter.loadTheme(currentTheme); 
+    };
+    
+    const observer = new MutationObserver(async () => {
+      await initializeTheme()
+    });
+    
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
     });
 
+    const initializeTheme = async () => {
+      const currentTheme = getCurrentTheme();
+      await loadThemes();
+      
+      if (codes) {
+        codes.forEach(async (code) => {
+          const highlightedCode = await formatAndHighlightCode(code.content, code.lang);
+          const codeBlock = placeholder.querySelector(`.language-${code.lang}`);
+          if (codeBlock) {
+            codeBlock.innerHTML = highlightedCode;
+          }
+        });
+      }
+    };
+    
+    initializeTheme();
+    
     const formatAndHighlightCode = async (code: string, lang: string) => {
       let formattedCode: string;
 
@@ -103,10 +142,9 @@ export const replacePlaceholder = async (
         console.error('Prettier formatting failed:', error);
         formattedCode = code;
       }
-
       const highlightedCode = highlighter.codeToHtml(formattedCode, {
         lang,
-        theme: 'github-light-default',
+        theme: getCurrentTheme(),
       });
 
       return highlightedCode;

@@ -409,7 +409,7 @@ import { stringifyForHTML } from "spatial-design-system/utils/utils.js";`,
   position="3 2 -7"
   visible="true"
   primary="lightblue"
-  :items="\${stringifyForHTML(items)}"
+  items="\${stringifyForHTML(items)}"
   variant="filled"
   layout="circle"
   fit-info-fov

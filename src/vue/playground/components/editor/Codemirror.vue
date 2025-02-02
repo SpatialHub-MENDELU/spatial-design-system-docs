@@ -25,7 +25,6 @@ const sessionService = inject<SessionService>('sessionService');
 const webContainersService = inject<WebContainerService>(
   'webContainersService'
 );
-const errors = reactive(webContainersService?.state.errors ?? []);
 const showTooltip = ref(false);
 const openedFileContent = computed(
   () => playgroundStore.getters.currentFileContent
@@ -150,7 +149,6 @@ const updateCode = (newCode: string) => {
 </script>
 
 <template>
-  <div class="relative">
     <codemirror
       class="editor lg:w-full block overflow-y-auto h-[30rem] pb-5"
       :class="props.dynamicClass"
@@ -163,19 +161,4 @@ const updateCode = (newCode: string) => {
       :tab-size="2"
       :style="{ fontSize: state.fontSize + 'px' }"
     />
-
-    <div
-      v-if="errors?.length"
-      class="absolute bottom-5 right-5 w-[36px] h-[36px] bg-red text-white rounded-full cursor-pointer flex items-center justify-center z-50 duration-200 hover:scale-125 transform"
-      @mouseenter="showTooltip = true"
-      @mouseleave="showTooltip = false"
-    >
-      <i class="pi pi-exclamation-circle"></i>
-      <div v-if="showTooltip" class="relative bottom-4 right-0 bg-black text-white p-3 text-[14px] max-w-[200px] shadow-md">
-        <p v-for="(err, index) in errors" :key="index">
-          {{ err.message }}
-        </p>
-      </div>
-    </div>
-  </div>
 </template>

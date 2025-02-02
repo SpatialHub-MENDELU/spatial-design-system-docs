@@ -5,7 +5,7 @@ import { FolderItem } from '../types/fileItem';
 import JSZip from 'jszip';
 import { getFileIcon } from '../utils/FileExtensionsAndIcons';
 import { ProjectType } from '../types/projectType';
-import { getErrorHandlerCode, getMessageHandlerCode } from '../utils/MessageHandlerCode';
+import { getMessageHandlerCode } from '../utils/MessageHandlerCode';
 import { reactive } from 'vue';
 
 export class WebContainerService {
@@ -18,10 +18,8 @@ export class WebContainerService {
 
   public state = reactive<{
     isLoading: boolean,
-    errors: { message: string }[]
   }>({
-    isLoading: false,
-    errors: []
+    isLoading: false
   });
 
   public static getInstance(): WebContainerService {
@@ -64,7 +62,7 @@ export class WebContainerService {
         ) as unknown as HTMLIFrameElement;
         if (iframeEl) {
           iframeEl.src = url;
-        }
+        }        
       });
     } catch (error) {
       console.log(error)
@@ -423,7 +421,7 @@ export class WebContainerService {
     projectType: ProjectType
   ) {
     try {
-      await this.addEventHandling(mainProjectFile, projectType, 'message');
+      await this.addEventHandling(mainProjectFile, projectType);
     } catch (error) {
       throw new Error(`Error adding message handling: ${error.message}`);
     }
@@ -494,10 +492,9 @@ export class WebContainerService {
   private async addEventHandling(
     filePath: string,
     projectType: ProjectType,
-    event: 'error' | 'message'
   ) {
     try {
-      const messageHandlerCode = event === 'error' ? getErrorHandlerCode(projectType) : getMessageHandlerCode(projectType);
+      const messageHandlerCode = getMessageHandlerCode(projectType);
       let updatedContent = ""
 
       let fileContent = await this.readFile(filePath);
@@ -524,7 +521,7 @@ export class WebContainerService {
           `;
         }
       }
-
+      console.log(updatedContent)
       await this.writeFile(filePath, updatedContent, false);
     } catch (error) {
       console.error('Error:', error);

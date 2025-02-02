@@ -38,28 +38,3 @@ export const getMessageHandlerCode = (projectType: ProjectType): string => {
       throw new Error('Unsupported project type');
   }
 };
-
-export const getErrorHandlerCode = (projectType: ProjectType): string => {
-  switch (projectType) {
-    case 'vanilla':
-      return `
-        <script>
-          window.addEventListener('error', (event) => {
-            window.parent.postMessage({ type: 'error', content: event })
-          });
-        </script>
-      `;
-    case 'vue':
-      return `
-      import { onMounted } from 'vue';
-
-      onMounted(() => {
-        window.addEventListener('error', (event) => {
-          window.parent.postMessage({ type: 'error', content: event })
-        });
-      })
-      `;
-    default:
-      throw new Error('Unsupported project type');
-  }
-};
