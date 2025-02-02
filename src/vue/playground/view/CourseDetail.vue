@@ -30,9 +30,7 @@ onMounted(() => {
   const activeCourse = courseDetailData.find(c => c.slug === params.value?.slug) as ICourseDetail
   state.activeCourse = activeCourse
 
-  console.log(completedLessonsFromSession)
   const filteredLessonsByCourse = completedLessonsFromSession.map(l => lessonByCourseVariant(activeCourse.slug, l)).filter(l => l?.completed);
-  console.log("percentage ", Math.round((filteredLessonsByCourse.length / lessonsData.length) * 100))
   state.percentage = Math.round((filteredLessonsByCourse.length / lessonsData.length) * 100);
 
   state.completedLessons = filteredLessonsByCourse.length

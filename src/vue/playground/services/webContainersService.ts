@@ -470,13 +470,18 @@ export class WebContainerService {
       window.addEventListener('message', onMessageHandler);
 
       iframe.onload = () => {
-      try {
         this.requestIframeContent(iframe);
-      } catch (error) {
-        window.removeEventListener('message', onMessageHandler);
-        reject(new Error(error.message));
-      }
       };
+
+      if (projectType === ProjectType.VUE) {
+        const checkIframeWindow = setInterval(() => {
+          if (iframe.contentWindow) {
+            clearInterval(checkIframeWindow);
+            this.requestIframeContent(iframe);
+          }
+        }, 100);
+      }
+
     });
   }
 
@@ -521,7 +526,6 @@ export class WebContainerService {
           `;
         }
       }
-      console.log(updatedContent)
       await this.writeFile(filePath, updatedContent, false);
     } catch (error) {
       console.error('Error:', error);
