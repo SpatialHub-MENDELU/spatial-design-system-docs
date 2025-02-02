@@ -146,7 +146,7 @@ export const lessonsData: ILessonVariants[] = [
           </table>
         </div>
       `,
-      contentOutput:`
+      contentOutput: `
       <a-ar-menu
         position="0 1.5 -3"
         visible="true"
@@ -194,7 +194,7 @@ const items = [
   {color:'white',icon:'/settings', title:'Settings',textColor:'black'},
   {color:'white',icon:'/file-plus',title:'New file',textColor:'black'}
 ]`
-}],
+          }],
         hint: {
           lang: LanguageEnum.HTML,
           imports: `import "spatial-design-system/primitives/ar-menu.js";
@@ -212,8 +212,8 @@ import { stringifyForHTML } from "spatial-design-system/utils/utils.js";`,
   follow-camera="angle: 20"
   billboard
 ></a-ar-menu>`
-        },        
-        test: 
+        },
+        test:
           `  
           const sceneElement = document.querySelector('a-scene');
           if (!sceneElement) {
@@ -225,7 +225,7 @@ import { stringifyForHTML } from "spatial-design-system/utils/utils.js";`,
           
           const position = menu.getAttribute('position');
           if (!position || position != "3 2 -7") {
-            throw new Error('Position is incorrect');
+            throw new Error("Position is incorrect");
           }
           
           const menuVariant = menu.getAttribute('variant');
@@ -351,7 +351,7 @@ import { stringifyForHTML } from "spatial-design-system/utils/utils.js";`,
           </table>
         </div>
       `,
-      contentOutput:`
+      contentOutput: `
       <a-ar-menu
         position="0 1.5 -3"
         visible="true"
@@ -365,7 +365,7 @@ import { stringifyForHTML } from "spatial-design-system/utils/utils.js";`,
         variant="filled"
         layout="circle"
       ></a-ar-menu>`,
-    contentCode: [
+      contentCode: [
         {
           lang: LanguageEnum.JS,
           content: `import "spatial-design-system/primitives/ar-menu.js
@@ -419,9 +419,10 @@ import { stringifyForHTML } from "spatial-design-system/utils/utils.js";`,
             
 scene.innerHTML = menu;
 app.appendChild(scene);`
-        },        
-        test: 
+        },
+        test:
           `  
+          console.log(document)
           const sceneElement = document.querySelector('a-scene');
           if (!sceneElement) {
             throw new Error('Scene is not found');
