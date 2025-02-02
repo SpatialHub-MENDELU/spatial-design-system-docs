@@ -1,6 +1,7 @@
 .output {
   overflow-y: hidden !important;
   width: 100% !important;
+  background-color: transparent !important;
 }
 
 .hidden-output--vertical {
@@ -11,4 +12,8 @@
 .hidden-output--horizontal {
   overflow: hidden;
   width: 3rem !important;
+}
+
+html.a-fullscreen {
+  background-color: $grey !important;
 }

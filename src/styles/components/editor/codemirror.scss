@@ -1,16 +1,17 @@
 .cm-gutters {
-  background-color: white !important;
+  background-color: transparent !important;
   border: none !important;
 
   color: $light-background !important;
 }
 
 .cm-activeLine {
-  background-color: $light-primary !important;
+  background-color: $secondary !important;
+  color: $dark-text !important;
 }
 
 .cm-activeLineGutter {
-  background-color: $light-primary !important;
+  background-color: $secondary !important;
   color: $dark-text !important;
 }
 

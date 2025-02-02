@@ -15,7 +15,8 @@ module.exports = {
                 "light-primary": "#e6f8f4",
                 "extra-light-background": "#F4F4F4",
                 "grey": "#b7b4b4",
-                "red": "#ba0013"
+                "red": "#ba0013",
+                "custom-block-tip-bg": "var(--vp-custom-block-tip-bg)"
             },
         },
     },
