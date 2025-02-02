@@ -6,7 +6,7 @@ import {
 } from '../types/courses/Lessons';
 import ComponentExample from '../../ComponentExample.vue';
 import { h, render } from 'vue';
-import { codeLanguage } from '../data/courses/Lessons';
+import { LanguageEnum, codeLanguage } from '../data/courses/Lessons';
 import prettier from 'prettier';
 import parserHTML from 'prettier/parser-html';
 import parserBabel from 'prettier/parser-babel';
@@ -84,17 +84,17 @@ export const replacePlaceholder = async (
         if (lang === 'html') {
           formattedCode = await prettier.format(code, {
             parser: 'html',
-            plugins: [parserHTML],
+            plugins: [parserHTML, parserBabel, parserTypescript].filter(Boolean),
           });
         } else if (lang === 'javascript') {
           formattedCode = await prettier.format(code, {
             parser: 'babel',
-            plugins: [parserBabel],
+            plugins: [parserHTML, parserBabel, parserTypescript].filter(Boolean),
           });
         } else if (lang === 'typescript') {
           formattedCode = await prettier.format(code, {
             parser: 'typescript',
-            plugins: [parserTypescript],
+            plugins: [parserHTML, parserBabel, parserTypescript].filter(Boolean),
           });
         } else {
           formattedCode = code;
@@ -103,8 +103,6 @@ export const replacePlaceholder = async (
         console.error('Prettier formatting failed:', error);
         formattedCode = code;
       }
-
-      console.log(formattedCode)
 
       const highlightedCode = highlighter.codeToHtml(formattedCode, {
         lang,
@@ -116,7 +114,6 @@ export const replacePlaceholder = async (
 
     if (codes) {
       codes.forEach(async (code) => {
-        console.log(code)
         const highlightedCode = await formatAndHighlightCode(code.content, code.lang);
         const codeBlock = placeholder.querySelector(`.language-${code.lang}`);
         if (codeBlock) {
@@ -148,15 +145,11 @@ export const copyToClipboard = (text: string, toast: ToastServiceMethods) => {
 export const addCurrentLessonToSession = (
   sessionService: SessionService,
   lessonById: ILessonVariants,
-  activeCourse: ICourseDetail
+  activeCourse: ICourseDetail,
 ) => {
-  const completedLessonsFromSession =
+  let completedLessonsFromSession =
     (sessionService?.getFromSession('completedLessons') as ILessonVariants[]) ||
     [];
-
-  const existingLesson = completedLessonsFromSession.find(
-    (lesson: ILessonVariants) => lesson.id === lessonById.id
-  );
 
   const currentLessonVariant = lessonByCourseVariant(
     String(activeCourse?.slug),
@@ -166,25 +159,32 @@ export const addCurrentLessonToSession = (
     'cs-CS'
   );
 
+  const existingLessonIndex = completedLessonsFromSession.findIndex(
+    (lesson: ILessonVariants) => lesson.id === lessonById.id
+  );
+
   if (lessonById && currentLessonVariant) {
-    if (!existingLesson) {
+    if (existingLessonIndex === -1) {
       completedLessonsFromSession.push({
         ...lessonById,
         ...currentLessonVariant,
       });
+    } else {
+      if (activeCourse.slug === VUE_COURSE) {
+        completedLessonsFromSession[existingLessonIndex].vueVariant = currentLessonVariant
+      } else if (activeCourse.slug === VANILLA_JS_COURSE) {
+        completedLessonsFromSession[existingLessonIndex].vanillaJSVariant = currentLessonVariant
+      }
     }
 
-    sessionService?.storeInSession(
-      'completedLessons',
-      completedLessonsFromSession
-    );
+    sessionService?.storeInSession('completedLessons', completedLessonsFromSession);
   }
 };
 
 export const createTaskTemplate = (
   projectType: ProjectType,
   prompt: string,
-  code: IContentCode
+  codes: IContentCode[]
 ) => {
   if (projectType === ProjectType.VANILLA) {
     return `<!DOCTYPE html>
@@ -207,7 +207,7 @@ export const createTaskTemplate = (
         const app = document.getElementById("app");
         const scene = document.createElement("a-scene");
 
-        ${code.content}
+        ${codes.map(c => c.content)}
       })
     </script>
     
@@ -215,5 +215,20 @@ export const createTaskTemplate = (
     </body>
     </html>
 `;
+  } else if (projectType === ProjectType.VUE) {
+    return `<script setup>
+    /*
+      ${prompt}
+    */
+
+      // add imports
+
+      ${codes.filter(c => c.lang === LanguageEnum.JS).map(c => c.content)}
+    </script>
+    <template>
+      <a-scene>
+        ${codes.filter(c => c.lang === LanguageEnum.MARKUP).map(c => c.content)}
+      </a-scene>
+    </template>`
   }
 };

@@ -17,7 +17,7 @@ import {
 import { inject, onMounted, reactive, nextTick, computed } from 'vue';
 import { ICourseDetail } from '../types/courses/CourseDetail';
 import CoursesOverview from '../components/courses/CoursesOverview.vue';
-import { LESSON } from '../constants/routes';
+import { COURSE, LESSON } from '../constants/routes';
 import { SessionService } from '../services/sessionService';
 import LessonError from '../components/courses/LessonError.vue';
 import { IStateLessonDetail } from '../types/States';
@@ -54,6 +54,8 @@ const state = reactive<IStateLessonDetail>({
   lessonById: null,
   activeLesson: null,
   nextLessonLink: null,
+  successDialogTitle: "Great job! You've completed the task.",
+  successDialogText: "You can move on to the next step or revisit the task if you want to review your work.",
   isOverviewVisible: false,
   isContentVisible: true,
   isHintVisible: false,
@@ -116,14 +118,14 @@ onMounted(async () => {
       (l) => l.id === currentLessonId - 1
     ) as ILessonVariants;
 
-    state.completedIn = currentLesson
-      ? String(
-          lessonByCourseVariant(activeCourse.slug, currentLesson)?.completed
-        )
-      : null;
+    state.completedIn = lessonByCourseVariant(activeCourse.slug, currentLesson)?.completed ?? null;
 
     if (currentLessonId < lessonsData.length) {
       state.nextLessonLink = `${LESSON}/${activeCourse.slug}-${currentLessonId + 1}`;
+    } else {
+      state.successDialogTitle = "Congratulations!";
+      state.successDialogText = "You have successfully completed the course. Great job!";
+      state.nextLessonLink = `${COURSE}/${activeCourse.slug}`;
     }
 
     state.canBeDisplayed = Boolean(
@@ -148,17 +150,25 @@ onMounted(async () => {
       const template = createTaskTemplate(
         state.activeCourse?.type,
         state.activeLesson.task.prompt,
-        state.activeLesson.task.code
+        state.activeLesson.task.codes
       );
       await webContainersService?.createProject(
         state.activeCourse?.type ?? ProjectType.VANILLA,
         template
       );
 
-      playgroundStore.commit('readFile', {
-        content: template,
-        path: '/index.html',
-      });
+      if (state.activeCourse?.type === ProjectType.VANILLA) {
+        playgroundStore.commit('readFile', {
+          content: template,
+          path: '/index.html',
+        });
+      } else if (state.activeCourse?.type === ProjectType.VUE) {
+        playgroundStore.commit('readFile', {
+          content: template,
+          path: '/src/App.vue',
+        });
+      }
+
       state.loading.installing = false;
     }
   } catch (error) {
@@ -401,5 +411,7 @@ const continueToNextLesson = () => {
     :show-dialog="state.isSuccessDialogVisible"
     :continue="continueToNextLesson"
     :link="state.nextLessonLink"
+    :text="state.successDialogText"
+    :success-message="state.successDialogTitle"
   />
 </template>

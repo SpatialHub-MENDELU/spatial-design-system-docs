@@ -19,7 +19,9 @@ export interface IStateLessonDetail {
   canBeDisplayed: boolean;
   lessonsFromSession: ILessonVariants[];
   testErrors: string[];
-  loading: ILoading
+  loading: ILoading;
+  successDialogTitle: string;
+  successDialogText: string;
 }
 
 export interface IStateCourseDetail {

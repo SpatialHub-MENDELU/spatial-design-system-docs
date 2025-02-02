@@ -5,8 +5,8 @@ import { FolderItem } from '../types/fileItem';
 import JSZip from 'jszip';
 import { getFileIcon } from '../utils/FileExtensionsAndIcons';
 import { ProjectType } from '../types/projectType';
-import { getMessageHandlerCode } from '../utils/MessageHandlerCode';
-import { reactive } from 'vue'
+import { getErrorHandlerCode, getMessageHandlerCode } from '../utils/MessageHandlerCode';
+import { reactive } from 'vue';
 
 export class WebContainerService {
   private static instance: WebContainerService;
@@ -16,9 +16,13 @@ export class WebContainerService {
 
   private constructor() {}
 
-  public state = reactive({
+  public state = reactive<{
+    isLoading: boolean,
+    errors: { message: string }[]
+  }>({
     isLoading: false,
-  })
+    errors: []
+  });
 
   public static getInstance(): WebContainerService {
     if (!this.instance) {
@@ -53,14 +57,18 @@ export class WebContainerService {
       throw new Error('WebContainer booting failed: ' + error.message);
     }
 
-    this.webContainerInstance.on('server-ready', (port, url) => {
-      const iframeEl = document.querySelector(
-        'iframe'
-      ) as unknown as HTMLIFrameElement;
-      if (iframeEl) {
-        iframeEl.src = url;
-      }
-    });
+    try {
+      this.webContainerInstance.on('server-ready', (port, url) => {
+        const iframeEl = document.querySelector(
+          'iframe'
+        ) as unknown as HTMLIFrameElement;
+        if (iframeEl) {
+          iframeEl.src = url;
+        }
+      });
+    } catch (error) {
+      console.log(error)
+    }
 
     this.isBooting = false;
     return this.webContainerInstance;
@@ -77,8 +85,12 @@ export class WebContainerService {
   }
 
   public async readFile(filePath: string) {
-    await this.ensureInitialized();
-    return await this.webContainerInstance?.fs.readFile(filePath, 'utf-8');
+    try {
+      await this.ensureInitialized();
+      return await this.webContainerInstance?.fs.readFile(filePath, 'utf-8');
+    } catch(error) {
+      console.log(error)
+    }
   }
 
   public async writeFile(filePath: string, content: string, fetchNodes = true) {
@@ -89,8 +101,8 @@ export class WebContainerService {
       if (fetchNodes) {
         await this.fetchFolderStructureInTreeNode('/');
       }
-    } catch(error) {
-      console.log(error)
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -324,13 +336,17 @@ export class WebContainerService {
               );
             }
             const content = await contentResponse.text();
-            if (
-              task &&
-              projectType === ProjectType.VANILLA &&
-              file.path === 'index.html'
-            )
-              await this.writeFile(dest, task);
-            else await this.writeFile(dest, content);
+
+            const targetPaths = {
+              [ProjectType.VANILLA]: 'index.html',
+              [ProjectType.VUE]: 'src/App.vue',
+            };
+
+            await this.writeFile(
+              dest,
+              task && file.path === targetPaths[projectType] ? task : content,
+              task === null
+            );
           }
         }
       };
@@ -385,34 +401,44 @@ export class WebContainerService {
     try {
       const mainProjectFile = this.getMainProjectFile(projectType);
       await this.setupMessageHandling(mainProjectFile, projectType);
-  
+
       const iframe = this.getIframe();
-      return await this.handleIframeContent(iframe, mainProjectFile, projectType, code);
+      return await this.handleIframeContent(
+        iframe,
+        mainProjectFile,
+        projectType,
+        code
+      );
     } catch (error) {
       return { success: false, errors: [error.message] };
     }
   }
-  
+
   private getMainProjectFile(projectType: ProjectType): string {
-    return projectType === ProjectType.VANILLA ? '/index.html' : '/App.vue';
+    return projectType === ProjectType.VANILLA ? '/index.html' : '/src/App.vue';
   }
-  
-  private async setupMessageHandling(mainProjectFile: string, projectType: ProjectType) {
+
+  private async setupMessageHandling(
+    mainProjectFile: string,
+    projectType: ProjectType
+  ) {
     try {
-      await this.addMessageHandling(mainProjectFile, projectType);
+      await this.addEventHandling(mainProjectFile, projectType, 'message');
     } catch (error) {
       throw new Error(`Error adding message handling: ${error.message}`);
     }
   }
-  
+
   private getIframe(): HTMLIFrameElement {
-    const iframe = document.getElementById('webContainerIframe') as HTMLIFrameElement;
+    const iframe = document.getElementById(
+      'webContainerIframe'
+    ) as HTMLIFrameElement;
     if (!iframe) {
       throw new Error('Iframe was not found');
     }
     return iframe;
   }
-  
+
   private async handleIframeContent(
     iframe: HTMLIFrameElement,
     mainProjectFile: string,
@@ -423,8 +449,6 @@ export class WebContainerService {
       const onMessageHandler = async (event: MessageEvent) => {
         if (event.data.type === 'iframeContent') {
           const iframeContent = event.data.content;
-          console.log(iframeContent)
-  
           try {
             const document = this.parseDocument(iframeContent);
             eval(code);
@@ -432,56 +456,75 @@ export class WebContainerService {
             window.removeEventListener('message', onMessageHandler);
             return reject(new Error(error.message));
           }
-  
+      
           try {
             await this.removeMessageHandling(mainProjectFile, projectType);
             resolve({ success: true });
           } catch (error) {
             reject(new Error(`Error removing message handling: ${error.message}`));
-          } finally {
+          } 
+          finally {
             window.removeEventListener('message', onMessageHandler);
           }
         }
-      };
-  
+      };      
+
       window.addEventListener('message', onMessageHandler);
-  
+
       iframe.onload = () => {
-        try {
-          this.requestIframeContent(iframe);
-        } catch (error) {
-          window.removeEventListener('message', onMessageHandler);
-          reject(new Error(error.message));
-        }
+      try {
+        this.requestIframeContent(iframe);
+      } catch (error) {
+        window.removeEventListener('message', onMessageHandler);
+        reject(new Error(error.message));
+      }
       };
     });
   }
-  
+
   private parseDocument(content: string): Document {
     const parser = new DOMParser();
     return parser.parseFromString(content, 'text/html');
   }
-  
+
   private requestIframeContent(iframe: HTMLIFrameElement) {
     iframe.contentWindow?.postMessage({ type: 'getDocument', content: '' }, '*');
   }
 
-  private async addMessageHandling(
+  private async addEventHandling(
     filePath: string,
-    projectType: ProjectType
+    projectType: ProjectType,
+    event: 'error' | 'message'
   ) {
     try {
-      const messageHandlerCode = getMessageHandlerCode(projectType);
-  
+      const messageHandlerCode = event === 'error' ? getErrorHandlerCode(projectType) : getMessageHandlerCode(projectType);
+      let updatedContent = ""
+
       let fileContent = await this.readFile(filePath);
       if (!fileContent) return;
   
       fileContent = fileContent.replace(messageHandlerCode, '');
   
-      const updatedContent = fileContent.replace(
-        '</body>',
-        `${messageHandlerCode}</body>`
-      );
+      if (projectType === ProjectType.VANILLA) {
+        updatedContent = fileContent.replace(
+          '</body>',
+          `${messageHandlerCode}</body>`
+        );
+      } else if (projectType === ProjectType.VUE) {
+        if (fileContent.includes('</script>')) {
+          updatedContent = fileContent.replace(
+            '</script>',
+            `${messageHandlerCode}</script>`
+          );
+        } else {
+          updatedContent = `${fileContent} 
+            <script setup>
+              ${messageHandlerCode}
+            </script>
+          `;
+        }
+      }
+
       await this.writeFile(filePath, updatedContent, false);
     } catch (error) {
       console.error('Error:', error);

@@ -30,11 +30,24 @@ onMounted(() => {
   const activeCourse = courseDetailData.find(c => c.slug === params.value?.slug) as ICourseDetail
   state.activeCourse = activeCourse
 
-  const filteredLessonsByCourse = completedLessonsFromSession.map(l => lessonByCourseVariant(activeCourse.slug, l));
+  console.log(completedLessonsFromSession)
+  const filteredLessonsByCourse = completedLessonsFromSession.map(l => lessonByCourseVariant(activeCourse.slug, l)).filter(l => l?.completed);
+  console.log("percentage ", Math.round((filteredLessonsByCourse.length / lessonsData.length) * 100))
   state.percentage = Math.round((filteredLessonsByCourse.length / lessonsData.length) * 100);
 
   state.completedLessons = filteredLessonsByCourse.length
 })
+
+const resetSession = () => {
+  let completedLessonsFromSession =
+    (sessionService?.getFromSession('completedLessons') as ILessonVariants[]) ||
+    [];
+
+    const courseKey = state.activeCourse?.slug === 'sds-course-vanilla-js' ? 'vanillaJSVariant' : 'vueVariant'
+    //const modifiedLessons = completedLessonsFromSession.map(l => l[courseKey].completed = undefined)
+    console.log(completedLessonsFromSession)
+    //sessionService?.storeInSession('completedLessons', modifiedLessons)
+}
 
 </script>
 
@@ -56,8 +69,14 @@ onMounted(() => {
             </p>
             <div class="flex items-center gap-2 my-4">
               <a class="bg-primary px-6 py-1 text-white rounded-2xl lg:text-[16px] text-[15px]"
-                v-if="state.percentage != 100"
+                v-if="state.percentage === 100"
+                @click="resetSession()"
+                :href="`${LESSON}/${state.activeCourse?.slug}-1`">Start again</a>
+              
+              <a class="bg-primary px-6 py-1 text-white rounded-2xl lg:text-[16px] text-[15px]"
+                v-if="state.percentage !== 100"
                 :href="`${LESSON}/${state.activeCourse?.slug}-${state.completedLessons + 1}`">{{ state.percentage > 0 ? 'Continue' : 'Start' }}</a>
+              
               <a class="bg-extra-light-background px-6 py-1 text-dark-text rounded-2xl lg:text-[16px] text-[15px]"
                 href="/getting-started/introduction">Docs</a>
             </div>
