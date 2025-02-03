@@ -1,20 +1,3 @@
-<template>
-  <Dialog
-    :visible="showDialog"
-    header="Hint"
-    modal
-    maximizable
-    :closable="false"
-  >
-    <div id="imports" />
-    <div id="hint" />
-
-    <div class="flex justify-end mt-2">
-      <Button label="Close" @click="closeDialog" class="bg-primary" />
-    </div>
-  </Dialog>
-</template>
-
 <script setup lang="ts">
 import { defineProps, onMounted, nextTick, watch } from 'vue';
 import Dialog from 'primevue/dialog';
@@ -70,3 +53,20 @@ onMounted(() => {
   updateHint();
 });
 </script>
+
+<template>
+  <Dialog
+    :visible="showDialog"
+    header="Hint"
+    modal
+    maximizable
+    :closable="false"
+  >
+    <div id="imports" />
+    <div id="hint" />
+
+    <div class="flex justify-end mt-2">
+      <Button label="Close" @click="closeDialog" class="bg-primary" />
+    </div>
+  </Dialog>
+</template>

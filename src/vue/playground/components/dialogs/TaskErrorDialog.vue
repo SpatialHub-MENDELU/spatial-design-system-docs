@@ -1,3 +1,16 @@
+<script setup lang="ts">
+import { defineProps } from 'vue';
+import Dialog from 'primevue/dialog';
+import Button from 'primevue/button';
+import Image from 'primevue/image';
+
+const props = defineProps<{
+  errors: string[];
+  showDialog: boolean;
+  closeDialog: () => void;
+}>();
+</script>
+
 <template>
   <Dialog
     :visible="showDialog"
@@ -24,16 +37,3 @@
     </div>
   </Dialog>
 </template>
-
-<script setup lang="ts">
-import { defineProps } from 'vue';
-import Dialog from 'primevue/dialog';
-import Button from 'primevue/button';
-import Image from 'primevue/image';
-
-const props = defineProps<{
-  errors: string[];
-  showDialog: boolean;
-  closeDialog: () => void;
-}>();
-</script>
