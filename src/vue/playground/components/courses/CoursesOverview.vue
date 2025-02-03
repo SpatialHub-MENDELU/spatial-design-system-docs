@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { defineProps } from 'vue';
 import { ICourseDetail } from '../../types/courses/CourseDetail';
-import LessonsList from './LessonsList.vue';
+import LessonsList from '../lessons/LessonsList.vue';
 import { ILessonVariants } from '../../types/courses/Lessons';
 
 const props = defineProps<{
@@ -15,7 +15,7 @@ const props = defineProps<{
 
 <template>
   <div
-    class="bg-custom-block-tip-bg px-4 absolute lg:h-screen h-full top-0 left-0 bg-white lg:border-r border-border-color flex flex-col overflow-x-hidden duration-500 lg:w-[25rem] w-full lg:p-6 pt-6 z-10"
+    class="overview px-4 absolute lg:h-screen h-full top-0 left-0 bg-white lg:border-r border-border-color flex flex-col overflow-x-hidden duration-500 lg:w-[25rem] w-full lg:p-6 pt-6 z-10"
     :class="{ '-translate-x-full': !props.isVisible, 'translate-x-0': props.isVisible }"
   >
     <div class="flex justify-end">
