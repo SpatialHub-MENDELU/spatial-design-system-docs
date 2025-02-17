@@ -31,6 +31,9 @@ Below is an example of using row layout, `a-ar-row`. The column layout differs i
 <ComponentExample :fixed="true">
 
 <template #output v-if="renderScene">
+    <a-entity id="mouseRaycaster" raycaster="objects: .clickable"
+              cursor="rayOrigin: mouse; fuse: false;">
+    </a-entity>
     <a-ar-row width="3" position="0 1.5 -3">
         <a-box color="#018A6C"></a-box>
         <a-box color="#00C170"></a-box>
