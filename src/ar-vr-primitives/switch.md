@@ -28,6 +28,9 @@ Below is an example of the switch component.
 <ComponentExample :fixed="true">
 
 <template #output v-if="renderScene">
+<a-entity id="mouseRaycaster" raycaster="objects: .clickable"
+          cursor="rayOrigin: mouse; fuse: false;">
+</a-entity>
 <a-ar-switch
     position="0 1.6 -3"
     size="large"
