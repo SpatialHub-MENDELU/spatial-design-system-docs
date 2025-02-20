@@ -17,6 +17,8 @@ onMounted(() => {
   const editorSettings = sessionService?.getFromSession('editorSettings');
   if (editorSettings) {
     state.layout = editorSettings['selectedLayout'];
+  } else {
+    state.layout = Layout.HORIZONTAL
   }
 });
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, onMounted, watch } from 'vue';
+import { inject, onMounted, watch, computed } from 'vue';
 import Tree from 'primevue/tree';
 import ContextMenu from 'primevue/contextmenu';
 import Button from 'primevue/button';
@@ -17,6 +17,7 @@ const props = defineProps<IPropsFileTree>();
   'webContainersService'
 );
 const fileTreeService = new FileTreeService(webContainersService)
+const foldersAreLoading = computed(() => playgroundStore.getters.foldersAreLoading)
 
 watch(props.loading, async () => {
   await fileTreeService.fetchFolders();
@@ -30,10 +31,6 @@ const showNewFileMenu = (event) => {
   console.log(fileTreeService.newFileContextMenu)
   fileTreeService.newFileContextMenu?.value?.show(event);
 }
-
-onMounted(async () => {
-  await fileTreeService.fetchFolders()
-})
 
 const toggleVisibility = () => {
   fileTreeService.state.isVisible = !fileTreeService.state.isVisible;
@@ -50,6 +47,14 @@ const updateItems = async () => {
   <Toast position="bottom-center" />
 
   <div
+  v-if="foldersAreLoading"
+  class="lg:min-w-[8rem] lg:h-auto h-[10rem] flex items-center justify-center lg:border-r lg:border-b-0 lg:border-l-0 border border-border-color relative overflow-visible duration-300 block pb-2"
+>
+  <div class="spinner" />
+</div>
+
+  <div
+    v-if="!foldersAreLoading"
     class="border-r border-border-color relative overflow-visible duration-300 block lg:border-t-0 border-t lg:border-l-0 border-l pb-2"
     :class="{ ' filetree--hidden ': fileTreeService.state.isHidden}"
   >
