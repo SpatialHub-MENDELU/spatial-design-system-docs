@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
-import { CourseDetailService } from '../../services/courseDetailService';
 import { LESSON } from '../../constants/routes';
+import { IPropsCourseDetailMainInfo } from '../../types/props';
 
-const props = defineProps<{
-  courseDetailService: CourseDetailService;
-}>();
+const props = defineProps<IPropsCourseDetailMainInfo>();
 </script>
 
 <template>

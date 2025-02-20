@@ -1,20 +1,26 @@
 import { ref } from 'vue';
 import { FolderItem } from '../types/fileItem';
-import { FileExtensions, FileType } from '../types/fileType';
+import { FileType } from '../types/fileType';
 import { WebContainerService } from './webContainersService';
 import { checkDuplicity } from '../utils/CheckDuplicity';
+import { initNewItemDialogState } from '../states/NewItemDialogState';
+import { IStateNewItemDialog } from '../types/states';
+import { getFileExtension, getFileWithoutExtension } from '../utils/FileExtensionsAndIcons';
+import { IPropsNewItemDialog } from '../types/props';
 
-export class FolderService {
-  private static instance: FolderService;
+export class FileSystemService {
+  private static instance: FileSystemService;
   public folders = ref<FolderItem[]>([]);
 
   constructor(private webContainersService: WebContainerService) {}
 
+  private _state = initNewItemDialogState;
+
   public static getInstance(
     webContainersService: WebContainerService
-  ): FolderService {
+  ): FileSystemService {
     if (!this.instance) {
-      this.instance = new FolderService(webContainersService);
+      this.instance = new FileSystemService(webContainersService);
     }
     return this.instance;
   }
@@ -135,5 +141,80 @@ export class FolderService {
         reader.readAsArrayBuffer(f as File);
       }
     }
+  }
+
+  async submitNewItemDialog(props: IPropsNewItemDialog) {
+    this._state.errorMessage = '';
+    this._state.errorExtensionMessage = '';
+
+    if (this._state.newItemName.trim() === '') {
+      this._state.errorMessage = 'Name cannot be empty.';
+      return;
+    }
+
+    if (props.dialogType === FileType.FILE && !this._state.newFileExtension) {
+      this._state.errorExtensionMessage = 'Extension is required.';
+      return;
+    }
+
+    const fullName =
+      props.dialogType === FileType.FILE && this._state.newFileExtension
+        ? `${this._state.newItemName}.${this._state.newFileExtension}`
+        : this._state.newItemName;
+
+    const parentFolder = props.parentNode?.parent;
+
+    if (props.itemToRename) {
+      const result = await this?.renameItem(props.itemToRename.name, fullName);
+      if (result?.error) {
+        this._state.errorMessage = result.error;
+      } else {
+        props.closeDialog();
+      }
+    } else {
+      const result = await this?.createNewItem(
+        fullName,
+        props.dialogType,
+        parentFolder
+      );
+
+      if (result?.error) {
+        this._state.errorMessage = result.error;
+      } else {
+        this._state.newItemName = '';
+        props.closeDialog();
+      }
+    }
+  }
+
+  updateEditedItem(newValue: FolderItem, props: IPropsNewItemDialog, newDialogType: FolderItem | FileType | null) {
+    if (newValue && newValue.name !== '') {
+      this._state.newItemName = getFileWithoutExtension(newValue);
+      this._state.newFileExtension = getFileExtension(newValue.name, newValue.type);
+      this._state.dialogHeader = `Rename ${props.dialogType}`;
+      this._state.buttonLabel = 'Rename';
+      this._state.buttonIcon = 'pi pi-pencil';
+    } else {
+        if (newDialogType === FileType.FILE && this.fileNameExtensions.length > 0) {
+          this._state.newFileExtension = this.fileNameExtensions[0].value;
+        }
+        
+        this._state.newItemName = ''
+        this._state.dialogHeader = newDialogType === FileType.FILE ? 'New file' : 'New folder'
+        this._state.buttonLabel = 'Create';
+        this._state.buttonIcon = 'pi pi-check';
+    }
+  }
+
+  get state(): IStateNewItemDialog {
+    return this._state;
+  }
+
+  get fileNameExtensions() {
+    return [
+      { label: 'HTML', value: 'html' },
+      { label: 'CSS', value: 'css' },
+      { label: 'JS', value: 'js' },
+    ];
   }
 }
