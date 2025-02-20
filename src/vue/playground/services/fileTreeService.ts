@@ -3,11 +3,12 @@ import { initFileTreeState } from "../states/FileTreeState";
 import { IStateFileTree } from "../types/states";
 import { FileType } from "../types/fileType";
 import ContextMenu from "primevue/contextmenu";
-import { inject, ref } from "vue";
+import { ref } from "vue";
 import { TreeNode } from "primevue/treenode";
 import { WebContainerService } from "./webContainersService";
 import { FolderItem } from "../types/fileItem";
 import { useToast } from "primevue/usetoast";
+import { useStore } from "vuex";
 
 export class FileTreeService {
 
@@ -17,6 +18,8 @@ export class FileTreeService {
   private _folders = ref<TreeNode[]>([]);
   private _menu = ref();
   private _toast = useToast();
+
+  private _playgroundStore = useStore();
 
   private _webContainersService: WebContainerService | null = null
 
@@ -37,6 +40,9 @@ export class FileTreeService {
       this._folders.value = [...this._folders.value];
     } catch (error) {
       console.error('Error fetching folder structure:', error);
+    } finally {
+      console.log("updated loading")
+      this._playgroundStore.commit('updateFoldersLoading', false)
     }
   };
 

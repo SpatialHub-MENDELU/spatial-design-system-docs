@@ -111,7 +111,7 @@ watch(
       v-show="outputState.isVisible"
       class="h-full lg:px-0 px-8 flex items-center justify-center"
       :class="{
-        'border-t-0 border-border-color': loading,
+        'lg:border-t-0 lg:border-b-0 lg:border-x-0 border border-border-color': loading,
       }"
     >
       <div

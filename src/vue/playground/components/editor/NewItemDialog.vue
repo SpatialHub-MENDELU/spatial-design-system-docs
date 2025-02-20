@@ -9,6 +9,7 @@ import { FileType } from '../../types/fileType';
 import { WebContainerService } from '../../services/webContainersService';
 import { FolderItem } from '../../types/fileItem';
 import { IPropsNewItemDialog } from '../../types/props';
+import { useStore } from 'vuex';
 
 const emit = defineEmits()
 const webContainersService = inject<WebContainerService>(
@@ -19,12 +20,15 @@ const fileSystemService = new FileSystemService(
 );
 
 const props = defineProps<IPropsNewItemDialog>();
+const playgroundStore = useStore()
 
 const submit = async () => {
   await fileSystemService.submitNewItemDialog(props).then(() => {
     if (props.itemToRename) emit('rename-item');
     else emit('new-item')
   })
+
+  playgroundStore.commit('updateFoldersLoading', true)
 }
 
 watch(

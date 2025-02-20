@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import FileUpload from 'primevue/fileupload';
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 import Button from 'primevue/button';
 import { FolderItem } from '../../../types/fileItem';
 import { formatSize } from '../../../utils/SizeFormatter';
@@ -19,6 +19,17 @@ const triggerFolderInput = () => {
 
 const fileUploaderService = new FileUplaoderService();
 const props = defineProps<IPropsFileUploader>();
+
+const fileUploadRef = ref<FileUpload | null>(null);
+
+const handleClear = () => {
+  fileUploaderService.removeFiles();  // Clear files in the service
+  nextTick(() => {
+    emit('clear');
+    console.log("Files cleared!");
+  });
+};
+
 </script>
 
 <template>
@@ -37,6 +48,7 @@ const props = defineProps<IPropsFileUploader>();
     :multiple="props.multiple"
     :accept="props.accept"
     :maxFileSize="1000000"
+    ref="fileUploadRef"
     @select="(event) => fileUploaderService.onSelectedFiles(event, primevue)"
   >
     <template #header="{ chooseCallback, files }">
@@ -114,6 +126,7 @@ const props = defineProps<IPropsFileUploader>();
               <Button
                 @click="fileUploaderService.handleUpload(() => {
                   emit('new-item')
+                  handleClear()
                 })"
                 class="bg-primary w-max text-white"
                 icon="pi pi-check"

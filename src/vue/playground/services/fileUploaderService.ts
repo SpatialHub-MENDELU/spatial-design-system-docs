@@ -7,9 +7,11 @@ import { inject, defineEmits } from "vue";
 import { FileType } from "../types/fileType";
 import { FileSystemService } from "./fileSystemService";
 import { WebContainerService } from "./webContainersService";
+import { useStore } from "vuex";
 
 export class FileUplaoderService {
  
+  private _playgroundStore = useStore()
   private _state = initFileUploadState
   private _webContainersService = inject<WebContainerService>(
     'webContainersService'
@@ -42,6 +44,7 @@ export class FileUplaoderService {
     }
   
     await this._webContainersService?.fetchFolderStructure('/');
+    this._playgroundStore.commit('updateFoldersLoading', true)
     handleEmit();
   };
   
@@ -64,6 +67,10 @@ export class FileUplaoderService {
   
     this._state.totalSize = this._state.totalSize + totalSize;
   };
+
+  removeFiles() {
+    this.state.files = []
+  }
 
   get state(): IStateFileUploader {
     return this._state
