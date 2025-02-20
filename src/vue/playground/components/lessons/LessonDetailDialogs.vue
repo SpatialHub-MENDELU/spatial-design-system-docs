@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import { defineProps, nextTick } from 'vue';
-import { LessonDetailService } from '../../services/lessonDetailService';
 import HintDialog from '../dialogs/HintDialog.vue';
 import TaskErrorDialog from '../dialogs/TaskErrorDialog.vue';
 import TaskSuccessDialog from '../dialogs/TaskSuccessDialog.vue';
 import { addCurrentLessonToSession } from '../../utils/Lessons';
+import { IPropsLessonDetailDialogs } from '../../types/props';
 
-const props = defineProps<{
-  lessonDetailService: LessonDetailService;
-}>();
+const props = defineProps<IPropsLessonDetailDialogs>();
 
 const closeHintDialog = () => {
   props.lessonDetailService.state.isHintVisible = false;

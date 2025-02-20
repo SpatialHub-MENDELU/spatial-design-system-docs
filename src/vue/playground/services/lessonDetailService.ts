@@ -10,7 +10,7 @@ import { IContentCode, ILesson, ILessonVariants } from "../types/courses/Lessons
 import { courseDetailData } from "../data/courses/CourseDetail";
 import { ICourseDetail } from "../types/courses/CourseDetail";
 import { COURSE, LESSON } from "../constants/routes";
-import { IStateLessonDetail } from "../types/States";
+import { IStateLessonDetail } from "../types/states";
 import { ToastServiceMethods } from "primevue/toastservice";
 
 export class LessonDetailService {

@@ -1,3 +1,10 @@
+<script lang="ts" setup>
+  import { defineProps } from 'vue';
+  import { IPropsBreadcrumbs } from '../../types/props';
+
+  const props = defineProps<IPropsBreadcrumbs>();
+</script>
+
 <template>
   <div class="breadcrumbs flex overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 whitespace-nowrap max-w-1/2">
     <div v-for="item in props.path.slice(1).split('/')"
@@ -10,13 +17,3 @@
     </div>
   </div>
 </template>
-
-
-<script lang="ts" setup>
-  import { defineProps } from 'vue';
-
-  const props = defineProps<{
-    path: string
-  }>();
-
-</script>

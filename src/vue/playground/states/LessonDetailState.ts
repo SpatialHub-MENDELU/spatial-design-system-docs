@@ -1,5 +1,5 @@
 import { reactive } from 'vue';
-import { IStateLessonDetail } from '../types/States';
+import { IStateLessonDetail } from '../types/states';
 
 export const initLessonDetailState = reactive<IStateLessonDetail>({
   activeCourse: null,

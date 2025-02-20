@@ -1,8 +1,49 @@
+<script lang="ts" setup>
+import Dialog from 'primevue/dialog';
+import Button from 'primevue/button';
+import { defineProps, onMounted, inject } from 'vue';
+import { Layout } from '../../types/layout';
+import { SessionService } from '../../services/sessionService';
+import { useStore } from 'vuex';
+import { IPropsLayoutDialog } from '../../types/props';
+import { initLayoutDialogState } from '../../states/LayoutDialogState';
+
+const sessionService = inject<SessionService>('sessionService');
+const playgroundStore = useStore()
+const props = defineProps<IPropsLayoutDialog>();
+const state = initLayoutDialogState
+
+onMounted(() => {
+  const editorSettings = sessionService?.getFromSession('editorSettings');
+  if (editorSettings) {
+    state.layout = editorSettings['selectedLayout'];
+  }
+});
+
+const updateLayout = (layout: Layout) => {
+  state.layout = layout;
+};
+
+const submitForm = () => {
+  if (state.layout) {
+    const editorSettings = sessionService?.getFromSession('editorSettings') || {};
+    sessionService?.storeInSession('editorSettings', {
+      ...editorSettings,
+      selectedLayout: state.layout,
+    });
+    playgroundStore.commit('updateLayout', state.layout)
+    props.closeDialog();
+  } else {
+    state.error = 'Please select a layout to proceed.';
+  }
+};
+</script>
+
 <template>
   <Dialog
     :visible="visible"
     modal
-    header="Create new project"
+    header="Change layout"
     :closable="false"
     :style="{ width: '25rem' }"
   >
@@ -62,51 +103,3 @@
     </div>
   </Dialog>
 </template>
-
-<script lang="ts" setup>
-import Dialog from 'primevue/dialog';
-import Button from 'primevue/button';
-import { defineProps, reactive, onMounted, inject } from 'vue';
-import { Layout } from '../../types/layout';
-import { SessionService } from '../../services/sessionService';
-import { useStore } from 'vuex';
-import { IStateLayoutDialog } from '../../types/States';
-
-const sessionService = inject<SessionService>('sessionService');
-const playgroundStore = useStore()
-
-const props = defineProps<{
-  closeDialog: () => void;
-  visible: boolean;
-}>();
-
-const state = reactive<IStateLayoutDialog>({
-  error: null,
-  layout: null,
-});
-
-onMounted(() => {
-  const editorSettings = sessionService?.getFromSession('editorSettings');
-  if (editorSettings) {
-    state.layout = editorSettings['selectedLayout'];
-  }
-});
-
-const updateLayout = (layout: Layout) => {
-  state.layout = layout;
-};
-
-const submitForm = () => {
-  if (state.layout) {
-    const editorSettings = sessionService?.getFromSession('editorSettings') || {};
-    sessionService?.storeInSession('editorSettings', {
-      ...editorSettings,
-      selectedLayout: state.layout,
-    });
-    playgroundStore.commit('updateLayout', state.layout)
-    props.closeDialog();
-  } else {
-    state.error = 'Please select a layout to proceed.';
-  }
-};
-</script>

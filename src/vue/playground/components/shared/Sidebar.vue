@@ -44,7 +44,7 @@ const sidebarState = reactive({
             target="_self"
           >
             <i
-              :class="`pi pi-${item.icon} ${activeRoute.includes(item.route) ? 'mainColor' : 'text-grey'} text-[20px] duration-300`"
+              :class="`pi pi-${item.icon} ${activeRoute.includes(item.route) ? 'mainColor' : 'text-grey'} lg:text-[20px] text-[15px] duration-300`"
             />
             <span class="2xl:text-[16px] text-[14px]">{{ item.text }}</span>
           </a>

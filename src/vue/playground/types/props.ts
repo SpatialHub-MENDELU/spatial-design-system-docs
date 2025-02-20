@@ -1,0 +1,136 @@
+import { TreeNode } from "primevue/treenode";
+import { FileType } from "./fileType";
+import { FolderItem } from "./fileItem";
+import { ILoading } from "./loading";
+import { IContentCode, ILessonVariants } from "./courses/Lessons";
+import { ICourseDetail } from "./courses/CourseDetail";
+import { CourseDetailService } from "../services/courseDetailService";
+import { ICourseListItem } from "./courses/CourseListItems";
+import { LessonDetailService } from "../services/lessonDetailService";
+import { ContextMenuOption } from "./contextMenu";
+import { ProjectType } from "./projectType";
+
+export interface IPropsNewItemDialog {
+  showDialog: boolean;
+  dialogType: FileType;
+  closeDialog: () => void;
+  itemToRename: FolderItem | null;
+  parentNode: TreeNode | null;
+}
+
+export interface IPropsCodemirror {
+  isDetail: boolean;
+  dynamicClass?: Record<string, boolean>;
+}
+
+export interface IPropsFileUploader {
+  accept: string;
+  multiple: boolean;
+  folderUploader: boolean;
+}
+
+export interface IPropsFileTree {
+  loading: ILoading;
+}
+
+export interface IPropsHintDialog {
+  hint?: IContentCode | undefined;
+  showDialog: boolean;
+  closeDialog: () => void;
+}
+
+export interface IPropsShareCourseDialog {
+  dialogIsVisible: boolean,
+  url: string,
+  onClose: () => void
+}
+
+export interface IPropsTaskErrorDialog {
+  errors: string[];
+  showDialog: boolean;
+  closeDialog: () => void;
+}
+
+export interface IPropsTaskSuccessDialog {
+  successMessage: string;
+  showDialog: boolean;
+  continue: () => void;
+  link: string | null;
+  text: string;
+}
+
+export interface IPropsCourseOverview {
+  activeCourse: ICourseDetail;
+  activeLesson: ILessonVariants | null;
+  isVisible: boolean;
+  onClose: () => void;
+  lessonsFromSession: ILessonVariants[]
+}
+
+export interface IPropsCourseDetailProgress {
+  courseDetailService: CourseDetailService;
+}
+
+export interface IPropsCourseDetailMainInfo {
+  courseDetailService: CourseDetailService;
+}
+
+export interface IPropsCourseDetailAdditionalInfo {
+  courseDetailService: CourseDetailService;
+}
+
+export interface IPropsCourseCard {
+  course: ICourseListItem
+}
+
+export interface IPropsEditorOutput {
+  loading: ILoading;
+  isDetail: boolean;
+  outputIsShown?: boolean;
+}
+
+export interface IPropsFolderFileUploader {
+  isDialogVisible: boolean;
+  closeDialog: () => void;
+  uploadType: FileType;
+}
+
+export interface IPropsLessonDetailContent {
+  lessonDetailService: LessonDetailService;
+}
+
+export interface IPropsLessonDetailDialogs {
+  lessonDetailService: LessonDetailService;
+}
+
+export interface IPropsLessonDetailTask {
+  lessonDetailService: LessonDetailService;
+}
+
+export interface IPropsLessonsList {
+  activeCourse: ICourseDetail;
+  lessonsFromSession: ILessonVariants[];
+  activeLesson: ILessonVariants | null;
+}
+
+export interface IPropsBreadcrumbs {
+  path: string
+}
+
+export interface IPropsContextMenu {
+  visible: boolean;
+  position: { x: number; y: number };
+  options: ContextMenuOption[];
+  closeMenu: () => void;
+}
+
+export interface IPropsCreateProjectDialog {
+  closeDialog: () => void;
+  createProject: (projectType: ProjectType) => void;
+  visible: boolean;
+}
+
+export interface IPropsLayoutDialog {
+  closeDialog: () => void;
+  visible: boolean;
+}

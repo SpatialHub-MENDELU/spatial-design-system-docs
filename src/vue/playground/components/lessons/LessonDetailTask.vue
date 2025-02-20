@@ -1,66 +1,48 @@
 <script setup lang="ts">
 import { computed, defineProps } from 'vue';
-import { LessonDetailService } from '../../services/lessonDetailService';
-import EditorOutput from '../editor/EditorOutput.vue'
-import Codemirror from '../editor/Codemirror.vue'
+import EditorOutput from '../editor/EditorOutput.vue';
+import Codemirror from '../editor/Codemirror.vue';
+import { IPropsLessonDetailTask } from '../../types/props';
 
-const props = defineProps<{
-  lessonDetailService: LessonDetailService;
-}>();
-
+const props = defineProps<IPropsLessonDetailTask>();
 const isLoading = computed(
   () => props.lessonDetailService.webContainersService?.state.isLoading
 );
-
 </script>
 
 <template>
   <div
-    class="flex flex-col relative duration-300"
+    class="flex flex-col relative duration-300 lg:h-full"
     :class="{
-      ' lg:w-1/2 w-full': lessonDetailService.state.isContentVisible,
-      ' w-full': !lessonDetailService.state.isContentVisible,
+      ' lg:w-1/2 w-full': props.lessonDetailService.state.isContentVisible,
+      ' w-full': !props.lessonDetailService.state.isContentVisible,
     }"
     v-if="props.lessonDetailService.state.activeLesson?.task"
   >
     <Codemirror
       :dynamic-class="{
         'border border-b-0 border-border-color lg:h-full':
-          !lessonDetailService.state.loading.installing &&
-          !lessonDetailService.state.loading.running,
+          !props.lessonDetailService.state.loading.installing &&
+          !props.lessonDetailService.state.loading.running,
         ' editor-hidden':
-          lessonDetailService.state.loading.installing ||
-          lessonDetailService.state.loading.running,
+          props.lessonDetailService.state.loading.installing ||
+          props.lessonDetailService.state.loading.running
       }"
       :is-detail="true"
     />
     <EditorOutput
-      :loading="lessonDetailService.state.loading"
+      :loading="props.lessonDetailService.state.loading"
       :is-detail="true"
+      :output-is-shown="true"
     />
 
-    <button
-      class="absolute bottom-16 right-3 h-12 w-12 cursor-pointer block z-40 lg:block hidden"
-      @click="lessonDetailService.toggleVisibility"
-    >
-      <i
-        :class="[
-          'pi',
-          lessonDetailService.state.isContentVisible
-            ? 'pi-window-maximize'
-            : 'pi-window-minimize',
-          'text-primary border border-primary text-[20px] duration-300 rounded-xl p-1.5 bg-white',
-        ]"
-      />
-    </button>
-
     <div
-      v-if="lessonDetailService.state.activeLesson?.task"
+      v-if="props.lessonDetailService.state.activeLesson?.task"
       class="flex items-center gap-3 py-2 justify-end"
     >
       <button
         class="px-6 py-1 bg-primary text-white rounded-2xl transition duration-300 ease-in-out md:text-[16px] text-[15px] coursor-pointer"
-        @click.prevent="lessonDetailService.submitTask"
+        @click.prevent="props.lessonDetailService.submitTask"
         :disabled="isLoading"
       >
         <span v-if="!isLoading">Submit</span>
@@ -89,10 +71,25 @@ const isLoading = computed(
 
       <button
         class="px-6 py-1 bg-extra-light-background text-black rounded-2xl transition duration-300 ease-in-out md:text-[16px] text-[15px] coursor-pointer"
-        @click="lessonDetailService.showHintDialog"
+        @click="props.lessonDetailService.showHintDialog"
       >
         Hint
       </button>
+
+      <button
+      class="h-12 w-12 cursor-pointer block z-40 lg:block hidden"
+      @click="props.lessonDetailService.toggleVisibility"
+    >
+      <i
+        :class="[
+          'pi',
+          props.lessonDetailService.state.isContentVisible
+            ? 'pi-window-maximize'
+            : 'pi-window-minimize',
+          'text-primary border border-primary text-[20px] duration-300 rounded-xl p-1.5 bg-white',
+        ]"
+      />
+    </button>
     </div>
   </div>
 </template>
