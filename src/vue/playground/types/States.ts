@@ -84,11 +84,13 @@ export interface IStateFileUploader {
 export interface IStateFileTree {
   isVisible: boolean;
   isHidden: boolean;
-  showDialog: boolean;
+  showAddRenameDialog: boolean;
+  showMoveItemDialog: boolean;
+  itemToMove: TreeNode | null;
   dialogType: FileType;
   showUploadDialog: boolean;
   contextMenuVisible: boolean;
-  currentItem: FolderItem;
+  currentItem: FolderItem | null;
   parentItemNode: TreeNode | null;
   itemToRename: FolderItem | null;
 }

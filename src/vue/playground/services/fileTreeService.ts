@@ -72,8 +72,9 @@ export class FileTreeService {
   };
 
   closeDialog = () => {
-    this._state.showDialog = false;
+    this._state.showAddRenameDialog = false;
     this._state.showUploadDialog = false;
+    this._state.showMoveItemDialog = false;
   };
 
   async openFile(node: TreeNode, playgroundStore) {
@@ -107,9 +108,14 @@ export class FileTreeService {
         command: () => this._renameItem(),
       },
       {
+        label: 'Move',
+        icon: 'pi pi-reply',
+        command: () => this._moveItem(),
+      },
+      {
         label: 'Delete',
         icon: 'pi pi-trash',
-        command: () => this._deleteItem(this._state.currentItem, playgroundStore),
+        command: () => this._deleteItem(this._state.currentItem as FolderItem, playgroundStore),
       },
     ];
   
@@ -119,7 +125,7 @@ export class FileTreeService {
         icon: 'pi pi-file',
         command: () => {
           this._state.itemToRename = null;
-          this._state.showDialog = true;
+          this._state.showAddRenameDialog = true;
           this._state.dialogType = FileType.FILE;
         },
       },
@@ -128,7 +134,7 @@ export class FileTreeService {
         icon: 'pi pi-folder',
         command: () => {
           this._state.itemToRename = null;
-          this._state.showDialog = true;
+          this._state.showAddRenameDialog = true;
           this._state.dialogType = FileType.FOLDER;
         },
       },
@@ -158,12 +164,25 @@ export class FileTreeService {
   };
   
   private _renameItem = () => {
+    if (!this._state.currentItem) return
+
     this._state.itemToRename = this._state.currentItem;
-    this._state.showDialog = true;
+    this._state.showAddRenameDialog = true;
     this._state.dialogType = this._state.currentItem.type;
   
     this.closeContextMenu();
   };
+
+  private _moveItem = () => {
+    if (!this._state.currentItem) return
+
+    this._state.itemToMove = {
+      key: this.state.currentItem?.path ?? '',
+      label: this.state.currentItem?.name,
+      type: this.state.currentItem?.type
+    }
+    this.state.showMoveItemDialog = true;
+  }
   
   private async _removeItem(item: FolderItem, playgroundStore) {
     if (!this._webContainersService) return;
@@ -184,7 +203,7 @@ export class FileTreeService {
   
   private _openDialog = (type: FileType) => {
     this._state.dialogType = type;
-    this._state.showDialog = true;
+    this._state.showAddRenameDialog = true;
     this._state.currentItem = new File([], '', {
       type: 'text/plain',
     }) as FolderItem;
@@ -199,12 +218,16 @@ export class FileTreeService {
       {
         label: 'Create new file',
         icon: 'pi pi-file',
-        command: () => this._openDialog(FileType.FILE),
+        command: () => {
+          this._openDialog(FileType.FILE);
+        },
       },
       {
         label: 'Create new folder',
         icon: 'pi pi-folder',
-        command: () => this._openDialog(FileType.FOLDER),
+        command: () => {
+          this._openDialog(FileType.FOLDER);
+        },
       },
       {
         label: 'Import file',

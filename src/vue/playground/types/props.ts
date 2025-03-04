@@ -134,3 +134,11 @@ export interface IPropsLayoutDialog {
   closeDialog: () => void;
   visible: boolean;
 }
+
+export interface IPropsMoveFileDialog {
+  folders: TreeNode[];
+  selectedItem: TreeNode | null;
+  showDialog: boolean;
+  closeDialog: () => void;
+  updateLoading: () => void;
+}

@@ -5,7 +5,8 @@ import { FileType } from "../types/fileType";
 export const initFileTreeState = reactive<IStateFileTree>({
   isVisible: true,
   isHidden: true,
-  showDialog: false,
+  showAddRenameDialog: false,
+  showMoveItemDialog: false,
   dialogType: FileType.FILE,
   showUploadDialog: false,
   contextMenuVisible: false,
@@ -18,4 +19,5 @@ export const initFileTreeState = reactive<IStateFileTree>({
   },
   parentItemNode: null,
   itemToRename: null,
+  itemToMove: null
 });
