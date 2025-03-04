@@ -204,6 +204,26 @@ export class WebContainerService {
     }
   }
 
+  public async moveFile(oldPath: string, newPath: string): Promise<{ success: boolean; message: string }> {
+    await this.ensureInitialized()
+    console.log(oldPath)
+    console.log(newPath)
+
+    try {
+      await this.webContainerInstance?.fs.rename(oldPath, newPath);
+
+      return {
+        success: true,
+        message: `Item moved from ${oldPath} to ${newPath}`,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Failed to move file'
+      }
+    }
+  }
+
   public async removeItem(item: FolderItem): Promise<TreeNode[]> {
     const folderStructure = await this.fetchFolderStructureInTreeNode('/');
     const removeFromArray = (

@@ -8,9 +8,13 @@
     }
   }
 
-  .p-dialog, .p-dialog-header, .p-dialog-content, pre {
+  .p-dialog, .p-dialog-header, .p-dialog-content, pre, .p-dialog-footer {
     background-color: var(--vp-custom-block-tip-bg) !important;
     opacity: 1!important;
+  }
+
+  .p-dialog-footer {
+    display: block !important;
   }
 
   @media screen and (min-width: $breakpointMd) {
@@ -80,7 +84,7 @@
       gap: 0.5rem;
     }
 
-    button {
+    button:not(.p-tree-toggler) {
       margin-top: 2rem;
       padding: 0.25rem 1rem;
       color: white;
@@ -122,5 +126,13 @@
 
   p {
     font-size: clamp(0.9rem, 0.9vw, 1.35rem);
+  }
+}
+
+.moving-file-dialog {
+  .p-treenode-label, .p-treenode-label span {
+    display: block;
+    width: 100%;
+    color: var(--vp-c-text-1);
   }
 }
