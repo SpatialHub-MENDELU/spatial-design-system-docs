@@ -108,7 +108,7 @@ export class FileTreeService {
       {
         label: 'Rename',
         icon: 'pi pi-pencil',
-        command: () => this._renameItem(),
+        command: () => this._renameItem(playgroundStore),
       },
       {
         label: 'Move',
@@ -182,7 +182,7 @@ export class FileTreeService {
     this.closeContextMenu();
   };
   
-  private _renameItem = () => {
+  private _renameItem = (playgroundStore) => {
     if (!this._state.currentItem) return
 
     this._state.itemToRename = this._state.currentItem;
@@ -210,11 +210,11 @@ export class FileTreeService {
       const filteredItems = await this._webContainersService.removeItem(item);
       this._folders.value = filteredItems as TreeNode[];
       playgroundStore.dispatch('closeFile', {
-      file: {...item},
-      update: async (filePath: string) => {
-        return await this._webContainersService?.readFile(filePath);
-      },
-    });
+        file: {...item},
+        update: async (filePath: string) => {
+          return await this._webContainersService?.readFile(filePath);
+        },
+      });
     } catch (error) {
       console.error('Failed to delete item', error);
     }

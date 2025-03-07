@@ -96,6 +96,23 @@ const playgroundStore = createStore({
         state.output = '';
       }
     },
+    async renameFile(
+      { state, commit },
+      payload: { oldFileName: string; newFileName: string; update?: (fileName: string) => Promise<string> }
+    ) {
+      state.openedFiles = state.openedFiles.map((file: FolderItem) =>
+        file.name === payload.oldFileName
+        ? { ...file, name: payload.newFileName, path: file.path?.replace(payload.oldFileName, payload.newFileName) }
+        : file
+      );
+
+      const updatedItem = state.openedFiles.find(f => f.name === payload.newFileName);
+
+      if (state.currentFilePath === updatedItem.path?.replace(payload.newFileName, payload.oldFileName)) {
+        console.log("ano, je to otevrene")
+        state.currentFilePath = updatedItem.path?.replace(payload.oldFileName);
+      }
+    },
   }      
 });
 

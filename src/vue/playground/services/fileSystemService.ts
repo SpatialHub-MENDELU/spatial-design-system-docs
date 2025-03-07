@@ -155,7 +155,7 @@ export class FileSystemService {
     }
   }
 
-  async submitNewItemDialog(props: IPropsNewItemDialog) {
+  async submitNewItemDialog(props: IPropsNewItemDialog, playgroundStore) {
     this._state.errorMessage = '';
     this._state.errorExtensionMessage = '';
 
@@ -181,6 +181,19 @@ export class FileSystemService {
 
     if (props.itemToRename) {
       const result = await this?.renameItem(props.itemToRename.name, fullName);
+      const updateContent = async (filePath) => {
+        return await this.webContainersService?.readFile(filePath);
+      };
+  
+      console.log("item to rename")
+      console.log(props.itemToRename);
+
+      playgroundStore.dispatch('renameFile', {
+        oldFileName: props.itemToRename.name,
+        newFileName: fullName,
+        update: updateContent
+      });
+
       if (result?.error) {
         this._state.errorMessage = result.error;
       } else {
@@ -241,6 +254,7 @@ export class FileSystemService {
       { label: 'HTML', value: 'html' },
       { label: 'CSS', value: 'css' },
       { label: 'JS', value: 'js' },
+      { label: 'JSON', value: 'json' },
     ];
   }
 }

@@ -68,7 +68,7 @@ const updateProjectType = (projectType: ProjectType) => {
         label="Close"
         severity="secondary"
         @click="closeDialog"
-        class="bg-red"
+        class="bg-grey"
       />
       <Button
         type="button"
