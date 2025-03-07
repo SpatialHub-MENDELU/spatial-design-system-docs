@@ -15,8 +15,6 @@
     'webContainersService'
   );
 
-  console.log(props.selectedItem)
-
   const rootNode = computed<TreeNode>(() => ({
     key: '/',
     label: 'SDS Project',

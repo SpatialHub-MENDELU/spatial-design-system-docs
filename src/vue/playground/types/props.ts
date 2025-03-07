@@ -27,6 +27,7 @@ export interface IPropsFileUploader {
   accept: string;
   multiple: boolean;
   folderUploader: boolean;
+  parentNode: TreeNode | null;
 }
 
 export interface IPropsFileTree {
@@ -93,6 +94,7 @@ export interface IPropsFolderFileUploader {
   isDialogVisible: boolean;
   closeDialog: () => void;
   uploadType: FileType;
+  parentNode: TreeNode | null;
 }
 
 export interface IPropsLessonDetailContent {
