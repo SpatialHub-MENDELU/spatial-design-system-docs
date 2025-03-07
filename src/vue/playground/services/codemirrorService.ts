@@ -72,7 +72,6 @@ export class CodeMirrorService {
       const customAutocomplete = autocompletion({
         override: [
           (context) => {
-            console.log("c", context)
             const word = context.matchBefore(/[\w-]*/);
             if (!word || word.from === word.to) return null;
 

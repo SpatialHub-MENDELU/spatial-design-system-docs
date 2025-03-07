@@ -30,11 +30,14 @@ watch(props.loading, async () => {
   if (!props.loading.installing && !props.loading.running) {
     fileTreeService.state.isHidden = false;
   }
+});
+
+watch(foldersAreLoading, async() => {
   const data = await webContainersService?.fetchFolderStructureInTreeNode('/');
   if (data) {
     folders.value = data;
   }
-});
+})
 
 const showNewFileMenu = (event) => {
   fileTreeService.state.itemToRename = null;
@@ -51,8 +54,13 @@ const updateItems = async () => {
   });
 };
 
-const updateMovingLoading = () => {
+const updateMovingLoading = async () => {
   movingLoading.value = true
+
+  const data = await webContainersService?.fetchFolderStructureInTreeNode('/');
+  if (data) {
+    folders.value = data;
+  }
 }
 </script>
 
@@ -186,6 +194,7 @@ const updateMovingLoading = () => {
       :is-dialog-visible="fileTreeService.state.showUploadDialog"
       :uploadType="fileTreeService.state.dialogType"
       @new-item="updateItems"
+      :parent-node="fileTreeService.state.parentItemNode"
     />
   </div>
 </template>

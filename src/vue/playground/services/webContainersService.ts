@@ -206,9 +206,6 @@ export class WebContainerService {
 
   public async moveFile(oldPath: string, newPath: string): Promise<{ success: boolean; message: string }> {
     await this.ensureInitialized()
-    console.log(oldPath)
-    console.log(newPath)
-
     try {
       await this.webContainerInstance?.fs.rename(oldPath, newPath);
 

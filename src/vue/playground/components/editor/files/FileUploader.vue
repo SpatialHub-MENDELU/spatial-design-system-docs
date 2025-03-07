@@ -23,10 +23,9 @@ const props = defineProps<IPropsFileUploader>();
 const fileUploadRef = ref<FileUpload | null>(null);
 
 const handleClear = () => {
-  fileUploaderService.removeFiles();  // Clear files in the service
+  fileUploaderService.removeFiles();
   nextTick(() => {
     emit('clear');
-    console.log("Files cleared!");
   });
 };
 
@@ -127,7 +126,7 @@ const handleClear = () => {
                 @click="fileUploaderService.handleUpload(() => {
                   emit('new-item')
                   handleClear()
-                })"
+                }, props.parentNode?.parent)"
                 class="bg-primary w-max text-white"
                 icon="pi pi-check"
                 :label="

@@ -41,14 +41,13 @@ export class FileTreeService {
     } catch (error) {
       console.error('Error fetching folder structure:', error);
     } finally {
-      console.log("updated loading")
       this._playgroundStore.commit('updateFoldersLoading', false)
     }
   };
 
   showContextMenu(event: any, node: TreeNode, playgroundStore) {
     this._state.itemToRename = null;
-  
+
     const item = {
       name: node.label ?? '',
       type: (node.type as FileType) ?? FileType.FILE,
@@ -57,6 +56,10 @@ export class FileTreeService {
   
     this._state.currentItem = item;
     this._state.parentItemNode = item.type === FileType.FILE ? null : node;
+  
+    if (this._state.parentItemNode?.parent) {
+      this._state.parentItemNode.parent.path = this._state.parentItemNode.key;
+    }
   
     this._contextMenuItems.value = this._getContextMenuItems(node, playgroundStore);
     this._menu.value.show(event);
@@ -135,6 +138,22 @@ export class FileTreeService {
         command: () => {
           this._state.itemToRename = null;
           this._state.showAddRenameDialog = true;
+          this._state.dialogType = FileType.FOLDER;
+        },
+      },
+      {
+        label: 'Import file',
+        icon: 'pi pi-upload',
+        command: () => {
+          this._state.showUploadDialog = true;
+          this._state.dialogType = FileType.FILE;
+        },
+      },
+      {
+        label: 'Import folder',
+        icon: 'pi pi-upload',
+        command: () => {
+          this._state.showUploadDialog = true;
           this._state.dialogType = FileType.FOLDER;
         },
       },
@@ -219,6 +238,7 @@ export class FileTreeService {
         label: 'Create new file',
         icon: 'pi pi-file',
         command: () => {
+          this._state.parentItemNode = null;
           this._openDialog(FileType.FILE);
         },
       },
@@ -226,6 +246,7 @@ export class FileTreeService {
         label: 'Create new folder',
         icon: 'pi pi-folder',
         command: () => {
+          this._state.parentItemNode = null;
           this._openDialog(FileType.FOLDER);
         },
       },
@@ -233,6 +254,7 @@ export class FileTreeService {
         label: 'Import file',
         icon: 'pi pi-upload',
         command: () => {
+          this._state.parentItemNode = null;
           this._state.showUploadDialog = true;
           this._state.dialogType = FileType.FILE;
         },
@@ -241,6 +263,7 @@ export class FileTreeService {
         label: 'Import folder',
         icon: 'pi pi-upload',
         command: () => {
+          this._state.parentItemNode = null;
           this._state.showUploadDialog = true;
           this._state.dialogType = FileType.FOLDER;
         },
