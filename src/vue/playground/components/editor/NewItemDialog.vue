@@ -23,7 +23,13 @@ const props = defineProps<IPropsNewItemDialog>();
 const playgroundStore = useStore()
 
 const submit = async () => {
-  await fileSystemService.submitNewItemDialog(props).then(() => {
+  const regex = /^[a-z]([a-z0-9]*_?[a-z0-9]+)*$/;
+  if (!regex.test(fileSystemService.state.newItemName)) {
+    fileSystemService.state.errorMessage = 'Invalid format';
+    return;
+  };
+
+  await fileSystemService.submitNewItemDialog(props, playgroundStore).then(() => {
     if (props.itemToRename) emit('rename-item');
     else emit('new-item')
   })

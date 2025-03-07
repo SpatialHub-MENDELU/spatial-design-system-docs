@@ -125,7 +125,7 @@
         >Select</button>
 
         <button
-        class="px-6 py-1 bg-red text-white rounded-2xl font-semibold transition duration-300 ease-in-out mt-4 md:text-[16px] text-[15px] coursor-pointer"
+        class="px-6 py-1 bg-grey text-white rounded-2xl font-semibold transition duration-300 ease-in-out mt-4 md:text-[16px] text-[15px] coursor-pointer"
         @click.prevent="closeDialog"
         >Cancel</button>
       </div>
