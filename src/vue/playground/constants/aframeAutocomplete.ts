@@ -1,3 +1,8 @@
+/**
+ * List of components, primitives and attributes sourced from:
+ * https://aframe.io/docs/1.7.0/introduction/
+ */
+
 export const aframeComponentsAndPrimitives = [
   "a-box", "a-camera", "a-circle", "a-cone", "a-cubemap", "a-cursor", "a-curvedimage",
   "a-cylinder", "a-dodecahedron", "a-gltf-model", "a-icosahedron", "a-image", "a-light",
