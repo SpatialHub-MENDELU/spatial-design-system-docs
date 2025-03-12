@@ -1,0 +1,11 @@
+.p-treenode-content {
+  cursor: pointer;
+}
+
+.p-treenode-icon  {
+  color: $primary;
+}
+
+.p-tree .p-treenode-children {
+  padding: 0 0 0 1rem !important;
+}

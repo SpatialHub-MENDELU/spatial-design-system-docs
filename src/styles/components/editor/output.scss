@@ -1,0 +1,14 @@
+.output {
+  overflow-y: hidden !important;
+  width: 100% !important;
+}
+
+.hidden-output--vertical {
+  overflow: hidden;
+  height: 3rem !important;
+}
+
+.hidden-output--horizontal {
+  overflow: hidden;
+  width: 3rem !important;
+}

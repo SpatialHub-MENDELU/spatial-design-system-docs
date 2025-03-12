@@ -1,0 +1,89 @@
+.p-dialog {
+  min-width: 20rem;
+  max-width: 90vw;
+
+  @media screen and (min-width: $breakpointMd) {
+    min-width: 25rem;
+  }
+
+  @media screen and (min-width: $breakpointLg) {
+    min-width: 30rem;
+  }
+
+  &-header {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+
+    border-bottom: 1px solid $border-color;
+  }
+
+  &-content {
+    padding-top: 1rem;
+
+    input, .p-dropdown {
+      padding: 0.25rem 0.5rem;
+      height: 100%;
+
+      border-bottom: 1px solid $primary;
+      border-radius: 0;
+
+      &:focus {
+        box-shadow: none;
+        outline: none;
+      }
+
+      &.p-invalid {
+        border-color: $red;
+      }
+    }
+
+    .p-dropdown {
+      padding: 0 !important;
+      padding-right: 0.5rem !important;
+      max-width: 7rem;
+
+      @media screen and (min-width: $breakpointMd) {
+        width: 9rem;
+      }
+    
+      @media screen and (min-width: $breakpointLg) {
+        width: 10rem;
+      }
+
+      span {
+        padding-bottom: 0.25rem !important;
+        display: block !important;
+
+        line-height: 1 !important;
+      }
+
+      &.p-focus {
+        box-shadow: none;
+      }
+    }
+
+    .flex {
+      gap: 0.5rem;
+    }
+
+    button {
+      margin-top: 2rem;
+      padding: 0.25rem 1rem;
+      color: white;
+
+      &[aria-label="Cancel"] {
+        background-color: $red;
+      }
+
+      &[aria-label="Create"] {
+        background-color: $primary;
+      }
+    }
+  }
+}
+
+.p-dropdown-items-wrapper .p-dropdown-item {
+  &.p-highlight {
+    background-color: lighten($color: $primary, $amount: 50%) !important;
+  }
+}

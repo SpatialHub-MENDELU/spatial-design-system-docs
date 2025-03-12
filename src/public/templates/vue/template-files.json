@@ -1,0 +1,9 @@
+[
+  { "path": "index.html", "isDirectory": false },
+  { "path": "vite.config.js", "isDirectory": false },
+  { "path": "src", "isDirectory": true },
+  { "path": "package.json", "isDirectory": false },
+  { "path": "src/main.js", "isDirectory": false },
+  { "path": "src/App.vue", "isDirectory": false },
+  { "path": "src/style.css", "isDirectory": false }
+]

@@ -27,12 +27,12 @@ In any application, you always have to deal with the correct alignment of object
 <ComponentExample :fixed="true">
 
 <template #output v-if="renderScene">
-  <a-entity grid position="0 1.5 -3">
-    <a-box color="#8A8A8A"></a-box>
-    <a-box color="#018A6C"></a-box>
-    <a-box color="#00C170"></a-box>
-    <a-box color="#03FCC6"></a-box>
-  </a-entity>
+<a-entity grid position="0 1.5 -3">
+<a-box color="#8A8A8A"></a-box>
+<a-box color="#018A6C"></a-box>
+<a-box color="#00C170"></a-box>
+<a-box color="#03FCC6"></a-box>
+</a-entity>
 </template>
 
 <template #code>
@@ -56,8 +56,8 @@ import "spatial-design-system/components/menu.js";
 
 ## Props
 
-| Property     | Type     | Default | Description                                 |
-|--------------|----------|---------|---------------------------------------------|             
-| _columns_    | number   | 2       | Number of grid columns.
-| _rows_       | number   | 2       | Number of grid rows.
-| _spacing_    | number   | 0       | Sets spacing between items.
+| Property  | Type   | Default | Description                 |
+| --------- | ------ | ------- | --------------------------- |
+| _columns_ | number | 2       | Number of grid columns.     |
+| _rows_    | number | 2       | Number of grid rows.        |
+| _spacing_ | number | 0       | Sets spacing between items. |

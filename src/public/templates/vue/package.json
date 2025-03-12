@@ -1,0 +1,23 @@
+{
+  "name": "sds-playground",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^6.0.1",
+    "@vitejs/plugin-vue": "^5.2.1"
+  },
+  "dependencies": {
+    "spatial-design-system": "^1.6.9",
+    "vue": "^3.5.13"
+  },
+  "overrides": {
+    "debug": "@spatialhub/three-bmfont-text",
+    "three-bmfont-text": "@spatialhub/three-bmfont-text"
+  }
+}

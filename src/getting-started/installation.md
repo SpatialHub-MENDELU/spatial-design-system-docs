@@ -14,7 +14,8 @@ If you don't have an existing project, you can create a new one using [Vite](htt
 ```bash
 npm create vite@latest
 ```
-This will prompt you with some questions about your project. Name your project, choose **Vanilla** (or **Vue.js** if you prefer) as a framework and select **JavaScript** as a variant. 
+
+This will prompt you with some questions about your project. Name your project, choose **Vanilla** (or **Vue.js** if you prefer) as a framework and select **JavaScript** as a variant.
 
 ::: tip Note
 We will demonstrate library features in both vanilla JavaScript (no framework) and [Vue.js](https://vuejs.org), but feel free to use any other framework you prefer.
@@ -23,7 +24,7 @@ We will demonstrate library features in both vanilla JavaScript (no framework) a
 ## Install the package
 
 Navigate to the project folder and add Spatial Design System library:
+
 ```bash
 npm install spatial-design-system
 ```
-
