@@ -250,14 +250,14 @@ export class WebContainerService {
     try {
       for (const item of fileStructure) {
         const currentPath = `${parentPath}${item.name}`;
-        if (item.type === FileType.FOLDER) {
+        if (item.type === FileType.FOLDER && item.name !== 'node_modules') {
           zip.folder(currentPath);
           await this.installFileSystem(
             item.children || [],
             zip,
             `${currentPath}/`
           );
-        } else if (item.type === FileType.FILE) {
+        } else if (item.type === FileType.FILE && item.name != 'package-lock.json') {
           const fileContent = await this.readFile(currentPath);
           if (fileContent !== undefined) {
             zip.file(currentPath, fileContent);
