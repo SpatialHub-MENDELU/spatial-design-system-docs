@@ -222,35 +222,25 @@ export class WebContainerService {
   }
 
   public async removeItem(item: FolderItem): Promise<TreeNode[]> {
-    const folderStructure = await this.fetchFolderStructureInTreeNode('/');
-    const removeFromArray = (
-      arr: TreeNode[],
-      itemToRemove: { name: string }
-    ): TreeNode[] => {
-      const index = arr.findIndex(
-        (node) => node.data?.name === itemToRemove.name
-      );
-      if (index !== -1) {
-        arr.splice(index, 1);
-        return arr;
-      } else {
-        arr.forEach((node) => {
-          if (node.children) {
-            const updatedChildren = removeFromArray(
-              node.children,
-              itemToRemove
-            );
-            if (updatedChildren.length < node.children.length) {
-              node.children = updatedChildren;
-            }
-          }
-        });
+    const folderStructurePromise = this.fetchFolderStructureInTreeNode('/');
+  
+    const removeFromArray = (arr: TreeNode[], itemToRemove: FolderItem): void => {
+      for (let i = arr.length - 1; i >= 0; i--) {
+        const node = arr[i];
+        if (node.data?.path === itemToRemove.path) {
+          arr.splice(i, 1);
+          return;
+        }
+        if (node.children) removeFromArray(node.children, itemToRemove);
       }
-      return arr;
     };
-
-    return removeFromArray(folderStructure, item);
+  
+    const folderStructure = await folderStructurePromise;
+    removeFromArray(folderStructure, item);
+    
+    return folderStructure;
   }
+  
 
   private async installFileSystem(
     fileStructure: any,

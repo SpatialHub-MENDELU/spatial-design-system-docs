@@ -46,5 +46,6 @@ export const getFileIcon = (file: FolderItem) => {
 };
 
 export const getFileWithoutExtension = (file: FolderItem): string => {
+  if (file.type === FileType.FOLDER) return file.name;
   return file.name.slice(0, file.name.lastIndexOf('.'));
 };
