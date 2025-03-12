@@ -202,11 +202,6 @@ const openFile = async (node: TreeNode) => {
   const path =
     node.data.path ?? node.parent.label ?? node.label;
 
-  if (getFileExtension(path, FileType.FILE) === FileExtensions.HTML) {
-    const htmlContent = await webContainersService?.readFile(path);
-    playgroundStore.commit('setOuput', htmlContent as string);
-  }
-
   try {
     const content = await webContainersService?.readFile(path);
     playgroundStore.commit('readFile', { content, path });

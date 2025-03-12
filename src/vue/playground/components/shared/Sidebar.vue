@@ -34,7 +34,7 @@ const sidebarState = reactive({
     >
       <ul class="flex lg:flex-col lg:h-full lg:gap-0 gap-5">
         <li
-          v-for="(item, index) in sidebarData.slice(0, -1)"
+          v-for="(item, index) in sidebarData"
           :key="index"
           class="lg:py-4 py-3"
         >
@@ -44,14 +44,14 @@ const sidebarState = reactive({
             target="_self"
           >
             <i
-              :class="`pi pi-${item.icon} ${activeRoute.includes(item.route) ? 'text-primary' : 'text-grey'} text-[20px] duration-300`"
+              :class="`pi pi-${item.icon} ${activeRoute.includes(item.route) ? 'mainColor' : 'text-grey'} text-[20px] duration-300`"
             />
             <span class="2xl:text-[16px] text-[14px]">{{ item.text }}</span>
           </a>
         </li>
       </ul>
 
-      <ul class="flex flex-col">
+      <!-- <ul class="flex flex-col">
         <li class="lg:py-4 py-3">
           <a
             :href="sidebarData[sidebarData.length - 1].route"
@@ -66,7 +66,7 @@ const sidebarState = reactive({
             }}</span>
           </a>
         </li>
-      </ul>
+      </ul> -->
     </nav>
   </div>
 </template>

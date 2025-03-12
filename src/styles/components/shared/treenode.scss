@@ -9,3 +9,8 @@
 .p-tree .p-treenode-children {
   padding: 0 0 0 1rem !important;
 }
+
+.p-tree {
+  background-color: transparent;
+  color: var(--vp-c-text-1);
+}

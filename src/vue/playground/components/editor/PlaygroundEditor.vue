@@ -14,7 +14,9 @@
         <div class="px-2 overflow-x-auto whitespace-nowrap w-full h-8 flex items-center">
           <Breadcrumbs :path="openedFilePath" />
         </div>
-        <Codemirror :dynamic-class="{
+        <Codemirror
+        :is-detail="false"
+          :dynamic-class="{
           'editor-hidden': !state.editorIsShown,
           [layout === Layout.HORIZONTAL ? 'lg:h-full' : 'w-full editor--vertical']: true
         }" />

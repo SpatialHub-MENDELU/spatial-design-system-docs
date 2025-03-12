@@ -43,3 +43,15 @@
     margin-right: auto;
   }
 }
+
+.primaryBorder {
+  border-color: var(--vp-c-brand-1);
+}
+
+.mainColor {
+  color: $primary !important;
+}
+
+.text--mainColor {
+  color: var(--vp-c-text-1);
+}
