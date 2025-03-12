@@ -422,7 +422,6 @@ app.appendChild(scene);`
         },
         test:
           `  
-          console.log(document)
           const sceneElement = document.querySelector('a-scene');
           if (!sceneElement) {
             throw new Error('Scene is not found');

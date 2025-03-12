@@ -180,16 +180,13 @@ export class FileSystemService {
     }
 
     if (props.itemToRename) {
-      const result = await this?.renameItem(props.itemToRename.name, fullName);
+      const result = await this?.renameItem(props.itemToRename?.path ?? '', fullName);
       const updateContent = async (filePath) => {
         return await this.webContainersService?.readFile(filePath);
       };
   
-      console.log("item to rename")
-      console.log(props.itemToRename);
-
       playgroundStore.dispatch('renameFile', {
-        oldFileName: props.itemToRename.name,
+        oldFile: props.itemToRename,
         newFileName: fullName,
         update: updateContent
       });

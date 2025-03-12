@@ -104,6 +104,7 @@ export class FileTreeService {
         label: 'Open',
         icon: 'pi pi-folder-open',
         command: () => this._openItem(node, playgroundStore),
+        visible: node.type === FileType.FILE
       },
       {
         label: 'Rename',
@@ -120,9 +121,6 @@ export class FileTreeService {
         icon: 'pi pi-trash',
         command: () => this._deleteItem(this._state.currentItem as FolderItem, playgroundStore),
       },
-    ];
-  
-    const contextMenuItemsFolder: MenuItem[] = [
       {
         label: 'New file',
         icon: 'pi pi-file',
@@ -131,6 +129,7 @@ export class FileTreeService {
           this._state.showAddRenameDialog = true;
           this._state.dialogType = FileType.FILE;
         },
+        visible: node.type === FileType.FOLDER
       },
       {
         label: 'New folder',
@@ -140,6 +139,7 @@ export class FileTreeService {
           this._state.showAddRenameDialog = true;
           this._state.dialogType = FileType.FOLDER;
         },
+        visible: node.type === FileType.FOLDER
       },
       {
         label: 'Import file',
@@ -148,6 +148,7 @@ export class FileTreeService {
           this._state.showUploadDialog = true;
           this._state.dialogType = FileType.FILE;
         },
+        visible: node.type === FileType.FOLDER
       },
       {
         label: 'Import folder',
@@ -156,12 +157,9 @@ export class FileTreeService {
           this._state.showUploadDialog = true;
           this._state.dialogType = FileType.FOLDER;
         },
+        visible: node.type === FileType.FOLDER
       },
     ];
-  
-    if (node.type === FileType.FOLDER) {
-      contextMenuItems.push(...contextMenuItemsFolder);
-    }
   
     return contextMenuItems;
   }
@@ -174,13 +172,19 @@ export class FileTreeService {
     this.closeContextMenu();
   };
   
-  private _deleteItem = (item: FolderItem, playgroundStore) => {
-    if (item) {
-      this._removeItem(item, playgroundStore);
-    }
+  private async _deleteItem(item: FolderItem, playgroundStore) {
+    if (!item) return;
+  
+    playgroundStore.commit('updateFoldersLoading', true)
     
+    try {
+      await this._removeItem(item, playgroundStore);
+    } finally {
+      playgroundStore.commit('updateFoldersLoading', false)
+    }
+  
     this.closeContextMenu();
-  };
+  }
   
   private _renameItem = (playgroundStore) => {
     if (!this._state.currentItem) return
@@ -202,23 +206,25 @@ export class FileTreeService {
     }
     this.state.showMoveItemDialog = true;
   }
-  
+
   private async _removeItem(item: FolderItem, playgroundStore) {
     if (!this._webContainersService) return;
   
+    this._folders.value = this._folders.value.filter(node => !item.path?.startsWith(node.data?.path));
+  
     try {
-      const filteredItems = await this._webContainersService.removeItem(item);
-      this._folders.value = filteredItems as TreeNode[];
+      const updatedItemsPromise = this._webContainersService.removeItem(item);
+  
       playgroundStore.dispatch('closeFile', {
-        file: {...item},
-        update: async (filePath: string) => {
-          return await this._webContainersService?.readFile(filePath);
-        },
+        file: { ...item },
+        update: (filePath: string) => this._webContainersService?.readFile(filePath),
       });
+  
+      this._folders.value = await updatedItemsPromise as TreeNode[];
     } catch (error) {
       console.error('Failed to delete item', error);
     }
-  };
+  }
   
   private _openDialog = (type: FileType) => {
     this._state.dialogType = type;
