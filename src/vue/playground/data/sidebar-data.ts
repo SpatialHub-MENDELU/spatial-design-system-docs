@@ -22,9 +22,9 @@ export const sidebarData: SidebarLink[] = [
         route: ROUTES.COURSE,
         icon: "box",
     },
-    {
-        text: "Account",
-        route: ROUTES.ACCOUNT,
-        icon: "user",
-    },
+    // {
+    //     text: "Account",
+    //     route: ROUTES.ACCOUNT,
+    //     icon: "user",
+    // },
 ];
