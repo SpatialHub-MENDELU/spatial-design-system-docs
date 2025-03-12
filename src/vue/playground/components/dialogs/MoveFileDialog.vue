@@ -6,6 +6,7 @@
   import { WebContainerService } from '../../services/webContainersService';
   import { useToast } from 'primevue/usetoast';
   import { IPropsMoveFileDialog } from '../../types/props';
+import { FileType } from '../../types/fileType';
 
   const toast = useToast()
   const emit = defineEmits()
@@ -18,13 +19,20 @@
   const rootNode = computed<TreeNode>(() => ({
     key: '/',
     label: 'SDS Project',
-    data: { name: 'SDS Project' },
+    data: { 
+      name: 'SDS Project',
+      type: FileType.FOLDER
+    },
     children: props.folders || [],
-    type: 'folder'
+    type: FileType.FOLDER
   }));
 
   const onFolderClick = (node: TreeNode) => {
+    console.log(node)
+    console.log(`${node.key}/${props.selectedItem?.label}`)
+    if (props.selectedItem?.key === `${node.key !== '/' ? node.key : ''}/${props.selectedItem?.label}`) return;
     selectedFolder.value = node;
+
   };
 
   const moveFile = async () => {
@@ -80,7 +88,7 @@
       <template #default="{ node }">
         <span 
           @click="onFolderClick(node)"
-          v-if="node.children && node.children.length"
+          v-if="node.data.type === FileType.FOLDER"
           :class="{
             'text-highlighted': selectedFolder?.label === node.label,
             'text-dark-text': selectedFolder?.label !== node?.label
@@ -106,7 +114,7 @@
 
       <div class="lg:text-[16px] text-[14px] block">
         <span v-if="selectedFolder">
-          Selected folder: <strong>{{ selectedFolder.data.name }}</strong>
+          Selected folder: <strong>{{ selectedFolder.key }}</strong>
         </span>
         <span v-else>
           No folder selected.
@@ -117,9 +125,9 @@
       <div class="flex justify-end mt-4 gap-3">
         <button
         class="px-6 py-1 bg-primary text-white rounded-2xl font-semibold transition duration-300 ease-in-out mt-4 md:text-[16px] text-[15px] coursor-pointer"
-        :disabled="selectedFolder === null"
+        :disabled="selectedFolder === null || props.selectedItem?.key === `${selectedFolder.key !== '/' ? selectedFolder.key : ''}/${props.selectedItem?.label}`"
         :class="{
-          'opacity-50': selectedFolder === null
+          'opacity-50': selectedFolder === null  || props.selectedItem?.key === `${selectedFolder.key !== '/' ? selectedFolder.key : ''}/${props.selectedItem?.label}`
         }"
         @click.prevent="moveFile"
         >Select</button>
