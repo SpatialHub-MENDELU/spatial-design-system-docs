@@ -9,6 +9,7 @@ export interface State {
   currentFileContent: string;
   currentFilePath: string;
   layout: Layout;
+  filesAreLoading: boolean;
 }
 
 const playgroundStore = createStore({
@@ -18,6 +19,7 @@ const playgroundStore = createStore({
     currentFileContent: '',
     currentFilePath: '',
     layout: Layout.HORIZONTAL,
+    filesAreLoading: true,
   } as State,
   mutations: {
     updateProjectType(state: State, projectType: ProjectType) {
@@ -43,6 +45,9 @@ const playgroundStore = createStore({
     updateLayout(state: State, layout: Layout) {
       state.layout = layout
     },
+    updateFoldersLoading(state: State, loading: boolean) {
+      state.filesAreLoading = loading
+    }
   },
   getters: {
     projectType(state: State) {
@@ -60,6 +65,9 @@ const playgroundStore = createStore({
     layout(state: State) {
       return state.layout
     },
+    foldersAreLoading(state: State) {
+      return state.filesAreLoading
+    }
   },
   actions: {
     async closeFile(
@@ -86,6 +94,23 @@ const playgroundStore = createStore({
         state.currentFilePath = '';
         state.currentFileContent = '';
         state.output = '';
+      }
+    },
+    async renameFile(
+      { state, commit },
+      payload: { oldFileName: string; newFileName: string; update?: (fileName: string) => Promise<string> }
+    ) {
+      state.openedFiles = state.openedFiles.map((file: FolderItem) =>
+        file.name === payload.oldFileName
+        ? { ...file, name: payload.newFileName, path: file.path?.replace(payload.oldFileName, payload.newFileName) }
+        : file
+      );
+
+      const updatedItem = state.openedFiles.find(f => f.name === payload.newFileName);
+
+      if (state.currentFilePath === updatedItem.path?.replace(payload.newFileName, payload.oldFileName)) {
+        console.log("ano, je to otevrene")
+        state.currentFilePath = updatedItem.path?.replace(payload.oldFileName);
       }
     },
   }      
