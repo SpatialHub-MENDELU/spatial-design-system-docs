@@ -9,6 +9,7 @@ export interface State {
   currentFileContent: string;
   currentFilePath: string;
   layout: Layout;
+  filesAreLoading: boolean;
 }
 
 const playgroundStore = createStore({
@@ -18,6 +19,7 @@ const playgroundStore = createStore({
     currentFileContent: '',
     currentFilePath: '',
     layout: Layout.HORIZONTAL,
+    filesAreLoading: true,
   } as State,
   mutations: {
     updateProjectType(state: State, projectType: ProjectType) {
@@ -43,6 +45,9 @@ const playgroundStore = createStore({
     updateLayout(state: State, layout: Layout) {
       state.layout = layout
     },
+    updateFoldersLoading(state: State, loading: boolean) {
+      state.filesAreLoading = loading
+    }
   },
   getters: {
     projectType(state: State) {
@@ -60,6 +65,9 @@ const playgroundStore = createStore({
     layout(state: State) {
       return state.layout
     },
+    foldersAreLoading(state: State) {
+      return state.filesAreLoading
+    }
   },
   actions: {
     async closeFile(
