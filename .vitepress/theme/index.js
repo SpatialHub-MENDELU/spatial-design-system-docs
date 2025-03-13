@@ -4,7 +4,7 @@ import PrimeVue from "primevue/config";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 import { WebContainerService } from "../../src/vue/playground/services/webContainersService";
-import { FolderService } from "../../src/vue/playground/services/folderService";
+import { FileSystemService } from "../../src/vue/playground/services/fileSystemService";
 import { SessionService } from "../../src/vue/playground/services/sessionService";
 import playgroundStore from "../../src/vue/playground/stores/PlaygroundStore";
 
@@ -18,7 +18,7 @@ export default {
         app.component("ComponentExample");
         app.use(PrimeVue);
         app.provide("webContainersService", new WebContainerService());
-        app.provide("folderService", new FolderService());
+        app.provide("fileSystemService", new FileSystemService());
         app.provide("sessionService", new SessionService())
         app.use(ToastService)
         app.use(playgroundStore)

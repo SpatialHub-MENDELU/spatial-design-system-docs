@@ -2,6 +2,8 @@ import { FolderItem } from '../types/fileItem';
 import { FileExtensions, FileType } from '../types/fileType';
 
 export const getFileExtension = (fileName: string, fileType: FileType = FileType.FILE): FileExtensions => {
+  if (!fileName) return FileExtensions.JS;
+
   const fileExtension = fileName
     .slice(fileName.lastIndexOf('.') + 1)
     .toLowerCase();
@@ -44,5 +46,6 @@ export const getFileIcon = (file: FolderItem) => {
 };
 
 export const getFileWithoutExtension = (file: FolderItem): string => {
+  if (file.type === FileType.FOLDER) return file.name;
   return file.name.slice(0, file.name.lastIndexOf('.'));
 };

@@ -1,45 +1,69 @@
 <script lang="ts" setup>
-import { defineProps, reactive, computed } from 'vue';
-import { ILoading } from '../../types/loading';
+import { defineProps, computed, watch, defineEmits } from 'vue';
 import { Layout } from '../../types/layout';
 import { useStore } from 'vuex';
+import { IPropsEditorOutput } from '../../types/props';
+import { initEditorOutputState } from '../../states/EditorOutputState';
 
-const playgroundStore = useStore()
+const playgroundStore = useStore();
 const layout = computed(() => playgroundStore.getters.layout);
+const props = defineProps<IPropsEditorOutput>();
+const outputState = initEditorOutputState
 
-const props = defineProps<{
-  loading: ILoading;
-  isDetail: boolean
-}>();
-
-const outputState = reactive({
-  isVisible: true,
-});
+const emit = defineEmits(['update:outputIsShown']);
 
 const toggleVisibility = () => {
   outputState.isVisible = !outputState.isVisible;
+  emit('update:outputIsShown', outputState.isVisible);
 };
 
 const outputIcon = () => {
-  if (layout.value === Layout.HORIZONTAL) {
+  if (layout.value === Layout.HORIZONTAL && !props.isDetail) {
     return outputState.isVisible ? 'pi-angle-right' : 'pi-angle-left';
   }
 
   return outputState.isVisible ? 'pi-angle-down' : 'pi-angle-up';
 };
+
+const outputMobileIcon = () => {
+  return outputState.isVisible ? 'pi-angle-down' : 'pi-angle-up';
+}
+
+watch(
+  () => props.outputIsShown,
+  (isShown: boolean) => {
+    outputState.isVisible = isShown
+  },
+  { immediate: true }
+);
+
 </script>
 
 <template>
   <div
-    class="output duration-300 lg:w-full block border-border-color border-border-color lg:h-full h-[30rem] pb-6"
+    class="output duration-300 lg:w-full block border-border-color lg:h-full h-[30rem] pb-6"
     :class="{
       'hidden-output--vertical':
-        !outputState.isVisible && layout === Layout.VERTICAL,
+        !outputState.isVisible && !props.loading.installing && !props.loading.running &&
+        (layout === Layout.VERTICAL || props.isDetail),
       'hidden-output--horizontal':
-        !outputState.isVisible && layout === Layout.HORIZONTAL,
-      ' lg:border-0 lg:border-l border border-t-0': layout === Layout.HORIZONTAL && !props.isDetail && !props.loading.installing && !props.loading.running,
-      ' border border-t-0': props.isDetail && !props.loading.installing && !props.loading.running,
-      ' lg:border-0 border border-t-0': layout === Layout.VERTICAL && !props.isDetail && !props.loading.installing && !props.loading.running,
+        !outputState.isVisible &&
+        layout === Layout.HORIZONTAL &&
+        !props.isDetail,
+      ' lg:border-0 lg:border-l border border-t-0':
+        layout === Layout.HORIZONTAL &&
+        !props.isDetail &&
+        !props.loading.installing &&
+        !props.loading.running,
+      ' border border-t-0':
+        props.isDetail && !props.loading.installing && !props.loading.running,
+      ' lg:border-0 border border-t-0':
+        layout === Layout.VERTICAL &&
+        !props.isDetail &&
+        !props.loading.installing &&
+        !props.loading.running,
+      ' border':
+        props.isDetail && (props.loading.installing || props.loading.running),
     }"
   >
     <div
@@ -63,17 +87,31 @@ const outputIcon = () => {
             outputIcon(),
             'text-primary',
             'text-[20px]',
+            'lg:block',
+            'hidden',
             'duration-300',
           ]"
         ></i>
+
+        <i
+        :class="[
+          'pi',
+          outputMobileIcon(),
+          'text-primary',
+          'text-[20px]',
+          'lg:hidden',
+          'block',
+          'duration-300',
+        ]"
+      ></i>
       </div>
     </div>
 
     <div
-      v-if="outputState.isVisible"
+      v-show="outputState.isVisible"
       class="h-full lg:px-0 px-8 flex items-center justify-center"
       :class="{
-        'border-t-0 border-border-color': loading
+        'lg:border-t-0 lg:border-b-0 lg:border-x-0 border border-border-color': loading,
       }"
     >
       <div
@@ -97,8 +135,9 @@ const outputIcon = () => {
 
       <iframe
         v-else
+        id="webContainerIframe"
         style="width: 100%; height: 100%"
-        sandbox="allow-scripts allow-same-origin"
+        sandbox="allow-scripts allow-same-origin allow-forms"
       ></iframe>
     </div>
   </div>

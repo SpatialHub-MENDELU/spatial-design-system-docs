@@ -3,20 +3,15 @@ import Sidebar from '../components/shared/Sidebar.vue';
 import InputSwitch from 'primevue/inputswitch';
 import Dropdown from 'primevue/dropdown';
 
-import { reactive, ref, watch, inject, onMounted } from 'vue';
+import { ref, watch, inject, onMounted } from 'vue';
 import { SessionService } from '../services/sessionService';
 import { Layout } from '../types/layout';
 import { useStore } from 'vuex';
-import { IStateSettings } from '../types/States';
+import { initViewSettingsState } from '../states/ViewSettingsState';
 
 const playgroundStore = useStore()
 const sessionService = inject<SessionService>('sessionService');
-
-const state = reactive<IStateSettings>({
-  iconsAreShown: true,
-  selectedLayout: Layout.HORIZONTAL,
-  selectedFontSize: 14,
-});
+const state = initViewSettingsState
 
 const layoutOptions = ref([
   { label: 'Horizontal', value: Layout.HORIZONTAL },
@@ -41,7 +36,6 @@ watch(
 onMounted(async () => {
   const editorSettings = sessionService?.getFromSession('editorSettings');
   if (editorSettings) {
-    state.iconsAreShown = editorSettings['iconsAreShown'];
     state.selectedFontSize = editorSettings['selectedFontSize'];
     state.selectedLayout = editorSettings['selectedLayout'];
     playgroundStore.commit('updateLayout', editorSettings['selectedLayout'])
@@ -69,19 +63,6 @@ onMounted(async () => {
         </div>
 
         <div class="lg:py-16 py-8 space-y-8">
-          <div class="flex items-center justify-between gap-3">
-            <div class="w-2/3">
-              <p class="font-semibold lg:text-[17px] text-[16px]">
-                Display Icons Next to Files
-              </p>
-              <p class="lg:text-[16px] text-[15px]">
-                Choose whether to display icons next to file names for better
-                visual identification
-              </p>
-            </div>
-            <InputSwitch v-model="state.iconsAreShown" />
-          </div>
-
           <div class="flex items-center justify-between gap-3">
             <div class="w-2/3">
               <p class="font-semibold lg:text-[17px] text-[16px]">Font Size</p>
