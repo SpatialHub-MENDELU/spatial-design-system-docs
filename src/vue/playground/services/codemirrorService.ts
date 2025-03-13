@@ -1,4 +1,4 @@
-import { computed, inject } from 'vue';
+import { computed, inject, ref } from 'vue';
 import { initEditorState } from '../states/EditorState';
 import { SessionService } from './sessionService';
 import { WebContainerService } from './webContainersService';
@@ -17,6 +17,8 @@ import {
 } from '../utils/Autocomplete';
 import { AutocompleteMatch } from '../types/autocomplete';
 import { basicSetup } from 'codemirror';
+import { Extension } from '@codemirror/state';
+import { githubLight, githubDark } from '@uiw/codemirror-theme-github'
 
 export class CodeMirrorService {
   private _state = initEditorState;
@@ -26,6 +28,17 @@ export class CodeMirrorService {
   );
 
   private _debounceTimer: any = null;
+  private _theme = ref<Extension>();
+  private _observer: MutationObserver
+
+  constructor() {
+    this._observer = new MutationObserver(this.updateTheme);
+
+    this._observer.observe(document.documentElement, {
+      attributes: true, 
+      attributeFilter: ['class'],
+    });
+  }
 
   loadCodemirror(playgroundStore) {
     const editorSettings =
@@ -65,9 +78,15 @@ export class CodeMirrorService {
     }, 100);
   };
 
+  updateTheme = () => {
+    const isDark = document.documentElement.classList.contains('dark');
+    this._theme.value = isDark ? githubDark : githubLight;
+  };
+
   extensions = (path: string) =>
     computed(() => {
       const fileExtension = getFileExtension(path);
+      const theme = this._theme.value ?? githubLight;
 
       const customAutocomplete = autocompletion({
         override: [
@@ -126,6 +145,7 @@ export class CodeMirrorService {
         basicSetup,
         customAutocomplete,
         this._getlanguageExtensions(fileExtension),
+        theme
       ];
     });
 
