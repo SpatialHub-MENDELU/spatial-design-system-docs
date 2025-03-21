@@ -74,8 +74,16 @@
   }
 }
 
-.code-block {
+.lesson .code-block, .p-dialog .code-block {
   position: relative;
+
+  &:not(:last-child) {
+    padding-bottom: 1.5rem;
+  }
+
+  pre span {
+    font-weight: normal !important;
+  }
 
   .language-label {
     position: absolute;
@@ -132,8 +140,10 @@
       font-size: clamp(0.85rem, 0.85vw, 1.35rem) !important;
     }
   }  
+}
 
-  .code-block {
-    font-weight: normal !important;
-  }
+.lesson-detail--list li {
+  margin-left: 2rem;
+
+  list-style-type: disc !important;
 }

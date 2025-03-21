@@ -12,6 +12,8 @@ import 'aframe';
 // !!! after adding new courses, update the imports !!!
 import 'spatial-design-system/primitives/ar-menu.js';
 import 'spatial-design-system/primitives/ar-list.js';
+import "spatial-design-system/primitives/ar-button.js";
+import "spatial-design-system/primitives/ar-checkbox.js";
 
 import { useStore } from 'vuex';
 import { LessonDetailService } from '../services/lessonDetailService';

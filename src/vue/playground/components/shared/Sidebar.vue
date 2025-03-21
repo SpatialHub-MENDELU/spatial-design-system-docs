@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { ref, onMounted, reactive } from 'vue';
+import { ref, onMounted, reactive, computed } from 'vue';
 import { sidebarData } from '../../data/sidebar-data';
 import { IPropsSidebar } from '../../types/props';
 import * as ROUTES from "../../constants/routes";
+import { useStore } from 'vuex';
 
 const activeRoute = ref('');
 const props = defineProps<IPropsSidebar>()
+
+const playgroundStore = useStore()
+const projectType = computed(() => playgroundStore.getters.projectType)
 
 onMounted(() => {
   activeRoute.value = window.location.pathname;
@@ -55,7 +59,7 @@ const sidebarState = reactive({
       </ul>
 
       <ul class="lg:flex hidden flex-col new-project-btn"
-      v-if="activeRoute.includes(ROUTES.EDITOR)">
+      v-if="activeRoute.includes(ROUTES.EDITOR) && projectType !== null">
         <li class="lg:py-4 py-3">
           <button
             @click="() => {

@@ -91,6 +91,10 @@ const createNewProject = async (project: ProjectType) => {
 
     <div class="main-content h-full editor-content" v-if="projectType">
       <div class="flex lg:flex-row flex-col h-full max-w-full">
+        <button
+          @click="showDialog"
+          class="lg:hidden block px-3 py-2 bg-primary text-white rounded-lg font-semibold transition duration-300 ease-in-out mb-4
+        md:text-[16px] text-[15px] w-max">New project</button>
         <FileTree :loading="loading" />
         <PlaygroundEditor :loading="loading" />
       </div>

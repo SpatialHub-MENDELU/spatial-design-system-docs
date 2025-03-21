@@ -107,7 +107,6 @@ export class LessonDetailService {
     await this._webContainersService?.ensureInitialized();
     const template = createTaskTemplate(
       this._state.activeCourse?.type ?? ProjectType.VANILLA,
-      String(this._state.activeLesson?.task?.prompt),
       this._state.activeLesson?.task?.codes ?? []
     );
   

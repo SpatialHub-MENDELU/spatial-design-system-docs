@@ -221,7 +221,6 @@ export const addCurrentLessonToSession = (
 
 export const createTaskTemplate = (
   projectType: ProjectType,
-  prompt: string,
   codes: IContentCode[]
 ) => {
   if (projectType === ProjectType.VANILLA) {
@@ -230,37 +229,31 @@ export const createTaskTemplate = (
     <div id="app"></div>
     <script type="module">
 
-      /*
-        ${prompt}
-      */
+      // add imports here
 
-      // add imports
-
-          
       const app = document.getElementById("app");
       const scene = document.createElement("a-scene");
+      ${codes.length > 0 ? "\n" + codes.map(c => c.content) + "\n" : ""}
+      // Insert the remaining code here 
 
-      ${codes.map(c => c.content)}
-
-    </script>
-    
+    </script>    
   </body>
 </html>
 `;
   } else if (projectType === ProjectType.VUE) {
     return `<script setup>
-    /*
-      ${prompt}
-    */
 
-      // add imports
+  // add imports here
+  ${codes.filter(c => c.lang === LanguageEnum.JS).length > 0 ? "\n" + codes.filter(c => c.lang === LanguageEnum.JS).map(c => c.content) : ""}
+</script>
 
-      ${codes.filter(c => c.lang === LanguageEnum.JS).map(c => c.content)}
-    </script>
-    <template>
-      <a-scene>
-        ${codes.filter(c => c.lang === LanguageEnum.MARKUP).map(c => c.content)}
-      </a-scene>
-    </template>`
+<template>
+  <a-scene>
+    ${codes.filter(c => c.lang === LanguageEnum.MARKUP).map(c => c.content)}
+    <!-- Insert the remaining code here -->
+
+    
+  </a-scene>
+</template>`
   }
 };

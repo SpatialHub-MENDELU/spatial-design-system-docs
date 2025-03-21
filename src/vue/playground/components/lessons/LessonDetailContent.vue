@@ -52,6 +52,7 @@ const props = defineProps<IPropsLessonDetailContent>();
           parameters.
         </p>
       </div>
+      
       <div
         class="flex items-end justify-end flex-col gap-3"
         v-if="
