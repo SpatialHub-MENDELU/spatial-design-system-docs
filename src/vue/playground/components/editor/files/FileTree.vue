@@ -12,6 +12,9 @@ import { FileTreeService } from '../../../services/fileTreeService';
 import { WebContainerService } from '../../../services/webContainersService';
 import MoveFileDialog from '../../dialogs/MoveFileDialog.vue';
 import { TreeNode } from 'primevue/treenode';
+import ConfirmDialog from 'primevue/confirmdialog';
+import NewProjectConfirmDialog from '../../dialogs/NewProjectConfirmDialog.vue';
+import CreateProjectDialog from '../../shared/CreateProjectDialog.vue';
 
 const playgroundStore = useStore();
 const props = defineProps<IPropsFileTree>();
@@ -73,6 +76,9 @@ const updateMovingLoading = async () => {
   >
     <div class="spinner" />
   </div>
+
+  <ConfirmDialog></ConfirmDialog>
+
 
   <div
     v-if="!foldersAreLoading"
@@ -174,6 +180,18 @@ const updateMovingLoading = async () => {
       :selected-item="fileTreeService.state.itemToMove"
       @updated-item="updateItems"
       :updateLoading="updateMovingLoading"
+    />
+
+    <NewProjectConfirmDialog
+      :show-dialog="fileTreeService.state.showCreateProjectDialogConfirm"
+      :accept="fileTreeService.createProjectConfirmAccept"
+      :reject="fileTreeService.closeNewProjectConfirmDialog"
+    />
+
+    <CreateProjectDialog
+      :visible="fileTreeService.state.showCreateProjectDialog"
+      :close-dialog="fileTreeService.closeDialog"
+      :create-project="(projectType) => fileTreeService.createNewProject(projectType, props.loading, playgroundStore)"
     />
 
     <button

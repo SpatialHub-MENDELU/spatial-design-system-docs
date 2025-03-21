@@ -28,11 +28,8 @@ import { FileType } from '../../types/fileType';
   }));
 
   const onFolderClick = (node: TreeNode) => {
-    console.log(node)
-    console.log(`${node.key}/${props.selectedItem?.label}`)
     if (props.selectedItem?.key === `${node.key !== '/' ? node.key : ''}/${props.selectedItem?.label}`) return;
     selectedFolder.value = node;
-
   };
 
   const moveFile = async () => {

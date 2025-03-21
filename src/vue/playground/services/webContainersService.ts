@@ -310,12 +310,21 @@ export class WebContainerService {
     this.openedFiles.filter((f) => f === file);
   }
 
+  async stopCurrentProject() {
+    if (this.webContainerInstance) {
+      await this.webContainerInstance.teardown();
+      this.webContainerInstance = null;
+    }
+  }
+  
   async createProject(
     projectType: ProjectType,
     task?: string
   ): Promise<boolean> {
     await this.ensureInitialized();
     if (!this.webContainerInstance) return false;
+
+    await this.stopCurrentProject();
 
     try {
       const templatePath =

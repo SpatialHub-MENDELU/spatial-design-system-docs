@@ -44,10 +44,13 @@ const playgroundStore = createStore({
       state.currentFileContent = content;
     },
     updateLayout(state: State, layout: Layout) {
-      state.layout = layout
+      state.layout = layout;
     },
     updateFoldersLoading(state: State, loading: boolean) {
-      state.filesAreLoading = loading
+      state.filesAreLoading = loading;
+    },
+    updateCurrentFilePath(state: State, path: string) {
+      state.currentFilePath = path;
     }
   },
   getters: {

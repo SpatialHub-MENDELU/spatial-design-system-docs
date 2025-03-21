@@ -19,6 +19,22 @@ const isLoading = computed(
     }"
     v-if="props.lessonDetailService.state.activeLesson?.task"
   >
+    <div class="flex justify-end">
+      <button
+      class="h-12 w-12 cursor-pointer block z-40 lg:block hidden"
+      @click="props.lessonDetailService.toggleVisibility"
+    >
+      <i
+        :class="[
+          'pi',
+          props.lessonDetailService.state.isContentVisible
+            ? 'pi-window-maximize'
+            : 'pi-window-minimize',
+          'text-primary border border-primary text-[20px] duration-300 rounded-xl p-1.5 bg-white',
+        ]"
+      />
+    </button>
+    </div>
     <Codemirror
       :dynamic-class="{
         'border border-b-0 border-border-color lg:h-full':
@@ -75,21 +91,6 @@ const isLoading = computed(
       >
         Hint
       </button>
-
-      <button
-      class="h-12 w-12 cursor-pointer block z-40 lg:block hidden"
-      @click="props.lessonDetailService.toggleVisibility"
-    >
-      <i
-        :class="[
-          'pi',
-          props.lessonDetailService.state.isContentVisible
-            ? 'pi-window-maximize'
-            : 'pi-window-minimize',
-          'text-primary border border-primary text-[20px] duration-300 rounded-xl p-1.5 bg-white',
-        ]"
-      />
-    </button>
     </div>
   </div>
 </template>

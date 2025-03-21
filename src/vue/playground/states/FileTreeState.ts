@@ -7,6 +7,8 @@ export const initFileTreeState = reactive<IStateFileTree>({
   isHidden: true,
   showAddRenameDialog: false,
   showMoveItemDialog: false,
+  showCreateProjectDialog: false,
+  showCreateProjectDialogConfirm: false,
   dialogType: FileType.FILE,
   showUploadDialog: false,
   contextMenuVisible: false,

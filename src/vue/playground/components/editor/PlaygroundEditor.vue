@@ -32,16 +32,19 @@ onMounted(async () => {
 });
 
 watch(props.loading, () => {
-  if (!props.loading.installing && !props.loading.running) {
-    editorService.state.editorIsShown = true;
-  }
+  editorService.state.editorIsShown = !props.loading.installing && !props.loading.running
 });
+
+watch(projectType, async () => {
+  await editorService.loadEditor(projectType.value, props.loading)
+})
+
 </script>
 
 <template>
   <div class="flex gap-0 h-full flex-1" :class="layout === Layout.HORIZONTAL ? 'lg:flex-row flex-col lg:w-[10px]' : 'flex-col'">
     <div :class="{
-      'editor-hidden': !editorService.state.editorIsShown,
+      'editor-hidden': !editorService.state.editorIsShown || props.loading.installing,
       [layout === Layout.HORIZONTAL ? 'lg:w-full lg:h-full' : ' w-full']: true,
       [layout === Layout.HORIZONTAL && editorService.state.outputIsShown ? 'lg:max-w-[50%]': '']: true,
       [layout === Layout.VERTICAL ? 'lg:h-full h-[20rem]': '']: true
@@ -72,5 +75,6 @@ watch(props.loading, () => {
     <EditorOutput :loading="loading"
       :is-detail="false"
       v-model:outputIsShown="editorService.state.outputIsShown"  />
+
   </div>
 </template>

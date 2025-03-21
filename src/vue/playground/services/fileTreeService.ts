@@ -3,12 +3,15 @@ import { initFileTreeState } from "../states/FileTreeState";
 import { IStateFileTree } from "../types/states";
 import { FileType } from "../types/fileType";
 import ContextMenu from "primevue/contextmenu";
-import { ref } from "vue";
+import { nextTick, ref } from "vue";
 import { TreeNode } from "primevue/treenode";
 import { WebContainerService } from "./webContainersService";
 import { FolderItem } from "../types/fileItem";
 import { useToast } from "primevue/usetoast";
 import { useStore } from "vuex";
+import { useConfirm } from 'primevue/useconfirm';
+import { ProjectType } from "../types/projectType";
+import { ILoading } from "../types/loading";
 
 export class FileTreeService {
 
@@ -78,7 +81,17 @@ export class FileTreeService {
     this._state.showAddRenameDialog = false;
     this._state.showUploadDialog = false;
     this._state.showMoveItemDialog = false;
+    this._state.showCreateProjectDialog = false;
   };
+
+  createProjectConfirmAccept = () => {
+    this._state.showCreateProjectDialog = true
+    this.closeNewProjectConfirmDialog();
+  }
+  
+  closeNewProjectConfirmDialog = () => {
+    this._state.showCreateProjectDialogConfirm = false
+  }
 
   async openFile(node: TreeNode, playgroundStore) {
     if (node.type === FileType.FOLDER) return;
@@ -96,6 +109,20 @@ export class FileTreeService {
     } catch (error) {
       console.error('Error reading file:', error);
     }
+  };
+  
+  createNewProject = async (project: ProjectType, loading: ILoading, playgroundStore) => {
+    playgroundStore.commit('updateProjectType', null);
+    await nextTick(); 
+  
+    loading.installing = true;
+    
+    playgroundStore.commit('updateProjectType', project);
+    playgroundStore.commit('setOpenedFiles', []);
+    playgroundStore.commit('updateCurrentFileContent', null);
+    playgroundStore.commit('updateFoldersLoading', true);
+    playgroundStore.commit('updateCurrentFilePath', '');
+    this.closeDialog();
   };
 
   private _getContextMenuItems(node: TreeNode, playgroundStore): MenuItem[] {
@@ -274,6 +301,14 @@ export class FileTreeService {
           this._state.dialogType = FileType.FOLDER;
         },
       },
+      {
+        label: 'New project',
+        icon: 'pi pi-plus-circle',
+        command: () => {
+          this._state.showCreateProjectDialogConfirm = true;
+          // this._confirmNewProject();
+        }
+      }
     ];
   }
 

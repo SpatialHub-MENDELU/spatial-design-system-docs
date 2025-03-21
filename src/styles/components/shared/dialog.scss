@@ -90,7 +90,7 @@
       color: white;
 
       &[aria-label="Cancel"] {
-        background-color: $red;
+        background-color: $grey;
       }
 
       &[aria-label="Create"] {
@@ -120,7 +120,6 @@
 
   .title {
     font-weight: 600;
-    color: $red;
     font-size: clamp(1.5rem, 1.7vw, 2rem);
   }
 
@@ -129,10 +128,39 @@
   }
 }
 
+.error-dialog .title {
+  color: $red;
+}
+
+.success-dialog .title {
+  color: $primary;
+}
+
 .moving-file-dialog {
   .p-treenode-label, .p-treenode-label span {
     display: block;
     width: 100%;
     color: var(--vp-c-text-1);
+  }
+}
+
+.p-confirm-dialog {
+  .p-dialog-footer {
+    display: flex !important;
+    align-items: center;
+
+    .p-confirm-dialog-accept, .p-confirm-dialog-reject {
+      padding: 0.25rem 1rem;
+
+      color: white;
+    }
+
+    .p-confirm-dialog-accept {
+      background-color: $primary;
+    }
+
+    .p-confirm-dialog-reject {
+      background-color: $grey;
+    }
   }
 }

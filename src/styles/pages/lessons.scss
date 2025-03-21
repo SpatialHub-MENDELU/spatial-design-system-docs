@@ -17,7 +17,7 @@
     }
 
     span {
-      color: $primary;
+      font-weight: 600;
     }
 
     #placeholder {
@@ -98,7 +98,7 @@
     background-color: $white;
     border-radius: 4px;
     border: 1px solid $grey;
-    color: $grey;
+    color: $grey !important;
 
     transition: all 350ms;
 

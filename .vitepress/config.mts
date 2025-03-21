@@ -18,8 +18,8 @@ export default defineConfig({
 
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: "Playground", link: "/playground/editor" },
       { text: "Docs", link: "/getting-started/introduction" },
+      { text: "Playground", link: "/playground/editor" },
       { text: "Contact", link: "/contact" },
     ],
 

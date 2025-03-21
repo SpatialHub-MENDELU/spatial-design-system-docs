@@ -14,7 +14,6 @@ const openedFileContent = computed(
 const props = defineProps<IPropsCodemirror>();
 const codemirrorService = new CodeMirrorService();
 const extensions = computed(() => codemirrorService.extensions(openedFilePath.value).value);
-console.log(extensions.value)
 onMounted(() => {
   codemirrorService.loadCodemirror(playgroundStore);
 });

@@ -41,7 +41,9 @@ export interface IStateCoursesList {
 
 export interface IStateEditor {
   showConfirmDialog: boolean,
-  nextRoute: RouteLocationNormalized | null
+  nextRoute: RouteLocationNormalized | null,
+  createNewProjectDialogIsVisible: boolean,
+  createNewProjectConfirmDialogIsVisible: boolean
 }
 
 export interface IStateSettings {
@@ -86,6 +88,8 @@ export interface IStateFileTree {
   isHidden: boolean;
   showAddRenameDialog: boolean;
   showMoveItemDialog: boolean;
+  showCreateProjectDialog: boolean;
+  showCreateProjectDialogConfirm: boolean;
   itemToMove: TreeNode | null;
   dialogType: FileType;
   showUploadDialog: boolean;

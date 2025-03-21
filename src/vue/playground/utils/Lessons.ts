@@ -225,33 +225,27 @@ export const createTaskTemplate = (
   codes: IContentCode[]
 ) => {
   if (projectType === ProjectType.VANILLA) {
-    return `<!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Document</title>
-    </head>
-    <body>
+    return `<html>
+  <body>
+    <div id="app"></div>
     <script type="module">
 
-    /*
-      ${prompt}
-    */
+      /*
+        ${prompt}
+      */
 
-    // add imports
+      // add imports
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const app = document.getElementById("app");
-        const scene = document.createElement("a-scene");
+          
+      const app = document.getElementById("app");
+      const scene = document.createElement("a-scene");
 
-        ${codes.map(c => c.content)}
-      })
+      ${codes.map(c => c.content)}
+
     </script>
     
-    <div id="app"></div>
-    </body>
-    </html>
+  </body>
+</html>
 `;
   } else if (projectType === ProjectType.VUE) {
     return `<script setup>
