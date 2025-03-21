@@ -41,10 +41,46 @@ const props = defineProps<IPropsLessonDetailContent>();
         props.lessonDetailService.state.activeLesson &&
         props.lessonDetailService.state.activeLesson.content
         "
-        v-html="props.lessonDetailService.state.activeLesson.content"
         ref="lessonContent"
-        class="lesson__content h-full overflow-y-auto"
-      ></div>
+        class="lesson__content h-full overflow-y-auto lg:pr-5"
+      >
+        <div :class="{
+          'bordered-section': props.lessonDetailService.state.activeLesson.content.task
+        }" v-html="props.lessonDetailService.state.activeLesson.content.intro"/>
+
+        <div v-if="props.lessonDetailService.state.activeLesson.content.whatYouWillLearn"
+          class="lg:mt-6 mt-4">
+          <h2>What You Will Learn</h2>
+          <div v-html="props.lessonDetailService.state.activeLesson.content.whatYouWillLearn"/>
+        </div>
+
+        <div v-if="props.lessonDetailService.state.activeLesson.content.howDoesItWork"
+          class="lg:mt-6 mt-4">
+          <h2>How Does It Works?</h2>
+          <div v-html="props.lessonDetailService.state.activeLesson.content.howDoesItWork"/>
+        </div>
+
+        <div class="lg:mt-6 mt-4"
+          v-if="props.lessonDetailService.state.activeLesson.contentCode">
+          <h2 tabindex="-1">
+            Example
+          </h2>
+  
+          <div id="placeholder"></div>
+        </div>
+
+        <div v-if="props.lessonDetailService.state.activeLesson.content.props"
+          class="lg:mt-6 mt-4">
+          <h2>Props</h2>
+          <div v-html="props.lessonDetailService.state.activeLesson.content.props"/>
+        </div>
+
+        <div v-if="props.lessonDetailService.state.activeLesson.content.task"
+        class="lg:mt-6 mt-4">
+        <h2>Your task</h2>
+        <div v-html="props.lessonDetailService.state.activeLesson.content.task"/>
+      </div>
+    </div>
 
       <div v-else>
         <p class="lg:text-[16px] text-[15px]">

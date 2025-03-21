@@ -7,10 +7,18 @@ export interface ILessonVariants {
 
 export interface ILesson {
   completed?: string
-  content: string
+  content: ILessonContent
   contentCode?: IContentCode[]
   contentOutput?: string
   task?: ILessonTask
+}
+
+export interface ILessonContent {
+  intro: string
+  whatYouWillLearn?: string
+  howDoesItWork?: string
+  props?: string
+  task?: string
 }
 
 export interface IContentCode {
