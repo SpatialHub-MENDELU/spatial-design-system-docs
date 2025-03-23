@@ -6,7 +6,7 @@
   import { WebContainerService } from '../../services/webContainersService';
   import { useToast } from 'primevue/usetoast';
   import { IPropsMoveFileDialog } from '../../types/props';
-import { FileType } from '../../types/fileType';
+  import { FileType } from '../../types/fileType';
 
   const toast = useToast()
   const emit = defineEmits()
@@ -85,7 +85,7 @@ import { FileType } from '../../types/fileType';
       <template #default="{ node }">
         <span 
           @click="onFolderClick(node)"
-          v-if="node.data.type === FileType.FOLDER"
+          v-if="node.data.type === FileType.FOLDER && node.data.name !== 'node_modules'"
           :class="{
             'text-highlighted': selectedFolder?.label === node.label,
             'text-dark-text': selectedFolder?.label !== node?.label
@@ -120,8 +120,14 @@ import { FileType } from '../../types/fileType';
 
       
       <div class="flex justify-end mt-4 gap-3">
+
         <button
-        class="px-6 py-1 bg-primary text-white rounded-2xl font-semibold transition duration-300 ease-in-out mt-4 md:text-[16px] text-[15px] coursor-pointer"
+        class="px-6 py-1 bg-grey text-white rounded-md font-semibold transition duration-300 ease-in-out mt-4 md:text-[16px] text-[15px] coursor-pointer"
+        @click.prevent="closeDialog"
+        >Cancel</button>
+
+        <button
+        class="px-6 py-1 bg-primary text-white rounded-md font-semibold transition duration-300 ease-in-out mt-4 md:text-[16px] text-[15px] coursor-pointer"
         :disabled="selectedFolder === null || props.selectedItem?.key === `${selectedFolder.key !== '/' ? selectedFolder.key : ''}/${props.selectedItem?.label}`"
         :class="{
           'opacity-50': selectedFolder === null  || props.selectedItem?.key === `${selectedFolder.key !== '/' ? selectedFolder.key : ''}/${props.selectedItem?.label}`
@@ -129,10 +135,6 @@ import { FileType } from '../../types/fileType';
         @click.prevent="moveFile"
         >Select</button>
 
-        <button
-        class="px-6 py-1 bg-grey text-white rounded-2xl font-semibold transition duration-300 ease-in-out mt-4 md:text-[16px] text-[15px] coursor-pointer"
-        @click.prevent="closeDialog"
-        >Cancel</button>
       </div>
     </template>
   </Dialog>

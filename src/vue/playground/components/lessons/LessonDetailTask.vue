@@ -92,5 +92,11 @@ const isLoading = computed(
         Hint
       </button>
     </div>
+
+    <span
+      class="text-primary lg:text-[16px] text-[15px] text-right"
+      v-if="props.lessonDetailService.state.completedIn"
+      >Completed: {{ props.lessonDetailService.state.completedIn }}</span
+    >
   </div>
 </template>

@@ -136,7 +136,7 @@ export class FileTreeService {
       {
         label: 'Rename',
         icon: 'pi pi-pencil',
-        command: () => this._renameItem(playgroundStore),
+        command: () => this._renameItem(),
       },
       {
         label: 'Move',
@@ -202,18 +202,19 @@ export class FileTreeService {
   private async _deleteItem(item: FolderItem, playgroundStore) {
     if (!item) return;
   
-    playgroundStore.commit('updateFoldersLoading', true)
+    playgroundStore.commit('updateFoldersLoading', true);
     
     try {
       await this._removeItem(item, playgroundStore);
     } finally {
-      playgroundStore.commit('updateFoldersLoading', false)
+      this.fetchFolders();
+      // playgroundStore.commit('updateFoldersLoading', false);
     }
   
     this.closeContextMenu();
   }
   
-  private _renameItem = (playgroundStore) => {
+  private _renameItem = () => {
     if (!this._state.currentItem) return
 
     this._state.itemToRename = this._state.currentItem;
@@ -240,7 +241,7 @@ export class FileTreeService {
     this._folders.value = this._folders.value.filter(node => !item.path?.startsWith(node.data?.path));
   
     try {
-      const updatedItemsPromise = this._webContainersService.removeItem(item);
+      const updatedItemsPromise = await this._webContainersService.removeItem(item);
   
       playgroundStore.dispatch('closeFile', {
         file: { ...item },
@@ -306,7 +307,6 @@ export class FileTreeService {
         icon: 'pi pi-plus-circle',
         command: () => {
           this._state.showCreateProjectDialogConfirm = true;
-          // this._confirmNewProject();
         }
       }
     ];

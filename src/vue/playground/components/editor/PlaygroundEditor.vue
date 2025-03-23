@@ -47,13 +47,13 @@ watch(projectType, async () => {
       'editor-hidden': !editorService.state.editorIsShown || props.loading.installing,
       [layout === Layout.HORIZONTAL ? 'lg:w-full lg:h-full' : ' w-full']: true,
       [layout === Layout.HORIZONTAL && editorService.state.outputIsShown ? 'lg:max-w-[50%]': '']: true,
-      [layout === Layout.VERTICAL ? 'lg:h-full h-[20rem]': '']: true
+      [layout === Layout.VERTICAL ? 'lg:h-full h-[20rem] overflow-hidden': '']: true
     }" class="lg:border-0 border border-border-color">
       <EmptyState v-if="!openedFilePath" />
 
-      <div v-if="openedFilePath" class="w-full h-full"
+      <div v-if="openedFilePath" class="w-full h-full flex flex-col items-stretch"
       :class="{
-        [layout === Layout.HORIZONTAL ? 'pb-[45px] h-full' : '']: true
+        [layout === Layout.HORIZONTAL ? '' : '']: true
       }">
         <div
           class="px-2 py-1 border-b border-border-color overflow-x-auto whitespace-nowrap w-full h-8 flex items-center">
@@ -66,8 +66,7 @@ watch(projectType, async () => {
         :is-detail="false"
           :dynamic-class="{
           'editor-hidden': !editorService.state.editorIsShown,
-          [layout === Layout.HORIZONTAL ? 'lg:h-full' : 'w-full editor--vertical']: true,
-          'lg:pb-5': true
+          [layout === Layout.HORIZONTAL ? 'lg:h-full' : 'w-full editor--vertical']: true
         }" />
       </div>
     </div>

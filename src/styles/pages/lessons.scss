@@ -97,7 +97,7 @@
 
   .copy-button {
     position: absolute;
-    top: 0.5rem;
+    top: 0.15rem;
     right: 0.5rem;
 
     padding: 0.25rem;
@@ -140,6 +140,12 @@
       font-size: clamp(0.85rem, 0.85vw, 1.35rem) !important;
     }
   }  
+}
+
+.p-dialog {
+  .copy-button {
+    top: -1.5rem !important;
+  }
 }
 
 .lesson-detail--list li {

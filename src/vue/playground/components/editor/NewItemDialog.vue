@@ -32,9 +32,9 @@ const submit = async () => {
   await fileSystemService.submitNewItemDialog(props, playgroundStore).then(() => {
     if (props.itemToRename) emit('rename-item');
     else emit('new-item')
-  })
 
-  playgroundStore.commit('updateFoldersLoading', true)
+    playgroundStore.commit('updateFoldersLoading', true)
+  })
 }
 
 watch(

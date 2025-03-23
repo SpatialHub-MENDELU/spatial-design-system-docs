@@ -1,7 +1,10 @@
 .output {
   overflow-y: hidden !important;
   width: 100% !important;
+
   background-color: transparent !important;
+
+  transition: all 350ms ease-in-out;
 }
 
 .hidden-output--vertical {

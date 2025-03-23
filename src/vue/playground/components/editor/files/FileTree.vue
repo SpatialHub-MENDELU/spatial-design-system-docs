@@ -28,6 +28,8 @@ const foldersAreLoading = computed(
 const folders = ref<TreeNode[]>([]);
 const movingLoading = ref<boolean>(false);
 
+const disabledNodes = ['node_modules', 'package.json', 'package-lock.json', 'vite.config.js'];
+
 watch(props.loading, async () => {
   await fileTreeService.fetchFolders();
   if (!props.loading.installing && !props.loading.running) {
@@ -36,9 +38,11 @@ watch(props.loading, async () => {
 });
 
 watch(foldersAreLoading, async() => {
-  const data = await webContainersService?.fetchFolderStructureInTreeNode('/');
-  if (data) {
-    folders.value = data;
+  if (!foldersAreLoading.value) {
+    const data = await webContainersService?.fetchFolderStructureInTreeNode('/');
+    if (data) {
+      folders.value = data;
+    }
   }
 })
 
@@ -71,14 +75,17 @@ const updateMovingLoading = async () => {
   <Toast position="bottom-center" />
 
   <div
-    v-if="foldersAreLoading"
+    v-if="foldersAreLoading && !props.loading.installing && !props.loading.running"
     class="lg:min-w-[8rem] lg:h-auto h-[10rem] flex items-center justify-center lg:border-r lg:border-b-0 lg:border-l-0 border border-border-color relative overflow-visible duration-300 block pb-2"
   >
-    <div class="spinner" />
+    <div class="loading-dots">
+      <span />
+      <span />
+      <span />
+    </div>  
   </div>
 
   <ConfirmDialog></ConfirmDialog>
-
 
   <div
     v-if="!foldersAreLoading"
@@ -127,7 +134,7 @@ const updateMovingLoading = async () => {
       </div>
     </div>
     <div
-      class="relative w-full h-2 overflow-hidden bg-white"
+      class="relative w-full h-2 overflow-hidden bg-white lg:min-w-[8rem]"
       v-if="movingLoading"
     >
       <div
@@ -146,7 +153,11 @@ const updateMovingLoading = async () => {
       }"
     >
       <template #default="{ node }">
+        <span class="whitespace-nowrap block text-grey"
+          v-if="disabledNodes.includes(String(node.label))">{{ node.label }}</span>
+
         <div
+          v-else
           class="cursor-pointer"
           @contextmenu="
             fileTreeService.showContextMenu($event, node, playgroundStore)

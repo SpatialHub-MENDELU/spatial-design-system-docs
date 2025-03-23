@@ -115,6 +115,7 @@ export class WebContainerService {
   }
 
   public async fetchFolderStructure(directory: string): Promise<any[]> {
+
     await this.ensureInitialized();
     const entries = await this.listFiles(directory);
 
@@ -122,11 +123,12 @@ export class WebContainerService {
       (entries ?? []).map(async (entry) => {
         const path = `${directory}/${entry}`;
         const isDirectory = await this.checkIfDirectory(path);
+
         return {
           name: entry,
           type: isDirectory ? 'folder' : 'file',
-          ...(isDirectory
-            ? { children: await this.fetchFolderStructure(path) }
+          ...(isDirectory && entry !== 'node_modules'
+            ? { children: await this.fetchFolderStructure(path) } 
             : {}),
         };
       })
@@ -146,7 +148,7 @@ export class WebContainerService {
   }
 
   public async fetchFolderStructureInTreeNode(
-    directory: string
+    directory: string,
   ): Promise<TreeNode[]> {
     const data = await this.fetchFolderStructure(directory);
 
@@ -159,7 +161,7 @@ export class WebContainerService {
 
         const children = folder.children
           ? await this.fetchFolderStructureInTreeNode(
-              `${directory}/${folder.name}`
+              `${directory}/${folder.name}`,
             )
           : [];
 
@@ -222,6 +224,10 @@ export class WebContainerService {
   }
 
   public async removeItem(item: FolderItem): Promise<TreeNode[]> {
+    if (this.webContainerInstance) {
+      await this.webContainerInstance.fs.rm(String(item.path), { recursive: true });
+    }
+
     const folderStructurePromise = this.fetchFolderStructureInTreeNode('/');
   
     const removeFromArray = (arr: TreeNode[], itemToRemove: FolderItem): void => {
@@ -241,7 +247,6 @@ export class WebContainerService {
     return folderStructure;
   }
   
-
   private async installFileSystem(
     fileStructure: any,
     zip: JSZip,
