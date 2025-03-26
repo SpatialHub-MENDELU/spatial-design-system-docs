@@ -8,10 +8,13 @@
 @import "./components/shared/switcher.scss";
 @import "./components/shared/dropdown.scss";
 @import "./components/shared/treenode.scss";
+@import "./components/shared/breadcrumbs.scss";
 
 @import "./components/editor/output.scss";
 @import "./components/editor/codemirror.scss";
 @import "./components/editor/files.scss";
+
+@import "./components/courses/overview.scss";
 
 // pages
 @import "./pages/editor.scss";

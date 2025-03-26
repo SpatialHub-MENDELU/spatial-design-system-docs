@@ -15,19 +15,19 @@ export interface ILesson {
 
 export interface IContentCode {
   lang: string,
-  content: string
+  content: string,
+  imports?: string
 }
 
 export interface ILessonTask {
   id: number
   prompt: string
-  code: IContentCode
+  codes: IContentCode[]
   hint: IContentCode
-  testCases: ILessonTaskTestCase[]
+  test: string
 }
 
-export interface ILessonTaskTestCase {
-  id: number
-  description: number
-  testScript: string
+export interface ITaskResult {
+  success?: boolean;
+  errors?: string[];
 }

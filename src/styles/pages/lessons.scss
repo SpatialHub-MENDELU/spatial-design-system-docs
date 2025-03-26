@@ -39,13 +39,13 @@
      }
   
     tr {
-      background-color: $white;
+      background-color: transparent;
       border-top: 1px solid $border-color;
       transition: background-color .5s;
     }
   
     tr:nth-child(2n) {
-      background-color: $extra-light-background;
+      background-color: var(--vp-custom-block-tip-bg)
     }
   
     th, td {
@@ -57,8 +57,8 @@
       text-align: left;
       font-size: 14px;
       font-weight: 600;
-      color: $dark-text;
-      background-color: $extra-light-background;
+      color: var(--vp-custom-text-1);
+      background-color: var(--vp-custom-block-tip-bg);
     }
   
     td {
@@ -126,6 +126,11 @@
     word-wrap: break-word;
     overflow-wrap: break-word;
     max-width: 100%;
+    font-size: clamp(0.85rem, 0.85vw, 1.35rem) !important;
+
+    * {
+      font-size: clamp(0.85rem, 0.85vw, 1.35rem) !important;
+    }
   }  
 
   .code-block {

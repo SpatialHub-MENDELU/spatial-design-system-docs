@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { defineProps } from 'vue';
 import { ICourseDetail } from '../../types/courses/CourseDetail';
-import LessonsList from './LessonsList.vue';
+import LessonsList from '../lessons/LessonsList.vue';
 import { ILessonVariants } from '../../types/courses/Lessons';
 
 const props = defineProps<{
   activeCourse: ICourseDetail;
+  activeLesson: ILessonVariants | null;
   isVisible: boolean;
   onClose: () => void;
   lessonsFromSession: ILessonVariants[]
@@ -14,7 +15,7 @@ const props = defineProps<{
 
 <template>
   <div
-    class="absolute lg:h-screen h-full top-0 left-0 bg-white lg:border-r border-border-color flex flex-col overflow-x-hidden duration-500 lg:w-[25rem] w-full lg:p-6 pt-6 z-10"
+    class="overview px-4 absolute lg:h-screen h-full top-0 left-0 bg-white lg:border-r border-border-color flex flex-col overflow-x-hidden duration-500 lg:w-[25rem] w-full lg:p-6 pt-6 z-10"
     :class="{ '-translate-x-full': !props.isVisible, 'translate-x-0': props.isVisible }"
   >
     <div class="flex justify-end">
@@ -29,6 +30,7 @@ const props = defineProps<{
     <div class="h-full overflow-y-auto mb-16">
       <LessonsList
         :active-course="activeCourse"
+        :active-lesson="activeLesson"
         :lessons-from-session="lessonsFromSession"
       />
     </div>

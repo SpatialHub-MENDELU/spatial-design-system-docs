@@ -11,10 +11,17 @@ export interface IStateLessonDetail {
   activeLesson: ILesson | null;
   nextLessonLink: string | null;
   isOverviewVisible: boolean;
+  isContentVisible: boolean;
+  isHintVisible: boolean;
+  isErrorDialogVisible: boolean;
+  isSuccessDialogVisible: boolean;
   completedIn: string | null;
   canBeDisplayed: boolean;
   lessonsFromSession: ILessonVariants[];
-  loading: ILoading
+  testErrors: string[];
+  loading: ILoading;
+  successDialogTitle: string;
+  successDialogText: string;
 }
 
 export interface IStateCourseDetail {

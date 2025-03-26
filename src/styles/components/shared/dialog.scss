@@ -2,6 +2,17 @@
   min-width: 20rem;
   max-width: 90vw;
 
+  .p-dropdown-items-wrapper .p-dropdown-item {
+    &.p-highlight {
+      background-color: lighten($color: $primary, $amount: 50%) !important;
+    }
+  }
+
+  .p-dialog, .p-dialog-header, .p-dialog-content, pre {
+    background-color: var(--vp-custom-block-tip-bg) !important;
+    opacity: 1!important;
+  }
+
   @media screen and (min-width: $breakpointMd) {
     min-width: 25rem;
   }
@@ -15,10 +26,13 @@
     padding-bottom: 1rem;
 
     border-bottom: 1px solid $border-color;
+    color: var(--vp-c-text-1);
   }
 
   &-content {
     padding-top: 1rem;
+    
+    color: var(--vp-c-text-1);
 
     input, .p-dropdown {
       padding: 0.25rem 0.5rem;
@@ -80,10 +94,33 @@
       }
     }
   }
+
+  #imports, #hint {
+    min-height: 6rem;
+  }
+
+  #hint {
+    margin-top: 1rem;
+  }
 }
 
-.p-dropdown-items-wrapper .p-dropdown-item {
-  &.p-highlight {
-    background-color: lighten($color: $primary, $amount: 50%) !important;
+.error-dialog, .success-dialog {
+  text-align: center;
+
+  img {
+    margin: 2rem auto;
+    max-height: 150px;
+
+    object-fit: contain;
+  }
+
+  .title {
+    font-weight: 600;
+    color: $red;
+    font-size: clamp(1.5rem, 1.7vw, 2rem);
+  }
+
+  p {
+    font-size: clamp(0.9rem, 0.9vw, 1.35rem);
   }
 }

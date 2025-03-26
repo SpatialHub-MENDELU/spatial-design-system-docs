@@ -13,7 +13,7 @@ import { COURSE } from '../../constants/routes';
           >Oops...</span
         >
       </div>
-      <p class="text-center text-grey lg:text-[18px] text-[16px]">
+      <p class="text-center lg:text-[18px] text-[16px]">
         Course or lesson data is not available.<br />
         Please check if you have access and try again.
       </p>

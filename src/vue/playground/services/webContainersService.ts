@@ -5,6 +5,8 @@ import { FolderItem } from '../types/fileItem';
 import JSZip from 'jszip';
 import { getFileIcon } from '../utils/FileExtensionsAndIcons';
 import { ProjectType } from '../types/projectType';
+import { getMessageHandlerCode } from '../utils/MessageHandlerCode';
+import { reactive } from 'vue';
 
 export class WebContainerService {
   private static instance: WebContainerService;
@@ -13,6 +15,12 @@ export class WebContainerService {
   private openedFiles: FolderItem[] = [];
 
   private constructor() {}
+
+  public state = reactive<{
+    isLoading: boolean,
+  }>({
+    isLoading: false
+  });
 
   public static getInstance(): WebContainerService {
     if (!this.instance) {
@@ -47,14 +55,18 @@ export class WebContainerService {
       throw new Error('WebContainer booting failed: ' + error.message);
     }
 
-    this.webContainerInstance.on('server-ready', (port, url) => {
-      const iframeEl = document.querySelector(
-        'iframe'
-      ) as unknown as HTMLIFrameElement;
-      if (iframeEl) {
-        iframeEl.src = url;
-      }
-    });
+    try {
+      this.webContainerInstance.on('server-ready', (port, url) => {
+        const iframeEl = document.querySelector(
+          'iframe'
+        ) as unknown as HTMLIFrameElement;
+        if (iframeEl) {
+          iframeEl.src = url;
+        }        
+      });
+    } catch (error) {
+      console.log(error)
+    }
 
     this.isBooting = false;
     return this.webContainerInstance;
@@ -71,14 +83,25 @@ export class WebContainerService {
   }
 
   public async readFile(filePath: string) {
-    await this.ensureInitialized();
-    return await this.webContainerInstance?.fs.readFile(filePath, 'utf-8');
+    try {
+      await this.ensureInitialized();
+      return await this.webContainerInstance?.fs.readFile(filePath, 'utf-8');
+    } catch(error) {
+      console.log(error)
+    }
   }
 
-  public async writeFile(filePath: string, content: string) {
-    await this.ensureInitialized();
-    await this.webContainerInstance?.fs.writeFile(filePath, content);
-    await this.fetchFolderStructureInTreeNode('/');
+  public async writeFile(filePath: string, content: string, fetchNodes = true) {
+    try {
+      await this.ensureInitialized();
+      await this.webContainerInstance?.fs.writeFile(filePath, content);
+
+      if (fetchNodes) {
+        await this.fetchFolderStructureInTreeNode('/');
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   public async createFolder(folderPath: string) {
@@ -280,24 +303,27 @@ export class WebContainerService {
     this.openedFiles.filter((f) => f === file);
   }
 
-  async createProject(projectType: ProjectType, task?: string): Promise<boolean> {
+  async createProject(
+    projectType: ProjectType,
+    task?: string
+  ): Promise<boolean> {
     await this.ensureInitialized();
     if (!this.webContainerInstance) return false;
-  
+
     try {
       const templatePath =
         projectType === ProjectType.VANILLA
           ? '/templates/vanilla'
           : '/templates/vue';
-  
+
       const copyTemplate = async (srcPath: string, destPath: string) => {
         const response = await fetch(`${srcPath}/template-files.json`);
         const fileList = await response.json();
-  
+
         for (const file of fileList) {
           const src = `${srcPath}/${file.path}`;
           const dest = `${destPath}/${file.path}`;
-  
+
           if (file.isDirectory) {
             await this.createFolder(dest);
           } else {
@@ -308,17 +334,27 @@ export class WebContainerService {
               );
             }
             const content = await contentResponse.text();
-            await this.writeFile(dest, content);
+
+            const targetPaths = {
+              [ProjectType.VANILLA]: 'index.html',
+              [ProjectType.VUE]: 'src/App.vue',
+            };
+
+            await this.writeFile(
+              dest,
+              task && file.path === targetPaths[projectType] ? task : content,
+              task === null
+            );
           }
         }
       };
-  
+
       await copyTemplate(templatePath, '/');
-  
+
       const installProcess = await this.webContainerInstance.spawn('npm', [
         'install',
       ]);
-  
+
       let installOutput = '';
       installProcess.output.pipeTo(
         new WritableStream({
@@ -327,7 +363,7 @@ export class WebContainerService {
           },
         })
       );
-  
+
       const installExitCode = await installProcess.exit;
       if (installExitCode !== 0) {
         console.error(
@@ -338,12 +374,12 @@ export class WebContainerService {
           `Dependency installation failed with exit code ${installExitCode}`
         );
       }
-  
+
       const devProcess = await this.webContainerInstance.spawn('npm', [
         'run',
         'dev',
       ]);
-  
+
       devProcess.output.pipeTo(
         new WritableStream({
           write(chunk: string) {
@@ -351,11 +387,167 @@ export class WebContainerService {
           },
         })
       );
-  
-      return true
+
+      return true;
     } catch (error) {
       console.error('Error creating project:', error);
       throw error;
     }
   }
+
+  async checkTask(projectType: ProjectType, code: string) {
+    try {
+      const mainProjectFile = this.getMainProjectFile(projectType);
+      await this.setupMessageHandling(mainProjectFile, projectType);
+
+      const iframe = this.getIframe();
+      return await this.handleIframeContent(
+        iframe,
+        mainProjectFile,
+        projectType,
+        code
+      );
+    } catch (error) {
+      return { success: false, errors: [error.message] };
+    }
+  }
+
+  private getMainProjectFile(projectType: ProjectType): string {
+    return projectType === ProjectType.VANILLA ? '/index.html' : '/src/App.vue';
+  }
+
+  private async setupMessageHandling(
+    mainProjectFile: string,
+    projectType: ProjectType
+  ) {
+    try {
+      await this.addEventHandling(mainProjectFile, projectType);
+    } catch (error) {
+      throw new Error(`Error adding message handling: ${error.message}`);
+    }
+  }
+
+  private getIframe(): HTMLIFrameElement {
+    const iframe = document.getElementById(
+      'webContainerIframe'
+    ) as HTMLIFrameElement;
+    if (!iframe) {
+      throw new Error('Iframe was not found');
+    }
+    return iframe;
+  }
+
+  private async handleIframeContent(
+    iframe: HTMLIFrameElement,
+    mainProjectFile: string,
+    projectType: ProjectType,
+    code: string
+  ): Promise<{ success: boolean; errors?: string[] }> {
+    return new Promise((resolve, reject) => {
+      const onMessageHandler = async (event: MessageEvent) => {
+        if (event.data.type === 'iframeContent') {
+          const iframeContent = event.data.content;
+          try {
+            const document = this.parseDocument(iframeContent);
+            eval(code);
+          } catch (error) {
+            window.removeEventListener('message', onMessageHandler);
+            return reject(new Error(error.message));
+          }
+      
+          try {
+            await this.removeMessageHandling(mainProjectFile, projectType);
+            resolve({ success: true });
+          } catch (error) {
+            reject(new Error(`Error removing message handling: ${error.message}`));
+          } 
+          finally {
+            window.removeEventListener('message', onMessageHandler);
+          }
+        }
+      };      
+
+      window.addEventListener('message', onMessageHandler);
+
+      iframe.onload = () => {
+        this.requestIframeContent(iframe);
+      };
+
+      if (projectType === ProjectType.VUE) {
+        const checkIframeWindow = setInterval(() => {
+          if (iframe.contentWindow) {
+            clearInterval(checkIframeWindow);
+            this.requestIframeContent(iframe);
+          }
+        }, 100);
+      }
+
+    });
+  }
+
+  private parseDocument(content: string): Document {
+    const parser = new DOMParser();
+    return parser.parseFromString(content, 'text/html');
+  }
+
+  private requestIframeContent(iframe: HTMLIFrameElement) {
+    iframe.contentWindow?.postMessage({ type: 'getDocument', content: '' }, '*');
+  }
+
+  private async addEventHandling(
+    filePath: string,
+    projectType: ProjectType,
+  ) {
+    try {
+      const messageHandlerCode = getMessageHandlerCode(projectType);
+      let updatedContent = ""
+
+      let fileContent = await this.readFile(filePath);
+      if (!fileContent) return;
+  
+      fileContent = fileContent.replace(messageHandlerCode, '');
+  
+      if (projectType === ProjectType.VANILLA) {
+        updatedContent = fileContent.replace(
+          '</body>',
+          `${messageHandlerCode}</body>`
+        );
+      } else if (projectType === ProjectType.VUE) {
+        if (fileContent.includes('</script>')) {
+          updatedContent = fileContent.replace(
+            '</script>',
+            `${messageHandlerCode}</script>`
+          );
+        } else {
+          updatedContent = `${fileContent} 
+            <script setup>
+              ${messageHandlerCode}
+            </script>
+          `;
+        }
+      }
+      await this.writeFile(filePath, updatedContent, false);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+  
+  private async removeMessageHandling (
+    filePath: string,
+    projectType: ProjectType
+  ) {
+    try {
+      const messageHandlerCode = getMessageHandlerCode(projectType);
+  
+      const fileContent = await this.readFile(filePath);
+      if (!fileContent) return;
+  
+      const updatedContent = fileContent.replace(messageHandlerCode, '');
+      if (fileContent === updatedContent) return;
+  
+      await this.writeFile(filePath, updatedContent, false);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 }
