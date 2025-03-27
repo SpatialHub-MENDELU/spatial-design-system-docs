@@ -39,7 +39,10 @@ Below is an example with [circle](/ar-vr-components/circle) layout.
 <ComponentExample :fixed="true">
 
 <template #output v-if="renderScene">
-<a-ar-menu 
+    <a-entity id="mouseRaycaster" raycaster="objects: .clickable"
+              cursor="rayOrigin: mouse; fuse: false;">
+    </a-entity>
+    <a-ar-menu 
         position="0 1.5 -3"
         visible="true" 
         primary="#018A6C"
