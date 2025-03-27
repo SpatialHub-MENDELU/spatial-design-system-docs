@@ -41,7 +41,9 @@ export interface IStateCoursesList {
 
 export interface IStateEditor {
   showConfirmDialog: boolean,
-  nextRoute: RouteLocationNormalized | null
+  nextRoute: RouteLocationNormalized | null,
+  createNewProjectDialogIsVisible: boolean,
+  createNewProjectConfirmDialogIsVisible: boolean
 }
 
 export interface IStateSettings {
@@ -84,11 +86,15 @@ export interface IStateFileUploader {
 export interface IStateFileTree {
   isVisible: boolean;
   isHidden: boolean;
-  showDialog: boolean;
+  showAddRenameDialog: boolean;
+  showMoveItemDialog: boolean;
+  showCreateProjectDialog: boolean;
+  showCreateProjectDialogConfirm: boolean;
+  itemToMove: TreeNode | null;
   dialogType: FileType;
   showUploadDialog: boolean;
   contextMenuVisible: boolean;
-  currentItem: FolderItem;
+  currentItem: FolderItem | null;
   parentItemNode: TreeNode | null;
   itemToRename: FolderItem | null;
 }

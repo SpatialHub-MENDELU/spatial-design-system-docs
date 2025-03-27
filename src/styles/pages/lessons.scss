@@ -17,7 +17,7 @@
     }
 
     span {
-      color: $primary;
+      font-weight: 600;
     }
 
     #placeholder {
@@ -74,8 +74,16 @@
   }
 }
 
-.code-block {
+.lesson .code-block, .p-dialog .code-block {
   position: relative;
+
+  &:not(:last-child) {
+    padding-bottom: 1.5rem;
+  }
+
+  pre span {
+    font-weight: normal !important;
+  }
 
   .language-label {
     position: absolute;
@@ -89,7 +97,7 @@
 
   .copy-button {
     position: absolute;
-    top: 0.5rem;
+    top: 0.15rem;
     right: 0.5rem;
 
     padding: 0.25rem;
@@ -98,7 +106,7 @@
     background-color: $white;
     border-radius: 4px;
     border: 1px solid $grey;
-    color: $grey;
+    color: $grey !important;
 
     transition: all 350ms;
 
@@ -132,8 +140,16 @@
       font-size: clamp(0.85rem, 0.85vw, 1.35rem) !important;
     }
   }  
+}
 
-  .code-block {
-    font-weight: normal !important;
+.p-dialog {
+  .copy-button {
+    top: -1.5rem !important;
   }
+}
+
+.lesson-detail--list li {
+  margin-left: 2rem;
+
+  list-style-type: disc !important;
 }

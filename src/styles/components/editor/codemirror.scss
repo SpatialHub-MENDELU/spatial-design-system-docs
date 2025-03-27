@@ -6,8 +6,13 @@
 }
 
 .cm-activeLine {
-  background-color: $secondary !important;
+  background-color: $light-primary !important;
   color: $dark-text !important;
+}
+
+.dark .cm-activeLine {
+  background-color: $dark-text !important;
+  color: $light-text !important;
 }
 
 .cm-activeLineGutter {

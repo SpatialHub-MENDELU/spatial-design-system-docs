@@ -3,5 +3,7 @@ import { IStateEditor } from "../types/states";
 
 export const initViewEditorState = reactive<IStateEditor>({
   showConfirmDialog: false,
-  nextRoute: null
+  nextRoute: null,
+  createNewProjectDialogIsVisible: false,
+  createNewProjectConfirmDialogIsVisible: false
 })

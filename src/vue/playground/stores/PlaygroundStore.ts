@@ -2,6 +2,7 @@ import { createStore } from 'vuex';
 import { ProjectType } from '../types/projectType';
 import { FolderItem } from '../types/fileItem';
 import { Layout } from '../types/layout';
+import { FileType } from '../types/fileType';
 
 export interface State {
   projectType: ProjectType | null
@@ -43,10 +44,13 @@ const playgroundStore = createStore({
       state.currentFileContent = content;
     },
     updateLayout(state: State, layout: Layout) {
-      state.layout = layout
+      state.layout = layout;
     },
     updateFoldersLoading(state: State, loading: boolean) {
-      state.filesAreLoading = loading
+      state.filesAreLoading = loading;
+    },
+    updateCurrentFilePath(state: State, path: string) {
+      state.currentFilePath = path;
     }
   },
   getters: {
@@ -75,10 +79,10 @@ const playgroundStore = createStore({
       payload: { file: FolderItem; update?: (fileName: string) => Promise<string> }
     ) {
       state.openedFiles = state.openedFiles.filter(
-        (f: FolderItem) => f.name !== payload.file.name
+        (f: FolderItem) => !f.path?.startsWith(payload.file.path ?? '')
       );
 
-      const isCurrentFile = payload.file.path === state.currentFilePath;
+      const isCurrentFile = state.currentFilePath.startsWith(payload.file.path);
       const newOpenItem = state.openedFiles.length > 0 ? state.openedFiles[0] : null;
 
       if (!isCurrentFile) return
@@ -94,6 +98,39 @@ const playgroundStore = createStore({
         state.currentFilePath = '';
         state.currentFileContent = '';
         state.output = '';
+      }
+    },
+    async renameFile(
+      { state, commit },
+      payload: { oldFile: FolderItem; newFileName: string; update?: (fileName: string) => Promise<string> }
+    ) {
+      const newPath = payload.oldFile.path?.replace(payload.oldFile.name, payload.newFileName);
+
+      state.openedFiles = state.openedFiles.map((file: FolderItem) => {
+        // opened file is renamed
+        if (file.name === payload.oldFile.name) {
+          return { ...file, name: payload.newFileName, path: file.path?.replace(payload.oldFile.name, payload.newFileName) };
+        }
+      
+        // parent folder of opened file is renamed
+        if (file.path?.startsWith(payload.oldFile.path ?? '')) {
+          return { ...file, path: file.path.replace(payload.oldFile.path ?? '', newPath ?? '') };
+        }
+      
+        return file;
+      });
+    
+
+      // check if parent folder or opened file is renamed
+      const itemToBeUpdated = state.openedFiles.find(f => {
+        if (payload.oldFile.type === FileType.FILE) {
+          return f.path.replace(payload.newFileName, payload.oldFile.name) === state.currentFilePath;
+        }
+        return f.path && f.path.startsWith(newPath);
+      });
+
+      if (itemToBeUpdated) {
+        state.currentFilePath = itemToBeUpdated.path.replace(payload.oldFile.path, newPath);
       }
     },
   }      

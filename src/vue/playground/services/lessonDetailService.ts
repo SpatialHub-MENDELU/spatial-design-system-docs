@@ -74,6 +74,7 @@ export class LessonDetailService {
     this._state.lessonsFromSession = completedLessonsFromSession;
   
     const currentLesson = completedLessonsFromSession.find((l) => l.id === Number(lessonId)) as ILessonVariants;
+    console.log(lessonByCourseVariant(this._state.activeCourse?.slug ?? "", currentLesson)?.completed)
     this._state.completedIn = lessonByCourseVariant(this._state.activeCourse?.slug ?? "", currentLesson)?.completed ?? null;
   }
   
@@ -107,7 +108,6 @@ export class LessonDetailService {
     await this._webContainersService?.ensureInitialized();
     const template = createTaskTemplate(
       this._state.activeCourse?.type ?? ProjectType.VANILLA,
-      String(this._state.activeLesson?.task?.prompt),
       this._state.activeLesson?.task?.codes ?? []
     );
   

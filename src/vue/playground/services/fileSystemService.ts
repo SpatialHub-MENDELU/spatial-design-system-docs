@@ -5,8 +5,12 @@ import { WebContainerService } from './webContainersService';
 import { checkDuplicity } from '../utils/CheckDuplicity';
 import { initNewItemDialogState } from '../states/NewItemDialogState';
 import { IStateNewItemDialog } from '../types/states';
-import { getFileExtension, getFileWithoutExtension } from '../utils/FileExtensionsAndIcons';
+import {
+  getFileExtension,
+  getFileWithoutExtension,
+} from '../utils/FileExtensionsAndIcons';
 import { IPropsNewItemDialog } from '../types/props';
+import { handlePath } from '../utils/Path';
 
 export class FileSystemService {
   private static instance: FileSystemService;
@@ -48,6 +52,7 @@ export class FileSystemService {
 
     if (type == FileType.FOLDER) {
       newItem.children = files;
+      newItem.path = `/${parentFolder?.path ?? ''}${newItem.name}`;
     }
 
     const isDuplicate = checkDuplicity(this.folders.value, newItem, '');
@@ -59,17 +64,23 @@ export class FileSystemService {
     }
 
     try {
-      if (type === FileType.FOLDER) {
+      if (type === FileType.FOLDER && !parentFolder) {
         this.folders.value.push(newItem);
         await this.webContainersService?.createFolder(`/${newItem.name}`);
       } else if (parentFolder) {
+        const filePath = `${handlePath(parentFolder.path ?? '')}${handlePath(newItem.name)}`;
+        newItem.path = filePath;
+
         parentFolder.children?.push({
           ...newItem,
-          path: `${parentFolder.path}/${name}`,
+          path: filePath,
         });
-        const filePath = `/${parentFolder.name}/${newItem.name}`;
 
-        await this.webContainersService?.writeFile(filePath, fileContent);
+        if (type === FileType.FOLDER) {
+          await this.webContainersService?.createFolder(filePath);
+        } else {
+          await this.webContainersService?.writeFile(filePath, fileContent);
+        }
       } else {
         this.folders.value.push(newItem);
         await this.webContainersService?.writeFile(
@@ -103,19 +114,20 @@ export class FileSystemService {
 
   public async uploadItem(f: FolderItem, parentFolder?: FolderItem) {
     if (f.type === FileType.FOLDER) {
-      if (f.children) {
-        for (const child of f.children) {
-          await this.uploadItem(child, f);
-        }
-      }
-
       const result = await this.createNewItem(
         f.name,
         f.type,
-        undefined,
+        parentFolder,
         '',
-        f.children
+        []
       );
+
+      if (f.children) {
+        for (const child of f.children) {
+          await this.uploadItem(child, result.item);
+        }
+      }
+
       return result;
     } else {
       const reader = new FileReader();
@@ -143,7 +155,7 @@ export class FileSystemService {
     }
   }
 
-  async submitNewItemDialog(props: IPropsNewItemDialog) {
+  async submitNewItemDialog(props: IPropsNewItemDialog, playgroundStore) {
     this._state.errorMessage = '';
     this._state.errorExtensionMessage = '';
 
@@ -163,9 +175,22 @@ export class FileSystemService {
         : this._state.newItemName;
 
     const parentFolder = props.parentNode?.parent;
+    if (parentFolder && parentFolder.path) {
+      parentFolder.path = props.parentNode?.key;
+    }
 
     if (props.itemToRename) {
-      const result = await this?.renameItem(props.itemToRename.name, fullName);
+      const result = await this?.renameItem(props.itemToRename?.path ?? '', fullName);
+      const updateContent = async (filePath) => {
+        return await this.webContainersService?.readFile(filePath);
+      };
+  
+      playgroundStore.dispatch('renameFile', {
+        oldFile: props.itemToRename,
+        newFileName: fullName,
+        update: updateContent
+      });
+
       if (result?.error) {
         this._state.errorMessage = result.error;
       } else {
@@ -187,22 +212,33 @@ export class FileSystemService {
     }
   }
 
-  updateEditedItem(newValue: FolderItem, props: IPropsNewItemDialog, newDialogType: FolderItem | FileType | null) {
+  updateEditedItem(
+    newValue: FolderItem,
+    props: IPropsNewItemDialog,
+    newDialogType: FolderItem | FileType | null
+  ) {
     if (newValue && newValue.name !== '') {
       this._state.newItemName = getFileWithoutExtension(newValue);
-      this._state.newFileExtension = getFileExtension(newValue.name, newValue.type);
+      this._state.newFileExtension = getFileExtension(
+        newValue.name,
+        newValue.type
+      );
       this._state.dialogHeader = `Rename ${props.dialogType}`;
       this._state.buttonLabel = 'Rename';
       this._state.buttonIcon = 'pi pi-pencil';
     } else {
-        if (newDialogType === FileType.FILE && this.fileNameExtensions.length > 0) {
-          this._state.newFileExtension = this.fileNameExtensions[0].value;
-        }
-        
-        this._state.newItemName = ''
-        this._state.dialogHeader = newDialogType === FileType.FILE ? 'New file' : 'New folder'
-        this._state.buttonLabel = 'Create';
-        this._state.buttonIcon = 'pi pi-check';
+      if (
+        newDialogType === FileType.FILE &&
+        this.fileNameExtensions.length > 0
+      ) {
+        this._state.newFileExtension = this.fileNameExtensions[0].value;
+      }
+
+      this._state.newItemName = '';
+      this._state.dialogHeader =
+        newDialogType === FileType.FILE ? 'New file' : 'New folder';
+      this._state.buttonLabel = 'Create';
+      this._state.buttonIcon = 'pi pi-check';
     }
   }
 
@@ -215,6 +251,7 @@ export class FileSystemService {
       { label: 'HTML', value: 'html' },
       { label: 'CSS', value: 'css' },
       { label: 'JS', value: 'js' },
+      { label: 'JSON', value: 'json' },
     ];
   }
 }

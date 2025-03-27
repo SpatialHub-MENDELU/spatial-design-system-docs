@@ -27,6 +27,7 @@ export interface IPropsFileUploader {
   accept: string;
   multiple: boolean;
   folderUploader: boolean;
+  parentNode: TreeNode | null;
 }
 
 export interface IPropsFileTree {
@@ -93,6 +94,7 @@ export interface IPropsFolderFileUploader {
   isDialogVisible: boolean;
   closeDialog: () => void;
   uploadType: FileType;
+  parentNode: TreeNode | null;
 }
 
 export interface IPropsLessonDetailContent {
@@ -111,6 +113,7 @@ export interface IPropsLessonsList {
   activeCourse: ICourseDetail;
   lessonsFromSession: ILessonVariants[];
   activeLesson: ILessonVariants | null;
+  onClose: () => void;
 }
 
 export interface IPropsBreadcrumbs {
@@ -133,4 +136,22 @@ export interface IPropsCreateProjectDialog {
 export interface IPropsLayoutDialog {
   closeDialog: () => void;
   visible: boolean;
+}
+
+export interface IPropsMoveFileDialog {
+  folders: TreeNode[];
+  selectedItem: TreeNode | null;
+  showDialog: boolean;
+  closeDialog: () => void;
+  updateLoading: () => void;
+}
+
+export interface IPropsSidebar {
+  showDialog?: () => void
+}
+
+export interface IPropsConfirmDialog {
+  accept: () => void
+  reject: () => void
+  showDialog: boolean
 }

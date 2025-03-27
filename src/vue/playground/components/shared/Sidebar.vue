@@ -1,8 +1,15 @@
 <script setup lang="ts">
-import { ref, onMounted, reactive } from 'vue';
+import { ref, onMounted, reactive, computed } from 'vue';
 import { sidebarData } from '../../data/sidebar-data';
+import { IPropsSidebar } from '../../types/props';
+import * as ROUTES from "../../constants/routes";
+import { useStore } from 'vuex';
 
 const activeRoute = ref('');
+const props = defineProps<IPropsSidebar>()
+
+const playgroundStore = useStore()
+const projectType = computed(() => playgroundStore.getters.projectType)
 
 onMounted(() => {
   activeRoute.value = window.location.pathname;
@@ -34,7 +41,7 @@ const sidebarState = reactive({
     >
       <ul class="flex lg:flex-col lg:h-full lg:gap-0 gap-5">
         <li
-          v-for="(item, index) in sidebarData"
+          v-for="(item, index) in sidebarData.slice(0, sidebarData.length - 1)"
           :key="index"
           class="lg:py-4 py-3"
         >
@@ -51,12 +58,14 @@ const sidebarState = reactive({
         </li>
       </ul>
 
-      <!-- <ul class="flex flex-col">
+      <ul class="lg:flex hidden flex-col new-project-btn"
+      v-if="activeRoute.includes(ROUTES.EDITOR) && projectType !== null">
         <li class="lg:py-4 py-3">
-          <a
-            :href="sidebarData[sidebarData.length - 1].route"
-            class="flex items-center lg:gap-1 gap-2 lg:flex-col"
-            target="_self"
+          <button
+            @click="() => {
+              if (props.showDialog) props.showDialog()
+            }"
+            class="flex items-center lg:gap-1 gap-2 lg:flex-col text-center"
           >
             <i
               :class="`pi pi-${sidebarData[sidebarData.length - 1].icon} ${activeRoute.includes(sidebarData[sidebarData.length - 1].route) ? 'text-primary' : 'text-grey'} text-[20px] duration-300`"
@@ -64,9 +73,9 @@ const sidebarState = reactive({
             <span class="2xl:text-[16px] text-[14px]">{{
               sidebarData[sidebarData.length - 1].text
             }}</span>
-          </a>
+          </button>
         </li>
-      </ul> -->
+      </ul>
     </nav>
   </div>
 </template>

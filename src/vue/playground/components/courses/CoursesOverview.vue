@@ -25,6 +25,7 @@ const props = defineProps<IPropsCourseOverview>();
         :active-course="props.activeCourse"
         :active-lesson="props.activeLesson"
         :lessons-from-session="props.lessonsFromSession"
+        :on-close="() => props.onClose()"
       />
     </div>
   </div>

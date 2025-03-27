@@ -31,7 +31,7 @@ const copyTextToClipboard = async () => {
     </div>
 
     <div class="flex justify-end gap-2">
-      <Button type="button" label="Cancel" severity="secondary" @click="onClose"></Button>
+      <Button type="button" class="bg-grey" @click="onClose">Cancel</Button>
     </div>
   </Dialog>
 </template>

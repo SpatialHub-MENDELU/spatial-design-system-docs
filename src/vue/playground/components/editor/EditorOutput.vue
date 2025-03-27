@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { defineProps, computed, watch, defineEmits } from 'vue';
+import { defineProps, computed, watch, defineEmits, ref, onMounted, nextTick } from 'vue';
 import { Layout } from '../../types/layout';
 import { useStore } from 'vuex';
 import { IPropsEditorOutput } from '../../types/props';
@@ -9,6 +9,9 @@ const playgroundStore = useStore();
 const layout = computed(() => playgroundStore.getters.layout);
 const props = defineProps<IPropsEditorOutput>();
 const outputState = initEditorOutputState
+const iframeRef = ref<HTMLIFrameElement | null>(null)
+const loadCounter = ref<number>(0)
+const iframeLoading = ref<boolean>(true)
 
 const emit = defineEmits(['update:outputIsShown']);
 
@@ -37,6 +40,21 @@ watch(
   { immediate: true }
 );
 
+const onIframeLoad = async () => {
+  loadCounter.value++;
+
+  /*
+    1 = Init load (iframe created, no src yet)
+    2 = Setting source (iframe src assigned, triggers onload)
+    3 = Redirecting (internal navigation, triggers another onload and UI is loaded)
+  */
+
+  if (loadCounter.value === 3) {
+    loadCounter.value = 0;
+    iframeLoading.value = false;
+  } 
+}
+
 </script>
 
 <template>
@@ -55,32 +73,40 @@ watch(
         !props.isDetail &&
         !props.loading.installing &&
         !props.loading.running,
-      ' border border-t-0':
+      ' border-b border-x border-t-0':
         props.isDetail && !props.loading.installing && !props.loading.running,
       ' lg:border-0 border border-t-0':
         layout === Layout.VERTICAL &&
         !props.isDetail &&
         !props.loading.installing &&
         !props.loading.running,
+      ' border-x-0':
+        !props.isDetail &&
+        !props.loading.installing &&
+        !props.loading.running && outputState.isVisible,
       ' border':
-        props.isDetail && (props.loading.installing || props.loading.running),
+        props.isDetail && (props.loading.installing || props.loading.running)
     }"
   >
     <div
-      class="w-full px-2 py-1 justify-between flex items-center h-8"
+      class="w-full px-2 py-1 justify-between flex items-center h-8 duration-300"
       :class="{
-        'lg:border-b lg:border-t border-border-color': outputState.isVisible,
+        'lg:border-b lg:border-t border-border-color ': outputState.isVisible,
         hidden: props.loading.installing || props.loading.running,
-        'border-t': props.isDetail,
+        'border-t ': props.isDetail && outputState.isVisible,
+        'lg:border-t-0 border-t': props.isDetail && !outputState.isVisible,
+        'lg:border-x-0 border-x': !props.isDetail && outputState.isVisible
       }"
     >
       <h2
-        v-if="outputState.isVisible || layout === Layout.VERTICAL"
         class="text-grey md:text-[15px] text-[14px]"
+        :class="{
+          'lg:hidden': !outputState.isVisible && layout !== Layout.VERTICAL && !props.isDetail
+        }"
       >
         Output
       </h2>
-      <div @click="toggleVisibility" class="cursor-pointer flex items-center">
+      <div @click="toggleVisibility" class="cursor-pointer flex items-center duration-300">
         <i
           :class="[
             'pi',
@@ -112,6 +138,7 @@ watch(
       class="h-full lg:px-0 px-8 flex items-center justify-center"
       :class="{
         'lg:border-t-0 lg:border-b-0 lg:border-x-0 border border-border-color': loading,
+        'border-x-0': props.isDetail
       }"
     >
       <div
@@ -131,14 +158,26 @@ watch(
         >
           Running code...
         </p>
-      </div>
+      </div>    
 
       <iframe
         v-else
+        ref="iframeRef"
         id="webContainerIframe"
-        style="width: 100%; height: 100%"
+        name="webContainerIframe"
+        @load="onIframeLoad"
+        :class="{
+          'w-full h-full': !iframeLoading,
+          'w-0 h-0': iframeLoading
+        }"
         sandbox="allow-scripts allow-same-origin allow-forms"
       ></iframe>
+
+      <div v-if="iframeLoading && !props.loading.installing" class="loading-dots">
+        <span />
+        <span />
+        <span />
+      </div>  
     </div>
   </div>
 </template>

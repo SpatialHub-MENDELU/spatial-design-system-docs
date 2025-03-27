@@ -115,6 +115,7 @@ export class WebContainerService {
   }
 
   public async fetchFolderStructure(directory: string): Promise<any[]> {
+
     await this.ensureInitialized();
     const entries = await this.listFiles(directory);
 
@@ -122,11 +123,12 @@ export class WebContainerService {
       (entries ?? []).map(async (entry) => {
         const path = `${directory}/${entry}`;
         const isDirectory = await this.checkIfDirectory(path);
+
         return {
           name: entry,
           type: isDirectory ? 'folder' : 'file',
-          ...(isDirectory
-            ? { children: await this.fetchFolderStructure(path) }
+          ...(isDirectory && entry !== 'node_modules'
+            ? { children: await this.fetchFolderStructure(path) } 
             : {}),
         };
       })
@@ -146,7 +148,7 @@ export class WebContainerService {
   }
 
   public async fetchFolderStructureInTreeNode(
-    directory: string
+    directory: string,
   ): Promise<TreeNode[]> {
     const data = await this.fetchFolderStructure(directory);
 
@@ -159,7 +161,7 @@ export class WebContainerService {
 
         const children = folder.children
           ? await this.fetchFolderStructureInTreeNode(
-              `${directory}/${folder.name}`
+              `${directory}/${folder.name}`,
             )
           : [];
 
@@ -204,37 +206,47 @@ export class WebContainerService {
     }
   }
 
-  public async removeItem(item: FolderItem): Promise<TreeNode[]> {
-    const folderStructure = await this.fetchFolderStructureInTreeNode('/');
-    const removeFromArray = (
-      arr: TreeNode[],
-      itemToRemove: { name: string }
-    ): TreeNode[] => {
-      const index = arr.findIndex(
-        (node) => node.data?.name === itemToRemove.name
-      );
-      if (index !== -1) {
-        arr.splice(index, 1);
-        return arr;
-      } else {
-        arr.forEach((node) => {
-          if (node.children) {
-            const updatedChildren = removeFromArray(
-              node.children,
-              itemToRemove
-            );
-            if (updatedChildren.length < node.children.length) {
-              node.children = updatedChildren;
-            }
-          }
-        });
-      }
-      return arr;
-    };
+  public async moveFile(oldPath: string, newPath: string): Promise<{ success: boolean; message: string }> {
+    await this.ensureInitialized()
+    try {
+      await this.webContainerInstance?.fs.rename(oldPath, newPath);
 
-    return removeFromArray(folderStructure, item);
+      return {
+        success: true,
+        message: `Item moved from ${oldPath} to ${newPath}`,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Failed to move file'
+      }
+    }
   }
 
+  public async removeItem(item: FolderItem): Promise<TreeNode[]> {
+    if (this.webContainerInstance) {
+      await this.webContainerInstance.fs.rm(String(item.path), { recursive: true });
+    }
+
+    const folderStructurePromise = this.fetchFolderStructureInTreeNode('/');
+  
+    const removeFromArray = (arr: TreeNode[], itemToRemove: FolderItem): void => {
+      for (let i = arr.length - 1; i >= 0; i--) {
+        const node = arr[i];
+        if (node.data?.path === itemToRemove.path) {
+          arr.splice(i, 1);
+          return;
+        }
+        if (node.children) removeFromArray(node.children, itemToRemove);
+      }
+    };
+  
+    const folderStructure = await folderStructurePromise;
+    removeFromArray(folderStructure, item);
+    
+    return folderStructure;
+  }
+  
   private async installFileSystem(
     fileStructure: any,
     zip: JSZip,
@@ -243,14 +255,14 @@ export class WebContainerService {
     try {
       for (const item of fileStructure) {
         const currentPath = `${parentPath}${item.name}`;
-        if (item.type === FileType.FOLDER) {
+        if (item.type === FileType.FOLDER && item.name !== 'node_modules') {
           zip.folder(currentPath);
           await this.installFileSystem(
             item.children || [],
             zip,
             `${currentPath}/`
           );
-        } else if (item.type === FileType.FILE) {
+        } else if (item.type === FileType.FILE && item.name != 'package-lock.json') {
           const fileContent = await this.readFile(currentPath);
           if (fileContent !== undefined) {
             zip.file(currentPath, fileContent);
@@ -303,12 +315,21 @@ export class WebContainerService {
     this.openedFiles.filter((f) => f === file);
   }
 
+  async stopCurrentProject() {
+    if (this.webContainerInstance) {
+      await this.webContainerInstance.teardown();
+      this.webContainerInstance = null;
+    }
+  }
+  
   async createProject(
     projectType: ProjectType,
     task?: string
   ): Promise<boolean> {
     await this.ensureInitialized();
     if (!this.webContainerInstance) return false;
+
+    await this.stopCurrentProject();
 
     try {
       const templatePath =

@@ -8,9 +8,13 @@
     }
   }
 
-  .p-dialog, .p-dialog-header, .p-dialog-content, pre {
+  .p-dialog, .p-dialog-header, .p-dialog-content, pre, .p-dialog-footer {
     background-color: var(--vp-custom-block-tip-bg) !important;
     opacity: 1!important;
+  }
+
+  .p-dialog-footer {
+    display: block !important;
   }
 
   @media screen and (min-width: $breakpointMd) {
@@ -80,13 +84,13 @@
       gap: 0.5rem;
     }
 
-    button {
+    button:not(.p-tree-toggler) {
       margin-top: 2rem;
       padding: 0.25rem 1rem;
       color: white;
 
       &[aria-label="Cancel"] {
-        background-color: $red;
+        background-color: $grey;
       }
 
       &[aria-label="Create"] {
@@ -96,7 +100,7 @@
   }
 
   #imports, #hint {
-    min-height: 6rem;
+    min-height: 3rem;
   }
 
   #hint {
@@ -116,11 +120,47 @@
 
   .title {
     font-weight: 600;
-    color: $red;
     font-size: clamp(1.5rem, 1.7vw, 2rem);
   }
 
   p {
     font-size: clamp(0.9rem, 0.9vw, 1.35rem);
+  }
+}
+
+.error-dialog .title {
+  color: $red;
+}
+
+.success-dialog .title {
+  color: $primary;
+}
+
+.moving-file-dialog {
+  .p-treenode-label, .p-treenode-label span {
+    display: block;
+    width: 100%;
+    color: var(--vp-c-text-1);
+  }
+}
+
+.p-confirm-dialog {
+  .p-dialog-footer {
+    display: flex !important;
+    align-items: center;
+
+    .p-confirm-dialog-accept, .p-confirm-dialog-reject {
+      padding: 0.25rem 1rem;
+
+      color: white;
+    }
+
+    .p-confirm-dialog-accept {
+      background-color: $primary;
+    }
+
+    .p-confirm-dialog-reject {
+      background-color: $grey;
+    }
   }
 }

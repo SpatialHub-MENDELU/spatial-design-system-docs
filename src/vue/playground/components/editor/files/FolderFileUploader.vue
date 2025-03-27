@@ -39,6 +39,7 @@ watch(
       :accept="'.html, .css, .js, .ts, .jsx, .tsx'"
       :folderUploader="folderFileUplaoderState.isFolder"
       @new-item="handleNewItem"
+      :parent-node="props.parentNode"
     />
 
     <div class="flex justify-end mt-2">
