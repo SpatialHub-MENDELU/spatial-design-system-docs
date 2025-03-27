@@ -3,17 +3,14 @@ import { defineProps } from 'vue';
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
 import Image from 'primevue/image';
+import { IPropsTaskErrorDialog } from '../../types/props';
 
-const props = defineProps<{
-  errors: string[];
-  showDialog: boolean;
-  closeDialog: () => void;
-}>();
+const props = defineProps<IPropsTaskErrorDialog>();
 </script>
 
 <template>
   <Dialog
-    :visible="showDialog"
+    :visible="props.showDialog"
     header="Error"
     modal
     maximizable
@@ -24,7 +21,7 @@ const props = defineProps<{
       <Image src="/task-error.svg" alt="Spatial Design System - empty editor" />
 
       <span class="title">
-        {{ errors[0] ?? "Something is not correct" }}
+        {{ props.errors[0] ?? "Something is not correct" }}
       </span>
 
       <p>
@@ -33,7 +30,7 @@ const props = defineProps<{
     </div>
 
     <div class="flex justify-end mt-4">
-      <Button label="Close" @click="closeDialog" class="bg-primary" />
+      <Button label="Close" @click="props.closeDialog" class="bg-primary" />
     </div>
   </Dialog>
 </template>

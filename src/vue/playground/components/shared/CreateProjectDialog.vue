@@ -1,3 +1,37 @@
+<script lang="ts" setup>
+import Button from 'primevue/button';
+import Dialog from 'primevue/dialog';
+import { defineProps, watch } from 'vue';
+import { ProjectType } from '../../types/projectType';
+import { createProjectData } from '../../data/create-project';
+import { IPropsCreateProjectDialog } from '../../types/props';
+import { initCreateProjectDialogState } from '../../states/CreateProjectDialogState';
+
+const props = defineProps<IPropsCreateProjectDialog>();
+const state = initCreateProjectDialogState
+
+watch(
+  () => props.visible,
+  (newValue) => {
+    if (newValue) {
+      state.error = null;
+    }
+  }
+);
+
+const submitForm = () => {
+  if (state.projectType) {
+    props.createProject(state.projectType);
+  } else {
+    state.error = 'Please select a project type to proceed.';
+  }
+};
+
+const updateProjectType = (projectType: ProjectType) => {
+  state.projectType = projectType;
+};
+</script>
+
 <template>
   <Dialog
     :visible="visible"
@@ -45,46 +79,3 @@
     </div>
   </Dialog>
 </template>
-
-<script lang="ts" setup>
-import Button from 'primevue/button';
-import Dialog from 'primevue/dialog';
-import { defineProps, watch, reactive } from 'vue';
-import { ProjectType } from '../../types/projectType';
-import { createProjectData } from '../../data/create-project';
-
-const props = defineProps<{
-  closeDialog: () => void;
-  createProject: (projectType: ProjectType) => void;
-  visible: boolean;
-}>();
-
-const state = reactive<{
-  error: string | null;
-  projectType: ProjectType | null;
-}>({
-  error: null,
-  projectType: null,
-});
-
-watch(
-  () => props.visible,
-  (newValue) => {
-    if (newValue) {
-      state.error = null;
-    }
-  }
-);
-
-const submitForm = () => {
-  if (state.projectType) {
-    props.createProject(state.projectType);
-  } else {
-    state.error = 'Please select a project type to proceed.';
-  }
-};
-
-const updateProjectType = (projectType: ProjectType) => {
-  state.projectType = projectType;
-};
-</script>

@@ -2,17 +2,12 @@
 import { defineProps, onMounted, nextTick, watch } from 'vue';
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
-import { IContentCode } from '../../types/courses/Lessons';
 import { replacePlaceholder } from '../../utils/Lessons';
 import { useToast } from 'primevue/usetoast';
+import { IPropsHintDialog } from '../../types/props';
 
 const toast = useToast();
-
-const props = defineProps<{
-  hint?: IContentCode | undefined;
-  showDialog: boolean;
-  closeDialog: () => void;
-}>();
+const props = defineProps<IPropsHintDialog>();
 
 const updateHint = () => {
   nextTick(() => {

@@ -7,7 +7,7 @@ import WelcomeBanner from '../components/shared/WelcomeBanner.vue';
 import { useStore } from 'vuex';
 import FileTree from '../components/editor/files/FileTree.vue';
 import PlaygroundEditor from '../components/editor/PlaygroundEditor.vue';
-import { IStateEditor } from '../types/States';
+import { initViewEditorState } from '../states/ViewEditorState';
 
 const playgroundStore = useStore();
 const projectType = computed(() => playgroundStore.getters.projectType);
@@ -17,10 +17,7 @@ const loading = reactive<ILoading>({
   running: false,
 });
 
-const state = reactive<IStateEditor>({
-    showConfirmDialog: false,
-    nextRoute: null
-})
+const state = initViewEditorState
 
 const handleBeforeUnload = (event: BeforeUnloadEvent) => {
   if (projectType.value != null) {

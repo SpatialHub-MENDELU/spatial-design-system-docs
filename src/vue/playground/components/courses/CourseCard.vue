@@ -1,22 +1,17 @@
 <script setup lang="ts">
-import { defineProps, inject, reactive } from 'vue'
+import { defineProps, inject } from 'vue'
 import { ICourseListItem } from '../../types/courses/CourseListItems';
 import { ILessonVariants } from '../../types/courses/Lessons';
-import { IStateCoursesList } from '../../types/States';
 import { lessonByCourseVariant } from '../../utils/Lessons';
 import { lessonsData } from '../../data/courses/Lessons';
 import { SessionService } from '../../services/sessionService';
 import ShareCourseDialog from '../dialogs/ShareCourseDialog.vue';
+import { IPropsCourseCard } from '../../types/props';
+import { initCourseCardState } from '../../states/CourseCardState';
 
 const sessionService = inject<SessionService>('sessionService');
-const props = defineProps<{
-  course: ICourseListItem
-}>();
-
-const state = reactive<IStateCoursesList>({
-  dialogIsVisible: false,
-  shareUrl: ''
-})
+const props = defineProps<IPropsCourseCard>();
+const state = initCourseCardState;
 
 const shareCourse = (course: ICourseListItem) => {
   state.shareUrl = `https://sds.spatialhub.cz/playground/course/${course.slug}`

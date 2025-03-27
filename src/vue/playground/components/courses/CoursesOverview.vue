@@ -1,16 +1,9 @@
 <script lang="ts" setup>
 import { defineProps } from 'vue';
-import { ICourseDetail } from '../../types/courses/CourseDetail';
 import LessonsList from '../lessons/LessonsList.vue';
-import { ILessonVariants } from '../../types/courses/Lessons';
+import { IPropsCourseOverview } from '../../types/props';
 
-const props = defineProps<{
-  activeCourse: ICourseDetail;
-  activeLesson: ILessonVariants | null;
-  isVisible: boolean;
-  onClose: () => void;
-  lessonsFromSession: ILessonVariants[]
-}>();
+const props = defineProps<IPropsCourseOverview>();
 </script>
 
 <template>
@@ -21,17 +14,17 @@ const props = defineProps<{
     <div class="flex justify-end">
       <i
         class="pi pi-times text-grey lg:text-[16px] text-[15px] duration-300 cursor-pointer"
-        @click="onClose()"
+        @click="props.onClose()"
       />
     </div>
     <h3 class="lg:text-[20px] md:text-[20px] text-[18px] font-medium my-8">
-      {{ activeCourse?.title }}
+      {{ props.activeCourse?.title }}
     </h3>
     <div class="h-full overflow-y-auto mb-16">
       <LessonsList
-        :active-course="activeCourse"
-        :active-lesson="activeLesson"
-        :lessons-from-session="lessonsFromSession"
+        :active-course="props.activeCourse"
+        :active-lesson="props.activeLesson"
+        :lessons-from-session="props.lessonsFromSession"
       />
     </div>
   </div>

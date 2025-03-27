@@ -2,20 +2,14 @@
 import { defineProps } from 'vue';
 import Dialog from 'primevue/dialog';
 import Image from 'primevue/image';
+import { IPropsTaskSuccessDialog } from '../../types/props';
 
-const props = defineProps<{
-  successMessage: string;
-  showDialog: boolean;
-  continue: () => void;
-  link: string | null;
-  text: string;
-}>();
+const props = defineProps<IPropsTaskSuccessDialog>();
 </script>
-
 
 <template>
   <Dialog
-    :visible="showDialog"
+    :visible="props.showDialog"
     header="Success"
     modal
     maximizable

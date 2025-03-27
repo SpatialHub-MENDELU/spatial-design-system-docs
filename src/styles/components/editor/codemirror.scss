@@ -1,8 +1,8 @@
 .cm-gutters {
-  background-color: transparent !important;
+  background-color: var(--vp-custom-block-tip-bg) !important;
   border: none !important;
 
-  color: $light-background !important;
+  color: var(--vp-c-text-1)!important;
 }
 
 .cm-activeLine {
@@ -16,12 +16,12 @@
 }
 
 .v-codemirror {
-  overflow-y: auto !important;
   display: block !important;
 }
 
 .cm-content {
-  padding-bottom: 1rem !important;
+  width: 100% !important;
+  overflow-y: auto;
 }
 
 .cm-selection .cm-selected {
@@ -152,4 +152,10 @@
 .v-codemirror .cm-content {
   white-space: pre-wrap;
   word-wrap: break-word;
+}
+
+.cm-line {
+  * {
+    white-space: pre-wrap;
+  }
 }

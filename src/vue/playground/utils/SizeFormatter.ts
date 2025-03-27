@@ -1,7 +1,4 @@
-import { usePrimeVue } from "primevue/config";
-
-export const formatSize = (bytes: number) => {
-  const $primevue = usePrimeVue();
+export const formatSize = (bytes: number, $primevue) => {
   
   const k = 1024;
   const dm = 3;

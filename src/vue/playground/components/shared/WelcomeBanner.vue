@@ -1,3 +1,28 @@
+<script setup lang="ts">
+import CreateProjectDialog from './CreateProjectDialog.vue';
+import { ProjectType } from '../../types/projectType';
+import { useStore } from 'vuex';
+import Image from 'primevue/image';
+import { initWelcomeBannerState } from '../../states/WelcomeBannerState';
+
+const playgroundStore = useStore();
+const state = initWelcomeBannerState
+
+const showDialog = () => {
+  state.dialogIsVisible = true;
+};
+
+const closeDialog = () => {
+  state.dialogIsVisible = false;
+};
+
+const createNewProject = (project: ProjectType) => {
+  playgroundStore.commit('updateProjectType', project);
+  closeDialog();
+};
+</script>
+
+
 <template>
   <div class="main-content h-full">
     <div class="lg:p-16 px-0 md:py-32 py-16 h-full w-full flex items-center gap-16">
@@ -38,30 +63,3 @@
     :create-project="createNewProject"
   />
 </template>
-
-<script setup lang="ts">
-import { reactive } from 'vue';
-import CreateProjectDialog from './CreateProjectDialog.vue';
-import { ProjectType } from '../../types/projectType';
-import { useStore } from 'vuex';
-import Image from 'primevue/image';
-
-const playgroundStore = useStore();
-
-const state = reactive({
-  dialogIsVisible: false,
-});
-
-const showDialog = () => {
-  state.dialogIsVisible = true;
-};
-
-const closeDialog = () => {
-  state.dialogIsVisible = false;
-};
-
-const createNewProject = (project: ProjectType) => {
-  playgroundStore.commit('updateProjectType', project);
-  closeDialog();
-};
-</script>

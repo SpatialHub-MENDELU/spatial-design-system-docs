@@ -1,23 +1,20 @@
 <script lang="ts" setup>
-import { defineProps, reactive, computed } from 'vue';
-import { ILoading } from '../../types/loading';
+import { defineProps, computed, watch, defineEmits } from 'vue';
 import { Layout } from '../../types/layout';
 import { useStore } from 'vuex';
+import { IPropsEditorOutput } from '../../types/props';
+import { initEditorOutputState } from '../../states/EditorOutputState';
 
 const playgroundStore = useStore();
 const layout = computed(() => playgroundStore.getters.layout);
+const props = defineProps<IPropsEditorOutput>();
+const outputState = initEditorOutputState
 
-const props = defineProps<{
-  loading: ILoading;
-  isDetail: boolean;
-}>();
-
-const outputState = reactive({
-  isVisible: true,
-});
+const emit = defineEmits(['update:outputIsShown']);
 
 const toggleVisibility = () => {
   outputState.isVisible = !outputState.isVisible;
+  emit('update:outputIsShown', outputState.isVisible);
 };
 
 const outputIcon = () => {
@@ -28,14 +25,26 @@ const outputIcon = () => {
   return outputState.isVisible ? 'pi-angle-down' : 'pi-angle-up';
 };
 
+const outputMobileIcon = () => {
+  return outputState.isVisible ? 'pi-angle-down' : 'pi-angle-up';
+}
+
+watch(
+  () => props.outputIsShown,
+  (isShown: boolean) => {
+    outputState.isVisible = isShown
+  },
+  { immediate: true }
+);
+
 </script>
 
 <template>
   <div
-    class="output duration-300 lg:w-full block border-border-color border-border-color lg:h-full h-[30rem] pb-6"
+    class="output duration-300 lg:w-full block border-border-color lg:h-full h-[30rem] pb-6"
     :class="{
       'hidden-output--vertical':
-        !outputState.isVisible &&
+        !outputState.isVisible && !props.loading.installing && !props.loading.running &&
         (layout === Layout.VERTICAL || props.isDetail),
       'hidden-output--horizontal':
         !outputState.isVisible &&
@@ -78,9 +87,23 @@ const outputIcon = () => {
             outputIcon(),
             'text-primary',
             'text-[20px]',
+            'lg:block',
+            'hidden',
             'duration-300',
           ]"
         ></i>
+
+        <i
+        :class="[
+          'pi',
+          outputMobileIcon(),
+          'text-primary',
+          'text-[20px]',
+          'lg:hidden',
+          'block',
+          'duration-300',
+        ]"
+      ></i>
       </div>
     </div>
 
@@ -88,7 +111,7 @@ const outputIcon = () => {
       v-show="outputState.isVisible"
       class="h-full lg:px-0 px-8 flex items-center justify-center"
       :class="{
-        'border-t-0 border-border-color': loading,
+        'lg:border-t-0 lg:border-b-0 lg:border-x-0 border border-border-color': loading,
       }"
     >
       <div

@@ -4,6 +4,9 @@ import { ILessonVariants, ILesson } from "./courses/Lessons";
 import { Layout } from "./layout";
 import { FolderItem } from "./fileItem";
 import { ILoading } from "./loading";
+import { TreeNode } from "primevue/treenode";
+import { FileType } from "./fileType";
+import { ProjectType } from "./projectType";
 
 export interface IStateLessonDetail {
   activeCourse: ICourseDetail | null;
@@ -42,7 +45,6 @@ export interface IStateEditor {
 }
 
 export interface IStateSettings {
-  iconsAreShown: boolean,
   selectedLayout: Layout,
   selectedFontSize: number,
 }
@@ -66,4 +68,49 @@ export interface IStateNewItemDialog {
   dialogHeader: string,
   buttonLabel: string,
   buttonIcon: string,
+}
+
+export interface IStatePlaygroundEditor {
+  fontSize: number;
+  editorIsShown: boolean;
+  outputIsShown: boolean;
+}
+
+export interface IStateFileUploader {
+  totalSize: number;
+  files: FolderItem[];
+}
+
+export interface IStateFileTree {
+  isVisible: boolean;
+  isHidden: boolean;
+  showDialog: boolean;
+  dialogType: FileType;
+  showUploadDialog: boolean;
+  contextMenuVisible: boolean;
+  currentItem: FolderItem;
+  parentItemNode: TreeNode | null;
+  itemToRename: FolderItem | null;
+}
+
+export interface IStateShareCourseDialog {
+  buttonText: string
+}
+
+export interface IStateEditorOutput {
+  isVisible: boolean,
+}
+
+export interface IStateFolderFileUploader {
+  dialogHeader: string,
+  isFolder: boolean,
+}
+
+export interface IStateCreateProjectDialog {
+  error: string | null;
+  projectType: ProjectType | null;
+}
+
+export interface IStateWelcomeBanner {
+  dialogIsVisible: boolean
 }
