@@ -1,0 +1,28 @@
+.sidebar {
+  @media (max-width: $breakpointMd) {
+    width: 100%;
+    height: auto;
+  }
+
+  a:hover {
+    i {
+      color: $dark-text;
+    }
+  }
+
+  i {
+    color: var(--vp-c-text-1);
+  }
+}
+
+
+.sidebar-grow {
+  @media (max-width: $breakpointLg) {
+    height: fit-content;
+  }
+
+  @media (min-width: $breakpointLg) {
+    flex-grow: 1 !important;
+    height: calc(100vh - $header-height);
+  }
+}

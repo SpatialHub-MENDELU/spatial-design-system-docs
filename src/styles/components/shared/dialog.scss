@@ -1,0 +1,166 @@
+.p-dialog {
+  min-width: 20rem;
+  max-width: 90vw;
+
+  .p-dropdown-items-wrapper .p-dropdown-item {
+    &.p-highlight {
+      background-color: lighten($color: $primary, $amount: 50%) !important;
+    }
+  }
+
+  .p-dialog, .p-dialog-header, .p-dialog-content, pre, .p-dialog-footer {
+    background-color: var(--vp-custom-block-tip-bg) !important;
+    opacity: 1!important;
+  }
+
+  .p-dialog-footer {
+    display: block !important;
+  }
+
+  @media screen and (min-width: $breakpointMd) {
+    min-width: 25rem;
+  }
+
+  @media screen and (min-width: $breakpointLg) {
+    min-width: 30rem;
+  }
+
+  &-header {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+
+    border-bottom: 1px solid $border-color;
+    color: var(--vp-c-text-1);
+  }
+
+  &-content {
+    padding-top: 1rem;
+    
+    color: var(--vp-c-text-1);
+
+    input, .p-dropdown {
+      padding: 0.25rem 0.5rem;
+      height: 100%;
+
+      border-bottom: 1px solid $primary;
+      border-radius: 0;
+
+      &:focus {
+        box-shadow: none;
+        outline: none;
+      }
+
+      &.p-invalid {
+        border-color: $red;
+      }
+    }
+
+    .p-dropdown {
+      padding: 0 !important;
+      padding-right: 0.5rem !important;
+      max-width: 7rem;
+
+      @media screen and (min-width: $breakpointMd) {
+        width: 9rem;
+      }
+    
+      @media screen and (min-width: $breakpointLg) {
+        width: 10rem;
+      }
+
+      span {
+        padding-bottom: 0.25rem !important;
+        display: block !important;
+
+        line-height: 1 !important;
+      }
+
+      &.p-focus {
+        box-shadow: none;
+      }
+    }
+
+    .flex {
+      gap: 0.5rem;
+    }
+
+    button:not(.p-tree-toggler) {
+      margin-top: 2rem;
+      padding: 0.25rem 1rem;
+      color: white;
+
+      &[aria-label="Cancel"] {
+        background-color: $grey;
+      }
+
+      &[aria-label="Create"] {
+        background-color: $primary;
+      }
+    }
+  }
+
+  #imports, #hint {
+    min-height: 3rem;
+  }
+
+  #hint {
+    margin-top: 1rem;
+  }
+}
+
+.error-dialog, .success-dialog {
+  text-align: center;
+
+  img {
+    margin: 2rem auto;
+    max-height: 150px;
+
+    object-fit: contain;
+  }
+
+  .title {
+    font-weight: 600;
+    font-size: clamp(1.5rem, 1.7vw, 2rem);
+  }
+
+  p {
+    font-size: clamp(0.9rem, 0.9vw, 1.35rem);
+  }
+}
+
+.error-dialog .title {
+  color: $red;
+}
+
+.success-dialog .title {
+  color: $primary;
+}
+
+.moving-file-dialog {
+  .p-treenode-label, .p-treenode-label span {
+    display: block;
+    width: 100%;
+    color: var(--vp-c-text-1);
+  }
+}
+
+.p-confirm-dialog {
+  .p-dialog-footer {
+    display: flex !important;
+    align-items: center;
+
+    .p-confirm-dialog-accept, .p-confirm-dialog-reject {
+      padding: 0.25rem 1rem;
+
+      color: white;
+    }
+
+    .p-confirm-dialog-accept {
+      background-color: $primary;
+    }
+
+    .p-confirm-dialog-reject {
+      background-color: $grey;
+    }
+  }
+}

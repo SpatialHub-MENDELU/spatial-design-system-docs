@@ -8,8 +8,8 @@ title: Stable
 
 - Immersive experiences like games, escape rooms, or virtual tours.
 - Use when you have a static element like a signpost or a label on a physical object.
-- Use when you need to indirectly control where user is located in the physical space. 
-When user is too close or too far away, the element is not readable and the user must move to the correct location.
+- Use when you need to indirectly control where user is located in the physical space.
+  When user is too close or too far away, the element is not readable and the user must move to the correct location.
 
 ### Risks
 

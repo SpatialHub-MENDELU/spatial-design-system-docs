@@ -1,0 +1,20 @@
+.p-dropdown {
+  border-bottom: 1px solid $primary;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background-color: var(--vp-custom-block-tip-bg);
+
+  * {
+    color: var(--vp-c-text-1) !important;
+  }
+}
+
+.p-dropdown-item {
+  background-color: var(--vp-custom-block-tip-bg);
+  color: var(--vp-c-text-1);
+
+  &.p-highlight {
+    color: var(--vp-custom-block-tip-bg) !important;
+    background-color: var(--vp-c-text-1) !important;
+  }
+}

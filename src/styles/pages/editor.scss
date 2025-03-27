@@ -1,0 +1,15 @@
+.editor-content {
+  @media screen and (max-width: $breakpointLg) {
+    height: fit-content !important;
+  }
+}
+
+.editor-hidden {
+  display: none !important;
+}
+
+.editor--horizontal {
+  @media screen and (min-width: $breakpointLg) {
+    height: calc(100% - 2rem);
+  }
+}
