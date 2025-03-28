@@ -2,6 +2,8 @@
   min-width: 20rem;
   max-width: 90vw;
 
+  border-radius: 0 !important;
+
   .p-dropdown-items-wrapper .p-dropdown-item {
     &.p-highlight {
       background-color: lighten($color: $primary, $amount: 50%) !important;
@@ -89,12 +91,23 @@
       padding: 0.25rem 1rem;
       color: white;
 
-      &[aria-label="Cancel"] {
-        background-color: $grey;
+      &[aria-label="Cancel"], &[aria-label="Close"], &.p-confirmdialog-reject-button {
+        background-color: $dark-background !important;
+        border-color: $dark-background;
+
+        &:hover {
+          color: $white;
+          background-color: lighten($color: $dark-background, $amount: 5%) !important;
+        }
       }
 
-      &[aria-label="Create"] {
-        background-color: $primary;
+      &[aria-label="Create"], &[aria-label="Choose"], &[aria-label="New file"], &[aria-label="Upload files"], &[aria-label="Copy"], &[aria-label="Copied"] {
+        background-color: $primary !important;
+
+        &:hover {
+          color: $white;
+          background-color: lighten($color: $primary, $amount: 5%) !important;
+        }
       }
     }
   }
@@ -105,6 +118,30 @@
 
   #hint {
     margin-top: 1rem;
+  }
+
+  .p-dialog-close-button:hover, .p-dialog-maximize-button {
+    background-color: transparent !important;
+    color: var(--vp-c-text-1) !important;
+  }
+
+  .p-fileupload-advanced {
+    background-color: transparent !important;
+    border: none !important;
+  }
+
+  .p-fileupload-content {
+    .delete-button {
+      margin-top: 0 !important;
+      span {
+        color: $red !important;
+      }
+
+      &:hover {
+        border: none !important;
+        background-color: transparent !important;
+      }
+    }
   }
 }
 
@@ -144,7 +181,16 @@
   }
 }
 
-.p-confirm-dialog {
+.p-confirmdialog {
+
+  .p-dialog-content {
+    padding-top: 1rem;
+  }
+
+  .p-confirmdialog-icon {
+    color: $primary !important;
+  }
+
   .p-dialog-footer {
     display: flex !important;
     align-items: center;
@@ -155,12 +201,15 @@
       color: white;
     }
 
-    .p-confirm-dialog-accept {
-      background-color: $primary;
-    }
-
-    .p-confirm-dialog-reject {
-      background-color: $grey;
+    .p-button-danger {
+      background-color: $primary !important;
+      border-color: $primary !important;
+      color: $white;
+    
+      &:hover {
+        color: $white;
+        background-color: lighten($color: $primary, $amount: 5%) !important;
+      }
     }
   }
 }

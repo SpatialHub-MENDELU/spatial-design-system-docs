@@ -8,7 +8,7 @@ import { FileType } from "../types/fileType";
 import { FileSystemService } from "./fileSystemService";
 import { WebContainerService } from "./webContainersService";
 import { useStore } from "vuex";
-import { TreeNode } from "primevue/treenode";
+import { ToastServiceMethods } from "primevue";
 
 export class FileUplaoderService {
  
@@ -39,9 +39,9 @@ export class FileUplaoderService {
     });
   };
   
-  handleUpload = async (handleEmit: () => void, parentFolder?: FolderItem) => {
+  handleUpload = async (handleEmit: () => void, parentFolder?: FolderItem, toast?: ToastServiceMethods) => {
     for (const f of this._state.files) {
-      await this._fileSystemService?.uploadItem(f, parentFolder);
+      await this._fileSystemService?.uploadItem(f, parentFolder, toast);
     }
   
     await this._webContainersService?.fetchFolderStructure('/');

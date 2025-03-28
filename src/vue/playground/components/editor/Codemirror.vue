@@ -1,9 +1,9 @@
-<script lang="ts" setup>
-import { Codemirror } from 'vue-codemirror';
+<script lang="ts" type="module" setup>
 import { computed, onMounted, watch } from 'vue';
 import { useStore } from 'vuex';
 import { IPropsCodemirror } from '../../types/props';
 import { CodeMirrorService } from '../../services/codemirrorService';
+import Codemirror from 'vue-codemirror6';
 
 const playgroundStore = useStore();
 const openedFilePath = computed(() => playgroundStore.getters.currentFilePath);
@@ -22,9 +22,9 @@ watch(openedFileContent, (newCode) => {
   updateCode(newCode);
 });
 
-const updateCode = (newCode: string) => {
+const updateCode = (newCode?: any) => {
   codemirrorService.updateCode(
-    newCode,
+    String(newCode),
     playgroundStore,
     openedFilePath.value,
     openedFileContent.value,
@@ -38,10 +38,10 @@ const updateCode = (newCode: string) => {
     class="editor lg:w-full block overflow-y-auto lg:h-full h-[20rem]"
     :class="props.dynamicClass"
     v-model="openedFileContent"
-    :extensions="extensions"
     @update:modelValue="updateCode"
     :is-detail="props.isDetail"
     :autofocus="true"
+    :extensions="extensions"
     :indent-with-tab="true"
     :tab-size="2"
     :style="{ fontSize: codemirrorService.state.fontSize + 'px' }"

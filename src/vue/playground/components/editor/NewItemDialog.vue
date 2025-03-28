@@ -10,6 +10,7 @@ import { WebContainerService } from '../../services/webContainersService';
 import { FolderItem } from '../../types/fileItem';
 import { IPropsNewItemDialog } from '../../types/props';
 import { useStore } from 'vuex';
+import { useToast } from 'primevue';
 
 const emit = defineEmits()
 const webContainersService = inject<WebContainerService>(
@@ -21,6 +22,7 @@ const fileSystemService = new FileSystemService(
 
 const props = defineProps<IPropsNewItemDialog>();
 const playgroundStore = useStore()
+const toast = useToast()
 
 const submit = async () => {
   const regex = /^[a-zA-Z]([a-zA-Z0-9]*_?[a-zA-Z0-9]+)*$/;
@@ -29,7 +31,7 @@ const submit = async () => {
     return;
   }
 
-  await fileSystemService.submitNewItemDialog(props, playgroundStore).then(() => {
+  await fileSystemService.submitNewItemDialog(props, playgroundStore, toast).then(() => {
     if (props.itemToRename) emit('rename-item');
     else emit('new-item')
 
@@ -45,6 +47,7 @@ watch(
   },
   { immediate: true, deep: true }
 );
+
 </script>
 
 <template>
@@ -55,8 +58,8 @@ watch(
     maximizable
     :closable="false"
   >
-    <div class="flex gap-2 items-center">
-      <div class="flex flex-col gap-1 w-full justify-start relative">
+    <div class="flex gap-2 items-center items-stretch mt-2">
+      <div class="flex flex-col gap-1 w-full justify-start relative ">
         <InputText
           v-model="fileSystemService.state.newItemName"
           placeholder="Enter name"
