@@ -2,19 +2,17 @@ import { WebContainer } from '@webcontainer/api';
 import { TreeNode } from 'primevue/treenode';
 import { FileType } from '../types/fileType';
 import { FolderItem } from '../types/fileItem';
-import JSZip from 'jszip';
 import { getFileIcon } from '../utils/FileExtensionsAndIcons';
 import { ProjectType } from '../types/projectType';
 import { getMessageHandlerCode } from '../utils/MessageHandlerCode';
 import { reactive } from 'vue';
+import JSZip from 'jszip';
 
 export class WebContainerService {
   private static instance: WebContainerService;
   private webContainerInstance: WebContainer | null = null;
   private isBooting: boolean = false;
   private openedFiles: FolderItem[] = [];
-
-  private constructor() {}
 
   public state = reactive<{
     isLoading: boolean,
@@ -279,7 +277,9 @@ export class WebContainerService {
   }
 
   private async downloadZip(fileStructure: any) {
+    const JSZip = (await import('jszip')).default;
     const zip = new JSZip();
+
     await this.installFileSystem(fileStructure, zip);
 
     zip.generateAsync({ type: 'blob' }).then((content) => {

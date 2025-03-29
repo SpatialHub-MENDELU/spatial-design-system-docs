@@ -1,23 +1,22 @@
+import { TreeNode } from "primevue/treenode";
 import { FolderItem } from "../types/fileItem";
 
 export function checkDuplicity(
-  folders: FolderItem[] | { value: FolderItem[] }, 
+  folders: TreeNode[], 
   newItem: FolderItem,
-  parentPath: string = ""
 ): boolean {
-  const folderList = Array.isArray(folders) ? folders : folders.value;
+  for (const folder of folders) {
+    const currentPath = folder.key;
 
-  for (const folder of folderList) {
-    const currentPath = parentPath
-      ? `${parentPath}/${folder.name}`
-      : folder.name;
+    console.log(currentPath)
+    console.log(newItem.path)
 
     if (currentPath === newItem.path) {
       return true; 
     }
 
     if (folder.children && folder.children.length > 0) {
-      if (checkDuplicity(folder.children, newItem, currentPath)) {
+      if (checkDuplicity(folder.children, newItem)) {
         return true;
       }
     }

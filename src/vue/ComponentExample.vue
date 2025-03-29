@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { VPButton } from 'vitepress/theme';
-import 'aframe';
 
 const props = defineProps({
   fixed: {
@@ -42,7 +41,6 @@ function selectTab(tab: Tab) {
 }
 
 onMounted(async () => {
-  await import('aframe');
   isAframeImported.value = true;
   registerPointerChange();
 });

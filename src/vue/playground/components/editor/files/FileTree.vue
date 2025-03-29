@@ -117,15 +117,17 @@ const updateMovingLoading = async () => {
           class="w-4"
         />
         <Button @click="showNewFileMenu" icon="pi pi-plus" class="w-4" />
-        <Button
-          @click="toggleVisibility"
-          :icon="
-            fileTreeService.state.isVisible
-              ? 'pi pi-angle-up'
-              : 'pi pi-angle-down'
-          "
-          class="w-4 lg:hidden block"
-        />
+
+        <button class="w-max h-full lg:hidden flex items-center justify-center"
+          @click="toggleVisibility">
+          <i
+            :class="[
+              'pi',
+              fileTreeService.state.isVisible ? 'pi-angle-up' : 'pi-angle-down',
+              'text-primary lg:border border-primary text-[20px] duration-300 lg:rounded-xl lg:p-2 bg-white h-full',
+            ]"
+          />
+        </button>
 
         <ContextMenu
           :model="fileTreeService.newFileContextMenuItems"
@@ -146,7 +148,7 @@ const updateMovingLoading = async () => {
       :value="fileTreeService.folders"
       class="overflow-y-auto max-h-full duration-300"
       :class="{
-        'lg:max-w-0 lg:max-h-full lg:h-full h-0':
+        'p-tree--hidden lg:max-w-0 lg:max-h-full lg:h-full h-0':
           !fileTreeService.state.isVisible,
         'lg:max-w-[20rem] lg:w-[15rem] lg:h-full lg:max-h-full h-max max-h-max':
           fileTreeService.state.isVisible,

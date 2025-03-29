@@ -8,6 +8,7 @@ import { getFileIcon } from '../../../utils/FileExtensionsAndIcons';
 import { IPropsFileUploader } from '../../../types/props';
 import { FileUplaoderService } from '../../../services/fileUploaderService';
 import { usePrimeVue } from 'primevue/config';
+import { useToast } from 'primevue';
 
 const emit = defineEmits()
 const primevue = usePrimeVue()
@@ -21,6 +22,7 @@ const fileUploaderService = new FileUplaoderService();
 const props = defineProps<IPropsFileUploader>();
 
 const fileUploadRef = ref<FileUpload | null>(null);
+const toast = useToast()
 
 const handleClear = () => {
   fileUploaderService.removeFiles();
@@ -126,7 +128,7 @@ const handleClear = () => {
                 @click="fileUploaderService.handleUpload(() => {
                   emit('new-item')
                   handleClear()
-                }, props.parentNode?.parent)"
+                }, props.parentNode?.parent, toast)"
                 class="bg-primary w-max text-white"
                 icon="pi pi-check"
                 :label="

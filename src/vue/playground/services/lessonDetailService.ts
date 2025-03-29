@@ -24,7 +24,7 @@ export class LessonDetailService {
   private _toast = useToast();
 
   async loadDetail(params, playgroundStore) {
-    await import('aframe');
+    // await import('aframe');
   
     const lessonId = params.value?.lesson;
     const courseSlug = params.value?.course;
