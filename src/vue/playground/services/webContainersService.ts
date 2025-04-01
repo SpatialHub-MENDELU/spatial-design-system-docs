@@ -61,6 +61,22 @@ export class WebContainerService {
         if (iframeEl) {
           iframeEl.src = url;
         }        
+
+        iframeEl.onload = function() {
+          const iframeDocument = iframeEl.contentDocument || iframeEl.contentWindow.document;
+          const head = iframeDocument.head;
+          
+          // Nastavení hlaviček uvnitř iframe (pomocí metadat)
+          const metaCOOP = document.createElement('meta');
+          metaCOOP.setAttribute('http-equiv', 'Cross-Origin-Opener-Policy');
+          metaCOOP.setAttribute('content', 'same-origin');
+          head.appendChild(metaCOOP);
+          
+          const metaCOEP = document.createElement('meta');
+          metaCOEP.setAttribute('http-equiv', 'Cross-Origin-Embedder-Policy');
+          metaCOEP.setAttribute('content', 'require-corp'); // Nebo 'credentialless'
+          head.appendChild(metaCOEP);
+        };
       });
     } catch (error) {
       console.log(error)
@@ -328,6 +344,9 @@ export class WebContainerService {
   ): Promise<boolean> {
     await this.ensureInitialized();
     if (!this.webContainerInstance) return false;
+
+    const mainProjectFile = this.getMainProjectFile(projectType);
+    await this.setupMessageHandling(mainProjectFile, projectType);
 
     await this.stopCurrentProject();
 

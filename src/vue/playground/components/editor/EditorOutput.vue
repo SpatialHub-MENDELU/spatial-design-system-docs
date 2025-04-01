@@ -59,7 +59,7 @@ const onIframeLoad = async () => {
 
 <template>
   <div
-    class="output duration-300 lg:w-full block border-border-color lg:h-full h-[30rem] lg:pb-6"
+    class="output duration-300 block border-border-color lg:pb-6"
     :class="{
       'hidden-output--vertical':
         !outputState.isVisible && !props.loading.installing && !props.loading.running &&
@@ -75,7 +75,13 @@ const onIframeLoad = async () => {
         !props.loading.running,
       ' border-b border-x border-t-0':
         props.isDetail && !props.loading.installing && !props.loading.running,
-      ' lg:border-0 border border-t-0':
+      ' lg:border-x-0 lg:border-b-0 border border-t-0':
+        layout === Layout.VERTICAL &&
+        !props.isDetail &&
+        !props.loading.installing &&
+        !props.loading.running,
+        'border-t':
+        !outputState.isVisible &&
         layout === Layout.VERTICAL &&
         !props.isDetail &&
         !props.loading.installing &&

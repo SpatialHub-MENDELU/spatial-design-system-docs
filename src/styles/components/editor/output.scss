@@ -1,21 +1,22 @@
 .output {
   overflow-y: hidden !important;
   width: 100% !important;
+  height: 100% !important;
 
   background-color: transparent !important;
 
   transition: all 350ms ease-in-out;
+
+  @media screen and (max-width: $breakpointMd) {
+    height: 20rem !important;
+  }
 }
 
 .hidden-output--vertical {
   overflow: hidden;
-  height: 3rem !important;
+  height: 2rem !important;
 
   border-top: 1px solid $border-color !important;
-
-  @media screen and (max-width: $breakpointLg) {
-    border-top: 0px !important;
-  }
 }
 
 .hidden-output--horizontal {
@@ -24,7 +25,7 @@
 
   @media screen and (max-width: $breakpointLg) {
     width: 100% !important;
-    height: 3rem !important;
+    height: 2rem !important;
   }
 }
 

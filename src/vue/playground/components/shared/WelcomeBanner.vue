@@ -50,7 +50,7 @@ const createNewProject = (project: ProjectType) => {
       </div>
 
       <Image
-        src="../../../../public/spatial-design-system-logo-dark.png"
+        src="/spatial-design-system-logo-dark.png"
         alt="Spatial Design System - logo"
         class="lg:block hidden"
       />

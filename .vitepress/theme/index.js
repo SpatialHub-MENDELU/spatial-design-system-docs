@@ -1,5 +1,6 @@
 import DefaultTheme from "vitepress/theme";
 import "./custom.css";
+import "./tailwind.css";
 import PrimeVue from "primevue/config";
 import { onMounted } from "vue";
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -22,6 +23,12 @@ export default {
             onMounted(async () => {
                 await import("aframe");
             });
+
+            for (const key in window) {
+                if (window[key] && typeof window[key] === "object" && "env" in window[key]) {
+                    window[key].env.NODE_ENV = import.meta.env.MODE || "production";
+                }
+            }
         }
 
         app.component("ComponentExample");
