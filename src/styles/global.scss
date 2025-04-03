@@ -2,6 +2,10 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+* {
+  box-sizing: border-box;
+}
+
 .wrapper {
   display: flex;
 }
@@ -59,4 +63,38 @@
 .text-highlighted {
   color: $primary !important;
   font-weight: 600;
+}
+
+.playground-page{
+  .VPNavBar .wrapper {
+    max-width: $max-width;
+    margin: auto;
+  }
+
+  .VPContent {
+    position: relative;
+    height: calc(100vh - $header-height) !important;
+  }
+
+  .VPHome, .VPHero, .container:not(.VPNavBarHamburger .container) {
+    height: 100% !important;
+  }
+  
+  .main {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .VPHero {
+    padding: 0 !important;
+    margin: 0 !important;
+
+    @media screen and (max-width: $breakpointLg) {
+      padding: 0 2rem !important;
+    }
+  }
+
+  .container {
+    max-width: unset !important;
+  }
 }

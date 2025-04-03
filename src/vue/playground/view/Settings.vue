@@ -44,14 +44,14 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex gap-0 mx-auto w-full justify-center">
+  <div class="h-full flex gap-0 mx-auto w-full justify-center">
     <div
       class="main-content settings lg:h-full h-full mx-auto relative flex w-full lg:flex-row flex-col"
     >
       <Sidebar />
 
       <div class="w-full xl:p-16 lg:p-12 pt-6 lg:h-auto h-full">
-        <div class="w-full border-b border-border-color pb-2">
+        <div class="w-full border-b border-border-color pb-2 text-left">
           <h1
             class="lg:text-[32px] md:text-[26px] text-[24px] font-medium mb-3"
           >
@@ -62,7 +62,7 @@ onMounted(async () => {
           </p>
         </div>
 
-        <div class="lg:py-16 py-8 space-y-8">
+        <div class="lg:py-16 py-8 space-y-8 text-left">
           <div class="flex items-center justify-between gap-3">
             <div class="w-2/3">
               <p class="font-semibold lg:text-[17px] text-[16px]">Font Size</p>

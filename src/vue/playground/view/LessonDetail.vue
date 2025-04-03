@@ -38,7 +38,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="lesson flex gap-0 mx-auto w-full justify-center lg:max-h-screen">
+  <div class="h-full lesson flex gap-0 mx-auto w-full justify-center lg:max-h-screen">
     <Toast position="bottom-center" />
 
     <div

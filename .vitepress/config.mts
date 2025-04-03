@@ -1,4 +1,5 @@
 import { defineConfig } from "vitepress";
+import { handlePlaygroundPageClass } from "../src/vue/playground/utils/HandlePlaygroundPageClass";
 
 function crossOriginIsolationMiddleware(_, response, next) {
   response.setHeader("Cross-Origin-Opener-Policy", "same-origin");
@@ -18,7 +19,14 @@ export default defineConfig({
   description:
     "AR/VR Design System with detailed guidelines and ready to use components",
   srcDir: "./src",
-  head: [['link', { rel: 'stylesheet', href: '../../../.vitepress/theme/tailwind.css' }]],
+  head: [
+    ['link', { rel: 'stylesheet', href: '../../../.vitepress/theme/tailwind.css' }],
+    [
+      'script',
+      { type: 'text/javascript' },
+      handlePlaygroundPageClass
+    ]    
+  ],
   themeConfig: {
     logo: {
       dark: "/spatial-design-system-logo-dark.png",

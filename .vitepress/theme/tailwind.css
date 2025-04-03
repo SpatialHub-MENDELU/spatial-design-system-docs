@@ -1270,11 +1270,6 @@ video {
   border-color: rgb(0 186 146 / var(--tw-border-opacity, 1)) !important;
 }
 
-.bg-black {
-  --tw-bg-opacity: 1 !important;
-  background-color: rgb(0 0 0 / var(--tw-bg-opacity, 1)) !important;
-}
-
 .bg-extra-light-background {
   --tw-bg-opacity: 1 !important;
   background-color: rgb(244 244 244 / var(--tw-bg-opacity, 1)) !important;
@@ -1310,10 +1305,6 @@ video {
 
 .p-2 {
   padding: 0.5rem !important;
-}
-
-.p-3 {
-  padding: 0.75rem !important;
 }
 
 .p-6 {
@@ -1411,6 +1402,10 @@ video {
 
 .pt-6 {
   padding-top: 1.5rem !important;
+}
+
+.text-left {
+  text-align: left !important;
 }
 
 .text-center {
@@ -1652,6 +1647,10 @@ video {
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1) !important;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 .wrapper {
   display: flex;
 }
@@ -1714,6 +1713,34 @@ video {
 .text-highlighted {
   color: $primary !important;
   font-weight: 600;
+}
+
+.playground-page{
+  .VPNavBar .wrapper {
+    max-width: $max-width;
+    margin: auto;
+  }
+  .VPContent {
+    position: relative;
+    height: calc(100vh - $header-height) !important;
+  }
+  .VPHome, .VPHero, .container:not(.VPNavBarHamburger .container) {
+    height: 100% !important;
+  }
+  .main {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .VPHero {
+    padding: 0 !important;
+    margin: 0 !important;
+    @media screen and (max-width: $breakpointLg) {
+      padding: 0 2rem !important;
+    }
+  }
+  .container {
+    max-width: unset !important;
+  }
 }
 
 .hover\:text-primary:hover {
