@@ -1,3 +1,5 @@
+@use '../../variables' as *;
+
 .p-tree {
   @media screen and (max-width: $breakpointXl) {
     padding: 0 1rem 0 0;
@@ -5,7 +7,7 @@
 
   & {
     padding: 0 0 2rem 0 !important;
-    
+
     background-color: transparent !important;
   }
 

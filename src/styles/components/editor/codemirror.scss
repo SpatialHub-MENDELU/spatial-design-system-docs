@@ -1,4 +1,5 @@
 @use "sass:color";
+@use '../../variables' as *;
 
 .cm-gutters {
   background-color: var(--vp-custom-block-tip-bg) !important;

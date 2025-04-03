@@ -1,3 +1,5 @@
+@use '../../variables' as *;
+
 .folder-file-uploader {
   p, span, div {
     color: var(--vp-c-text-1);

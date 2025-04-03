@@ -1,3 +1,5 @@
+@use '../variables' as *;
+
 .editor-content {
   @media screen and (max-width: $breakpointLg) {
     height: fit-content !important;

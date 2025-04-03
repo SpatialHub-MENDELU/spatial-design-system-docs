@@ -1,3 +1,5 @@
+@use '../../variables' as *;
+
 .sidebar {
   @media (max-width: $breakpointMd) {
     width: 100%;
