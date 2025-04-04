@@ -38,6 +38,7 @@ export default defineConfig({
         items: [
           { text: 'Button', link: '/ar-vr-primitives/button'},
           { text: 'Checkbox', link: '/ar-vr-primitives/checkbox' },
+          { text: 'Chip', link: '/ar-vr-primitives/chip' },
           { text: 'Menu', link: '/ar-vr-primitives/menu' },
           { text: 'Row, column', link: '/ar-vr-primitives/rowcolumn' },
           { text: 'Switch', link: '/ar-vr-primitives/switch'},
