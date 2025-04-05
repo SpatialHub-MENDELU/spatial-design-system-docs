@@ -55,13 +55,6 @@ This ensures that objects are placed with the same logic whether placed individu
   2. The utility positions and orients the copy
   3. `place-object-manager` tracks the new object and updates the preview
 
-## Use Cases
-
-- **Furniture placement**: Let users place virtual furniture in their real environment
-- **AR UI elements**: Position menus, buttons, and controls on surfaces
-- **Mixed reality experiences**: Combine virtual and real elements in a scene
-- **Educational content**: Place 3D models in the real world for learning
-
 ## Detailed Documentation
 
 For more details on individual components:

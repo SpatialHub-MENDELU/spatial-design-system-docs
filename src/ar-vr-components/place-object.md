@@ -2,26 +2,26 @@
 title: place-object
 ---
 
-# {{ $frontmatter.title }}
+# place-object
 
 The `place-object` component enables objects to be placed in an AR environment. It's applied to template objects that users can place by tapping on detected real-world surfaces.
 
 ## Props
 
-| Property             | Type                      | Default                    | Description                                                         |
-| -------------------- | ------------------------- | -------------------------- | ------------------------------------------------------------------- |
-| *heightRange*        | vec2                      | { x: 0.3, y: 2.0 }         | Minimum and maximum height range for valid placement (in meters)     |
-| *surfaceTypes*       | array                     | ["horizontal"]             | Valid surface types for placement: "horizontal", "wall", "ceiling"   |
-| *adjustOrientation*  | boolean                   | true                       | Whether to adjust the orientation based on the surface              |
-| *distanceRange*      | vec2                      | { x: 0.5, y: 5.0 }         | Minimum and maximum distance from camera for valid placement        |
-| *scale*              | number                    | 1.0                        | Scale applied to the placed object                                  |
-| *isPoster*           | boolean                   | false                      | When true, places the object flat against surfaces (like a poster)  |
+| Property | Type | Default | Description |
+| --- | --- | --- | --- |
+| *heightRange* | vec2 | `{ x: 0.3, y: 2.0 }` | Minimum and maximum height range for valid placement (in meters) |
+| *surfaceTypes* | array | `["horizontal"]` | Valid surface types for placement: "horizontal", "wall", "ceiling" |
+| *adjustOrientation* | boolean | true | Whether to adjust the orientation based on the surface |
+| *distanceRange* | vec2 | `{ x: 0.5, y: 5.0 }` | Minimum and maximum distance from camera for valid placement |
+| *scale* | number | 1.0 | Scale applied to the placed object |
+| *isPoster* | boolean | false | When true, places the object flat against surfaces (like a poster) |
 
 ## Events
 
-| Event           | Properties                                     | Description                                   |
-| --------------- | ---------------------------------------------- | --------------------------------------------- |
-| *object-placed* | { entity, position, orientation }              | Fired when an object is successfully placed   |
+| Event | Properties | Description |
+| --- | --- | --- |
+| *object-placed* | `{ entity, position, orientation }` | Fired when an object is successfully placed |
 
 ## How It Works
 
@@ -34,7 +34,7 @@ The `place-object` component enables objects to be placed in an AR environment. 
 2. The original entity with the `place-object` component:
    - Typically has `visible="false"` to hide it
    - Acts as a template for the placed copies
-   - Remains in the scene to handle further placements
+   - Original object deletion is not currently handled !! When using, it is currently necessary to remove the object, or remove place-object manually. (TODO fix)
 
 ## Surface Types
 

@@ -65,7 +65,7 @@ export default defineConfig({
             ],
           },
           {
-            text: 'place-object',
+            text: 'place-object-components',
             link: '/ar-vr-components/place-object-components',
             items: [
               {
