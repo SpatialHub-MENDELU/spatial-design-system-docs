@@ -64,6 +64,20 @@ export default defineConfig({
               { text: 'flex-grow', link: '/ar-vr-components/flex-grow' },
             ],
           },
+          {
+            text: 'place-object',
+            link: '/ar-vr-components/place-object-components',
+            items: [
+              {
+                text: 'place-object',
+                link: '/ar-vr-components/place-object',
+              },
+              {
+                text: 'place-object-manager',
+                link: '/ar-vr-components/place-object-manager',
+              },
+            ],
+          },
           { text: 'follow-camera', link: '/ar-vr-components/follow-camera' },
           { text: 'grid', link: '/ar-vr-components/grid' },
         ],
