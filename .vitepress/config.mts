@@ -78,6 +78,7 @@ export default defineConfig({
               },
             ],
           },
+          { text: 'follow-element', link: '/ar-vr-components/follow-element' },
           { text: 'follow-camera', link: '/ar-vr-components/follow-camera' },
           { text: 'grid', link: '/ar-vr-components/grid' },
         ],
