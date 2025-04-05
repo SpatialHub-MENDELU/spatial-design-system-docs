@@ -52,22 +52,24 @@ gap: 10 10;
 
 ```js
 import "spatial-design-system/components/flexbox.js";
+import "spatial-design-system/components/flexbox/Properties/flex-col.js";
 ```
 
 ```html
 <a-plane
-  position="0 1.6 -3"
-  width="2"
-  height="1"
-  material="color: #018A6C"
-  flexbox="
-      direction: row;
-      justify: start;
-      items: start;
-      wrap: true;
-      gap: 10 10;
-  "
+    position="0 1.6 -3"
+    width="2"
+    height="1"
+    material="color: #018A6C"
+    flexbox="
+        direction: row;
+        justify: start;
+        items: start;
+        wrap: true;
+        gap: 10 10;
+    "
 >
+
   <a-plane color="#03FCC6" flex-col="sm: 12; md: 6; lg: 4"></a-plane>
   <a-plane color="#03FCC6" flex-col="sm: 12; md: 6; lg: 4"></a-plane>
   <a-plane color="#03FCC6" flex-col="sm: 12; md: 12; lg: 4"></a-plane>
@@ -112,7 +114,15 @@ The responsive breakpoints are defined as follows:
 1. The `flex-col` component uses a 12-column grid system (similar to Bootstrap)
 2. Each element can span a specified number of columns (from 1 to 12)
 3. The component automatically listens for window resize events and updates column spans based on the current viewport width
-4. If a breakpoint isn't specified, the system will fall back to the next smaller specified breakpoint
+4. When calculating the column value to use, the component follows this fallback sequence:
+   - Current detected breakpoint value
+   - md breakpoint value
+   - lg breakpoint value
+   - xl breakpoint value
+   - 2xl breakpoint value
+   - 3xl breakpoint value
+   - sm breakpoint value (default)
+5. The element's width is calculated as: `(container_width / 12) * column_value`
 
 ## Usage Notes
 

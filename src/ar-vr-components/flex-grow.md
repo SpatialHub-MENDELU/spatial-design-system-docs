@@ -50,14 +50,26 @@ items: center;
 
 ```js
 import "spatial-design-system/components/flexbox.js";
+import "spatial-design-system/components/flexbox/Properties/flex-grow.js";
 ```
 
 ```html
+<a-plane
+    position="0 1.6 -3"
+    width="2"
+    height="0.5"
+    material="color: #018A6C"
+    flexbox="
+        direction: row;
+        justify: start;
+        items: center;
+    "
+>
 
-
-
-
-
+  <a-plane color="white" width="0.3"></a-plane>
+  <a-plane color="#03FCC6" flex-grow></a-plane>
+  <a-plane color="white" width="0.3"></a-plane>
+</a-plane>
 ```
 
 </template>
@@ -96,12 +108,23 @@ import "spatial-design-system/components/flexbox.js";
 ```
 
 ```html
+<a-plane
+    position="0 1.6 -3"
+    width="2"
+    height="0.5"
+    material="color: #018A6C"
+    flexbox="
+        direction: row;
+        justify: start;
+        items: center;
+    "
+>
 
-
-
-
-
-
+  <a-plane color="white" width="0.3"></a-plane>
+  <a-plane color="#03FCC6" flex-grow></a-plane>
+  <a-plane color="#00C170" flex-grow></a-plane>
+  <a-plane color="white" width="0.3"></a-plane>
+</a-plane>
 ```
 
 </template>

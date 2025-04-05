@@ -27,7 +27,7 @@ Flexbox is a powerful one-dimensional layout system inspired by [CSS Flexbox](ht
 The Flexbox component family consists of several components that work together:
 
 - [**flexbox**](/ar-vr-components/flexbox-container) - Main container component
-- [**flex-col**](/ar-vr-components/flex-col) - Bootstrap style column size specification
+- [**flex-col**](/ar-vr-components/flex-col) - Grid column specification
 - [**flex-grow**](/ar-vr-components/flex-grow) - Dynamic space distribution
 
 ## Basic Usage
