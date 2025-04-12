@@ -1,3 +1,6 @@
+@use "sass:color";
+@use '../../variables' as *;
+
 .cm-gutters {
   background-color: var(--vp-custom-block-tip-bg) !important;
   border: none !important;
@@ -51,7 +54,7 @@
   }
 }
 
-.v-codemirror {
+.vue-codemirror {
   * {
     font-family: 'Inter', sans-serif !important;
   }
@@ -70,12 +73,12 @@
   }
   
   ::-webkit-scrollbar-thumb {
-    background: #9ca3af;
+    background: #9ca3af !important;
     border-radius: 4px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: darken($color: $dark-text, $amount: 10%);
+    background-color: color.adjust($color: $dark-text, $lightness: -10%);
   }
 
   .cm-editor *::-webkit-scrollbar {
@@ -93,7 +96,7 @@
   }
 
   .cm-editor *::-webkit-scrollbar-thumb:hover {
-    background: darken($color: $dark-text, $amount: 10%);
+    background-color: color.adjust($color: $dark-text, $lightness: -10%);
   }
 }
 

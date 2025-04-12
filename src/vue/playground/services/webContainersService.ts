@@ -2,19 +2,17 @@ import { WebContainer } from '@webcontainer/api';
 import { TreeNode } from 'primevue/treenode';
 import { FileType } from '../types/fileType';
 import { FolderItem } from '../types/fileItem';
-import JSZip from 'jszip';
 import { getFileIcon } from '../utils/FileExtensionsAndIcons';
 import { ProjectType } from '../types/projectType';
 import { getMessageHandlerCode } from '../utils/MessageHandlerCode';
 import { reactive } from 'vue';
+import JSZip from 'jszip';
 
 export class WebContainerService {
   private static instance: WebContainerService;
   private webContainerInstance: WebContainer | null = null;
   private isBooting: boolean = false;
   private openedFiles: FolderItem[] = [];
-
-  private constructor() {}
 
   public state = reactive<{
     isLoading: boolean,
@@ -63,6 +61,22 @@ export class WebContainerService {
         if (iframeEl) {
           iframeEl.src = url;
         }        
+
+        iframeEl.onload = function() {
+          const iframeDocument = iframeEl.contentDocument || iframeEl.contentWindow.document;
+          const head = iframeDocument.head;
+          
+          // Nastavení hlaviček uvnitř iframe (pomocí metadat)
+          const metaCOOP = document.createElement('meta');
+          metaCOOP.setAttribute('http-equiv', 'Cross-Origin-Opener-Policy');
+          metaCOOP.setAttribute('content', 'same-origin');
+          head.appendChild(metaCOOP);
+          
+          const metaCOEP = document.createElement('meta');
+          metaCOEP.setAttribute('http-equiv', 'Cross-Origin-Embedder-Policy');
+          metaCOEP.setAttribute('content', 'require-corp'); // Nebo 'credentialless'
+          head.appendChild(metaCOEP);
+        };
       });
     } catch (error) {
       console.log(error)
@@ -279,7 +293,9 @@ export class WebContainerService {
   }
 
   private async downloadZip(fileStructure: any) {
+    const JSZip = (await import('jszip')).default;
     const zip = new JSZip();
+
     await this.installFileSystem(fileStructure, zip);
 
     zip.generateAsync({ type: 'blob' }).then((content) => {
@@ -328,6 +344,9 @@ export class WebContainerService {
   ): Promise<boolean> {
     await this.ensureInitialized();
     if (!this.webContainerInstance) return false;
+
+    const mainProjectFile = this.getMainProjectFile(projectType);
+    await this.setupMessageHandling(mainProjectFile, projectType);
 
     await this.stopCurrentProject();
 

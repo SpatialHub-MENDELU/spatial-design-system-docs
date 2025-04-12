@@ -72,7 +72,7 @@ const createNewProject = async (project: ProjectType) => {
 
 <template>
   <div
-    class="flex gap-0 lg:flex-row flex-col mx-auto w-full lg:overflow-y-hidden"
+    class="h-full flex gap-0 lg:flex-row flex-col mx-auto w-full lg:overflow-y-hidden"
   >
     <Sidebar :show-dialog="() => showDialog()" />
     <WelcomeBanner v-if="!projectType" />

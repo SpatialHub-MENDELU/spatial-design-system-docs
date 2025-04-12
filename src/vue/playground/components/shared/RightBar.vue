@@ -31,7 +31,7 @@ const closeDialog = () => {
       <ul class="flex flex-col h-full items-center justify-between">
         <li class="py-4">
           <i
-            class="pi pi-th-large text-dark-text text-[20px] duration-300 cursor-pointer"
+            class="pi pi-th-large text-[20px] duration-300 cursor-pointer"
             @click="showDialog"
           />
         </li>
@@ -43,7 +43,7 @@ const closeDialog = () => {
             target="_blank"
             rel="norefferer"
           >
-            <i class="pi pi-github text-dark-text text-[20px] duration-300" />
+            <i class="pi pi-github text-[20px] duration-300" />
             <span class="2xl:text-[16px] text-[14px]">Github</span>
           </a>
         </li>
