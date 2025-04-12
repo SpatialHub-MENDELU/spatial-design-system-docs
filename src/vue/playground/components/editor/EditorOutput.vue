@@ -91,7 +91,8 @@ const onIframeLoad = async () => {
         !props.loading.installing &&
         !props.loading.running && outputState.isVisible,
       ' border':
-        props.isDetail && (props.loading.installing || props.loading.running)
+        props.isDetail && (props.loading.installing || props.loading.running),
+        'output--full-height': props.loading.installing || props.loading.running
     }"
   >
     <div
@@ -141,7 +142,7 @@ const onIframeLoad = async () => {
 
     <div
       v-show="outputState.isVisible"
-      class="h-full lg:px-0 px-8 flex items-center justify-center"
+      class="h-full lg:px-0 px-8 flex items-center justify-center output-container"
       :class="{
         'lg:border-t-0 lg:border-b-0 lg:border-x-0 border border-border-color': loading,
         'border-x-0': props.isDetail

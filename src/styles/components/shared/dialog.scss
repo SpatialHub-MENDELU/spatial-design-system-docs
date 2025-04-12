@@ -39,7 +39,7 @@
   }
 
   &-content {
-    padding-top: 1rem;
+    padding-top: 1rem !important;
     
     color: var(--vp-c-text-1);
 
@@ -89,7 +89,7 @@
       gap: 0.5rem;
     }
 
-    button:not(.p-tree-toggler) {
+    button:not(.p-tree-toggler):not(.p-tree-node-toggle-button) {
       margin-top: 2rem;
       padding: 0.25rem 1rem;
       color: white;
@@ -214,5 +214,11 @@
         background-color: color.adjust($color: $primary, $lightness: 5%) !important;
       }
     }
+  }
+}
+
+.moving-file-dialog .p-dialog-footer {
+  span, p {
+    color: var(--vp-c-text-1) !important;
   }
 }

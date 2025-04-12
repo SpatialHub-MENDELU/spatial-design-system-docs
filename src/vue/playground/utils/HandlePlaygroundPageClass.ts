@@ -1,14 +1,22 @@
 export const handlePlaygroundPageClass = `
+  if (window && window.navigation) {
+    window.navigation.addEventListener("navigate", (event) => {
+      if (event.downloadRequest !== 'file_structure.zip') {
+        addPlaygroundClass(event);
+      }
+    });
+  } else {
+    window.addEventListener("popstate", (event) => {
+      addPlaygroundClass(event);
+    });
+
+    window.addEventListener("hashchange", (event) => {
+      addPlaygroundClass(event);
+    });
+  }
+
   window.addEventListener("beforeunload", (event) => {
     addPlaygroundClass({ destination: { url: event.currentTarget.location.href } });
-  });
-
-  window.navigation.addEventListener("navigate", (event) => {
-    addPlaygroundClass(event);
-  });
-
-  window.addEventListener("popstate", () => {
-    addPlaygroundClass({ destination: { url: window.location.href } });
   });
 
   function addPlaygroundClass(event) {
