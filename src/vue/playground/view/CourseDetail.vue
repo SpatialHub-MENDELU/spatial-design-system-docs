@@ -17,7 +17,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex gap-0 mx-auto w-full justify-center">
+  <div class="h-full flex gap-0 mx-auto w-full justify-center">
     <div
       class="main-content courses lg:h-full h-full mx-auto relative flex w-full lg:flex-row flex-col"
     >

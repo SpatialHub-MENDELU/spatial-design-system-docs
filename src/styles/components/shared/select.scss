@@ -1,0 +1,32 @@
+@use '../../variables' as *;
+
+.p-select {
+  border: none !important;
+  border-bottom: 1px solid $primary !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background-color: var(--vp-custom-block-tip-bg) !important;
+
+  * {
+    color: var(--vp-c-text-1) !important;
+  }
+}
+
+.p-select-item, .p-select-overlay {
+  background-color: var(--vp-custom-block-tip-bg) !important;
+  color: var(--vp-c-text-1);
+  border-radius: 0px !important;
+  border-color: $primary !important;
+
+  .p-select-option {
+    color: var(--vp-c-text-1);
+
+    &.p-focus {
+      background-color: $tertiary !important;
+    }
+  }
+
+  .p-select-option-selected {
+    background-color: $primary !important;
+  }
+}

@@ -6,7 +6,7 @@ export const getMessageHandlerCode = (projectType: ProjectType): string => {
       return `
         <script>
           window.addEventListener('message', (event) => {
-            if (event.origin === 'http://localhost:5174' || event.origin === 'https://sds.spatialhub.cz') {
+            if (['http://localhost:5174', 'https://sds.spatialhub.cz', 'http://localhost:8081'].includes(event.origin)) {
               if (event.data.type === 'getDocument') {
                 const iframeContent = document.body.innerHTML;
                 event.source.postMessage({ type: 'iframeContent', content: iframeContent }, event.origin);
@@ -23,7 +23,7 @@ export const getMessageHandlerCode = (projectType: ProjectType): string => {
 
       onMounted(() => {
         window.addEventListener('message', (event) => {
-          if (event.origin === 'http://localhost:5174' || event.origin === 'https://sds.spatialhub.cz') {
+          if (['http://localhost:5174', 'https://sds.spatialhub.cz', 'http://localhost:8081'].includes(event.origin)) {
             if (event.data.type === 'getDocument') {
               const iframeContent = document.body.innerHTML;
               event.source.postMessage({ type: 'iframeContent', content: iframeContent }, event.origin);

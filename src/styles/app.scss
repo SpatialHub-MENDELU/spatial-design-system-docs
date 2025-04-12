@@ -1,24 +1,28 @@
-@import "./variables.scss";
-@import "./global.scss";
+@use "./variables.scss";
+@use "./global.scss";
 
 // components
-@import "./components/shared/sidebar.scss";
-@import "./components/shared/loading.scss";
-@import "./components/shared/dialog.scss";
-@import "./components/shared/switcher.scss";
-@import "./components/shared/dropdown.scss";
-@import "./components/shared/treenode.scss";
-@import "./components/shared/breadcrumbs.scss";
+@use "./components/shared/sidebar.scss";
+@use "./components/shared/loading.scss";
+@use "./components/shared/dialog.scss";
+@use "./components/shared/switcher.scss";
+@use "./components/shared/dropdown.scss";
+@use "./components/shared/treenode.scss";
+@use "./components/shared/breadcrumbs.scss";
+@use "./components/shared/select.scss";
+@use "./components/shared/contextMenu.scss";
+@use "./components/shared/input.scss";
+@use "./components/shared/toast.scss";
 
-@import "./components/editor/output.scss";
-@import "./components/editor/codemirror.scss";
-@import "./components/editor/files.scss";
-@import "./components/editor/folderFileUploader.scss";
+@use "./components/editor/output.scss";
+@use "./components/editor/codemirror.scss";
+@use "./components/editor/files.scss";
+@use "./components/editor/folderFileUploader.scss";
 
-@import "./components/courses/overview.scss";
+@use "./components/courses/overview.scss";
 
 // pages
-@import "./pages/editor.scss";
-@import "./pages/settings.scss";
-@import "./pages/courses.scss";
-@import "./pages/lessons.scss";
+@use "./pages/editor.scss";
+@use "./pages/settings.scss";
+@use "./pages/courses.scss";
+@use "./pages/lessons.scss";

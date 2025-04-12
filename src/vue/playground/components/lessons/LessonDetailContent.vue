@@ -1,5 +1,5 @@
 
-<script setup lang="ts">
+<script setup type="module" lang="ts">
 import { defineProps } from 'vue';
 import { IPropsLessonDetailContent } from '../../types/props';
 
@@ -46,7 +46,13 @@ const props = defineProps<IPropsLessonDetailContent>();
       >
         <div :class="{
           'bordered-section': props.lessonDetailService.state.activeLesson.content.task
-        }" v-html="props.lessonDetailService.state.activeLesson.content.intro"/>
+        }" v-html="props.lessonDetailService.state.activeLesson.content.intro" />
+
+        <div v-if="props.lessonDetailService.state.activeLesson.content.task"
+          class="lg:mt-6 mt-4">
+          <h2>Your task</h2>
+          <div v-html="props.lessonDetailService.state.activeLesson.content.task" />
+        </div>
 
         <div v-if="props.lessonDetailService.state.activeLesson.content.whatYouWillLearn"
           class="lg:mt-6 mt-4">
@@ -74,12 +80,6 @@ const props = defineProps<IPropsLessonDetailContent>();
           <h2>Props</h2>
           <div v-html="props.lessonDetailService.state.activeLesson.content.props"/>
         </div>
-
-        <div v-if="props.lessonDetailService.state.activeLesson.content.task"
-        class="lg:mt-6 mt-4">
-        <h2>Your task</h2>
-        <div v-html="props.lessonDetailService.state.activeLesson.content.task"/>
-      </div>
     </div>
 
       <div v-else>

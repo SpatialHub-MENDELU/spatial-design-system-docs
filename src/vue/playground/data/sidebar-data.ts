@@ -18,7 +18,7 @@ export const sidebarData: SidebarLink[] = [
         icon: "book",
     },
     {
-        text: "Course",
+        text: "Courses",
         route: ROUTES.COURSE,
         icon: "box",
     },

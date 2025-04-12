@@ -1,14 +1,31 @@
-import { defineConfig } from 'vitepress';
+import { defineConfig } from "vitepress";
+import { handlePlaygroundPageClass } from "../src/vue/playground/utils/HandlePlaygroundPageClass";
 
-import crossOriginIsolation from 'vite-plugin-cross-origin-isolation';
-import nodePolyfills from 'rollup-plugin-polyfill-node';
+function crossOriginIsolationMiddleware(_, response, next) {
+  response.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+  response.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+  next();
+}
+
+const crossOriginIsolation = {
+  name: 'cross-origin-isolation',
+  configureServer: server => { server.middlewares.use(crossOriginIsolationMiddleware); },
+  // configurePreviewServer: server => { server.middlewares.use(crossOriginIsolationMiddleware); },
+};
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: 'Spatial Design System',
-  description:
-    'AR/VR Design System with detailed guidelines and ready to use components',
-  srcDir: './src',
+  description: "AR/VR Design System with detailed guidelines and ready to use components",
+  srcDir: "./src",
+  head: [
+    ['link', { rel: 'stylesheet', href: '../../../.vitepress/theme/tailwind.css' }],
+    [
+      'script',
+      { type: 'text/javascript' },
+      handlePlaygroundPageClass
+    ]    
+  ],
   themeConfig: {
     logo: {
       dark: '/spatial-design-system-logo-dark.png',
@@ -122,22 +139,17 @@ export default defineConfig({
         ],
       },
     ],
-
     // socialLinks: [
     //   { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
     // ]
   },
   vite: {
-    plugins: [crossOriginIsolation(), nodePolyfills()],
-    build: {
-      commonjsOptions: {
-        transformMixedEsModules: true,
-      },
+    plugins: [crossOriginIsolation],
+    server: {
+      cors: true
     },
-    resolve: {
-      alias: {
-        global: 'global',
-      },
-    },
+    preview: {
+      cors: true
+    }
   },
 });

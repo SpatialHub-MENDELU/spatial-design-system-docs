@@ -16,9 +16,11 @@ import {
   getSDSAutocomplete,
 } from '../utils/Autocomplete';
 import { AutocompleteMatch } from '../types/autocomplete';
-import { basicSetup } from 'codemirror';
 import { Extension } from '@codemirror/state';
-import { githubLight, githubDark } from '@uiw/codemirror-theme-github'
+import { oneDark } from '@codemirror/theme-one-dark';
+import {tomorrow} from 'thememirror';
+
+import { basicSetup } from 'codemirror';
 
 export class CodeMirrorService {
   private _state = initEditorState;
@@ -28,7 +30,7 @@ export class CodeMirrorService {
   );
 
   private _debounceTimer: any = null;
-  private _theme = ref<Extension>();
+  private _theme = ref<any>();
   private _observer: MutationObserver
 
   constructor() {
@@ -78,15 +80,19 @@ export class CodeMirrorService {
     }, 100);
   };
 
-  updateTheme = () => {
+  updateTheme = async () => {
     const isDark = document.documentElement.classList.contains('dark');
-    this._theme.value = isDark ? githubDark : githubLight;
+    this._theme.value = isDark ? oneDark : tomorrow;
   };
 
   extensions = (path: string) =>
     computed(() => {
       const fileExtension = getFileExtension(path);
-      const theme = this._theme.value ?? githubLight;
+
+      const isDark = document.documentElement.classList.contains('dark');
+      const themeByDocumentBgColor = isDark ? oneDark : tomorrow;
+
+      const theme = this._theme.value ?? themeByDocumentBgColor;
 
       const customAutocomplete = autocompletion({
         override: [
@@ -144,7 +150,7 @@ export class CodeMirrorService {
       return [
         basicSetup,
         customAutocomplete,
-        this._getlanguageExtensions(fileExtension),
+        this._getlanguageExtensions(fileExtension) as Extension,
         theme
       ];
     });

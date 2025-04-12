@@ -38,7 +38,7 @@ const setOpenedFile = async (file: FolderItem) => {
 
 <template>
   <div
-    class="flex gap-4 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 whitespace-nowrap w-full"
+    class="opened-files flex gap-4 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 whitespace-nowrap w-full"
   >
     <div
       class="flex items-center gap-2"

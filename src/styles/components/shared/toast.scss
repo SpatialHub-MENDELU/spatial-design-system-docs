@@ -1,0 +1,24 @@
+@use '../../variables' as *;
+
+.p-toast-message-content {
+  background-color: $primary !important;
+  border-color: $primary !important;
+  color: $white;
+  border-radius: 4px !important;
+}
+
+.p-toast-message-info, .p-toast-message-info, .p-toast-message-success {
+  border: 1px solid $dark-background !important;
+}
+
+.p-toast-message-error .p-toast-message-content {
+  background-color: $red !important;
+}
+
+.p-toast-message-info .p-toast-message-content {
+  background-color: $light-primary !important;
+
+  * {
+    color: $dark-text !important;
+  }
+}

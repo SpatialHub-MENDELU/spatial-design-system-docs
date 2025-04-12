@@ -29,12 +29,12 @@ const createNewProject = (project: ProjectType) => {
       <div class="flex items-start justify-center flex-col lg:gap-y-5 gap-y-2">
         <span class="text-primary lg:text-[18px] md:text-[17px] text-[16px] font-medium">Welcome to the</span>
         <h1
-          class="font-bold lg:mb-4 mb-2 lg:text-[44px] md:text-[30px] text-[24px] leading-tight"
+          class="font-bold lg:mb-4 mb-2 lg:text-[44px] md:text-[30px] text-[24px] leading-tight text-left"
         >
           Spatial Design System Playground!
         </h1>
         <p
-          class="lg:text-[18px] md:text-[17px] text-[16px] font-medium mb-6"
+          class="lg:text-[18px] md:text-[17px] text-[16px] font-medium mb-6 text-left"
         >
           Explore our powerful library of&nbsp;components for creating AR/VR
           experiences. You can test and&nbsp;customize everything in&nbsp;the&nbsp;playground.
@@ -50,7 +50,7 @@ const createNewProject = (project: ProjectType) => {
       </div>
 
       <Image
-        src="../../../../public/spatial-design-system-logo-dark.png"
+        src="/spatial-design-system-logo-dark.png"
         alt="Spatial Design System - logo"
         class="lg:block hidden"
       />

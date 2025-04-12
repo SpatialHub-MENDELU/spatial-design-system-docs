@@ -8,9 +8,10 @@ import ComponentExample from '../../ComponentExample.vue';
 import { h, render } from 'vue';
 import { LanguageEnum, codeLanguage } from '../data/courses/Lessons';
 import prettier from 'prettier';
-import parserHTML from 'prettier/parser-html';
-import parserBabel from 'prettier/parser-babel';
-import parserTypescript from 'prettier/parser-typescript';
+import * as parserHTML from 'prettier/parser-html';
+import * as parserBabel from 'prettier/parser-babel';
+import * as parserTypescript from 'prettier/parser-typescript';
+import { Plugin } from 'prettier';
 
 import * as shiki from 'shiki';
 
@@ -32,6 +33,14 @@ export const lessonByCourseVariant = (
     case VUE_COURSE:
       return lesson.vueVariant;
   }
+};
+
+const customPrettierPlugin: Plugin = {
+  parsers: {
+    html: parserHTML.parsers?.html,
+    babel: parserBabel.parsers?.babel,
+    typescript: parserTypescript.parsers?.typescript,
+  },
 };
 
 export const replacePlaceholder = async (
@@ -123,17 +132,17 @@ export const replacePlaceholder = async (
         if (lang === 'html') {
           formattedCode = await prettier.format(code, {
             parser: 'html',
-            plugins: [parserHTML, parserBabel, parserTypescript].filter(Boolean),
+            plugins: [customPrettierPlugin].filter(Boolean),
           });
         } else if (lang === 'javascript') {
           formattedCode = await prettier.format(code, {
             parser: 'babel',
-            plugins: [parserHTML, parserBabel, parserTypescript].filter(Boolean),
+            plugins: [customPrettierPlugin].filter(Boolean),
           });
         } else if (lang === 'typescript') {
           formattedCode = await prettier.format(code, {
             parser: 'typescript',
-            plugins: [parserHTML, parserBabel, parserTypescript].filter(Boolean),
+            plugins: [customPrettierPlugin].filter(Boolean),
           });
         } else {
           formattedCode = code;
