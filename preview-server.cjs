@@ -8,8 +8,6 @@ app.use((req, res, next) => {
   res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
   res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
 
-  console.log(req.path)
-  // console.log(req)
   const hasExtension = path.extname(req.path);
   
   if (req.path !== "/" && !hasExtension && !req.path.endsWith('course/')) {

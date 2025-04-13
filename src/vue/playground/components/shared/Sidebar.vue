@@ -51,7 +51,7 @@ const sidebarState = reactive({
             target="_self"
           >
             <i
-              :class="`pi pi-${item.icon} ${activeRoute.includes(item.route) ? 'mainColor' : 'text-grey'} lg:text-[20px] text-[15px] duration-300`"
+              :class="`pi pi-${item.icon} ${activeRoute.includes(item.route.replace('/index.html', '')) ? 'mainColor' : 'text-grey'} lg:text-[20px] text-[15px] duration-300`"
             />
             <span class="2xl:text-[16px] text-[14px]">{{ item.text }}</span>
           </a>
@@ -68,7 +68,7 @@ const sidebarState = reactive({
             class="flex items-center lg:gap-1 gap-2 lg:flex-col text-center"
           >
             <i
-              :class="`pi pi-${sidebarData[sidebarData.length - 1].icon} ${activeRoute.includes(sidebarData[sidebarData.length - 1].route) ? 'text-primary' : 'text-grey'} text-[20px] duration-300`"
+              :class="`pi pi-${sidebarData[sidebarData.length - 1].icon} ${activeRoute.includes(sidebarData[sidebarData.length - 1].route.replace('/index.html', '')) ? 'text-primary' : 'text-grey'} text-[20px] duration-300`"
             />
             <span class="2xl:text-[16px] text-[14px]">{{
               sidebarData[sidebarData.length - 1].text

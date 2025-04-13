@@ -23,10 +23,12 @@
 
     &.p-focus {
       background-color: $tertiary !important;
+      color: $white !important;
     }
   }
 
   .p-select-option-selected {
     background-color: $primary !important;
+    color: $white !important;
   }
 }

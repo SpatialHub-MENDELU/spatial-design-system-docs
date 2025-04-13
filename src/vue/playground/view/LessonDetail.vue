@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Sidebar from '../components/shared/Sidebar.vue';
 import { useData } from 'vitepress';
-import { onMounted, ref, render } from 'vue';
+import { onMounted, ref } from 'vue';
 import { ICourseDetail } from '../types/courses/CourseDetail';
 import CoursesOverview from '../components/courses/CoursesOverview.vue';
 import LessonError from '../components/lessons/LessonError.vue';
@@ -22,6 +22,7 @@ const playgroundStore = useStore();
 const lessonDetailService = new LessonDetailService();
 
 const renderScene = ref(false);
+const loading = ref(true);
 
 onMounted(async () => {
   try {
@@ -29,10 +30,11 @@ onMounted(async () => {
     await import('spatial-design-system/primitives/ar-button.js');
     await import('spatial-design-system/primitives/ar-checkbox.js');
     await lessonDetailService.loadDetail(params, playgroundStore);
-
-    renderScene.value = true
+    renderScene.value = true;
   } catch (error) {
     console.error('Error during project creation:', error);
+  } finally {
+    loading.value = false;
   }
 });
 </script>
@@ -47,7 +49,7 @@ onMounted(async () => {
       <Sidebar />
       <div
         class="relative w-full xl:p-16 lg:p-12 pt-6 h-auto overflow-y-hidden flex lg:flex-row flex-col duration-300"
-        v-if="lessonDetailService.state.canBeDisplayed"
+        v-if="lessonDetailService.state.canBeDisplayed && !loading"
         style="max-width: 100%"
         :class="{
           ' lg:gap-16 gap-8': lessonDetailService.state.isContentVisible,
@@ -66,7 +68,19 @@ onMounted(async () => {
         <LessonDetailContent :lessonDetailService="lessonDetailService" />
         <LessonDetailTask :lessonDetailService="lessonDetailService" />
       </div>
-      <LessonError v-else />
+      <LessonError v-else v-if="!loading" />
+      <div
+      v-if="loading"
+      class="lg:h-full flex flex-col items-center justify-center w-full h-[25rem]"
+    >
+      <div class="spinner" />
+      <p
+        class="text-grey md:text-[16px] text-[15px] text-center mt-3"
+      >
+        Loading lesson...
+      </p>
+    </div>   
+        
     </div>
   </div>
 

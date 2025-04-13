@@ -88,8 +88,9 @@
           v-if="node.data.type === FileType.FOLDER && node.data.name !== 'node_modules'"
           :class="{
             'text-highlighted': selectedFolder?.label === node.label,
-            'text-dark-text': selectedFolder?.label !== node?.label
+            'text-normal': selectedFolder?.label !== node?.label,
           }"
+          class="cursor-pointer"
         >
           {{ node.data.name }}
         </span>

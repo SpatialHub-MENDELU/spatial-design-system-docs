@@ -19,7 +19,7 @@ export const sidebarData: SidebarLink[] = [
     },
     {
         text: "Courses",
-        route: ROUTES.COURSE,
+        route: ROUTES.COURSE_MAIN,
         icon: "box",
     },
     {

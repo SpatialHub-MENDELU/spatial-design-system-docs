@@ -34,3 +34,9 @@
 html.a-fullscreen {
   background-color: $grey !important;
 }
+
+.output--full-height .output-container {
+  @media screen and (max-width: $breakpointLg) {
+    height: 20rem !important;
+  }
+}
