@@ -2,16 +2,15 @@ import { MenuItem } from "primevue/menuitem";
 import { initFileTreeState } from "../states/FileTreeState";
 import { IStateFileTree } from "../types/states";
 import { FileType } from "../types/fileType";
-import ContextMenu from "primevue/contextmenu";
 import { nextTick, ref } from "vue";
 import { TreeNode } from "primevue/treenode";
 import { WebContainerService } from "./webContainersService";
 import { FolderItem } from "../types/fileItem";
 import { useToast } from "primevue/usetoast";
 import { useStore } from "vuex";
-import { useConfirm } from 'primevue/useconfirm';
 import { ProjectType } from "../types/projectType";
 import { ILoading } from "../types/loading";
+import { ContextMenu } from "primevue";
 
 export class FileTreeService {
 
@@ -146,7 +145,7 @@ export class FileTreeService {
       {
         label: 'Delete',
         icon: 'pi pi-trash',
-        command: () => this._deleteItem(this._state.currentItem as FolderItem, playgroundStore),
+        command: () => this.state.showDeleteConfirmDialog = true,
       },
       {
         label: 'New file',
@@ -199,7 +198,7 @@ export class FileTreeService {
     this.closeContextMenu();
   };
   
-  private async _deleteItem(item: FolderItem, playgroundStore) {
+  async deleteItem(item: FolderItem, playgroundStore) {
     if (!item) return;
   
     playgroundStore.commit('updateFoldersLoading', true);
@@ -208,7 +207,7 @@ export class FileTreeService {
       await this._removeItem(item, playgroundStore);
     } finally {
       this.fetchFolders();
-      // playgroundStore.commit('updateFoldersLoading', false);
+      this._state.showDeleteConfirmDialog = false;
     }
   
     this.closeContextMenu();

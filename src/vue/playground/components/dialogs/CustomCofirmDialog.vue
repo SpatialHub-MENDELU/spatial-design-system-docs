@@ -18,15 +18,18 @@ watch(() => props.showDialog, (show) => {
   if (show) {
     showConfirmDialog.value = true;
     confirm.require({
-      message: "Are you sure you want to create a new project? This will discard all your current changes.",
+      message: props.message,
       header: "Action Confirmation",
       icon: "pi pi-exclamation-triangle",
       acceptLabel: "Yes",
       rejectLabel: "No",
       acceptClass: "p-button-danger",
       rejectClass: "p-button-secondary",
+      blockScroll: true,
+      modal: true,
       accept: () => {
         props.accept();
+        confirm.close();
       },
       reject: () => {
         props.reject();

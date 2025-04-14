@@ -6,6 +6,7 @@ import { ICourseDetail } from '../types/courses/CourseDetail';
 import CoursesOverview from '../components/courses/CoursesOverview.vue';
 import LessonError from '../components/lessons/LessonError.vue';
 import Toast from 'primevue/toast';
+import EditorLoadError from '../components/editor/EditorLoadError.vue';
 
 // !!! after adding new courses, update the imports !!!
 // import * as BUTTON from "spatial-design-system/primitives/ar-button.js";
@@ -23,6 +24,7 @@ const lessonDetailService = new LessonDetailService();
 
 const renderScene = ref(false);
 const loading = ref(true);
+const showError = ref(false)
 
 onMounted(async () => {
   try {
@@ -33,6 +35,8 @@ onMounted(async () => {
     renderScene.value = true;
   } catch (error) {
     console.error('Error during project creation:', error);
+    showError.value = true
+    throw new Error(error)
   } finally {
     loading.value = false;
   }
@@ -40,7 +44,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="h-full lesson flex gap-0 mx-auto w-full justify-center lg:max-h-screen">
+  <EditorLoadError v-if="showError"/>
+
+  <div v-else class="h-full lesson flex gap-0 mx-auto w-full justify-center lg:max-h-screen">
     <Toast position="bottom-center" />
 
     <div

@@ -44,9 +44,10 @@ const submitForm = () => {
 <template>
   <Dialog
     :visible="visible"
-    modal
     header="Change layout"
-    :closable="false"
+    modal
+    dismissableMask
+    @update:visible="() => closeDialog()" 
     :style="{ width: '25rem' }"
   >
     <span class="text-surface-500 dark:text-surface-400 block mb-8"

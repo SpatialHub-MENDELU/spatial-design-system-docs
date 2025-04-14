@@ -90,6 +90,7 @@ export interface IStateFileTree {
   showMoveItemDialog: boolean;
   showCreateProjectDialog: boolean;
   showCreateProjectDialogConfirm: boolean;
+  showDeleteConfirmDialog: boolean;
   itemToMove: TreeNode | null;
   dialogType: FileType;
   showUploadDialog: boolean;

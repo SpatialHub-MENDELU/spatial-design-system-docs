@@ -25,7 +25,7 @@ const playgroundStore = useStore()
 const toast = useToast()
 
 const submit = async () => {
-  const regex = /^[a-zA-Z]([a-zA-Z0-9]*_?[a-zA-Z0-9]+)*$/;
+  const regex = /^[a-zA-Z]([a-zA-Z0-9]*[-_]?([a-zA-Z0-9]+))*$/;
   if (!regex.test(fileSystemService.state.newItemName)) {
     fileSystemService.state.errorMessage = 'Invalid format';
     return;
@@ -56,7 +56,8 @@ watch(
     :header="fileSystemService.state.dialogHeader"
     modal
     maximizable
-    :closable="false"
+    dismissableMask
+    @update:visible="() => closeDialog()" 
   >
     <div class="flex gap-2 items-center items-stretch mt-2">
       <div class="flex flex-col gap-1 w-full justify-start relative ">

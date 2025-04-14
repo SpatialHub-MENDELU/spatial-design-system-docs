@@ -13,8 +13,9 @@ const props = defineProps<IPropsTaskErrorDialog>();
     :visible="props.showDialog"
     header="Error"
     modal
+    dismissableMask
+    @update:visible="() => closeDialog()" 
     maximizable
-    :closable="false"
     class="error-dialog"
   >
     <div class="error-content">

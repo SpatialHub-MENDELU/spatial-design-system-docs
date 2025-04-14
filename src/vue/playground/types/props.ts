@@ -154,4 +154,5 @@ export interface IPropsConfirmDialog {
   accept: () => void
   reject: () => void
   showDialog: boolean
+  message: string
 }

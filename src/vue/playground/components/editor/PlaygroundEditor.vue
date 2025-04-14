@@ -19,11 +19,16 @@ const layout = computed(() => playgroundStore.getters.layout)
 const editorService = new EditorService()
 
 const props = defineProps<{
-  loading: ILoading;
+  loading: ILoading
+  updateShowError: () => void
 }>();
 
 onMounted(async () => {
-  await editorService.loadEditor(projectType.value, props.loading)
+  try {
+    await editorService.loadEditor(projectType.value, props.loading)
+  } catch (e) {
+    props.updateShowError()
+  }
 
   const editorSettings = sessionService?.getFromSession('editorSettings');
   if (editorSettings) {
@@ -36,7 +41,11 @@ watch(props.loading, () => {
 });
 
 watch(projectType, async () => {
-  await editorService.loadEditor(projectType.value, props.loading)
+  try {
+    await editorService.loadEditor(projectType.value, props.loading)
+  } catch(e) {
+    props.updateShowError()
+  }
 })
 
 </script>
