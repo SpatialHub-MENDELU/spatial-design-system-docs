@@ -56,7 +56,6 @@ function updateEditorContent(newContent: string) {
   });
 }
 
-
 const updateCode = (newCode?: any) => {
   codemirrorService.updateCode(
     String(newCode),
