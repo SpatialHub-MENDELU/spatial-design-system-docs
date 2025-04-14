@@ -16,11 +16,12 @@ import {
   getSDSAutocomplete,
 } from '../utils/Autocomplete';
 import { AutocompleteMatch } from '../types/autocomplete';
-import { Extension } from '@codemirror/state';
+import { EditorState, Extension } from '@codemirror/state';
 import { oneDark } from '@codemirror/theme-one-dark';
 import {tomorrow} from 'thememirror';
 
 import { basicSetup } from 'codemirror';
+import { EditorView } from '@codemirror/view';
 
 export class CodeMirrorService {
   private _state = initEditorState;
@@ -28,14 +29,15 @@ export class CodeMirrorService {
   private _webContainersService = inject<WebContainerService>(
     'webContainersService'
   );
+  private _codemirrorInstance: any;
 
   private _debounceTimer: any = null;
   private _theme = ref<any>();
   private _observer: MutationObserver
+  private _editorView: EditorView | null = null;
 
   constructor() {
     this._observer = new MutationObserver(this.updateTheme);
-
     this._observer.observe(document.documentElement, {
       attributes: true, 
       attributeFilter: ['class'],
@@ -51,6 +53,26 @@ export class CodeMirrorService {
     }
   }
 
+  setEditorView(view: EditorView) {
+    this._editorView = view;
+  }
+
+  reloadEditorState(doc: string, path: string) {
+    if (!this._editorView) return;
+  
+    const oldPos = this._editorView.state.selection.main.head;
+    const newExtensions = this.extensions(path).value;
+  
+    const newState = EditorState.create({
+      doc,
+      selection: { anchor: oldPos },
+      extensions: newExtensions
+    });
+  
+    this._editorView.setState(newState);
+  }
+  
+  
   updateCode = (
     newCode: string,
     playgroundStore,
@@ -175,6 +197,10 @@ export class CodeMirrorService {
 
   get debounceTimer(): any {
     return this._debounceTimer;
+  }
+
+  get editorView(): EditorView {
+    return this._editorView as EditorView;
   }
 
   get state(): IStatePlaygroundEditor {
