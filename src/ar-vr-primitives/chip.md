@@ -20,10 +20,10 @@ onMounted(async () => {
 
 # {{ $frontmatter.title }}
 
-The chip component presents information in a compact, visually distinct format. It can display text, icons, or both and supports various styles, including outlined, elevated, and text-only appearances. When the closable option is enabled, users can interact with the chip to remove it.
+The chip component presents information in a compact, visually distinct format. It can display text, icons, or both and supports various styles, including outlined, elevated, and text-only appearances.
 ## Example
 
-Below is an example of the button component.
+Below is an example of the chip component.
 
 <ComponentExample :fixed="true">
 
@@ -32,7 +32,11 @@ Below is an example of the button component.
               cursor="rayOrigin: mouse; fuse: false;">
     </a-entity>
     <a-ar-chip
-        position="0 1.5 -3"
+      position="0 1.5 -3"
+      size="medium"
+      color="#00BA92"
+      outlined="true"
+      label="Chip"
     ></a-ar-chip>
 </template>
 
@@ -44,7 +48,11 @@ import "spatial-design-system/primitives/ar-chip.js";
 
 ```html
 <a-ar-chip
-    position="0 1.5 -3"
+  position="0 1.6 -3"
+  size="medium"
+  color="#00BA92"
+  outlined="true"
+  label="Chip"
 ></a-ar-chip>
 ```
 
@@ -55,20 +63,19 @@ import "spatial-design-system/primitives/ar-chip.js";
 ## Props
 
 | Property    | Type                        | Default | Description                                                                                       |
-|-------------|-----------------------------|---------|---------------------------------------------------------------------------------------------------|
-| _visible_   | boolean                     | true    | Controls the chip's visibility.  |
-| _position_  | number[]                    | 0 0 0   | Specifies the chip's position.                                                                  |
-| _size_      | enum (small, medium, large, extra-large) | medium  | Specisies the size of the component.         |
-| _opacity_  | number                    | 1   | Specifies the opacity of the component.                                                                  |
-| _color_   | string (blue, #fff)         | #00BA92 | Defines the primary color of the chip, affecting elements such as text and background.            |
-| _mode_   | string (light, dark)        | ""      | Specifies the color scheme of the chip, supporting either a `light` or `dark` mode.      |
-| _label_      | string                      | "Chip"      | Sets the chip's label text.                                   |
-| _textcolor_ | string                      | black   | Specifies the color of the chip's text.                                                         |
-| _icon_ | string                      | ""   | Defines the icon to be displayed within the chip. If set, the icon appears alongside the label, with its position controlled by the ***iconpos*** property.                                                         |
-| _iconpos_ | string (left, right)                      | left   | Determines the position of the icon relative to the text. `"left"` places the icon before the text, while `"right"` places it after the text.                                                         |
-| _rounded_   | boolean                     | true   | Determines whether the chip has rounded edges.                                                    |
-| _outlined_  | boolean                     | false   | When enabled, the chip is displayed with an outline instead of a solid background.                         |                               
-| _elevated_   | boolean                     | false   | Elevates the chip with a shadow.  
-| _textonly_  | boolean                     | false   | Removes the background and shadow, displaying the chip as plain text.                         |                               
-| _closable_   | boolean                     | false   | Adds a close icon to the chip, allowing it to be dismissed.                                                |
+|-------------|-----------------------------|---------|--------------------------------------------------------------------------------------------------|
+| _visible_   | boolean                     | true    | Controls the chip's visibility.           |
+| _position_  | number[]                    | 0 0 0   | Specifies the chip's position.            |
+| _size_      | enum (small, medium, large, extra-large) | medium  | Specisies the size of the component.|
+| _opacity_   | number                      | 1       | Specifies the opacity of the component.   |
+| _color_     | string (blue, #fff)         | #00BA92 | Defines the primary color of the chip, affecting elements such as text and background.|
+| _mode_      | string (light, dark)        | ""      | Specifies the color scheme of the chip, supporting either a `light` or `dark` mode.|
+| _label_     | string                      | "Chip"  | Sets the chip's label text.               |
+| _textcolor_ | string                      | black   | Specifies the color of the chip's text.   |
+| _icon_      | string                      | ""      | Defines the icon to be displayed within the chip. If set, the icon appears alongside the label, with its position controlled by the ***iconpos*** property.|
+| _iconpos_   | string (left, right)        | left    | Determines the position of the icon relative to the text. `"left"` places the icon before the text, while `"right"` places it after the text.|
+| _rounded_   | boolean                     | true    | Determines whether the chip has rounded edges.|
+| _outlined_  | boolean                     | false   | When enabled, the chip is displayed with an outline instead of a solid background.|                               
+| _elevated_  | boolean                     | false   | Elevates chip with a shadow.           |
+| _textonly_  | boolean                     | false   | Removes the background and shadow, displaying the chip as plain text.|                               
 
