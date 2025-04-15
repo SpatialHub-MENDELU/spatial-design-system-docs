@@ -49,7 +49,9 @@ export const replacePlaceholder = async (
   codes: IContentCode[] | undefined = undefined,
   toast: ToastServiceMethods
 ) => {
+  console.log('p ', placeholder)
   if (placeholder) {
+    console.log(placeholder)
     const vnode = h(
       output ? ComponentExample : CodeExample,
       { fixed: true },

@@ -73,22 +73,25 @@ export class WebContainerService {
           iframeEl.src = url;
         }
 
-        iframeEl.onload = function () {
-          const iframeDocument =
-            iframeEl.contentDocument || iframeEl.contentWindow?.document;
-          const head = iframeDocument?.head;
+        // iframeEl.onload = function () {
+        //   const iframeDocument =
+        //     iframeEl.contentDocument || iframeEl.contentWindow?.document;
+        //   const head = iframeDocument?.head;
 
-          // Nastavení hlaviček uvnitř iframe (pomocí metadat)
-          const metaCOOP = document.createElement('meta');
-          metaCOOP.setAttribute('http-equiv', 'Cross-Origin-Opener-Policy');
-          metaCOOP.setAttribute('content', 'same-origin');
-          head?.appendChild(metaCOOP);
+        //   // Nastavení hlaviček uvnitř iframe (pomocí metadat)
+        //   const metaCOOP = document.createElement('meta');
+        //   metaCOOP.setAttribute('http-equiv', 'Cross-Origin-Opener-Policy');
+        //   metaCOOP.setAttribute('content', 'same-origin');
+        //   head?.appendChild(metaCOOP);
 
-          const metaCOEP = document.createElement('meta');
-          metaCOEP.setAttribute('http-equiv', 'Cross-Origin-Embedder-Policy');
-          metaCOEP.setAttribute('content', 'require-corp'); // Nebo 'credentialless'
-          head?.appendChild(metaCOEP);
-        };
+        //   const metaCOEP = document.createElement('meta');
+        //   metaCOEP.setAttribute('http-equiv', 'Cross-Origin-Embedder-Policy');
+        //   metaCOEP.setAttribute('content', 'require-corp'); // Nebo 'credentialless'
+        //   head?.appendChild(metaCOEP);
+        // }
+
+        console.log('posted')
+
       });
     } catch (error) {
       console.error('Error setting up server ready event:', error);

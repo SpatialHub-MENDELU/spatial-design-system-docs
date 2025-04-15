@@ -9,7 +9,7 @@ import { javascript } from '@codemirror/lang-javascript';
 import { css } from '@codemirror/lang-css';
 import { html } from '@codemirror/lang-html';
 import { getFileExtension } from '../utils/FileExtensionsAndIcons';
-import { autocompletion } from '@codemirror/autocomplete';
+import { acceptCompletion, autocompletion } from '@codemirror/autocomplete';
 import {
   getAframeAutocomplete,
   getAutompleteByFileExtension,
@@ -19,9 +19,9 @@ import { AutocompleteMatch } from '../types/autocomplete';
 import { EditorState, Extension } from '@codemirror/state';
 import { oneDark } from '@codemirror/theme-one-dark';
 import {tomorrow} from 'thememirror';
-
+import { indentWithTab } from "@codemirror/commands";
 import { basicSetup } from 'codemirror';
-import { EditorView } from '@codemirror/view';
+import { EditorView, keymap } from '@codemirror/view';
 
 export class CodeMirrorService {
   private _state = initEditorState;
@@ -29,7 +29,6 @@ export class CodeMirrorService {
   private _webContainersService = inject<WebContainerService>(
     'webContainersService'
   );
-  private _codemirrorInstance: any;
 
   private _debounceTimer: any = null;
   private _theme = ref<any>();
@@ -72,7 +71,6 @@ export class CodeMirrorService {
     this._editorView.setState(newState);
   }
   
-  
   updateCode = (
     newCode: string,
     playgroundStore,
@@ -82,24 +80,16 @@ export class CodeMirrorService {
   ) => {
     if (!this._webContainersService) return;
     this._webContainersService.state.isLoading = true;
-
+  
     playgroundStore.commit('updateCurrentFileContent', newCode);
-    if (this._debounceTimer) clearTimeout(this._debounceTimer);
-    this._debounceTimer = setTimeout(async () => {
-      try {
-        await this._webContainersService?.writeFile(
-          path,
-          fileContent,
-          !isDetail
-        );
-      } catch (error) {
-        console.error('Error during runCode execution:', error.message);
-      } finally {
-        if (this._webContainersService) {
-          this._webContainersService.state.isLoading = false;
-        }
-      }
-    }, 100);
+  
+    this._webContainersService?.writeFile(path, newCode, !isDetail)
+      .catch(error => {
+        console.error('Error during writeFile execution:', error.message);
+      })
+      .finally(() => {
+        this._webContainersService!.state.isLoading = false;
+      });
   };
 
   updateTheme = async () => {
@@ -169,7 +159,13 @@ export class CodeMirrorService {
         ],
       });
 
+      const tabCompletion = keymap.of([
+        { key: "Tab", run: acceptCompletion },
+        indentWithTab
+      ]);
+
       return [
+        tabCompletion,
         basicSetup,
         customAutocomplete,
         this._getlanguageExtensions(fileExtension) as Extension,

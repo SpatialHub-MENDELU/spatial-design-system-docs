@@ -177,6 +177,7 @@ const onIframeLoad = async () => {
           'w-full h-full': !iframeLoading,
           'w-0 h-0': iframeLoading
         }"
+        allow="fullscreen"
         sandbox="allow-scripts allow-same-origin allow-forms"
       ></iframe>
 

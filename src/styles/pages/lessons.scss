@@ -1,9 +1,8 @@
 @use '../variables' as *;
-
 .lesson {
   &__content {
     p, span {
-      font-size: clamp(0.95rem, 0.95vw, 1.3rem);
+      font-size: clamp(0.95rem, 0.9vw, 1.1rem);
 
       &:not(&:last-of-type) {
         margin-bottom: 1rem;

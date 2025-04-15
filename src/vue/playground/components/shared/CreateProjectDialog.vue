@@ -58,7 +58,11 @@ const updateProjectType = (projectType: ProjectType) => {
         @click="updateProjectType(item.projectType)"
       >
         <i class="text-[32px] text-primary" :class="item.icon" />
-        <p class="md:text-[16px] text-[15px] duration-300">{{ item.text }}</p>
+        <p class="md:text-[16px] text-[15px] duration-300 border-white"
+          :class="
+            state.projectType === item.projectType
+              ? 'border-b'
+              : ''">{{ item.text }}</p>
       </div>
     </div>
 

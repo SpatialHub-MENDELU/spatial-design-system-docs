@@ -61,32 +61,43 @@ export class LessonDetailService {
     const activeCourse = courseDetailData.find(
       (c) => c.slug === courseSlug
     ) as ICourseDetail;
-
+  
     if (!lessonById || !activeCourse) {
       this._state.canBeDisplayed = false;
       return;
     }
-
+  
     this._state.activeCourse = activeCourse;
     this._state.lessonById = lessonById;
     this._state.activeLesson = lessonByCourseVariant(
       activeCourse.slug,
       lessonById
     ) as ILesson;
-
-    nextTick(() => {
-      try {
-        replacePlaceholder(
-          document.querySelector('#placeholder') as HTMLElement,
-          String(this._state.activeLesson?.contentOutput),
-          this._state.activeLesson?.contentCode as IContentCode[],
-          this._toast
-        );
-      } catch (e) {
-        console.log(e);
+  
+    // Use MutationObserver to wait for #placeholder to exist
+    const observer = new MutationObserver((mutations, obs) => {
+      const placeholderEl = document.querySelector('#placeholder') as HTMLElement;
+      if (placeholderEl) {
+        try {
+          replacePlaceholder(
+            placeholderEl,
+            String(this._state.activeLesson?.contentOutput),
+            this._state.activeLesson?.contentCode as IContentCode[],
+            this._toast
+          );
+        } catch (e) {
+          console.log(e);
+        }
+        obs.disconnect();
       }
     });
+  
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
   }
+  
 
   private _loadSessionData(lessonId) {
     const completedLessonsFromSession =
