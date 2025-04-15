@@ -42,8 +42,17 @@ export class LessonDetailService {
     }
 
     this._loadLessonAndCourse(lessonId, courseSlug);
+
+    await nextTick();
+
     this._loadSessionData(lessonId);
     this._setLessonNavigation(lessonId);
+
+    if (!this._state.canBeDisplayed) {
+      return;
+    }
+
+    await nextTick();
 
     if (this._state.activeLesson?.task) {
       try {
@@ -74,7 +83,6 @@ export class LessonDetailService {
       lessonById
     ) as ILesson;
   
-    // Use MutationObserver to wait for #placeholder to exist
     const observer = new MutationObserver((mutations, obs) => {
       const placeholderEl = document.querySelector('#placeholder') as HTMLElement;
       if (placeholderEl) {
@@ -98,7 +106,6 @@ export class LessonDetailService {
     });
   }
   
-
   private _loadSessionData(lessonId) {
     const completedLessonsFromSession =
       (this._sessionService?.getFromSession(

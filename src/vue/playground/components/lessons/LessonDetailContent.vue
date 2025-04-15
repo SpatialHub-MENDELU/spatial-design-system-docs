@@ -20,7 +20,7 @@ const props = defineProps<IPropsLessonDetailContent>();
   >
     <div class="flex flex-col w-full h-full">
       <div
-        class="flex items-center gap-2 lg:mb-6 mb-4 cursor-pointer bg-primary w-max py-2 px-4 rounded-2xl"
+        class="flex items-center gap-2 lg:mb-6 mb-4 cursor-pointer bg-primary hover:bg-tertiary duration-300 w-max py-2 px-4 rounded-2xl"
         @click="props.lessonDetailService.state.isOverviewVisible = true"
       >
         <i

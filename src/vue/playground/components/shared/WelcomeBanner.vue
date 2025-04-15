@@ -42,7 +42,7 @@ const createNewProject = (project: ProjectType) => {
         </p>
         <button
           @click="showDialog"
-          class="px-6 py-3 bg-primary text-white rounded-lg font-semibold shadow-lg transition duration-300 ease-in-out mb-4
+          class="px-6 py-3 bg-primary hover:bg-tertiary text-white rounded-lg font-semibold shadow-lg transition duration-300 ease-in-out mb-4
           md:text-[18px] text-[16px]"
         >
           New Project

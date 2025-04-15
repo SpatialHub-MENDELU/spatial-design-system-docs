@@ -88,6 +88,7 @@ export interface IPropsEditorOutput {
   loading: ILoading;
   isDetail: boolean;
   outputIsShown?: boolean;
+  isResizing?: boolean;
 }
 
 export interface IPropsFolderFileUploader {

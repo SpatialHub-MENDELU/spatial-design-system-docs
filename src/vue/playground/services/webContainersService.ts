@@ -90,8 +90,6 @@ export class WebContainerService {
         //   head?.appendChild(metaCOEP);
         // }
 
-        console.log('posted')
-
       });
     } catch (error) {
       console.error('Error setting up server ready event:', error);
