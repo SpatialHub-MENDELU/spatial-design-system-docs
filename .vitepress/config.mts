@@ -66,6 +66,7 @@ export default defineConfig({
         items: [
           { text: 'auto-position', link: '/ar-vr-components/auto-position' },
           { text: 'auto-scale', link: '/ar-vr-components/auto-scale' },
+          { text: 'auto-vr', link: '/ar-vr-components/auto-vr' },
           { text: 'billboard', link: '/ar-vr-components/billboard' },
           { text: 'circle', link: '/ar-vr-components/circle' },
           { text: 'fit-into-fov', link: '/ar-vr-components/fit-into-fov' },
@@ -98,6 +99,11 @@ export default defineConfig({
           { text: 'follow-element', link: '/ar-vr-components/follow-element' },
           { text: 'follow-camera', link: '/ar-vr-components/follow-camera' },
           { text: 'grid', link: '/ar-vr-components/grid' },
+          {text: 'controllers', link: '/ar-vr-components/controllers'},
+          { text: 'vr-interactive', link: '/ar-vr-components/vr-interactive' },
+          { text: 'controller-attach', link: '/ar-vr-components/controller-attach' },
+          { text: 'controller-teleport', link: '/ar-vr-components/controller-teleport' },
+          { text: 'controller-movement', link: '/ar-vr-components/controller-movement' },
         ],
       },
       {
