@@ -125,6 +125,6 @@ const createNewProject = async (project: ProjectType) => {
     </div>
 
     <ConfirmDialog />
-    <RightBar />
+    <RightBar :show-layout-icon="true" />
   </div>
 </template>

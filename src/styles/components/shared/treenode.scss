@@ -28,8 +28,9 @@
   color: var(--vp-c-text-1);
 }
 
-.p-treenode-label, .p-treenode-content {
-  width: 100%;
+.p-tree-node-label, .p-tree-node-content {
+  width: 100% !important;
+  text-align: left !important;
 }
 
 .p-treenode-label {

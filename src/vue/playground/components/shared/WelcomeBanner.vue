@@ -22,7 +22,6 @@ const createNewProject = (project: ProjectType) => {
 };
 </script>
 
-
 <template>
   <div class="main-content h-full">
     <div class="lg:p-16 px-0 md:py-32 py-16 h-full w-full flex items-center gap-16">

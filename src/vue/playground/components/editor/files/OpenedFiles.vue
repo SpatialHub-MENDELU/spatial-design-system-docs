@@ -52,7 +52,7 @@ const setOpenedFile = async (file: FolderItem) => {
 
         <i
           :class="[getFileIcon(file), { 'text-primary': file.path === currentFilePath }]"
-          class="w-4 h-4"
+          class="w-4 h-4 text-grey"
         />       
         <p
           class="md:text-[14px] text-[13px] truncate max-w-[150px]"

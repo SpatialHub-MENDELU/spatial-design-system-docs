@@ -10,7 +10,6 @@ function crossOriginIsolationMiddleware(_, response, next) {
 const crossOriginIsolation = {
   name: 'cross-origin-isolation',
   configureServer: server => { server.middlewares.use(crossOriginIsolationMiddleware); },
-  // configurePreviewServer: server => { server.middlewares.use(crossOriginIsolationMiddleware); },
 };
 
 // https://vitepress.dev/reference/site-config

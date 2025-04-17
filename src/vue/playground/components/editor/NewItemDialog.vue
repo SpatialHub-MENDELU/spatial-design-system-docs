@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, inject, watch } from 'vue';
+import { computed, defineProps, inject, watch } from 'vue';
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
@@ -19,6 +19,7 @@ const webContainersService = inject<WebContainerService>(
 const fileSystemService = new FileSystemService(
   webContainersService as WebContainerService
 );
+const projectType = computed(() => playgroundStore.getters.projectType);
 
 const props = defineProps<IPropsNewItemDialog>();
 const playgroundStore = useStore()
@@ -43,7 +44,7 @@ watch(
   () => [props.itemToRename, props.dialogType],
   ([newItemToRename, newDialogType]) => {
     const newValue = newItemToRename as FolderItem;
-    fileSystemService.updateEditedItem(newValue, props, newDialogType);
+    fileSystemService.updateEditedItem(newValue, props, newDialogType, projectType.value);
   },
   { immediate: true, deep: true }
 );
@@ -79,7 +80,7 @@ watch(
         <div class="flex flex-col gap-1 w-max justify-start relative">
           <Dropdown
             v-model="fileSystemService.state.newFileExtension"
-            :options="fileSystemService.fileNameExtensions"
+            :options="fileSystemService.getFileNameExtensions(projectType)"
             placeholder="Select"
             optionLabel="label"
             optionValue="value"

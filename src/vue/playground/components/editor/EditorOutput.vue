@@ -60,12 +60,13 @@ const onIframeLoad = async () => {
     </div>
 
     <div
-      class="h-full lg:px-0 px-8 flex items-center justify-center output-container"
+      class="h-full lg:px-0 px-8 flex items-center justify-center output-container min-h-[10rem]"
       :class="{
-        'lg:border-t-0 lg:border-b-0 lg:border-x-0 border border-border-color': loading,
+        'lg:border-t-0 lg:border-b-0 lg:border-x-0 border border-border-color': loading.installing || loading.running,
         'border-x-0': props.isDetail
       }"
     >
+
       <div v-if="props.loading.installing || props.loading.running" class="lg:h-full flex flex-col items-center justify-center">
         <div class="spinner" />
         <p v-if="props.loading.installing" class="text-grey md:text-[16px] text-[15px] text-center">

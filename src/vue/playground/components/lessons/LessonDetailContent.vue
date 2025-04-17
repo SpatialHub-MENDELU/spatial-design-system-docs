@@ -12,10 +12,7 @@ const props = defineProps<IPropsLessonDetailContent>();
     class="h-full block overflow-x-auto relative duration-300"
     :class="{
       ' w-0 overflow-hidden': !props.lessonDetailService.state.isContentVisible,
-      ' lg:w-1/2 w-full':
-        props.lessonDetailService.state.isContentVisible &&
-        props.lessonDetailService.state.activeLesson?.task,
-      ' w-full': !props.lessonDetailService.state.activeLesson?.task,
+      ' w-full': props.lessonDetailService.state.isContentVisible
     }"
   >
     <div class="flex flex-col w-full h-full">

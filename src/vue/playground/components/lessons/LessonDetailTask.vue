@@ -22,11 +22,7 @@ const onResizeEnd = () => {
 
 <template>
   <div
-    class="flex flex-col min-h-0 relative duration-300 lg:h-full"
-    :class="{
-      ' lg:w-1/2 w-full': props.lessonDetailService.state.isContentVisible,
-      ' w-full': !props.lessonDetailService.state.isContentVisible,
-    }"
+    class="flex flex-col min-h-0 relative duration-300 lg:h-full w-full"
     v-if="props.lessonDetailService.state.activeLesson?.task"
   >
     <div class="flex justify-end shrink-0">
@@ -82,6 +78,13 @@ const onResizeEnd = () => {
       v-if="props.lessonDetailService.state.activeLesson?.task"
       class="flex items-center gap-3 py-2 justify-end"
     >
+    <button
+      class="px-6 py-1 hover:bg-grey bg-extra-light-background text-black rounded-2xl transition duration-300 ease-in-out md:text-[16px] text-[15px] coursor-pointer"
+      @click="props.lessonDetailService.showHintDialog"
+    >
+      Hint
+    </button>
+    
       <button
         class="px-6 py-1 bg-primary hover:bg-tertiary text-white rounded-2xl transition duration-300 ease-in-out md:text-[16px] text-[15px] coursor-pointer"
         @click.prevent="props.lessonDetailService.submitTask"
@@ -109,13 +112,6 @@ const onResizeEnd = () => {
             d="M4 12a8 8 0 018-8v8H4z"
           ></path>
         </svg>
-      </button>
-
-      <button
-        class="px-6 py-1 hover:bg-grey bg-extra-light-background text-black rounded-2xl transition duration-300 ease-in-out md:text-[16px] text-[15px] coursor-pointer"
-        @click="props.lessonDetailService.showHintDialog"
-      >
-        Hint
       </button>
     </div>
 

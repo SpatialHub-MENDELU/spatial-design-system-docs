@@ -98,6 +98,7 @@ export interface IStateFileTree {
   currentItem: FolderItem | null;
   parentItemNode: TreeNode | null;
   itemToRename: FolderItem | null;
+  projectType: ProjectType | null
 }
 
 export interface IStateShareCourseDialog {

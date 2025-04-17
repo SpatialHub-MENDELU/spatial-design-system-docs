@@ -121,6 +121,7 @@ export class FileTreeService {
     playgroundStore.commit('updateCurrentFileContent', null);
     playgroundStore.commit('updateFoldersLoading', true);
     playgroundStore.commit('updateCurrentFilePath', '');
+    this._state.projectType = project
     this.closeDialog();
   };
 

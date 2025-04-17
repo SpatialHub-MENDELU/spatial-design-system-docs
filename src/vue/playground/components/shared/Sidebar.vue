@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, reactive, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { sidebarData } from '../../data/sidebar-data';
 import { IPropsSidebar } from '../../types/props';
 import * as ROUTES from "../../constants/routes";
@@ -13,28 +13,14 @@ const projectType = computed(() => playgroundStore.getters.projectType)
 
 onMounted(() => {
   activeRoute.value = window.location.pathname;
-
-  if (window.location.pathname.includes('/playground/editor')) {
-    sidebarState.isEditor = true;
-  } else {
-    sidebarState.isEditor = false;
-  }
 });
 
-const sidebarState = reactive({
-  isEditor: true,
-});
 </script>
 
 <template>
   <div
-    class="sidebar flex flex-col lg:justify-between justify-start 2xl:pl-0 lg:pl-[32px] overflow-x-auto"
-    :class="{
-      ' max-w-full sidebar-grow w-max lg:h-auto lg:max-h-auto h-[3.5rem] h-max':
-        sidebarState.isEditor,
-      'lg:w-[5rem] lg:h-auto lg:max-h-auto h-[3.5rem] h-max':
-        !sidebarState.isEditor,
-    }"
+    class="sidebar flex flex-col lg:justify-between justify-start 2xl:pl-0 lg:pl-[32px] overflow-x-auto
+    max-w-full sidebar-grow w-max lg:h-auto lg:max-h-auto h-[3.5rem] h-max"
   >
     <nav
       class="flex lg:flex-col lg:gap-0 gap-5 lg:justify-between lg:items-end items-center lg:h-full h-[3.5rem] lg:border-r border-border-color lg:px-2 w-full"

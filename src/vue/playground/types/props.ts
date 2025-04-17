@@ -114,7 +114,7 @@ export interface IPropsLessonsList {
   activeCourse: ICourseDetail;
   lessonsFromSession: ILessonVariants[];
   activeLesson: ILessonVariants | null;
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 export interface IPropsBreadcrumbs {
@@ -156,4 +156,8 @@ export interface IPropsConfirmDialog {
   reject: () => void
   showDialog: boolean
   message: string
+}
+
+export interface IPropsRightBar {
+  showLayoutIcon: boolean
 }

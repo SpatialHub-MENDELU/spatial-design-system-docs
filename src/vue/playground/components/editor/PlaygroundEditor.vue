@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, watch, computed, inject, ref } from 'vue';
+import { onMounted, watch, computed, inject, ref, onUnmounted, reactive } from 'vue';
 import Codemirror from './Codemirror.vue';
 import EditorOutput from './EditorOutput.vue';
 import { ILoading } from '../../types/loading';
@@ -25,7 +25,25 @@ const props = defineProps<{
   updateShowError: () => void;
 }>();
 
+const handleResize = () => {
+  if (window.innerWidth < 1023) {
+    const editorSettings = sessionService?.getFromSession('editorSettings') || {};
+    playgroundStore.commit('updateLayout', Layout.VERTICAL)
+    sessionService?.storeInSession('editorSettings', {
+      ...editorSettings,
+      selectedLayout: Layout.VERTICAL,
+    });
+  }
+};
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize);
+});
+
 onMounted(async () => {
+  handleResize();
+  window.addEventListener('resize', handleResize);
+
   try {
     await editorService.loadEditor(projectType.value, props.loading);
   } catch (e) {
