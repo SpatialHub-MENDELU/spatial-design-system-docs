@@ -1,30 +1,32 @@
-import { defineConfig } from "vitepress";
-import { handlePlaygroundPageClass } from "../src/vue/playground/utils/HandlePlaygroundPageClass";
+import { defineConfig } from 'vitepress';
+import { handlePlaygroundPageClass } from '../src/vue/playground/utils/HandlePlaygroundPageClass';
 
 function crossOriginIsolationMiddleware(_, response, next) {
-  response.setHeader("Cross-Origin-Opener-Policy", "same-origin");
-  response.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+  response.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+  response.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
   next();
 }
 
 const crossOriginIsolation = {
   name: 'cross-origin-isolation',
-  configureServer: server => { server.middlewares.use(crossOriginIsolationMiddleware); },
+  configureServer: (server) => {
+    server.middlewares.use(crossOriginIsolationMiddleware);
+  },
   // configurePreviewServer: server => { server.middlewares.use(crossOriginIsolationMiddleware); },
 };
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: 'Spatial Design System',
-  description: "AR/VR Design System with detailed guidelines and ready to use components",
-  srcDir: "./src",
+  description:
+    'AR/VR Design System with detailed guidelines and ready to use components',
+  srcDir: './src',
   head: [
-    ['link', { rel: 'stylesheet', href: '../../../.vitepress/theme/tailwind.css' }],
     [
-      'script',
-      { type: 'text/javascript' },
-      handlePlaygroundPageClass
-    ]    
+      'link',
+      { rel: 'stylesheet', href: '../../../.vitepress/theme/tailwind.css' },
+    ],
+    ['script', { type: 'text/javascript' }, handlePlaygroundPageClass],
   ],
   themeConfig: {
     logo: {
@@ -93,6 +95,10 @@ export default defineConfig({
                 text: 'place-object-manager',
                 link: '/ar-vr-components/place-object-manager',
               },
+              {
+                text: 'ar-placement-utils',
+                link: '/ar-vr-components/ar-placement-utils',
+              },
             ],
           },
           { text: 'follow-element', link: '/ar-vr-components/follow-element' },
@@ -146,10 +152,10 @@ export default defineConfig({
   vite: {
     plugins: [crossOriginIsolation],
     server: {
-      cors: true
+      cors: true,
     },
     preview: {
-      cors: true
-    }
+      cors: true,
+    },
   },
 });

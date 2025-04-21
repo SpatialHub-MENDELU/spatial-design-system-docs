@@ -4,60 +4,148 @@ title: place-object-components
 
 # {{ $frontmatter.title }}
 
-The place-object components provide a complete system for placing virtual objects in AR environments. The system consists of two main components and a shared utility library that work together to enable intuitive and consistent object placement.
+The place-object components provide a complete system for placing virtual objects in AR environments. The components work together to create an intuitive and consistent object placement experience with advanced features like preview, surface detection, and object management.
 
-## System Overview
+## Component Structure
 
-- [**place-object**](/ar-vr-components/place-object) - Applies to individual objects that can be placed in AR
-- [**place-object-manager**](/ar-vr-components/place-object-manager) - Scene-level component that manages all placed objects
+The system consists of three main parts:
 
-Both components use a shared utilities library (`ar-placement-utils`) that provides consistent surface detection, validation, and object positioning.
+1. [**place-object**](/ar-vr-components/place-object) - Component applied to individual objects that users can place
+2. [**place-object-manager**](/ar-vr-components/place-object-manager) - Scene-level component that manages all placed objects
+3. [**ar-placement-utils**](/ar-vr-components/ar-placement-utils) - Core utility library that handles surface detection, validation, and placement logic
+
+This modular design provides a consistent placement experience while allowing flexibility in how the system is used.
 
 ## Basic Example
 
-Here's a simple example of the place-object components working together:
-
-```js
-import "spatial-design-system/components/ar/place-object.js";
-import "spatial-design-system/components/ar/place-object-manager.js";
-```
+Here's a simple example of the complete AR placement system:
 
 ```html
+<a-scene webxr="optionalFeatures: hit-test">
+  <!-- Place object manager to handle hit testing and object tracking -->
+  <a-entity place-object-manager="maxObjects: 10; showPreview: true"></a-entity>
 
-
-
+  <!-- Placeable object template -->
+  <a-entity
+    id="chair-template"
+    gltf-model="#chair-model"
+    place-object="
+      surfaceTypes: horizontal;
+      scale: 0.5;
+      faceCamera: true"
+    visible="false">
+  </a-entity>
+</a-scene>
 ```
 
-## How It Works
+## End-to-End Placement Flow
 
-1. **Surface Detection**: The system uses AR hit testing to detect real-world surfaces
-2. **Validation**: Surfaces are validated based on type (horizontal, wall, ceiling), height, and distance
-3. **Preview**: A semi-transparent preview shows where the object will be placed
-4. **Placement**: When a user taps, a copy of the template object is created and placed at the hit location
-5. **Management**: The manager keeps track of all placed objects and provides methods to remove them
+1. **Setup**:
+   - `place-object-manager` initializes AR hit testing
+   - `place-object` components are applied to template objects (usually hidden)
 
-## Shared Utility: ar-placement-utils
+2. **Detection**:
+   - User points device at real-world surfaces
+   - WebXR hit test API detects surfaces
+   - `place-object-manager` shows hit test marker at detected points
 
-Both components use a shared utility library that provides:
+3. **Preview**:
+   - Manager creates semi-transparent copy of template object
+   - Preview follows hit test position
+   - `ARPlacementUtils` positions preview correctly based on surface type
 
-- **Surface detection**: Determines if a surface is a floor, wall, or ceiling
-- **Validation**: Checks if a surface meets the placement criteria
-- **Placement logic**: Positions and orients objects consistently on different surface types
+4. **Placement**:
+   - User taps to place (triggers WebXR "select" event)
+   - `place-object` validates surface and creates a copy of the template
+   - `ARPlacementUtils` handles proper positioning and orientation
+   - `place-object-manager` adds object to its tracking list
 
-This ensures that objects are placed with the same logic whether placed individually or managed as a group.
+5. **Management**:
+   - `place-object-manager` provides methods to remove objects
+   - Enforces maximum object limit
+   - Fires events when objects are placed or removed
 
-## Component Relationship
+## Supported Surface Types
 
-- `place-object`: Applied to template objects that users can place
-- `place-object-manager`: Applied to the scene to manage all placed objects
-- When a user taps to place an object:
-  1. `place-object` creates a copy of its entity
-  2. The utility positions and orients the copy
-  3. `place-object-manager` tracks the new object and updates the preview
+The system can detect and place objects on three types of surfaces:
 
-## Detailed Documentation
+- **Horizontal** (floors, tables): Detected when surface normal points upward
+- **Wall** (vertical surfaces): Detected when surface normal is near-horizontal
+- **Ceiling** (overhead surfaces): Detected when surface normal points downward
 
-For more details on individual components:
+## Special Placement Modes
 
-- [place-object](/ar-vr-components/place-object) - Component for individual placeable objects
-- [place-object-manager](/ar-vr-components/place-object-manager) - Manager for placed objects
+### Regular Object Placement
+
+Standard 3D models are positioned appropriately for each surface:
+- On floors: Upright, optionally facing the camera
+- On walls: "Standing" on the wall, facing outward
+- On ceilings: Attached upside-down
+
+### Poster Mode
+
+Setting `isPoster: true` changes the placement behavior:
+- On floors: Laid flat with orientation toward camera
+- On walls: Mounted flat against the wall
+- On ceilings: Attached flat to ceiling
+
+## Advanced Features
+
+### Custom Rotation
+
+After basic placement, you can apply custom rotation in degrees:
+
+```html
+<a-entity
+  place-object="customRotation: 0 45 0"
+  visible="false">
+</a-entity>
+```
+
+### Multi-Surface Support
+
+Allow placement on multiple surface types:
+
+```html
+<a-entity
+  place-object="surfaceTypes: horizontal, wall"
+  visible="false">
+</a-entity>
+```
+
+### Object Management
+
+Access and manage placed objects programmatically:
+
+```javascript
+const manager = document.querySelector('[place-object-manager]').components['place-object-manager'];
+
+// Clear all objects
+manager.removeAllObjects();
+
+// Remove most recent object
+manager.removeLastObject();
+
+// Check how many objects have been placed
+console.log(manager.placedObjects.length);
+```
+
+## Technical Implementation
+
+The system uses a shared utility (`ARPlacementUtils`) to ensure consistent placement behavior across components. This approach:
+
+- Maintains consistent positioning logic
+- Centralizes complex calculations
+- Makes the system easier to extend
+- Ensures the preview matches the final placement
+
+## Usage Tips
+
+1. **Template Setup**: Keep template objects hidden (`visible="false"`)
+2. **Scene Configuration**: Ensure WebXR is configured with `hit-test` feature
+3. **Surface Filtering**: Use `surfaceTypes` to restrict where objects can be placed
+4. **Preview**: Enable `showPreview` for better user experience
+5. **Object Limits**: Set appropriate `maxObjects` to manage scene complexity
+6. **Event Handling**: Listen for `object-placed` and `object-managed` events
+
+For more detailed information on each component, see their individual documentation pages.

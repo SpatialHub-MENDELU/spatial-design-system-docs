@@ -4,7 +4,7 @@ title: place-object-manager
 
 # place-object-manager
 
-The `place-object-manager` component provides scene-level management for AR object placement. It tracks placed objects, shows placement previews, visualizes hit test results, and offers methods to manage the objects.
+The `place-object-manager` component provides scene-level management for AR object placement. It handles hit test visualization, object previewing, and manages the collection of placed objects in the scene.
 
 ## Props
 
@@ -18,10 +18,10 @@ The `place-object-manager` component provides scene-level management for AR obje
 
 ## Methods
 
-| Method | Parameters | Description |
-| --- | --- | --- |
-| *removeAllObjects()* | - | Removes all placed objects from the scene |
-| *removeLastObject()* | - | Removes the most recently placed object |
+| Method | Description |
+| --- | --- |
+| *removeAllObjects()* | Removes all placed objects from the scene |
+| *removeLastObject()* | Removes the most recently placed object |
 
 ## Events
 
@@ -33,35 +33,113 @@ The `place-object-manager` component provides scene-level management for AR obje
 
 ### Hit Test Visualization
 
-The component creates a visual marker that shows where AR surfaces are detected:
+The component creates a visual marker that shows where AR hit tests intersect with real-world surfaces:
 
-- A red circular marker appears at hit test locations
-- The marker adapts to the orientation of the detected surface
-- Customize or disable with `showHitTestMarker` and `hitTestMarker` properties
+```html
+<!-- Custom hit test marker (optional) -->
+<a-entity id="ar-hit-test-marker" visible="false">
+  <!-- Marker content defined in place-object-manager component -->
+</a-entity>
 
-### Placement Preview
+<!-- Manager with custom marker reference -->
+<a-entity place-object-manager="hitTestMarker: #ar-hit-test-marker"></a-entity>
+```
 
-When `showPreview` is enabled:
+The default marker consists of:
+- A red circular ring
+- A center dot
+- Automatic orientation to match the detected surface
 
-- A semi-transparent copy of the object to be placed follows the hit test marker
-- Shows exactly how the object will be oriented when placed
-- Updates in real-time as the user moves around the environment
+### Object Previewing
+
+When `showPreview` is enabled, the manager:
+
+1. Creates a semi-transparent ghost copy of the object to be placed
+2. Updates its position and orientation as the user moves
+3. Shows exactly how the object will look when placed
+4. Uses the same placement logic as the final placement
+
+This provides immediate visual feedback before the user taps to place the object.
 
 ### Object Management
 
-The component maintains a list of all placed objects and provides:
+The manager keeps track of all objects placed in the scene:
 
-- Automatic enforcement of `maxObjects` limit
-- Methods to remove specific objects or clear all
-- Events to notify other components about object management actions
+```javascript
+// Access the list of placed objects
+const placedObjects = document.querySelector('[place-object-manager]').components['place-object-manager'].placedObjects;
 
-## Usage with place-object
+// Remove all objects
+document.querySelector('[place-object-manager]').components['place-object-manager'].removeAllObjects();
 
-This component is designed to work with the [place-object](/ar-vr-components/place-object) component. While `place-object` handles individual object placement, the manager:
+// Remove most recently placed object
+document.querySelector('[place-object-manager]').components['place-object-manager'].removeLastObject();
+```
 
-1. Listens for `object-placed` events from `place-object` components
-2. Tracks all placed objects in the scene
-3. Provides centralized management functions
-4. Creates visual feedback for AR hit testing and placement
+It also automatically enforces the `maxObjects` limit, preventing further placements when the limit is reached.
 
-For a complete AR placement system, use both components together as shown in the [place-object-components](/ar-vr-components/place-object-components) overview.
+## Implementation Details
+
+The manager handles several responsibilities:
+
+1. **WebXR Setup**: Configures the scene for AR hit testing
+2. **Hit Test Visualization**: Creates and updates the hit test marker
+3. **Preview Creation**: Generates ghost copies for placement preview
+4. **Object Tracking**: Maintains the list of placed objects
+5. **Placement Coordination**: Works with `place-object` components via events
+
+It uses the shared [`ARPlacementUtils`](/ar-vr-components/ar-placement-utils) to ensure consistent placement behavior across the entire AR system.
+
+## Object Update Process
+
+For each frame (tick):
+
+1. Gets the current AR hit test result from the scene
+2. Updates the hit test marker position and orientation
+3. If preview is enabled, updates the preview object to match
+4. Both updates use `ARPlacementUtils.placeObject()` for consistent positioning
+
+## Example Setup
+
+```html
+<a-scene webxr="optionalFeatures: hit-test">
+  <!-- Place object manager configured with options -->
+  <a-entity place-object-manager="
+    maxObjects: 5;
+    showHitTestMarker: true;
+    showPreview: true;">
+  </a-entity>
+
+  <!-- Placeable object templates -->
+  <a-entity
+    id="chair"
+    gltf-model="#chair-model"
+    place-object="surfaceTypes: horizontal"
+    visible="false">
+  </a-entity>
+
+  <a-entity
+    id="poster"
+    material="src: #poster-texture"
+    geometry="primitive: plane; width: 1; height: 1.4"
+    place-object="surfaceTypes: wall, horizontal; isPoster: true"
+    visible="false">
+  </a-entity>
+</a-scene>
+```
+
+## Events Usage
+
+Listen for object management events:
+
+```javascript
+document.querySelector('[place-object-manager]').addEventListener('object-managed', function(e) {
+  console.log('Action:', e.detail.action);
+  console.log('Object count:', e.detail.totalObjects);
+
+  // If an object was placed or removed, reference it
+  if (e.detail.entity) {
+    console.log('Affected entity:', e.detail.entity);
+  }
+});
+```
