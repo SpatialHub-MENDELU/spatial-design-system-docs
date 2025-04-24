@@ -14,7 +14,7 @@ The `place-object` component enables objects to be placed in AR environments by 
 | *surfaceTypes* | array | `["horizontal"]` | Valid surface types: "horizontal", "wall", "ceiling" |
 | *distanceRange* | vec2 | `{ x: 0.5, y: 5.0 }` | Min/max distance from camera for valid placement |
 | *scale* | number | 1.0 | Scale applied to the placed object |
-| *isPoster* | boolean | false | When true, places object flat against surfaces |
+| *isPoster* | boolean | false | When true, places object flat against surfaces. Is ideal for flat elements, like [a-ar-menu](/ar-vr-primitives/menu)|
 | *adjustOrientation* | boolean | true | Adjust orientation based on surface type (Object will be placed the same relatively to the surface angle) |
 | *customRotation* | vec3 | `{ x: 0, y: 0, z: 0 }` | Custom rotation in degrees applied after placement |
 | *faceCamera* | boolean | true | Orient the object toward the camera |
