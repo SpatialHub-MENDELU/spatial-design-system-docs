@@ -5,16 +5,6 @@ export const getMessageHandlerCode = (projectType: ProjectType): string => {
     case 'vanilla':
       return `
         <script>
-          window.addEventListener('load', () => {
-            const style = document.createElement('style');
-            style.innerHTML = \`
-              .a-enter-vr {
-                display: none !important;
-              }
-            \`;
-            document.head.appendChild(style);
-          })
-
           window.addEventListener('message', (event) => {
             if (['http://localhost:5174', 'https://sds.spatialhub.cz', 'http://localhost:8081'].includes(event.origin)) {
               if (event.data.type === 'getDocument') {

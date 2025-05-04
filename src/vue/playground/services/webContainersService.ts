@@ -375,9 +375,6 @@ export class WebContainerService {
       throw new Error('WebContainer instance is not initialized.');
     }
 
-    const mainProjectFile = this.getMainProjectFile(projectType);
-    await this.setupMessageHandling(mainProjectFile, projectType);
-
     await this.stopCurrentProject();
 
     try {
@@ -531,7 +528,6 @@ export class WebContainerService {
             const document = this.parseDocument(iframeContent);
             eval(code);
           } catch (error) {
-            window.removeEventListener('message', onMessageHandler);
             return reject(new Error(error.message));
           }
 
