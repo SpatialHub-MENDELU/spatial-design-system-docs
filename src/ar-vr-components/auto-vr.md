@@ -37,11 +37,13 @@ Below is an example of using the auto-vr component to automatically enter VR mod
 
 ```js
 import "spatial-design-system/components/autoVr.js";
-// Set up controllers directly on the scene
-const scene = document.createElement("a-scene");
-scene.setAttribute("auto-vr", {
-  autoEnter: true,
-});
+```
+```html
+<!-- Set up controllers directly on the scene -->
+<a-scene auto-vr="autoEnter: true">
+    <a-camera></a-camera>
+</a-scene>
+
 ```
 
 </template>

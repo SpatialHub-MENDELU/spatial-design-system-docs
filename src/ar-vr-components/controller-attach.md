@@ -77,7 +77,7 @@ import "spatial-design-system/components/controllerAttach.js";
 | _hand_      | string  | "right"    | Which controller to attach to ("left" or "right")      |
 | _offset_    | vec3    | "0 0 0"    | Position offset from the controller in meters          |
 | _rotation_  | vec3    | "0 0 0"    | Rotation offset in degrees (x, y, z Euler angles)      |
-
+| _faceCamera_| boolean | false      | Makes the attached object always face the camera       |
 ## Usage Tips
 
 ### Ensured visibility
