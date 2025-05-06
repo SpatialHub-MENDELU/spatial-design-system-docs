@@ -82,13 +82,6 @@ Standard 3D models are positioned appropriately for each surface:
 - On walls: "Standing" on the wall, facing outward
 - On ceilings: Attached upside-down
 
-### Poster Mode
-
-Setting `isPoster: true` changes the placement behavior:
-- On floors: Laid flat with orientation toward camera
-- On walls: Mounted flat against the wall
-- On ceilings: Attached flat to ceiling
-
 ## Advanced Features
 
 ### Custom Rotation

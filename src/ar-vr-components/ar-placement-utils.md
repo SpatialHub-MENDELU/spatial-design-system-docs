@@ -59,7 +59,6 @@ The main placement function handles all the complexity of placing objects on dif
 
 ```javascript
 ARPlacementUtils.placeObject(entity, hitMesh, {
-  isPoster: false,           // Is it a flat object like a poster/image?
   adjustOrientation: true,   // Should orientation be adjusted to surface?
   faceCamera: true,          // Should object face the camera?
   scale: 1.0,                // Scale factor
@@ -67,25 +66,6 @@ ARPlacementUtils.placeObject(entity, hitMesh, {
   customRotation: { x: 0, y: 45, z: 0 }  // Custom rotation in degrees
 });
 ```
-
-## Placement Behavior By Surface Type
-
-The utility handles different placement scenarios based on surface type:
-
-### Floor Placement
-
-- **Regular Objects**: Placed upright on the floor
-- **Posters**: Laid flat on the floor, optionally oriented toward the camera
-
-### Wall Placement
-
-- **Regular Objects**: Placed "standing" on the wall, facing outward
-- **Posters**: Mounted flat against the wall with top pointing up
-
-### Ceiling Placement
-
-- **Regular Objects**: Attached to ceiling, facing downward
-- **Posters**: Attached flat to ceiling, optionally oriented toward the camera
 
 ## Implementation Details
 
@@ -122,7 +102,6 @@ function onHitResult(hitTestResult) {
 
     // Place the object
     ARPlacementUtils.placeObject(myEntity, hitTestResult, {
-      isPoster: surfaceType === "wall",  // Treat as poster on walls
       faceCamera: true,
       camera: sceneCamera,
       customRotation: { x: 0, y: 0, z: 0 }
