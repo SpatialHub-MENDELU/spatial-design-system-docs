@@ -26,7 +26,7 @@ The `controllers` component provides a complete system for VR controller interac
 
 ## Example
 
-Below is an example of adding controllers to a scene. The controllers will automatically appear when using a compatible VR headset with controllers.
+Below is an example of adding controllers to a scene. Test this demo by opening this page in a VR headset and clicking on the "VR" button. The controllers will automatically appear when using a compatible VR headset with controllers.
 
 <ComponentExample :fixed="true">
 

@@ -25,7 +25,7 @@ The `controller-attach` component attaches entities to VR controllers, allowing 
 
 ## Example
 
-Below is an example of attaching UI panel to the right controller:
+Below is an example of attaching UI panel to the right controller. Test this demo by opening this page in a VR headset and clicking on the "VR" button.
 
 <ComponentExample :fixed="true">
 

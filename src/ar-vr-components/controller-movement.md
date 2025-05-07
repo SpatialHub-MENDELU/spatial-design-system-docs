@@ -25,7 +25,7 @@ The `controller-movement` component enables smooth locomotion in VR using contro
 
 ## Example
 
-Below is an example of setting up controller movement in a basic scene:
+Below is an example of setting up controller movement in a basic scene. Test this demo by opening this page in a VR headset and clicking on the "VR" button.
 
 <ComponentExample :fixed="true">
 

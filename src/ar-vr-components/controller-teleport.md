@@ -25,7 +25,7 @@ The `controller-teleport` component enables instant teleportation in VR by point
 
 ## Example
 
-Below is an example of a basic teleportation setup:
+Below is an example of a basic teleportation setup. Test this demo by opening this page in a VR headset and clicking on the "VR" button.
 
 <ComponentExample :fixed="true">
 

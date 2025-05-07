@@ -25,7 +25,7 @@ The `vr-interactive` component adds enhanced interactivity to A-Frame entities w
 
 ## Example
 
-Below is an example of using the vr-interactive component with objects in a VR scene:
+Below is an example of using the vr-interactive component with objects in a VR scene. Test this demo by opening this page in a VR headset and clicking on the "VR" button.
 
 <ComponentExample :fixed="true">
 

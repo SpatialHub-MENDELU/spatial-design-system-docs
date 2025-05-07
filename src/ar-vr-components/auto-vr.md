@@ -24,7 +24,7 @@ The `auto-vr` component simplifies VR mode entry by automatically detecting VR c
 
 ## Example
 
-Below is an example of using the auto-vr component to automatically enter VR mode when available:
+Below is an example of using the auto-vr component to automatically enter VR mode when available.Test this demo by opening this page in a VR headset.
 
 <ComponentExample :fixed="true">
 
