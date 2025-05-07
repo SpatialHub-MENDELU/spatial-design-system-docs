@@ -60,12 +60,13 @@ export class CodeMirrorService {
     if (!this._editorView) return;
   
     const oldPos = this._editorView.state.selection.main.head;
+    const safePos = Math.min(oldPos, doc.length);
     const newExtensions = this.extensions(path).value;
   
     const newState = EditorState.create({
       doc,
-      selection: { anchor: oldPos },
-      extensions: newExtensions
+      selection: { anchor: safePos },
+      extensions: newExtensions,
     });
   
     this._editorView.setState(newState);

@@ -26,13 +26,11 @@ function handleEditorReady(payload: { view: EditorView }) {
   }
 }
 
-watch(openedFileContent, (newContent) => {
-  updateEditorContent(newContent);
-});
-
-watch(openedFilePath, async (newPath, oldPath) => {
+watch([openedFilePath, openedFileContent], ([newPath, newContent], [oldPath, oldContent]) => {
   if (newPath !== oldPath) {
-    codemirrorService.reloadEditorState(openedFileContent.value, newPath);
+    codemirrorService.reloadEditorState(newContent, newPath);
+  } else if (newContent !== oldContent) {
+    updateEditorContent(newContent);
   }
 });
 
