@@ -1,10 +1,10 @@
 ---
-title: place-object-components
+title: Placing objects in AR
 ---
 
 # {{ $frontmatter.title }}
 
-The place-object components provide a complete system for placing virtual objects in AR environments. The components work together to create an intuitive and consistent object placement experience with advanced features like preview, surface detection, and object management.
+The `place-object` components provide a complete system for placing virtual objects in AR environments. The components work together to create an intuitive and consistent object placement experience with advanced features like preview, surface detection, and object management.
 
 ## Component Structure
 
