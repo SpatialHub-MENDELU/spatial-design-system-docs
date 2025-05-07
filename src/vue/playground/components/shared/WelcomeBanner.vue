@@ -22,7 +22,6 @@ const createNewProject = (project: ProjectType) => {
 };
 </script>
 
-
 <template>
   <div class="main-content h-full">
     <div class="lg:p-16 px-0 md:py-32 py-16 h-full w-full flex items-center gap-16">
@@ -42,7 +41,7 @@ const createNewProject = (project: ProjectType) => {
         </p>
         <button
           @click="showDialog"
-          class="px-6 py-3 bg-primary text-white rounded-lg font-semibold shadow-lg transition duration-300 ease-in-out mb-4
+          class="px-6 py-3 bg-primary hover:bg-tertiary text-white rounded-lg font-semibold shadow-lg transition duration-300 ease-in-out mb-4
           md:text-[18px] text-[16px]"
         >
           New Project

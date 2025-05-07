@@ -12,6 +12,7 @@ import {
 import { IPropsNewItemDialog } from '../types/props';
 import { handlePath } from '../utils/Path';
 import { ToastServiceMethods } from 'primevue';
+import { ProjectType } from '../types/projectType';
 
 export class FileSystemService {
   private static instance: FileSystemService;
@@ -225,7 +226,8 @@ export class FileSystemService {
   updateEditedItem(
     newValue: FolderItem,
     props: IPropsNewItemDialog,
-    newDialogType: FolderItem | FileType | null
+    newDialogType: FolderItem | FileType | null,
+    projectType: ProjectType
   ) {
     if (newValue && newValue.name !== '') {
       this._state.newItemName = getFileWithoutExtension(newValue);
@@ -239,9 +241,9 @@ export class FileSystemService {
     } else {
       if (
         newDialogType === FileType.FILE &&
-        this.fileNameExtensions.length > 0
+        this.getFileNameExtensions(projectType).length > 0
       ) {
-        this._state.newFileExtension = this.fileNameExtensions[0].value;
+        this._state.newFileExtension = this.getFileNameExtensions(projectType)[0].value;
       }
 
       this._state.newItemName = '';
@@ -256,12 +258,14 @@ export class FileSystemService {
     return this._state;
   }
 
-  get fileNameExtensions() {
-    return [
+  getFileNameExtensions(projectType: ProjectType) {
+    const data = [
       { label: 'HTML', value: 'html' },
       { label: 'CSS', value: 'css' },
       { label: 'JS', value: 'js' },
       { label: 'JSON', value: 'json' },
     ];
+   
+    return projectType === ProjectType.VANILLA ? data : [...data, { label: 'VUE', value: 'vue' }];
   }
 }

@@ -5,7 +5,7 @@ export const createProjectData: ICreateProject[] = [
   {
     icon: 'fab fa-js',
     projectType: ProjectType.VANILLA,
-    text: "Vanilla"
+    text: "Vanilla JS"
   },
   {
     icon: 'fab fa-vuejs',

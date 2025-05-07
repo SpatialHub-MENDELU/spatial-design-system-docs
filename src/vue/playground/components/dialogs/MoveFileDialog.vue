@@ -63,9 +63,10 @@
   <Dialog
     :visible="props.showDialog"
     header="Select path"
-    modal
     maximizable
-    :closable="false"
+    modal
+    dismissableMask
+    @update:visible="() => closeDialog()" 
     class="moving-file-dialog"
   >
 

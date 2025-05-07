@@ -9,6 +9,7 @@ export enum FileExtensions {
     JS = "js",
     TS = "ts",
     JSON = "json",
+    VUE = "vue",
     FOLDER = "folder",
     DEFAULT = "default"
 }

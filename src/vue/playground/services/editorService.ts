@@ -17,15 +17,19 @@ export class EditorService {
       if (!projectType) {
         throw new Error("No project type selected.");
       }
-  
-      await this._webContainersService?.ensureInitialized();
-  
-      await this._webContainersService?.createProject(projectType);
+      
+      try {
+        await this._webContainersService?.ensureInitialized();
+        await this._webContainersService?.createProject(projectType);
+      } catch (innerError) {
+        throw innerError;
+      }
+
       loading.installing = false;
     } catch (error) {
-      console.error("Error during project creation:", error);
       loading.installing = false;
       loading.running = false;
+      throw error
     }
   }
 

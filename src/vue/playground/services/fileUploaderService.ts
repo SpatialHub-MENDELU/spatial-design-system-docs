@@ -41,11 +41,14 @@ export class FileUplaoderService {
   
   handleUpload = async (handleEmit: () => void, parentFolder?: FolderItem, toast?: ToastServiceMethods) => {
     for (const f of this._state.files) {
-      await this._fileSystemService?.uploadItem(f, parentFolder, toast);
+      await new Promise<void>((resolve) => {
+        this._fileSystemService?.uploadItem(f, parentFolder, toast);
+        setTimeout(() => resolve(), 1000);
+      });
     }
   
     await this._webContainersService?.fetchFolderStructure('/');
-    this._playgroundStore.commit('updateFoldersLoading', true)
+    this._playgroundStore.commit('updateFoldersLoading', true);
     handleEmit();
   };
   
