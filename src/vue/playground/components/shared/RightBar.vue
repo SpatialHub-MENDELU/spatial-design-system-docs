@@ -2,6 +2,7 @@
 import { onMounted } from 'vue';
 import LayoutDialog from './LayoutDialog.vue';
 import { initRightBarstate } from '../../states/RightBarState';
+import { IPropsRightBar } from '../../types/props';
 
 onMounted(() => {
   if (window.location.pathname === '/playground/') {
@@ -10,6 +11,7 @@ onMounted(() => {
 });
 
 const state = initRightBarstate
+const props = defineProps<IPropsRightBar>()
 
 const showDialog = () => {
   state.showDialog = true;
@@ -28,8 +30,13 @@ const closeDialog = () => {
     <nav
       class="flex flex-col justify-between items-start h-full border-l border-border-color px-2"
     >
-      <ul class="flex flex-col h-full items-center justify-between">
-        <li class="py-4">
+      <ul class="flex flex-col h-full items-center"
+      :class="{
+        'justify-between': props.showLayoutIcon,
+        'justify-end': !props.showLayoutIcon
+      }">
+        <li class="py-4"
+          v-if="props.showLayoutIcon">
           <i
             class="pi pi-th-large text-[20px] duration-300 cursor-pointer"
             @click="showDialog"

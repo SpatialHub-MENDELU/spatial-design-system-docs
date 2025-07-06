@@ -9,10 +9,9 @@ function crossOriginIsolationMiddleware(_, response, next) {
 
 const crossOriginIsolation = {
   name: 'cross-origin-isolation',
-  configureServer: (server) => {
-    server.middlewares.use(crossOriginIsolationMiddleware);
+  configureServer: server => { 
+    server.middlewares.use(crossOriginIsolationMiddleware); 
   },
-  // configurePreviewServer: server => { server.middlewares.use(crossOriginIsolationMiddleware); },
 };
 
 // https://vitepress.dev/reference/site-config
@@ -53,40 +52,58 @@ export default defineConfig({
         ],
       },
       {
-        text: 'Primitives',
+        text: 'UI elements',
         items: [
-          { text: 'Button', link: '/ar-vr-primitives/button' },
-          { text: 'Checkbox', link: '/ar-vr-primitives/checkbox' },
-          { text: 'Divider', link: '/ar-vr-primitives/divider' },
-          { text: 'Menu', link: '/ar-vr-primitives/menu' },
-          { text: 'Row, column', link: '/ar-vr-primitives/rowcolumn' },
-          { text: 'Switch', link: '/ar-vr-primitives/switch' },
-          { text: 'Textbox', link: '/ar-vr-primitives/textbox' },
+          { text: 'button', link: '/ar-vr-primitives/button' },
+          { text: 'checkbox', link: '/ar-vr-primitives/checkbox' },
+          { text: 'divider', link: '/ar-vr-primitives/divider' },
+          { text: 'menu', link: '/ar-vr-primitives/menu' },
+          { text: 'row, column', link: '/ar-vr-primitives/rowcolumn' },
+          { text: 'switch', link: '/ar-vr-primitives/switch' },
+          { text: 'textbox', link: '/ar-vr-primitives/textbox' },
         ],
       },
       {
-        text: 'Components',
+        text: 'Layout',
         items: [
-          { text: 'auto-position', link: '/ar-vr-components/auto-position' },
-          { text: 'auto-scale', link: '/ar-vr-components/auto-scale' },
-          { text: 'auto-vr', link: '/ar-vr-components/auto-vr' },
-          { text: 'billboard', link: '/ar-vr-components/billboard' },
           { text: 'circle', link: '/ar-vr-components/circle' },
-          { text: 'fit-into-fov', link: '/ar-vr-components/fit-into-fov' },
           {
-            text: 'flexbox',
-            link: '/ar-vr-components/flexbox',
+            text: 'Flexbox components',
+            link: '/ar-vr-components/flexbox-introduction',
             items: [
               {
-                text: 'flexbox-container',
-                link: '/ar-vr-components/flexbox-container',
+                text: 'flexbox',
+                link: '/ar-vr-components/flexbox',
               },
               { text: 'flex-col', link: '/ar-vr-components/flex-col' },
               { text: 'flex-grow', link: '/ar-vr-components/flex-grow' },
             ],
           },
+          { text: 'grid', link: '/ar-vr-components/grid' },
+        ],
+      },
+      {
+        text: 'Behavior',
+        items: [
+          { text: 'auto-position', link: '/ar-vr-components/auto-position' },
+          { text: 'auto-scale', link: '/ar-vr-components/auto-scale' },
+          { text: 'billboard', link: '/ar-vr-components/billboard' },
+          { text: 'fit-into-fov', link: '/ar-vr-components/fit-into-fov' },
+          { text: 'follow-element', link: '/ar-vr-components/follow-element' },
+          { text: 'follow-camera', link: '/ar-vr-components/follow-camera' },
+        ],
+      },
+      {
+        text: 'AR/VR',
+        items: [
+          { text: 'auto-vr', link: '/ar-vr-components/auto-vr' },
+          { text: 'controllers', link: '/ar-vr-components/controllers'},
+          { text: 'vr-interactive', link: '/ar-vr-components/vr-interactive' },
+          { text: 'controller-attach', link: '/ar-vr-components/controller-attach' },
+          { text: 'controller-teleport', link: '/ar-vr-components/controller-teleport' },
+          { text: 'controller-movement', link: '/ar-vr-components/controller-movement' },
           {
-            text: 'place-object-components',
+            text: 'Placing objects in AR',
             link: '/ar-vr-components/place-object-components',
             items: [
               {
@@ -103,15 +120,7 @@ export default defineConfig({
               },
             ],
           },
-          { text: 'follow-element', link: '/ar-vr-components/follow-element' },
-          { text: 'follow-camera', link: '/ar-vr-components/follow-camera' },
-          { text: 'grid', link: '/ar-vr-components/grid' },
-          {text: 'controllers', link: '/ar-vr-components/controllers'},
-          { text: 'vr-interactive', link: '/ar-vr-components/vr-interactive' },
-          { text: 'controller-attach', link: '/ar-vr-components/controller-attach' },
-          { text: 'controller-teleport', link: '/ar-vr-components/controller-teleport' },
-          { text: 'controller-movement', link: '/ar-vr-components/controller-movement' },
-        ],
+        ]
       },
       {
         text: 'Guidelines',

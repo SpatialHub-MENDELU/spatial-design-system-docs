@@ -1,0 +1,10 @@
+@use '../../variables' as *;
+
+.p-splitter-gutter {
+  background-color: $border-color !important;
+}
+
+.p-splitter {
+  border: none !important;
+  border-radius: 0px !important;
+}

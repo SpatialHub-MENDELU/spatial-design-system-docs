@@ -8,9 +8,6 @@ export function checkDuplicity(
   for (const folder of folders) {
     const currentPath = folder.key;
 
-    console.log(currentPath)
-    console.log(newItem.path)
-
     if (currentPath === newItem.path) {
       return true; 
     }

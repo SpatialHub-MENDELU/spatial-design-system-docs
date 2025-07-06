@@ -31,7 +31,8 @@ watch(
     :visible="isDialogVisible"
     :header="folderFileUplaoderState.dialogHeader"
     modal
-    :closable="false"
+    dismissableMask
+    @update:visible="() => closeDialog()" 
     class="folder-file-uploader"
   >
     <FileUploader

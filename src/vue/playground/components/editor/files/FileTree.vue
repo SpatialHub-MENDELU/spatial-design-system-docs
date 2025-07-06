@@ -13,8 +13,9 @@ import { WebContainerService } from '../../../services/webContainersService';
 import MoveFileDialog from '../../dialogs/MoveFileDialog.vue';
 import { TreeNode } from 'primevue/treenode';
 import ConfirmDialog from 'primevue/confirmdialog';
-import NewProjectConfirmDialog from '../../dialogs/NewProjectConfirmDialog.vue';
 import CreateProjectDialog from '../../shared/CreateProjectDialog.vue';
+import CustomCofirmDialog from '../../dialogs/CustomCofirmDialog.vue';
+import { FolderItem } from '../../../types/fileItem';
 
 const playgroundStore = useStore();
 const props = defineProps<IPropsFileTree>();
@@ -56,6 +57,8 @@ const toggleVisibility = () => {
 };
 
 const updateItems = async () => {
+  movingLoading.value = true
+
   await fileTreeService.fetchFolders().then(() => {
     movingLoading.value = false
   });
@@ -111,12 +114,16 @@ const updateMovingLoading = async () => {
           'lg:max-w-full': fileTreeService.state.isVisible,
         }"
       >
+    
         <Button
           @click="fileTreeService.downloadFileSystem"
           icon="pi pi-download"
           class="w-4"
+          v-tooltip.left="'Download file system'"
         />
-        <Button @click="showNewFileMenu" icon="pi pi-plus" class="w-4" />
+
+        <Button @click="showNewFileMenu" icon="pi pi-plus" class="w-4"
+        v-tooltip.left="'Add content'" />
 
         <button class="w-max h-full lg:hidden flex items-center justify-center"
           @click="toggleVisibility">
@@ -195,7 +202,8 @@ const updateMovingLoading = async () => {
       :updateLoading="updateMovingLoading"
     />
 
-    <NewProjectConfirmDialog
+    <CustomCofirmDialog
+      message="Are you sure you want to create a new project? This will discard all your current changes."
       :show-dialog="fileTreeService.state.showCreateProjectDialogConfirm"
       :accept="fileTreeService.createProjectConfirmAccept"
       :reject="fileTreeService.closeNewProjectConfirmDialog"
@@ -205,6 +213,13 @@ const updateMovingLoading = async () => {
       :visible="fileTreeService.state.showCreateProjectDialog"
       :close-dialog="fileTreeService.closeDialog"
       :create-project="(projectType) => fileTreeService.createNewProject(projectType, props.loading, playgroundStore)"
+    />
+
+    <CustomCofirmDialog
+      message="Are you sure you want to delete this item?"
+      :show-dialog="fileTreeService.state.showDeleteConfirmDialog"
+      :accept="() => fileTreeService.deleteItem(fileTreeService.state.currentItem as FolderItem, playgroundStore)"
+      :reject="() => fileTreeService.state.showDeleteConfirmDialog = false"
     />
 
     <button

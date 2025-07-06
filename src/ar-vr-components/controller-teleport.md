@@ -25,7 +25,7 @@ The `controller-teleport` component enables instant teleportation in VR by point
 
 ## Example
 
-Below is an example of a basic teleportation setup:
+Below is an example of a basic teleportation setup. Test this demo by opening this page in a VR headset and clicking on the "VR" button.
 
 <ComponentExample :fixed="true">
 
@@ -75,12 +75,12 @@ import "spatial-design-system/components/controllerTeleport.js";
 
 ## Props
 
-| Property       | Type    | Default   | Description                                                       |
-|----------------|---------|-----------|-------------------------------------------------------------------|
-| _hand_         | string  | "right"   | Which controller to use for teleporting ("left" or "right")       |
-| _button_       | string  | "trigger" | Controller button to activate teleport                             |
-| _cameraHeight_ | number  | 1         | Height offset applied after teleporting (in meters)                |
-
+| Property           | Type    | Default       | Description                                                       |
+|--------------------|---------|---------------|-------------------------------------------------------------------|
+| _hand_             | string  | "right"       | Which controller to use for teleporting ("left" or "right")       |
+| _button_           | string  | "trigger"     | Controller button to activate teleport                            |
+| _cameraHeight_     | number  | 1             | Height offset applied after teleporting (in meters)               |
+| _interactionClass_ | string  | "interactive" | CSS class that defines teleportable surfaces                      |
 
 ## Controller Buttons
 
@@ -101,6 +101,13 @@ For teleportation to work, surfaces must be detectable by the controller's rayca
 
 ```html
 <a-plane position="0 0 0" rotation="-90 0 0" width="20" height="20" class="interactive"></a-plane>
+```
+
+If you want to use a different class name for teleportable surfaces, you can specify it using the `interactionClass` property:
+
+```html
+<a-entity controller-teleport="hand: right; interactionClass: teleportable"></a-entity>
+<a-plane position="0 0 0" rotation="-90 0 0" width="20" height="20" class="teleportable"></a-plane>
 ```
 
 ### Listening for Teleport Events

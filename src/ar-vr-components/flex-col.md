@@ -10,7 +10,7 @@ const renderScene = ref(false);
 
 onMounted(async () => {
   try {
-    await import("spatial-design-system/components/flexbox.js");
+    await import("spatial-design-system/components/flexbox/flexbox.js");
     renderScene.value = true;
   } catch(e) {
     console.error(e);
@@ -51,7 +51,7 @@ gap: 10 10;
 <template #code>
 
 ```js
-import "spatial-design-system/components/flexbox.js";
+import "spatial-design-system/components/flexbox/flexbox.js";
 import "spatial-design-system/components/flexbox/Properties/flex-col.js";
 ```
 

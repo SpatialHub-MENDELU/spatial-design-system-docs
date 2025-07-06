@@ -10,7 +10,6 @@ The `place-object-manager` component provides scene-level management for AR obje
 
 | Property | Type | Default | Description |
 | --- | --- | --- | --- |
-| *enabled* | boolean | true | Whether the manager is currently active |
 | *maxObjects* | number | 10 | Maximum number of objects that can be placed |
 | *showHitTestMarker* | boolean | true | Whether to display the hit test marker |
 | *hitTestMarker* | string | `"#ar-hit-test-marker"` | Selector for a custom hit test marker |
@@ -54,10 +53,9 @@ The default marker consists of:
 
 When `showPreview` is enabled, the manager:
 
-1. Creates a semi-transparent ghost copy of the object to be placed
+1. Creates a copy of the object to be placed
 2. Updates its position and orientation as the user moves
 3. Shows exactly how the object will look when placed
-4. Uses the same placement logic as the final placement
 
 This provides immediate visual feedback before the user taps to place the object.
 
@@ -90,41 +88,31 @@ The manager handles several responsibilities:
 
 It uses the shared [`ARPlacementUtils`](/ar-vr-components/ar-placement-utils) to ensure consistent placement behavior across the entire AR system.
 
-## Object Update Process
-
-For each frame (tick):
-
-1. Gets the current AR hit test result from the scene
-2. Updates the hit test marker position and orientation
-3. If preview is enabled, updates the preview object to match
-4. Both updates use `ARPlacementUtils.placeObject()` for consistent positioning
-
 ## Example Setup
 
 ```html
-<a-scene webxr="optionalFeatures: hit-test">
-  <!-- Place object manager configured with options -->
-  <a-entity place-object-manager="
-    maxObjects: 5;
-    showHitTestMarker: true;
-    showPreview: true;">
-  </a-entity>
+<a-scene>
+    <!-- Place object manager configured with options -->
+    <a-entity
+        place-object-manager="
+            maxObjects: 5;
+            showHitTestMarker: true;
+            showPreview: true;
+        "
+    >
+    </a-entity>
 
-  <!-- Placeable object templates -->
-  <a-entity
-    id="chair"
-    gltf-model="#chair-model"
-    place-object="surfaceTypes: horizontal"
-    visible="false">
-  </a-entity>
+    <a-assets>
+      <a-asset-item id="chair-model" src="./chair-model.glb"></a-asset-item>
+    </a-assets>
 
-  <a-entity
-    id="poster"
-    material="src: #poster-texture"
-    geometry="primitive: plane; width: 1; height: 1.4"
-    place-object="surfaceTypes: wall, horizontal; isPoster: true"
-    visible="false">
-  </a-entity>
+    <!-- Placing a 3D model -->
+    <a-entity
+        id="chair"
+        gltf-model="#chair-model"
+        place-object="surfaceTypes: horizontal"
+        visible="false">
+    </a-entity>
 </a-scene>
 ```
 

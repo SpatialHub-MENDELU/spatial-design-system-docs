@@ -12,8 +12,8 @@ const props = defineProps<IPropsTaskSuccessDialog>();
     :visible="props.showDialog"
     header="Success"
     modal
-    maximizable
     :closable="false"
+    maximizable
     class="success-dialog"
   >
     <div class="success-content">

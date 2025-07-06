@@ -14,23 +14,6 @@
   }
 }
 
-.hidden-output--vertical {
-  overflow: hidden;
-  height: 2rem !important;
-
-  border-top: 1px solid $border-color !important;
-}
-
-.hidden-output--horizontal {
-  overflow: hidden;
-  width: 3rem !important;
-
-  @media screen and (max-width: $breakpointLg) {
-    width: 100% !important;
-    height: 2rem !important;
-  }
-}
-
 html.a-fullscreen {
   background-color: $grey !important;
 }

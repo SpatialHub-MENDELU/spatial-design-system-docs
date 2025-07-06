@@ -1,10 +1,10 @@
 ---
-title: place-object-components
+title: Placing objects in AR
 ---
 
 # {{ $frontmatter.title }}
 
-The place-object components provide a complete system for placing virtual objects in AR environments. The components work together to create an intuitive and consistent object placement experience with advanced features like preview, surface detection, and object management.
+The `place-object` components provide a complete system for placing virtual objects in AR environments. The components work together to create an intuitive and consistent object placement experience with advanced features like preview, surface detection, and object management.
 
 ## Component Structure
 
@@ -81,13 +81,6 @@ Standard 3D models are positioned appropriately for each surface:
 - On floors: Upright, optionally facing the camera
 - On walls: "Standing" on the wall, facing outward
 - On ceilings: Attached upside-down
-
-### Poster Mode
-
-Setting `isPoster: true` changes the placement behavior:
-- On floors: Laid flat with orientation toward camera
-- On walls: Mounted flat against the wall
-- On ceilings: Attached flat to ceiling
 
 ## Advanced Features
 

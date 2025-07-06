@@ -26,7 +26,7 @@ The `controllers` component provides a complete system for VR controller interac
 
 ## Example
 
-Below is an example of adding controllers to a scene. The controllers will automatically appear when using a compatible VR headset with controllers.
+Below is an example of adding controllers to a scene. Test this demo by opening this page in a VR headset and clicking on the "VR" button. The controllers will automatically appear when using a compatible VR headset with controllers.
 
 <ComponentExample :fixed="true">
 
@@ -46,20 +46,9 @@ Below is an example of adding controllers to a scene. The controllers will autom
 
 <template #code>
 
-```js
-import "spatial-design-system/components/controllers.js";
-const scene = document.createElement("a-scene");
-
-// Either set up controllers directly on the scene
-scene.setAttribute("controllers", {
-  leftColor: "#FF0000",
-  rightColor: "#018A6C"
-})
-```
-
 ```html
 <a-scene>
-  <!-- Or add them to a rig entity -->
+  <!-- Add them to a rig entity -->
   <a-entity id="rig" position="0 1.6 0" controllers="
     leftColor: #03FCC6;
     rightColor: #018A6C;
@@ -92,20 +81,24 @@ scene.setAttribute("controllers", {
 
 The component forwards controller button events to intersected objects. Any object with class "interactive" or "clickable" can receive these events:
 
-| Event        | Description                                 |
-|--------------|---------------------------------------------|
-| _triggerdown_| Fired when trigger button is pressed        |
-| _triggerup_  | Fired when trigger button is released       |
-| _gripdown_   | Fired when grip button is pressed           |
-| _gripup_     | Fired when grip button is released          |
-| _abuttondown_| Fired when A button is pressed (right hand) |
-| _abuttonup_  | Fired when A button is released             |
-| _bbuttondown_| Fired when B button is pressed (right hand) |
-| _bbuttonup_  | Fired when B button is released             |
-| _xbuttondown_| Fired when X button is pressed (left hand)  |
-| _xbuttonup_  | Fired when X button is released             |
-| _ybuttondown_| Fired when Y button is pressed (left hand)  |
-| _ybuttonup_  | Fired when Y button is released             |
+| Event          | Description                                 |
+|----------------|---------------------------------------------|
+| _triggerdown_  | Fired when trigger button is pressed        |
+| _triggerup_    | Fired when trigger button is released       |
+| _gripdown_     | Fired when grip button is pressed           |
+| _gripup_       | Fired when grip button is released          |
+| _abuttondown_  | Fired when A button is pressed (right hand) |
+| _abuttonup_    | Fired when A button is released             |
+| _bbuttondown_  | Fired when B button is pressed (right hand) |
+| _bbuttonup_    | Fired when B button is released             |
+| _xbuttondown_  | Fired when X button is pressed (left hand)  |
+| _xbuttonup_    | Fired when X button is released             |
+| _ybuttondown_  | Fired when Y button is pressed (left hand)  |
+| _ybuttonup_    | Fired when Y button is released             |
+| _menudown_     | Fired when menu button is pressed           |
+| _menuup_       | Fired when menu button is released          |
+| _trackpaddown_ | Fired when trackpad/thumbstick is pressed   |
+| _trackpadup_   | Fired when trackpad/thumbstick is released  |
 
 ## Usage Tips
 

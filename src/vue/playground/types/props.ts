@@ -88,6 +88,7 @@ export interface IPropsEditorOutput {
   loading: ILoading;
   isDetail: boolean;
   outputIsShown?: boolean;
+  isResizing?: boolean;
 }
 
 export interface IPropsFolderFileUploader {
@@ -113,7 +114,7 @@ export interface IPropsLessonsList {
   activeCourse: ICourseDetail;
   lessonsFromSession: ILessonVariants[];
   activeLesson: ILessonVariants | null;
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 export interface IPropsBreadcrumbs {
@@ -154,4 +155,9 @@ export interface IPropsConfirmDialog {
   accept: () => void
   reject: () => void
   showDialog: boolean
+  message: string
+}
+
+export interface IPropsRightBar {
+  showLayoutIcon: boolean
 }
