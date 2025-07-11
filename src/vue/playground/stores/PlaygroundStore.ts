@@ -3,6 +3,7 @@ import { ProjectType } from '../types/projectType';
 import { FolderItem } from '../types/fileItem';
 import { Layout } from '../types/layout';
 import { FileType } from '../types/fileType';
+import { readFile } from 'fs';
 
 export interface State {
   projectType: ProjectType | null
@@ -88,11 +89,10 @@ const playgroundStore = createStore({
       if (!isCurrentFile) return
 
       if (newOpenItem) {
-        state.currentFilePath = newOpenItem.path;
-  
         if (payload.update) {
           const content = await payload.update(newOpenItem.path ?? newOpenItem.name);
           commit('updateCurrentFileContent', content);
+          commit('updateCurrentFilePath', newOpenItem.path)
         }
       } else {
         state.currentFilePath = '';
@@ -131,6 +131,50 @@ const playgroundStore = createStore({
 
       if (itemToBeUpdated) {
         state.currentFilePath = itemToBeUpdated.path.replace(payload.oldFile.path, newPath);
+      }
+    },
+    async moveFile(
+      { state, commit },
+      payload: { oldFile: FolderItem; newFileName: string; path?: string}
+    ) {
+      const newPath = payload.path;
+
+      state.openedFiles = state.openedFiles.map((file: FolderItem) => {
+
+        if (file.name === payload.oldFile.name) {
+          const dir = file.path?.slice(0, file.path.lastIndexOf('/')) ?? ''
+          const newName = payload.newFileName
+          const newPath = payload.path ?? `${dir}/${newName}`
+          return {
+            ...file,
+            name: newName,
+            path: newPath.replace(/\/+/g, '/')
+          }
+        }        
+      
+        file.path?.replace(payload.oldFile.path ?? '', newPath ?? '')
+      
+        return file;
+      });
+
+      const itemToBeUpdated = state.openedFiles.find(f => {
+        if (payload.oldFile.type === FileType.FILE) {
+          return payload.oldFile.path === state.currentFilePath;
+        }
+
+        return f.path && f.path.startsWith(payload.path?.replace(/\/+/g, '/'));
+      });
+
+      if (itemToBeUpdated) {
+        if (payload.oldFile.type === FileType.FILE) {
+          state.currentFilePath = payload.path?.replace(/\/+/g, '/')
+        }
+
+        if (state.currentFilePath.startsWith(payload.oldFile.path)) {
+
+          const newPath = state.currentFilePath.replace(payload.oldFile.path, payload.path)
+          state.currentFilePath = newPath.replace(/\/+/g, '/');
+        }
       }
     },
   }      

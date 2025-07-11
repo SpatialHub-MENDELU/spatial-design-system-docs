@@ -46,18 +46,15 @@ export interface IPropsShareCourseDialog {
   onClose: () => void
 }
 
-export interface IPropsTaskErrorDialog {
-  errors: string[];
+export interface IPropsTaskDialog {
+  type: 'success' | 'error'
+  successMessage?: string;
   showDialog: boolean;
-  closeDialog: () => void;
-}
-
-export interface IPropsTaskSuccessDialog {
-  successMessage: string;
-  showDialog: boolean;
-  continue: () => void;
-  link: string | null;
-  text: string;
+  continue?: () => void;
+  closeDialog?: () => void;
+  link?: string | null;
+  text?: string;
+  errors?: string[];
 }
 
 export interface IPropsCourseOverview {
