@@ -140,19 +140,22 @@ const playgroundStore = createStore({
       const newPath = payload.path;
 
       state.openedFiles = state.openedFiles.map((file: FolderItem) => {
+
         if (file.name === payload.oldFile.name) {
-          const path = payload.path ?? file.path?.replace(payload.oldFile.name, payload.newFileName)
-          return { ...file, name: payload.newFileName, path:  path?.replace(/\/+/g, '/') };
-        }
+          const dir = file.path?.slice(0, file.path.lastIndexOf('/')) ?? ''
+          const newName = payload.newFileName
+          const newPath = payload.path ?? `${dir}/${newName}`
+          return {
+            ...file,
+            name: newName,
+            path: newPath.replace(/\/+/g, '/')
+          }
+        }        
       
-        if (file.path?.startsWith(payload.oldFile.path ?? '')) {
-          const path = file.path.replace(payload.oldFile.path ?? '', newPath ?? '').replace(/\/+/g, '/')
-          return { ...file, path: path };
-        }
+        file.path?.replace(payload.oldFile.path ?? '', newPath ?? '')
       
         return file;
       });
-    
 
       const itemToBeUpdated = state.openedFiles.find(f => {
         if (payload.oldFile.type === FileType.FILE) {
@@ -161,7 +164,6 @@ const playgroundStore = createStore({
 
         return f.path && f.path.startsWith(payload.path?.replace(/\/+/g, '/'));
       });
-
 
       if (itemToBeUpdated) {
         if (payload.oldFile.type === FileType.FILE) {

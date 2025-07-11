@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { defineProps, nextTick } from 'vue';
 import HintDialog from '../dialogs/HintDialog.vue';
-import TaskErrorDialog from '../dialogs/TaskErrorDialog.vue';
-import TaskSuccessDialog from '../dialogs/TaskSuccessDialog.vue';
+import TaskDialog from '../dialogs/TaskDialog.vue';
 import { addCurrentLessonToSession } from '../../utils/Lessons';
 import { IPropsLessonDetailDialogs } from '../../types/props';
 
@@ -42,13 +41,15 @@ const continueToNextLesson = async () => {
     :hint="props.lessonDetailService.state.activeLesson?.task?.hint"
   />
 
-  <TaskErrorDialog
+  <TaskDialog
+    type="error"
     :show-dialog="lessonDetailService.state.isErrorDialogVisible"
     :close-dialog="closeErrorDialog"
     :errors="lessonDetailService.state.testErrors"
   />
 
-  <TaskSuccessDialog
+  <TaskDialog
+    type="success"
     :show-dialog="lessonDetailService.state.isSuccessDialogVisible"
     :continue="continueToNextLesson"
     :link="lessonDetailService.state.nextLessonLink"
