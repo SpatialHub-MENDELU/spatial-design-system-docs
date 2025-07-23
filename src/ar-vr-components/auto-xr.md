@@ -26,6 +26,8 @@ The `auto-xr` component streamlines entering immersive WebXR sessions—whether 
 
 Open the demo below on a WebXR‑capable device (e.g. Meta Quest Pro, iPhone + XRViewer). The component will decide whether to start in AR, VR, or stay inline.
 
+The `auto-xr` component can be used alongside other A-Frame scene properties and components. For example, you can still configure the WebXR like optional features or any other scene-level settings.
+
 <ComponentExample :fixed="true" :hideOutput="true">
 
 <template #code>
