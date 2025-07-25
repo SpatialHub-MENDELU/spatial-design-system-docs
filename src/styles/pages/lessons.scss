@@ -75,7 +75,7 @@
   }
 }
 
-.lesson .code-block, .p-dialog .code-block {
+.p-dialog .code-block, .lesson__content .code-block {
   position: relative;
 
   &:not(:last-child) {
