@@ -18,3 +18,12 @@ hero:
   - theme: alt
     text: View on GitHub
     link: https://github.com/SpatialHub-MENDELU/spatial-design-system
+
+---
+
+::: warning ⚠️ BROWSER SUPPORT
+
+Sadly, Spatial Design System is currently supported in Chrome and Chromium-based browsers only. Related issues:
+
+- https://github.com/SpatialHub-MENDELU/spatial-design-system-docs/issues/47
+:::
