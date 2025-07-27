@@ -97,6 +97,7 @@ export default defineConfig({
         text: 'AR/VR',
         items: [
           { text: 'auto-vr', link: '/ar-vr-components/auto-vr' },
+          { text: 'auto-xr', link: '/ar-vr-components/auto-xr' },
           { text: 'controllers', link: '/ar-vr-components/controllers' },
           { text: 'vr-interactive', link: '/ar-vr-components/vr-interactive' },
           { text: 'ar-hoverable', link: '/ar-vr-components/ar-hoverable' },

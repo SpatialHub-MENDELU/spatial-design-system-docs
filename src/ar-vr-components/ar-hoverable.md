@@ -25,7 +25,7 @@ The `ar-hoverable` component adds an interactive hover effect to any A‑Frame e
 
 This component is mainly prepared for hand gestures. You should use it with the `hands` component and test it on XR devices, that support hand gestures (e.g. Meta Quest Pro).
 
-<ComponentExample :fixed="true">
+<ComponentExample :fixed="true" :hideOutput="true">
 
 <template #code>
 
