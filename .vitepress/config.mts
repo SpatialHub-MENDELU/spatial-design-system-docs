@@ -94,6 +94,12 @@ export default defineConfig({
         ],
       },
       {
+        text: "Game components",
+        items: [
+          {text: 'walk', link: '/game-components/walk'}
+        ]
+      },
+      {
         text: 'AR/VR',
         items: [
           { text: 'auto-vr', link: '/ar-vr-components/auto-vr' },
