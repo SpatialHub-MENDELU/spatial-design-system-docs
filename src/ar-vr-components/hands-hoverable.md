@@ -30,7 +30,7 @@ This component is mainly prepared for hand gestures. You should use it with the 
 <template #code>
 
 ```js
-import 'spatial-design-system/components/ar-hoverable.js';
+import 'spatial-design-system/components/hands-hoverable.js';
 ```
 
 ```html
@@ -43,7 +43,7 @@ import 'spatial-design-system/components/ar-hoverable.js';
   <!-- or -->
   <a-ar-button
     content="Click Me"
-    ar-hoverable="hoverEffect: border; hoverColor:#fc0000;"
+    hands-hoverable="hoverEffect: border; hoverColor:#fc0000;"
     position="1 2 -2"
   ></a-ar-button>
 </a-scene>
@@ -82,7 +82,7 @@ import 'spatial-design-system/components/ar-hoverable.js';
 The component itself does not emit custom events, but you can use the `obbcollisionstarted/ended` events fired by `obb-collider` for further logic:
 
 ```javascript
-const box = document.querySelector('[ar-hoverable]');
+const box = document.querySelector('[hands-hoverable]');
 
 box.addEventListener('obbcollisionstarted', () => {
   console.log('Entity hovered');
