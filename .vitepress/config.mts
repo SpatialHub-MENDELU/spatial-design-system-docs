@@ -101,6 +101,10 @@ export default defineConfig({
           { text: 'controllers', link: '/ar-vr-components/controllers' },
           { text: 'vr-interactive', link: '/ar-vr-components/vr-interactive' },
           {
+            text: 'hands-hoverable',
+            link: '/ar-vr-components/hands-hoverable',
+          },
+          {
             text: 'controller-attach',
             link: '/ar-vr-components/controller-attach',
           },
