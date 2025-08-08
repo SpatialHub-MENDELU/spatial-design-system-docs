@@ -30,6 +30,7 @@ This component is mainly prepared for hand gestures. You should use it with the 
 <template #code>
 
 ```js
+import 'spatial-design-system/components/hands.js';
 import 'spatial-design-system/components/hands-hoverable.js';
 ```
 
