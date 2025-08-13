@@ -99,7 +99,9 @@ export default defineConfig({
           { text: 'auto-vr', link: '/ar-vr-components/auto-vr' },
           { text: 'auto-xr', link: '/ar-vr-components/auto-xr' },
           { text: 'controllers', link: '/ar-vr-components/controllers' },
+          { text: 'hands', link: '/ar-vr-components/hands' },
           { text: 'vr-interactive', link: '/ar-vr-components/vr-interactive' },
+          { text: 'finger-touch', link: '/ar-vr-components/finger-touch' },
           {
             text: 'controller-attach',
             link: '/ar-vr-components/controller-attach',
