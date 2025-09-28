@@ -33,13 +33,12 @@ Below is an example of the textbox component.
           cursor="rayOrigin: mouse; fuse: false;">
 </a-entity>
 <a-ar-textbox
-position="0 1.6 -3"
-isactivated="true"
-label="Label"
-size="extra-large"
-
-> </a-ar-textbox>
-> </template>
+    position="0 1.6 -3"
+    isactivated="true"
+    label="Label"
+    size="extra-large">
+</a-ar-textbox>
+</template>
 
 <template #code>
 
