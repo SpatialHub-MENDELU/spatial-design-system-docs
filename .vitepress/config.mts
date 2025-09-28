@@ -107,6 +107,10 @@ export default defineConfig({
             link: '/ar-vr-components/hands-hoverable',
           },
           {
+            text: 'stretchable',
+            link: '/ar-vr-components/stretchable',
+          },
+          {
             text: 'controller-attach',
             link: '/ar-vr-components/controller-attach',
           },
