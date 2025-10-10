@@ -27,7 +27,7 @@ Interactive resizing of objects using a "stretch" gesture (pinch) from **hands**
 It supports two modes:
 
 - **`mode: "scale"`** – **uniform** scaling (keeps proportions). Activation is **restricted to corners** of the object to avoid accidental scaling.
-- **`mode: "dimensions"`** – **non-uniform** scaling (independently along X/Y/Z axes) based on the direction of the gesture relative to the object’s center. Activated for the closest `stretchable` object to the contact point.
+- **`mode: "dimensions"`** – **non-uniform** scaling (independently along X/Y/Z axes) based on the direction of the gesture relative to the object's center. Only the closest `stretchable` object to the gesture contact point will be activated.
 
 > Tested on **Meta Quest Pro** (hands/controllers).
 
@@ -64,6 +64,14 @@ document.querySelector("#app").innerHTML = `
 
 </ComponentExample>
 
+## Props
+
+| Property         | Type   | Default      | Description                                                                                                       |
+| ---------------- | ------ | ------------ | ----------------------------------------------------------------------------------------------------------------- |
+| _mode_           | string | "dimensions" | Stretch mode: "scale" for uniform scaling (corners only) or "dimensions" for non-uniform scaling along X/Y/Z axes |
+| _maxScaleFactor_ | number | 1.5          | Maximum scale factor allowed when stretching the object                                                           |
+| _minScaleFactor_ | number | 0.5          | Minimum scale factor allowed when stretching the object                                                           |
+
 ## Features
 
 - Automatically applies `obb-collider` to the entity for accurate bounding box detection.
@@ -76,6 +84,6 @@ document.querySelector("#app").innerHTML = `
 
 ## Limitations
 
-- Component has set default values for `minScaleFactor` and `maxScaleFactor` based on the object's size to avoid accidental infinite scaling.
+- Component has fixed default values for `minScaleFactor` (0.5) and `maxScaleFactor` (1.5) that constrain scaling relative to the object's initial scale to prevent accidental infinite scaling. These factors are applied to each axis independently in both modes.
 - The `stretchable` should not be combined with another component using pinch gesture (e.g., `grabbable`). It can cause conflicts and one of the components might not work as expected.
 - Must be used in conjunction with the `hands` component and a hand-tracking-enabled XR device.
