@@ -96,7 +96,8 @@ export default defineConfig({
       {
         text: "Game components",
         items: [
-          {text: 'walk', link: '/game-components/walk'}
+          {text: 'walk', link: '/game-components/walk'},
+          {text: 'fly', link: '/game-components/fly'},
         ]
       },
       {
