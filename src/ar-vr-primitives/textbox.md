@@ -73,3 +73,7 @@ import 'spatial-design-system/primitives/ar-textbox.js';
 | _textcolor_         | string                                   | `black`   | Specifies the color of the textbox's text.                                                          |
 | _label_             | string                                   | `""`      | Specifies the text of the textbox's label.                                                          |
 | _useSystemKeyboard_ | boolean                                  | `false`   | Specifies whether to use the system keyboard.                                                       |
+
+## Limitations
+
+- The use of the system keyboard is partially limited — when you enter text and then try to edit it, the existing textbox value gets overwritten with the new input (according to the [official documentation](https://developers.meta.com/horizon/documentation/web/webxr-keyboard/#webxr-system-keyboard-limitations)).
