@@ -117,5 +117,5 @@ el.addEventListener('click', (e) => {
 
 - Objects must use components that supports hands gestures (e.g., `finger-touch`, `hands-hoverable`, `grabbable`, `stretchable`).
 - This component relies on the `hand-tracking-controls` and `hand-tracking-grab-controls` provided by A-Frame.
-- To use this component, your XR device must support `hand-tracking` (e.g., Meta Quest).
+- To use this component, your XR device must support `hand-tracking` (e.g., Meta Quest). It is not supported in mobile browsers.
 - Objects must have proper bounding boxes for collision detection to work reliably.

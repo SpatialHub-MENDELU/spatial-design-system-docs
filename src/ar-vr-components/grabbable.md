@@ -51,3 +51,7 @@ import 'spatial-design-system/components/hands.js';
 ## How It Works
 
 Component `hands`uses under the hood [A‑Frame](https://aframe.io/docs/1.7.0/components/hand-tracking-grab-controls.html) component `hand-tracking-grab-controls` to detect pinch gesture and grab the object.
+
+## Limitations
+
+- Must be used in conjunction with the `hands` component and a hand-tracking-enabled XR device. It is not supported in mobile browsers.

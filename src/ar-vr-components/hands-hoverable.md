@@ -101,3 +101,7 @@ box.addEventListener('obbcollisionended', () => {
 - The border outline is rendered slightly in front of the mesh (`z = 0.001`) to avoid z‑fighting.
 - Default hover color is `#545454` which is Spatial Design System's primary color.
 - Tested on Meta Quest Pro and desktop browsers.
+
+## Limitations
+
+- Must be used in conjunction with the `hands` component and a hand-tracking-enabled XR device. It is not supported in mobile browsers.

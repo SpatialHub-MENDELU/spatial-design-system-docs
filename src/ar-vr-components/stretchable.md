@@ -86,4 +86,4 @@ document.querySelector("#app").innerHTML = `
 
 - Component has fixed default values for `minScaleFactor` (0.5) and `maxScaleFactor` (1.5) that constrain scaling relative to the object's initial scale to prevent accidental infinite scaling. These factors are applied to each axis independently in both modes.
 - The `stretchable` should not be combined with another component using pinch gesture (e.g., `grabbable`). It can cause conflicts and one of the components might not work as expected.
-- Must be used in conjunction with the `hands` component and a hand-tracking-enabled XR device.
+- Must be used in conjunction with the `hands` component and a hand-tracking-enabled XR device. It is not supported in mobile browsers.

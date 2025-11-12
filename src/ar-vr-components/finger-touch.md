@@ -96,4 +96,4 @@ el.addEventListener('click', (e) => {
 ## Limitations
 
 - The `finger-touch` component does not handle click logic itself. It only prepares the entity to be clickable using hand gestures.
-- Must be used in conjunction with the `hands` component and a hand-tracking-enabled XR device.
+- Must be used in conjunction with the `hands` component and a hand-tracking-enabled XR device. It is not supported in mobile browsers.
