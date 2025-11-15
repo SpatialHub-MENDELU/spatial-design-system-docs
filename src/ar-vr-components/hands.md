@@ -85,33 +85,42 @@ document.querySelector("#app").innerHTML = `
 
 ## Events
 
-The `hands` component emits the following custom event:
+The `hands` component emits the following custom events:
 
-| Event   | Parameters                                         | Description                                                                                            |
-| ------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `click` | \`{ hand: HTMLElement, side: "left" \| "right" }\` | Emitted when the user's index fingertip touches a clickable/interactable object with pointing gesture. |
+#### Pinch gesture events (global)
+
+| Event                | Parameters                                                                                  | Description                                       |
+| -------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| `hand-pinch-started` | `{ hand, handId: "left" \| "right", pinchPointWorld: { x: number, y: number, z: number } }` | Emitted when a pinch gesture begins.              |
+| `hand-pinch-moved`   | `{ hand, handId: "left" \| "right", pinchPointWorld: { x: number, y: number, z: number } }` | Emitted continuously while a pinch gesture moves. |
+| `hand-pinch-ended`   | `{ hand, handId: "left" \| "right" }`                                                       | Emitted when a pinch gesture ends.                |
+
+#### Hover collision events (object-level)
+
+| Event                | Parameters                                       | Description                                         |
+| -------------------- | ------------------------------------------------ | --------------------------------------------------- |
+| `hand-hover-started` | `{ hand: HTMLElement, side: "left" \| "right" }` | Emitted when a hand starts hovering over an object. |
+| `hand-hover-ended`   | `{ hand: HTMLElement, side: "left" \| "right" }` | Emitted when a hand stops hovering over an object.  |
 
 ## Usage Tips
 
-### Making Elements Clickable
+#### Using the component on mobile devices
 
-It is also possible to allow an object to react to hand-based interaction, add the `interactable` class. For example:
+Mobile WebXR currently does **not** support `hand-tracking`. So you are not able to detect hand gestures on mobile devices.
+
+However, you can still interact with UI elements by using the standard A-Frame cursor:
 
 ```html
-<a-entity
-  class="interactable"
-  geometry="primitive: box"
-  material="color: #03A9F4"
-></a-entity>
+<a-camera>
+  <a-cursor></a-cursor>
+</a-camera>
 ```
 
-The `click` event will be triggered when the user's index finger approaches and touches the object. You can listen to it in your component:
+When using a cursor:
 
-```js
-el.addEventListener('click', (e) => {
-  console.log('Clicked by hand side:', e.detail.side);
-});
-```
+- The cursor behaves like a virtual pointer in the center of the screen.
+- Interactive components such as `ar-button`, `vr-interactive`, or entities with `interactable` will respond to cursor events.
+- Interactions are triggered by tapping the screen.
 
 ## Limitations
 
