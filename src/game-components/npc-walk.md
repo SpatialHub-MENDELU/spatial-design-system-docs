@@ -79,18 +79,52 @@ You can adjust the speed of this rotation using the `rotationSpeed` property.
 
 ### points
 The `points` mode makes the NPC follow a predefined path made up of specific positions. These positions are set using the points property, which takes an array of coordinates such as `0 1 5, 5 1 5, 5 1 0`. The first number in each triplet represents the X coordinate, the second represents the Y coordinate, and the third represents the Z coordinate. The coordinates are separated by commas.
-You can control how the NPC moves along this path with two additional properties: `cyclePath` and `randomizePointsOrder`. 
+```html
+<a-entity
+  npc-walk="
+    walkClipName: Walk;
+    idleClipName: Idle;
+    type: points;
+    points: 0 1 5, 5 1 5, 5 1 0;
+  "
+>
+</a-entity>
+```
+You can control how the NPC moves along this path with two additional properties: `cyclePath` and `randomizePointsOrder`.
 
 The `cyclePath` property controls whether the NPC loops back to the first point after reaching the last one.
 When set to `true`, the NPC continuously loops through the points in order. When set to `false`, the NPC moves back to the first point by following the same path in reverse.
 By default, `cyclePath` is set to `true`.
+```html
+<a-entity
+  npc-walk="
+    walkClipName: Walk;
+    idleClipName: Idle;
+    type: points;
+    points: 0 1 5, 5 1 5, 5 1 0;
+    cyclePath: false;
+  "
+>
+</a-entity>
+```
+
 
 The `randomizePointsOrder` property lets the NPC visit the points in a random order instead of following the original sequence.
 When set to `true`, the NPC will choose points randomly from the list. The default value is `false`.
+```html
+<a-entity
+  npc-walk="
+    walkClipName: Walk;
+    idleClipName: Idle;
+    type: points;
+    points: 0 1 5, 5 1 5, 5 1 0;
+    randomizePointsOrder: true;
+  "
+>
+</a-entity>
+```
 
 ### Example: points type
-<ComponentExample :fixed="false">
-<template #code>
 
 ```js
 import "spatial-design-system/components/game/npcWalk";
@@ -101,11 +135,13 @@ import "spatial-design-system/components/game/npcWalk";
 <a-scene>
   <a-entity
     npc-walk="
-        walkClipName: Walk; idleClipName: Idle; 
+        walkClipName: Walk; 
+        idleClipName: Idle; 
         type: points; 
         points: 0 1 5, 5 1 5, 5 1 0; 
         speed: 2; 
-        pauseAtPoints: 2; waitBeforeStart: 3;"
+        pauseAtPoints: 2; 
+        waitBeforeStart: 3;"
     id="dog-character"
     ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation"
     position="5 1.8 5" >
@@ -113,19 +149,28 @@ import "spatial-design-system/components/game/npcWalk";
   </a-entity>
 </a-scene>
 ```
-</template>
-
-</ComponentExample>
 
 ### randomMoving
 In `randomMoving` mode, the NPC wanders randomly within a defined area. You can set the boundaries of this area using the `xMin`, `xMax`, `yMin`, `yMax`, `zMin`, and `zMax` properties.
 
-
+```html
+  <a-entity
+  npc-walk="
+    walkClipName: Walk;
+    type: randomMoving;
+    xMin: -5;
+    xMax: 5;
+    yMin: -5;
+    yMax: 5;
+    zMin: -5;
+    zMax: 5;
+  "
+>
+</a-entity>
+```
 
 
 ### Example: randomMoving type
-<ComponentExample :fixed="false">
-<template #code>
 
 ```js
 import "spatial-design-system/components/game/npcWalk";
@@ -139,11 +184,13 @@ import "spatial-design-system/components/game/npcWalk";
   <!-- NPC Character -->
   <a-entity
     npc-walk="
-        walkClipName: Walk; idleClipName: Idle; 
+        walkClipName: Walk; 
+        idleClipName: Idle; 
         type: randomMoving; 
         xMin: -5; xMax: 5; yMin: -5; yMax: 5; zMin: -5; zMax: 5; 
         speed: 2; 
-        pauseAtPoints: 2; waitBeforeStart: 3;"
+        pauseAtPoints: 2; 
+        waitBeforeStart: 3;"
     id="dog-character"
     ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation"
     position="5 1.8 5" >
@@ -151,6 +198,3 @@ import "spatial-design-system/components/game/npcWalk";
   </a-entity>
 </a-scene>
 ```
-</template>
-
-</ComponentExample>
