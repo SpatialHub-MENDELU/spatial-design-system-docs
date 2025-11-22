@@ -28,21 +28,6 @@ Add the `finger-touch` component to any entity that should respond to hand touch
 
 <ComponentExample :fixed="true" :hideOutput="true">
 
-<template #output v-if="renderScene">
-<a-entity id="rig" position="0 1.6 0" controllers="
-    leftColor: #03FCC6;
-    rightColor: #018A6C;
-    cursorSize: 0.01;
-    raycastLength: 10
-  ">
-<a-camera></a-camera>
-</a-entity>
-
-  <!-- Interactive objects will respond to controller events -->
-
-<a-box position="0 1.5 -5" color="#03FCC6" vr-interactive></a-box>
-</template>
-
 <template #code>
 
 ```js
@@ -54,7 +39,6 @@ import 'spatial-design-system/primitives/ar-textbox.js';
 ```
 
 ```html
-document.querySelector("#app").innerHTML = `
 <a-scene auto-xr>
   <!-- This line enables hand tracking for both hands -->
   <a-entity id="rig" hands> </a-entity>
@@ -62,7 +46,6 @@ document.querySelector("#app").innerHTML = `
   <!-- This button will be clickable by hand gestures -->
   <a-ar-button finger-touch position="0 1.5 -1" content="Button"></a-ar-button>
 </a-scene>
->`;
 ```
 
 </template>

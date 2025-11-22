@@ -88,7 +88,7 @@ box.addEventListener('obbcollisionended', () => {
 
 - Requires the `obb-collider` component to be available (included automatically in the example import above).
 - Works with 2D hand gestures and other components such as `finger-touch`, `grabbable`, `stretchable`, etc.
-- The overlay geometry is rendered slightly in front of the mesh with small padding `.overlaySizeRatio` (default is 0.005).
+- The overlay geometry is rendered slightly around the mesh with small padding `.overlaySizeRatio` (default is 0.005).
 - Default hover color is `VARIANT_DARK_COLOR=#545454` which is Spatial Design System's primary color.
 - Tested on Meta Quest Pro and desktop browsers.
 

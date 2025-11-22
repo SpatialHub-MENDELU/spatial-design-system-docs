@@ -54,7 +54,6 @@ import 'spatial-design-system/components/stretchable.js';
 ```
 
 ```html
-document.querySelector("#app").innerHTML = `
 <a-scene auto-xr>
   <!-- This line enables hand tracking for both hands -->
   <a-entity id="rig" hands> </a-entity>
@@ -81,7 +80,6 @@ document.querySelector("#app").innerHTML = `
     stretchable="mode: scale; maxSize: 2; minSize: 0.5"
   ></a-box>
 </a-scene>
->`;
 ```
 
 </template>

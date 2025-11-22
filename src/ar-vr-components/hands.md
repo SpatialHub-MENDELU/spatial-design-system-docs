@@ -25,22 +25,7 @@ The `hands` component enables full hand tracking interaction in AR scenes using 
 
 Below is an example showing how to use the `hands` component in a scene. Try this demo with hand tracking enabled AR hardware (e.g., Meta Quest Pro).
 
-<ComponentExample :fixed="true">
-
-<template #output v-if="renderScene">
-<a-entity id="rig" position="0 1.6 0" controllers="
-    leftColor: #03FCC6;
-    rightColor: #018A6C;
-    cursorSize: 0.01;
-    raycastLength: 10
-  ">
-<a-camera></a-camera>
-</a-entity>
-
-  <!-- Interactive objects will respond to controller events -->
-
-<a-box position="0 1.5 -5" color="#03FCC6" vr-interactive></a-box>
-</template>
+<ComponentExample :fixed="true" :hideOutput="true">
 
 <template #code>
 
@@ -52,7 +37,6 @@ import 'spatial-design-system/primitives/ar-button.js';
 ```
 
 ```html
-document.querySelector("#app").innerHTML = `
 <a-scene auto-xr>
   <!-- This line enables hand tracking for both hands -->
   <a-entity id="rig" hands> </a-entity>
@@ -67,7 +51,6 @@ document.querySelector("#app").innerHTML = `
     size="large"
   ></a-ar-button>
 </a-scene>
->`;
 ```
 
 </template>
@@ -89,6 +72,8 @@ The `hands` component emits the following custom events:
 
 #### Pinch gesture events (global)
 
+These events are emitted to the whole scene, so it can be used to detect pinch gestures on all entities in the scene.
+
 | Event                | Parameters                                                                                  | Description                                       |
 | -------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------- |
 | `hand-pinch-started` | `{ hand, handId: "left" \| "right", pinchPointWorld: { x: number, y: number, z: number } }` | Emitted when a pinch gesture begins.              |
@@ -96,6 +81,8 @@ The `hands` component emits the following custom events:
 | `hand-pinch-ended`   | `{ hand, handId: "left" \| "right" }`                                                       | Emitted when a pinch gesture ends.                |
 
 #### Hover collision events (object-level)
+
+These events are emitted directly to the target element.
 
 | Event                | Parameters                                       | Description                                         |
 | -------------------- | ------------------------------------------------ | --------------------------------------------------- |
