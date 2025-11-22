@@ -1,6 +1,12 @@
+@use '../variables' as *;
+
 .courses {
   margin: 0 !important;
   margin: auto;
   max-width: calc($max-width - 64px) !important;
   width: 100%;
+
+  @media screen and (max-width: $breakpointLg) {
+    max-width: 100% !important;
+  }
 }

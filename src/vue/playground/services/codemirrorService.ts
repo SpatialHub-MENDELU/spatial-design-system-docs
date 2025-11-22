@@ -9,16 +9,19 @@ import { javascript } from '@codemirror/lang-javascript';
 import { css } from '@codemirror/lang-css';
 import { html } from '@codemirror/lang-html';
 import { getFileExtension } from '../utils/FileExtensionsAndIcons';
-import { autocompletion } from '@codemirror/autocomplete';
+import { acceptCompletion, autocompletion } from '@codemirror/autocomplete';
 import {
   getAframeAutocomplete,
   getAutompleteByFileExtension,
   getSDSAutocomplete,
 } from '../utils/Autocomplete';
 import { AutocompleteMatch } from '../types/autocomplete';
+import { EditorState, Extension } from '@codemirror/state';
+import { oneDark } from '@codemirror/theme-one-dark';
+import {tomorrow} from 'thememirror';
+import { indentWithTab } from "@codemirror/commands";
 import { basicSetup } from 'codemirror';
-import { Extension } from '@codemirror/state';
-import { githubLight, githubDark } from '@uiw/codemirror-theme-github'
+import { EditorView, keymap } from '@codemirror/view';
 
 export class CodeMirrorService {
   private _state = initEditorState;
@@ -28,12 +31,12 @@ export class CodeMirrorService {
   );
 
   private _debounceTimer: any = null;
-  private _theme = ref<Extension>();
+  private _theme = ref<any>();
   private _observer: MutationObserver
+  private _editorView: EditorView | null = null;
 
   constructor() {
     this._observer = new MutationObserver(this.updateTheme);
-
     this._observer.observe(document.documentElement, {
       attributes: true, 
       attributeFilter: ['class'],
@@ -49,6 +52,26 @@ export class CodeMirrorService {
     }
   }
 
+  setEditorView(view: EditorView) {
+    this._editorView = view;
+  }
+
+  reloadEditorState(doc: string, path: string) {
+    if (!this._editorView) return;
+  
+    const oldPos = this._editorView.state.selection.main.head;
+    const safePos = Math.min(oldPos, doc.length);
+    const newExtensions = this.extensions(path).value;
+  
+    const newState = EditorState.create({
+      doc,
+      selection: { anchor: safePos },
+      extensions: newExtensions,
+    });
+  
+    this._editorView.setState(newState);
+  }
+  
   updateCode = (
     newCode: string,
     playgroundStore,
@@ -58,35 +81,31 @@ export class CodeMirrorService {
   ) => {
     if (!this._webContainersService) return;
     this._webContainersService.state.isLoading = true;
-
+  
     playgroundStore.commit('updateCurrentFileContent', newCode);
-    if (this._debounceTimer) clearTimeout(this._debounceTimer);
-    this._debounceTimer = setTimeout(async () => {
-      try {
-        await this._webContainersService?.writeFile(
-          path,
-          fileContent,
-          !isDetail
-        );
-      } catch (error) {
-        console.error('Error during runCode execution:', error.message);
-      } finally {
-        if (this._webContainersService) {
-          this._webContainersService.state.isLoading = false;
-        }
-      }
-    }, 100);
+  
+    this._webContainersService?.writeFile(path, newCode, !isDetail)
+      .catch(error => {
+        console.error('Error during writeFile execution:', error.message);
+      })
+      .finally(() => {
+        this._webContainersService!.state.isLoading = false;
+      });
   };
 
-  updateTheme = () => {
+  updateTheme = async () => {
     const isDark = document.documentElement.classList.contains('dark');
-    this._theme.value = isDark ? githubDark : githubLight;
+    this._theme.value = isDark ? oneDark : tomorrow;
   };
 
   extensions = (path: string) =>
     computed(() => {
       const fileExtension = getFileExtension(path);
-      const theme = this._theme.value ?? githubLight;
+
+      const isDark = document.documentElement.classList.contains('dark');
+      const themeByDocumentBgColor = isDark ? oneDark : tomorrow;
+
+      const theme = this._theme.value ?? themeByDocumentBgColor;
 
       const customAutocomplete = autocompletion({
         override: [
@@ -141,10 +160,16 @@ export class CodeMirrorService {
         ],
       });
 
+      const tabCompletion = keymap.of([
+        { key: "Tab", run: acceptCompletion },
+        indentWithTab
+      ]);
+
       return [
+        tabCompletion,
         basicSetup,
         customAutocomplete,
-        this._getlanguageExtensions(fileExtension),
+        this._getlanguageExtensions(fileExtension) as Extension,
         theme
       ];
     });
@@ -169,6 +194,10 @@ export class CodeMirrorService {
 
   get debounceTimer(): any {
     return this._debounceTimer;
+  }
+
+  get editorView(): EditorView {
+    return this._editorView as EditorView;
   }
 
   get state(): IStatePlaygroundEditor {

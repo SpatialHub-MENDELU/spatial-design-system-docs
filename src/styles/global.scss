@@ -1,6 +1,12 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@use "tailwindcss/base";
+@use "tailwindcss/components";
+@use "tailwindcss/utilities";
+
+@use './variables.scss' as *;
+
+* {
+  box-sizing: border-box;
+}
 
 .wrapper {
   display: flex;
@@ -16,10 +22,10 @@
     height: calc(100vh - $header-height) !important;
   }
 
-  @media screen and (max-width: $breakpointLg) {
+  @media screen and (max-width: 1023px) {
     padding: 32px;
     margin: auto;
-    height: full !important;
+    height: 100% !important;
   }
 
   @media screen and (max-width: $breakpointMd) {
@@ -48,6 +54,14 @@
   border-color: var(--vp-c-brand-1);
 }
 
+.primaryBg {
+  background-color: $tertiary;
+
+  i, p {
+    color: $white !important
+  }
+}
+
 .mainColor {
   color: $primary !important;
 }
@@ -59,4 +73,43 @@
 .text-highlighted {
   color: $primary !important;
   font-weight: 600;
+}
+
+.playground-page{
+  .VPNavBar .wrapper {
+    max-width: $max-width;
+    margin: auto;
+  }
+
+  .VPContent {
+    position: relative;
+    height: calc(100vh - $header-height) !important;
+  }
+
+  .VPHome, .VPHero, .container:not(.VPNavBarHamburger .container) {
+    height: 100% !important;
+  }
+  
+  .main {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .VPHero {
+    padding: 0 !important;
+    margin: 0 !important;
+
+    @media screen and (max-width: $breakpointLg) {
+      padding: 0 2rem !important;
+    }
+  }
+
+  .container {
+    max-width: unset !important;
+  }
+}
+
+
+.text-normal {
+  color: var(--vp-c-text-1) !important;
 }

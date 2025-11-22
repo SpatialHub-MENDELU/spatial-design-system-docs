@@ -21,8 +21,12 @@ const copyTextToClipboard = async () => {
 </script>
 
 <template>
-  <Dialog v-model:visible="props.dialogIsVisible" modal header="Share course" :style="{ width: '25rem' }"
-    :closable="false">
+  <Dialog
+    v-model:visible="props.dialogIsVisible"
+    modal
+    dismissableMask
+    @update:visible="() => onClose()"  
+    header="Share course" :style="{ width: '25rem' }">
     <div class="flex items-end gap-4 mb-4">
       <InputText id="username" class="flex-auto border border-primary" autocomplete="off" readonly="true"
         :value="url" />
@@ -31,7 +35,7 @@ const copyTextToClipboard = async () => {
     </div>
 
     <div class="flex justify-end gap-2">
-      <Button type="button" class="bg-grey" @click="onClose">Cancel</Button>
+      <Button type="button" class="bg-grey" @click="onClose" label="Close" />
     </div>
   </Dialog>
 </template>

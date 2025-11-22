@@ -38,7 +38,7 @@ const setOpenedFile = async (file: FolderItem) => {
 
 <template>
   <div
-    class="flex gap-4 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 whitespace-nowrap w-full"
+    class="opened-files flex gap-4 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 whitespace-nowrap w-full"
   >
     <div
       class="flex items-center gap-2"
@@ -52,7 +52,7 @@ const setOpenedFile = async (file: FolderItem) => {
 
         <i
           :class="[getFileIcon(file), { 'text-primary': file.path === currentFilePath }]"
-          class="w-4 h-4"
+          class="w-4 h-4 text-grey"
         />       
         <p
           class="md:text-[14px] text-[13px] truncate max-w-[150px]"

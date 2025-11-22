@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, inject, watch } from 'vue';
+import { computed, defineProps, inject, watch } from 'vue';
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
@@ -10,6 +10,7 @@ import { WebContainerService } from '../../services/webContainersService';
 import { FolderItem } from '../../types/fileItem';
 import { IPropsNewItemDialog } from '../../types/props';
 import { useStore } from 'vuex';
+import { useToast } from 'primevue';
 
 const emit = defineEmits()
 const webContainersService = inject<WebContainerService>(
@@ -18,18 +19,20 @@ const webContainersService = inject<WebContainerService>(
 const fileSystemService = new FileSystemService(
   webContainersService as WebContainerService
 );
+const projectType = computed(() => playgroundStore.getters.projectType);
 
 const props = defineProps<IPropsNewItemDialog>();
 const playgroundStore = useStore()
+const toast = useToast()
 
 const submit = async () => {
-  const regex = /^[a-zA-Z]([a-zA-Z0-9]*_?[a-zA-Z0-9]+)*$/;
+  const regex = /^[a-zA-Z]([a-zA-Z0-9]*[-_]?([a-zA-Z0-9]+))*$/;
   if (!regex.test(fileSystemService.state.newItemName)) {
     fileSystemService.state.errorMessage = 'Invalid format';
     return;
   }
 
-  await fileSystemService.submitNewItemDialog(props, playgroundStore).then(() => {
+  await fileSystemService.submitNewItemDialog(props, playgroundStore, toast).then(() => {
     if (props.itemToRename) emit('rename-item');
     else emit('new-item')
 
@@ -41,10 +44,11 @@ watch(
   () => [props.itemToRename, props.dialogType],
   ([newItemToRename, newDialogType]) => {
     const newValue = newItemToRename as FolderItem;
-    fileSystemService.updateEditedItem(newValue, props, newDialogType);
+    fileSystemService.updateEditedItem(newValue, props, newDialogType, projectType.value);
   },
   { immediate: true, deep: true }
 );
+
 </script>
 
 <template>
@@ -53,10 +57,11 @@ watch(
     :header="fileSystemService.state.dialogHeader"
     modal
     maximizable
-    :closable="false"
+    dismissableMask
+    @update:visible="() => closeDialog()" 
   >
-    <div class="flex gap-2 items-center">
-      <div class="flex flex-col gap-1 w-full justify-start relative">
+    <div class="flex gap-2 items-center items-stretch mt-2">
+      <div class="flex flex-col gap-1 w-full justify-start relative ">
         <InputText
           v-model="fileSystemService.state.newItemName"
           placeholder="Enter name"
@@ -75,7 +80,7 @@ watch(
         <div class="flex flex-col gap-1 w-max justify-start relative">
           <Dropdown
             v-model="fileSystemService.state.newFileExtension"
-            :options="fileSystemService.fileNameExtensions"
+            :options="fileSystemService.getFileNameExtensions(projectType)"
             placeholder="Select"
             optionLabel="label"
             optionValue="value"

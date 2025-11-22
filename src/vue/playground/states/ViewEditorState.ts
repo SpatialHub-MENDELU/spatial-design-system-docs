@@ -5,5 +5,5 @@ export const initViewEditorState = reactive<IStateEditor>({
   showConfirmDialog: false,
   nextRoute: null,
   createNewProjectDialogIsVisible: false,
-  createNewProjectConfirmDialogIsVisible: false
+  createNewProjectConfirmDialogIsVisible: false,
 })

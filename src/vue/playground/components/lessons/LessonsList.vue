@@ -12,7 +12,7 @@ const props = defineProps<IPropsLessonsList>();
   <a
     v-for="lesson in props.activeCourse?.lessons"
     :href="`${LESSON}/${props.activeCourse?.slug}-${lesson.id}`"
-    @click="() => props.onClose()"
+    @click="() => props.onClose?.()"
     class="flex gap-2 justify-between py-1.5 border-b border-border-color"
   >
     <div class="flex gap-2 items-center lg:text-[16px] text-[15px]"

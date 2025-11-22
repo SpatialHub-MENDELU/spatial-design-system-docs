@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import { reactive, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import {
+  reactive,
+  computed,
+  onMounted,
+  onBeforeUnmount,
+  nextTick,
+  ref,
+} from 'vue';
 import { ILoading } from '../types/loading';
 import Sidebar from '../components/shared/Sidebar.vue';
 import RightBar from '../components/shared/RightBar.vue';
@@ -11,7 +18,8 @@ import { initViewEditorState } from '../states/ViewEditorState';
 import CreateProjectDialog from '../components/shared/CreateProjectDialog.vue';
 import { ProjectType } from '../types/projectType';
 import ConfirmDialog from 'primevue/confirmdialog';
-import NewProjectConfirmDialog from '../components/dialogs/NewProjectConfirmDialog.vue';
+import EditorLoadError from '../components/editor/EditorLoadError.vue';
+import CustomCofirmDialog from '../components/dialogs/CustomCofirmDialog.vue';
 
 const playgroundStore = useStore();
 const projectType = computed(() => playgroundStore.getters.projectType);
@@ -20,6 +28,8 @@ const loading = reactive<ILoading>({
   installing: true,
   running: false,
 });
+
+const showError = ref(false);
 
 const state = initViewEditorState;
 
@@ -37,6 +47,10 @@ const createProjectConfirmAccept = () => {
 
 const closeNewProjectConfirmDialog = () => {
   state.createNewProjectConfirmDialogIsVisible = false;
+};
+
+const updateShowError = () => {
+  showError.value = true;
 };
 
 onMounted(() => {
@@ -68,11 +82,15 @@ const createNewProject = async (project: ProjectType) => {
   playgroundStore.commit('updateCurrentFilePath', '');
   closeDialog();
 };
+
 </script>
 
 <template>
+  <EditorLoadError v-if="showError"/>
+
   <div
-    class="flex gap-0 lg:flex-row flex-col mx-auto w-full lg:overflow-y-hidden"
+    v-else
+    class="h-full flex gap-0 lg:flex-row flex-col mx-auto w-full lg:overflow-y-hidden"
   >
     <Sidebar :show-dialog="() => showDialog()" />
     <WelcomeBanner v-if="!projectType" />
@@ -83,7 +101,8 @@ const createNewProject = async (project: ProjectType) => {
       :create-project="createNewProject"
     />
 
-    <NewProjectConfirmDialog
+    <CustomCofirmDialog
+      message="Are you sure you want to create a new project? This will discard all your current changes."
       :show-dialog="state.createNewProjectConfirmDialogIsVisible"
       :accept="createProjectConfirmAccept"
       :reject="closeNewProjectConfirmDialog"
@@ -93,14 +112,19 @@ const createNewProject = async (project: ProjectType) => {
       <div class="flex lg:flex-row flex-col h-full max-w-full">
         <button
           @click="showDialog"
-          class="lg:hidden block px-3 py-2 bg-primary text-white rounded-lg font-semibold transition duration-300 ease-in-out mb-4
-        md:text-[16px] text-[15px] w-max">New project</button>
-        <FileTree :loading="loading" />
-        <PlaygroundEditor :loading="loading" />
+          class="lg:hidden block px-3 py-2 bg-primary text-white rounded-lg font-semibold transition duration-300 ease-in-out mb-4 md:text-[16px] text-[15px] w-max"
+        >
+          New project
+        </button>
+        <FileTree :loading="loading" v-if="!showError" />
+        <PlaygroundEditor
+          :loading="loading"
+          :update-show-error="updateShowError"
+        />
       </div>
     </div>
 
     <ConfirmDialog />
-    <RightBar />
+    <RightBar :show-layout-icon="true" />
   </div>
 </template>

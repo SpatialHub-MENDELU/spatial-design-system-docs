@@ -53,9 +53,10 @@ onMounted(() => {
   <Dialog
     :visible="showDialog"
     header="Hint"
-    modal
     maximizable
-    :closable="false"
+    modal
+    dismissableMask
+    @update:visible="() => closeDialog()" 
   >
     <div id="imports" />
     <div id="hint" />

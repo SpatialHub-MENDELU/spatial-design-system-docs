@@ -1,7 +1,8 @@
 
-<script setup lang="ts">
+<script setup type="module" lang="ts">
 import { defineProps } from 'vue';
 import { IPropsLessonDetailContent } from '../../types/props';
+import Chip from 'primevue/chip';
 
 const props = defineProps<IPropsLessonDetailContent>();
 </script>
@@ -11,30 +12,35 @@ const props = defineProps<IPropsLessonDetailContent>();
     class="h-full block overflow-x-auto relative duration-300"
     :class="{
       ' w-0 overflow-hidden': !props.lessonDetailService.state.isContentVisible,
-      ' lg:w-1/2 w-full':
-        props.lessonDetailService.state.isContentVisible &&
-        props.lessonDetailService.state.activeLesson?.task,
-      ' w-full': !props.lessonDetailService.state.activeLesson?.task,
+      ' w-full': props.lessonDetailService.state.isContentVisible
     }"
   >
     <div class="flex flex-col w-full h-full">
       <div
-        class="flex items-center gap-2 lg:mb-6 mb-4 cursor-pointer"
+        class="flex items-center gap-2 lg:mb-6 mb-4 cursor-pointer bg-primary hover:bg-tertiary duration-300 w-max py-2 px-4 rounded-2xl"
         @click="props.lessonDetailService.state.isOverviewVisible = true"
       >
         <i
-          class="pi pi-th-large text-grey lg:text-[16px] text-[15px] duration-300 cursor-pointer"
+          class="pi pi-th-large text-white lg:text-[16px] text-[15px] duration-300 cursor-pointer"
         />
-        <p class="lg:text-[16px] text-[15px] text-grey">Lesson overview</p>
+        <p class="lg:text-[16px] text-[15px] text-white">Lesson overview</p>
       </div>
       <span class="lg:text-[17px] text-[16px] text-grey"
         >Lesson {{ props.lessonDetailService.state.lessonById?.id }}</span
       >
-      <h1
+      <div class="flex gap-4 items-center">
+        <h1
         class="lg:text-[32px] md:text-[26px] text-[24px] font-medium mb-3 text-primary md:mt-3 mt-2 md:mb-6 mb-4"
-      >
-        {{ props.lessonDetailService.state.lessonById?.title }}
-      </h1>
+        >
+          {{ props.lessonDetailService.state.lessonById?.title }}
+        </h1>
+        
+        <button 
+          @click="props.lessonDetailService.showHintDialog"
+          v-if="props.lessonDetailService.state.activeLesson?.task">
+          <Chip label="Hint"/>
+        </button>
+      </div>
 
       <div
         v-if="
@@ -46,7 +52,13 @@ const props = defineProps<IPropsLessonDetailContent>();
       >
         <div :class="{
           'bordered-section': props.lessonDetailService.state.activeLesson.content.task
-        }" v-html="props.lessonDetailService.state.activeLesson.content.intro"/>
+        }" v-html="props.lessonDetailService.state.activeLesson.content.intro" />
+
+        <div v-if="props.lessonDetailService.state.activeLesson.content.task"
+          class="lg:mt-6 mt-4">
+          <h2>Your task</h2>
+          <div v-html="props.lessonDetailService.state.activeLesson.content.task" />
+        </div>
 
         <div v-if="props.lessonDetailService.state.activeLesson.content.whatYouWillLearn"
           class="lg:mt-6 mt-4">
@@ -74,12 +86,6 @@ const props = defineProps<IPropsLessonDetailContent>();
           <h2>Props</h2>
           <div v-html="props.lessonDetailService.state.activeLesson.content.props"/>
         </div>
-
-        <div v-if="props.lessonDetailService.state.activeLesson.content.task"
-        class="lg:mt-6 mt-4">
-        <h2>Your task</h2>
-        <div v-html="props.lessonDetailService.state.activeLesson.content.task"/>
-      </div>
     </div>
 
       <div v-else>

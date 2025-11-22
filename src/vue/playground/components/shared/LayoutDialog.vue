@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
-import { defineProps, onMounted, inject } from 'vue';
+import { defineProps, inject, watch } from 'vue';
 import { Layout } from '../../types/layout';
 import { SessionService } from '../../services/sessionService';
 import { useStore } from 'vuex';
@@ -13,14 +13,18 @@ const playgroundStore = useStore()
 const props = defineProps<IPropsLayoutDialog>();
 const state = initLayoutDialogState
 
-onMounted(() => {
+watch(() => props.visible, () => {
+  getActiveLayout();
+});
+
+const getActiveLayout = () => {
   const editorSettings = sessionService?.getFromSession('editorSettings');
   if (editorSettings) {
     state.layout = editorSettings['selectedLayout'];
   } else {
     state.layout = Layout.HORIZONTAL
   }
-});
+}
 
 const updateLayout = (layout: Layout) => {
   state.layout = layout;
@@ -44,9 +48,10 @@ const submitForm = () => {
 <template>
   <Dialog
     :visible="visible"
-    modal
     header="Change layout"
-    :closable="false"
+    modal
+    dismissableMask
+    @update:visible="() => closeDialog()" 
     :style="{ width: '25rem' }"
   >
     <span class="text-surface-500 dark:text-surface-400 block mb-8"

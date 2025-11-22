@@ -46,18 +46,15 @@ export interface IPropsShareCourseDialog {
   onClose: () => void
 }
 
-export interface IPropsTaskErrorDialog {
-  errors: string[];
+export interface IPropsTaskDialog {
+  type: 'success' | 'error'
+  successMessage?: string;
   showDialog: boolean;
-  closeDialog: () => void;
-}
-
-export interface IPropsTaskSuccessDialog {
-  successMessage: string;
-  showDialog: boolean;
-  continue: () => void;
-  link: string | null;
-  text: string;
+  continue?: () => void;
+  closeDialog?: () => void;
+  link?: string | null;
+  text?: string;
+  errors?: string[];
 }
 
 export interface IPropsCourseOverview {
@@ -88,6 +85,7 @@ export interface IPropsEditorOutput {
   loading: ILoading;
   isDetail: boolean;
   outputIsShown?: boolean;
+  isResizing?: boolean;
 }
 
 export interface IPropsFolderFileUploader {
@@ -113,7 +111,7 @@ export interface IPropsLessonsList {
   activeCourse: ICourseDetail;
   lessonsFromSession: ILessonVariants[];
   activeLesson: ILessonVariants | null;
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 export interface IPropsBreadcrumbs {
@@ -154,4 +152,9 @@ export interface IPropsConfirmDialog {
   accept: () => void
   reject: () => void
   showDialog: boolean
+  message: string
+}
+
+export interface IPropsRightBar {
+  showLayoutIcon: boolean
 }

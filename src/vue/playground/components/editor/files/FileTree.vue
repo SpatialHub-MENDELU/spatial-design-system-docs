@@ -13,8 +13,9 @@ import { WebContainerService } from '../../../services/webContainersService';
 import MoveFileDialog from '../../dialogs/MoveFileDialog.vue';
 import { TreeNode } from 'primevue/treenode';
 import ConfirmDialog from 'primevue/confirmdialog';
-import NewProjectConfirmDialog from '../../dialogs/NewProjectConfirmDialog.vue';
 import CreateProjectDialog from '../../shared/CreateProjectDialog.vue';
+import CustomCofirmDialog from '../../dialogs/CustomCofirmDialog.vue';
+import { FolderItem } from '../../../types/fileItem';
 
 const playgroundStore = useStore();
 const props = defineProps<IPropsFileTree>();
@@ -56,18 +57,20 @@ const toggleVisibility = () => {
 };
 
 const updateItems = async () => {
+  movingLoading.value = true
+
   await fileTreeService.fetchFolders().then(() => {
     movingLoading.value = false
   });
-};
-
-const updateMovingLoading = async () => {
-  movingLoading.value = true
 
   const data = await webContainersService?.fetchFolderStructureInTreeNode('/');
   if (data) {
     folders.value = data;
   }
+};
+
+const updateMovingLoading = async () => {
+  movingLoading.value = true
 }
 </script>
 
@@ -111,21 +114,27 @@ const updateMovingLoading = async () => {
           'lg:max-w-full': fileTreeService.state.isVisible,
         }"
       >
+    
         <Button
           @click="fileTreeService.downloadFileSystem"
           icon="pi pi-download"
           class="w-4"
+          v-tooltip.left="'Download file system'"
         />
-        <Button @click="showNewFileMenu" icon="pi pi-plus" class="w-4" />
-        <Button
-          @click="toggleVisibility"
-          :icon="
-            fileTreeService.state.isVisible
-              ? 'pi pi-angle-up'
-              : 'pi pi-angle-down'
-          "
-          class="w-4 lg:hidden block"
-        />
+
+        <Button @click="showNewFileMenu" icon="pi pi-plus" class="w-4"
+        v-tooltip.left="'Add content'" />
+
+        <button class="w-max h-full lg:hidden flex items-center justify-center"
+          @click="toggleVisibility">
+          <i
+            :class="[
+              'pi',
+              fileTreeService.state.isVisible ? 'pi-angle-up' : 'pi-angle-down',
+              'text-primary lg:border border-primary text-[20px] duration-300 lg:rounded-xl lg:p-2 bg-white h-full',
+            ]"
+          />
+        </button>
 
         <ContextMenu
           :model="fileTreeService.newFileContextMenuItems"
@@ -146,7 +155,7 @@ const updateMovingLoading = async () => {
       :value="fileTreeService.folders"
       class="overflow-y-auto max-h-full duration-300"
       :class="{
-        'lg:max-w-0 lg:max-h-full lg:h-full h-0':
+        'p-tree--hidden lg:max-w-0 lg:max-h-full lg:h-full h-0':
           !fileTreeService.state.isVisible,
         'lg:max-w-[20rem] lg:w-[15rem] lg:h-full lg:max-h-full h-max max-h-max':
           fileTreeService.state.isVisible,
@@ -193,7 +202,8 @@ const updateMovingLoading = async () => {
       :updateLoading="updateMovingLoading"
     />
 
-    <NewProjectConfirmDialog
+    <CustomCofirmDialog
+      message="Are you sure you want to create a new project? This will discard all your current changes."
       :show-dialog="fileTreeService.state.showCreateProjectDialogConfirm"
       :accept="fileTreeService.createProjectConfirmAccept"
       :reject="fileTreeService.closeNewProjectConfirmDialog"
@@ -203,6 +213,13 @@ const updateMovingLoading = async () => {
       :visible="fileTreeService.state.showCreateProjectDialog"
       :close-dialog="fileTreeService.closeDialog"
       :create-project="(projectType) => fileTreeService.createNewProject(projectType, props.loading, playgroundStore)"
+    />
+
+    <CustomCofirmDialog
+      message="Are you sure you want to delete this item?"
+      :show-dialog="fileTreeService.state.showDeleteConfirmDialog"
+      :accept="() => fileTreeService.deleteItem(fileTreeService.state.currentItem as FolderItem, playgroundStore)"
+      :reject="() => fileTreeService.state.showDeleteConfirmDialog = false"
     />
 
     <button

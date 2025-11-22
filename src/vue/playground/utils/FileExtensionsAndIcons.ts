@@ -20,6 +20,8 @@ export const getFileExtension = (fileName: string, fileType: FileType = FileType
       return FileExtensions.JSON;
     case FileExtensions.JS:
       return FileExtensions.JS;
+    case FileExtensions.VUE:
+      return FileExtensions.VUE;
     default:
       return FileExtensions.DEFAULT;
   }
@@ -40,6 +42,8 @@ export const getFileIcon = (file: FolderItem) => {
       return 'fas fa-folder';
     case 'json':
         return 'fas fa-file-code';
+    case 'vue':
+      return 'fab fa-vuejs';
     default:
       return 'fas fa-file';
   }

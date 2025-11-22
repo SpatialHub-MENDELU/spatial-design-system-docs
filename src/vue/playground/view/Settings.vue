@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import Sidebar from '../components/shared/Sidebar.vue';
-import InputSwitch from 'primevue/inputswitch';
 import Dropdown from 'primevue/dropdown';
 
 import { ref, watch, inject, onMounted } from 'vue';
@@ -8,6 +7,7 @@ import { SessionService } from '../services/sessionService';
 import { Layout } from '../types/layout';
 import { useStore } from 'vuex';
 import { initViewSettingsState } from '../states/ViewSettingsState';
+import RightBar from '../components/shared/RightBar.vue';
 
 const playgroundStore = useStore()
 const sessionService = inject<SessionService>('sessionService');
@@ -44,14 +44,14 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex gap-0 mx-auto w-full justify-center">
+  <div class="h-full flex gap-0 lg:flex-row flex-col mx-auto w-full lg:overflow-y-hidden">
+    <Sidebar />
     <div
       class="main-content settings lg:h-full h-full mx-auto relative flex w-full lg:flex-row flex-col"
     >
-      <Sidebar />
 
       <div class="w-full xl:p-16 lg:p-12 pt-6 lg:h-auto h-full">
-        <div class="w-full border-b border-border-color pb-2">
+        <div class="w-full border-b border-border-color pb-2 text-left">
           <h1
             class="lg:text-[32px] md:text-[26px] text-[24px] font-medium mb-3"
           >
@@ -62,7 +62,7 @@ onMounted(async () => {
           </p>
         </div>
 
-        <div class="lg:py-16 py-8 space-y-8">
+        <div class="lg:py-16 py-8 space-y-8 text-left">
           <div class="flex items-center justify-between gap-3">
             <div class="w-2/3">
               <p class="font-semibold lg:text-[17px] text-[16px]">Font Size</p>
@@ -79,7 +79,7 @@ onMounted(async () => {
             />
           </div>
 
-          <div class="flex items-center justify-between gap-3">
+          <div class="lg:flex hidden items-center justify-between gap-3">
             <div class="w-2/3">
               <p class="font-semibold lg:text-[17px] text-[16px]">
                 Change Layout
@@ -99,5 +99,6 @@ onMounted(async () => {
         </div>
       </div>
     </div>
+    <RightBar :show-layout-icon="false" />
   </div>
 </template>

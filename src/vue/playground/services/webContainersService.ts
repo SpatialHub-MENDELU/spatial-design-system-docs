@@ -2,11 +2,12 @@ import { WebContainer } from '@webcontainer/api';
 import { TreeNode } from 'primevue/treenode';
 import { FileType } from '../types/fileType';
 import { FolderItem } from '../types/fileItem';
-import JSZip from 'jszip';
 import { getFileIcon } from '../utils/FileExtensionsAndIcons';
 import { ProjectType } from '../types/projectType';
 import { getMessageHandlerCode } from '../utils/MessageHandlerCode';
 import { reactive } from 'vue';
+import JSZip from 'jszip';
+import { fetchWithTimeout } from '../utils/Fetch';
 
 export class WebContainerService {
   private static instance: WebContainerService;
@@ -14,12 +15,10 @@ export class WebContainerService {
   private isBooting: boolean = false;
   private openedFiles: FolderItem[] = [];
 
-  private constructor() {}
-
   public state = reactive<{
-    isLoading: boolean,
+    isLoading: boolean;
   }>({
-    isLoading: false
+    isLoading: false,
   });
 
   public static getInstance(): WebContainerService {
@@ -48,9 +47,19 @@ export class WebContainerService {
     this.isBooting = true;
 
     try {
-      this.webContainerInstance = await WebContainer.boot();
+
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => {
+          reject(new Error('WebContainer booting timed out after 10 seconds.'));
+        }, 5000);
+      });
+
+      this.webContainerInstance = await Promise.race([
+        WebContainer.boot(),
+        timeoutPromise,
+      ]) as WebContainer;
+
     } catch (error) {
-      console.error('Failed to boot WebContainer:', error);
       this.isBooting = false;
       throw new Error('WebContainer booting failed: ' + error.message);
     }
@@ -62,10 +71,29 @@ export class WebContainerService {
         ) as unknown as HTMLIFrameElement;
         if (iframeEl) {
           iframeEl.src = url;
-        }        
+        }
+
+        // iframeEl.onload = function () {
+        //   const iframeDocument =
+        //     iframeEl.contentDocument || iframeEl.contentWindow?.document;
+        //   const head = iframeDocument?.head;
+
+        //   // Nastavení hlaviček uvnitř iframe (pomocí metadat)
+        //   const metaCOOP = document.createElement('meta');
+        //   metaCOOP.setAttribute('http-equiv', 'Cross-Origin-Opener-Policy');
+        //   metaCOOP.setAttribute('content', 'same-origin');
+        //   head?.appendChild(metaCOOP);
+
+        //   const metaCOEP = document.createElement('meta');
+        //   metaCOEP.setAttribute('http-equiv', 'Cross-Origin-Embedder-Policy');
+        //   metaCOEP.setAttribute('content', 'require-corp'); // Nebo 'credentialless'
+        //   head?.appendChild(metaCOEP);
+        // }
+
       });
     } catch (error) {
-      console.log(error)
+      console.error('Error setting up server ready event:', error);
+      throw error;
     }
 
     this.isBooting = false;
@@ -74,10 +102,14 @@ export class WebContainerService {
 
   public async ensureInitialized() {
     if (!this.webContainerInstance) {
-      await this.init();
-      if (!this.webContainerInstance) {
-        console.error('Failed to initialize WebContainer after init call.');
-        throw new Error('Failed to initialize WebContainer.');
+      try {
+        await this.init();
+        if (!this.webContainerInstance) {
+          console.error('Failed to initialize WebContainer after init call.');
+          throw new Error('Failed to initialize WebContainer.');
+        }
+      } catch (e) {
+        throw new Error(e);
       }
     }
   }
@@ -86,8 +118,8 @@ export class WebContainerService {
     try {
       await this.ensureInitialized();
       return await this.webContainerInstance?.fs.readFile(filePath, 'utf-8');
-    } catch(error) {
-      console.log(error)
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -115,7 +147,6 @@ export class WebContainerService {
   }
 
   public async fetchFolderStructure(directory: string): Promise<any[]> {
-
     await this.ensureInitialized();
     const entries = await this.listFiles(directory);
 
@@ -128,7 +159,7 @@ export class WebContainerService {
           name: entry,
           type: isDirectory ? 'folder' : 'file',
           ...(isDirectory && entry !== 'node_modules'
-            ? { children: await this.fetchFolderStructure(path) } 
+            ? { children: await this.fetchFolderStructure(path) }
             : {}),
         };
       })
@@ -148,7 +179,7 @@ export class WebContainerService {
   }
 
   public async fetchFolderStructureInTreeNode(
-    directory: string,
+    directory: string
   ): Promise<TreeNode[]> {
     const data = await this.fetchFolderStructure(directory);
 
@@ -161,7 +192,7 @@ export class WebContainerService {
 
         const children = folder.children
           ? await this.fetchFolderStructureInTreeNode(
-              `${directory}/${folder.name}`,
+              `${directory}/${folder.name}`
             )
           : [];
 
@@ -206,8 +237,11 @@ export class WebContainerService {
     }
   }
 
-  public async moveFile(oldPath: string, newPath: string): Promise<{ success: boolean; message: string }> {
-    await this.ensureInitialized()
+  public async moveFile(
+    oldPath: string,
+    newPath: string
+  ): Promise<{ success: boolean; message: string }> {
+    await this.ensureInitialized();
     try {
       await this.webContainerInstance?.fs.rename(oldPath, newPath);
 
@@ -218,19 +252,24 @@ export class WebContainerService {
     } catch (error) {
       return {
         success: false,
-        message: 'Failed to move file'
-      }
+        message: 'Failed to move file',
+      };
     }
   }
 
   public async removeItem(item: FolderItem): Promise<TreeNode[]> {
     if (this.webContainerInstance) {
-      await this.webContainerInstance.fs.rm(String(item.path), { recursive: true });
+      await this.webContainerInstance.fs.rm(String(item.path), {
+        recursive: true,
+      });
     }
 
     const folderStructurePromise = this.fetchFolderStructureInTreeNode('/');
-  
-    const removeFromArray = (arr: TreeNode[], itemToRemove: FolderItem): void => {
+
+    const removeFromArray = (
+      arr: TreeNode[],
+      itemToRemove: FolderItem
+    ): void => {
       for (let i = arr.length - 1; i >= 0; i--) {
         const node = arr[i];
         if (node.data?.path === itemToRemove.path) {
@@ -240,13 +279,13 @@ export class WebContainerService {
         if (node.children) removeFromArray(node.children, itemToRemove);
       }
     };
-  
+
     const folderStructure = await folderStructurePromise;
     removeFromArray(folderStructure, item);
-    
+
     return folderStructure;
   }
-  
+
   private async installFileSystem(
     fileStructure: any,
     zip: JSZip,
@@ -262,7 +301,10 @@ export class WebContainerService {
             zip,
             `${currentPath}/`
           );
-        } else if (item.type === FileType.FILE && item.name != 'package-lock.json') {
+        } else if (
+          item.type === FileType.FILE &&
+          item.name != 'package-lock.json'
+        ) {
           const fileContent = await this.readFile(currentPath);
           if (fileContent !== undefined) {
             zip.file(currentPath, fileContent);
@@ -279,7 +321,9 @@ export class WebContainerService {
   }
 
   private async downloadZip(fileStructure: any) {
+    const JSZip = (await import('jszip')).default;
     const zip = new JSZip();
+
     await this.installFileSystem(fileStructure, zip);
 
     zip.generateAsync({ type: 'blob' }).then((content) => {
@@ -321,13 +365,15 @@ export class WebContainerService {
       this.webContainerInstance = null;
     }
   }
-  
+
   async createProject(
     projectType: ProjectType,
     task?: string
   ): Promise<boolean> {
     await this.ensureInitialized();
-    if (!this.webContainerInstance) return false;
+    if (!this.webContainerInstance) {
+      throw new Error('WebContainer instance is not initialized.');
+    }
 
     await this.stopCurrentProject();
 
@@ -338,7 +384,15 @@ export class WebContainerService {
           : '/templates/vue';
 
       const copyTemplate = async (srcPath: string, destPath: string) => {
-        const response = await fetch(`${srcPath}/template-files.json`);
+        const response = await fetchWithTimeout(
+          `${srcPath}/template-files.json`
+        );
+        if (!response.ok) {
+          throw new Error(
+            `Failed to fetch template file list: ${response.statusText}`
+          );
+        }
+
         const fileList = await response.json();
 
         for (const file of fileList) {
@@ -348,7 +402,7 @@ export class WebContainerService {
           if (file.isDirectory) {
             await this.createFolder(dest);
           } else {
-            const contentResponse = await fetch(src);
+            const contentResponse = await fetchWithTimeout(src);
             if (!contentResponse.ok) {
               throw new Error(
                 `Failed to fetch ${src}: ${contentResponse.statusText}`
@@ -372,28 +426,30 @@ export class WebContainerService {
 
       await copyTemplate(templatePath, '/');
 
-      const installProcess = await this.webContainerInstance.spawn('npm', [
-        'install',
-      ]);
+      // Handle npm install with try-catch
+      try {
+        const installProcess = await this.webContainerInstance.spawn('npm', [
+          'install',
+        ]);
 
-      let installOutput = '';
-      installProcess.output.pipeTo(
-        new WritableStream({
-          write(chunk: string) {
-            installOutput += chunk;
-          },
-        })
-      );
+        let installOutput = '';
+        installProcess.output.pipeTo(
+          new WritableStream({
+            write(chunk: string) {
+              installOutput += chunk;
+            },
+          })
+        );
 
-      const installExitCode = await installProcess.exit;
-      if (installExitCode !== 0) {
-        console.error(
-          'Error during npm install: ',
-          installOutput || 'Unknown error'
-        );
-        throw new Error(
-          `Dependency installation failed with exit code ${installExitCode}`
-        );
+        const installExitCode = await installProcess.exit;
+        if (installExitCode !== 0) {
+          throw new Error(
+            `Dependency installation failed with exit code ${installExitCode}. Output: ${installOutput}`
+          );
+        }
+      } catch (installError) {
+        console.error('Error during npm install:', installError);
+        throw new Error(`npm install failed: ${installError.message}`);
       }
 
       const devProcess = await this.webContainerInstance.spawn('npm', [
@@ -412,7 +468,7 @@ export class WebContainerService {
       return true;
     } catch (error) {
       console.error('Error creating project:', error);
-      throw error;
+      throw new Error(`Project creation failed: ${error.message}`);
     }
   }
 
@@ -472,21 +528,21 @@ export class WebContainerService {
             const document = this.parseDocument(iframeContent);
             eval(code);
           } catch (error) {
-            window.removeEventListener('message', onMessageHandler);
             return reject(new Error(error.message));
           }
-      
+
           try {
             await this.removeMessageHandling(mainProjectFile, projectType);
             resolve({ success: true });
           } catch (error) {
-            reject(new Error(`Error removing message handling: ${error.message}`));
-          } 
-          finally {
+            reject(
+              new Error(`Error removing message handling: ${error.message}`)
+            );
+          } finally {
             window.removeEventListener('message', onMessageHandler);
           }
         }
-      };      
+      };
 
       window.addEventListener('message', onMessageHandler);
 
@@ -502,7 +558,6 @@ export class WebContainerService {
           }
         }, 100);
       }
-
     });
   }
 
@@ -512,22 +567,22 @@ export class WebContainerService {
   }
 
   private requestIframeContent(iframe: HTMLIFrameElement) {
-    iframe.contentWindow?.postMessage({ type: 'getDocument', content: '' }, '*');
+    iframe.contentWindow?.postMessage(
+      { type: 'getDocument', content: '' },
+      '*'
+    );
   }
 
-  private async addEventHandling(
-    filePath: string,
-    projectType: ProjectType,
-  ) {
+  private async addEventHandling(filePath: string, projectType: ProjectType) {
     try {
       const messageHandlerCode = getMessageHandlerCode(projectType);
-      let updatedContent = ""
+      let updatedContent = '';
 
       let fileContent = await this.readFile(filePath);
       if (!fileContent) return;
-  
+
       fileContent = fileContent.replace(messageHandlerCode, '');
-  
+
       if (projectType === ProjectType.VANILLA) {
         updatedContent = fileContent.replace(
           '</body>',
@@ -551,24 +606,24 @@ export class WebContainerService {
     } catch (error) {
       console.error('Error:', error);
     }
-  };
-  
-  private async removeMessageHandling (
+  }
+
+  private async removeMessageHandling(
     filePath: string,
     projectType: ProjectType
   ) {
     try {
       const messageHandlerCode = getMessageHandlerCode(projectType);
-  
+
       const fileContent = await this.readFile(filePath);
       if (!fileContent) return;
-  
+
       const updatedContent = fileContent.replace(messageHandlerCode, '');
       if (fileContent === updatedContent) return;
-  
+
       await this.writeFile(filePath, updatedContent, false);
     } catch (error) {
       console.error('Error:', error);
     }
-  };
+  }
 }
