@@ -23,11 +23,18 @@ onMounted(async () => {
 
 # {{ \$frontmatter.title }}
 
-Interactive resizing of objects using a "stretch" gesture (pinch) from **hands** or **controllers**. The component reacts to `stretch-start`, `stretch-move` and `stretch-end` events, which must be provided by a **gesture source** (e.g., your hand-tracking or controller system).  
-It supports two modes:
+The `stretchable` component enables interactive resizing of objects using a pinch gesture from **hand tracking** or trigger-based gestures from **VR controllers**.  
+It supports both **uniform** and **non-uniform** scaling and automatically determines whether the user is manipulating a corner of the object's bounding box.
 
-- **`mode: "scale"`** – **uniform** scaling (keeps proportions). Activation is **restricted to corners** of the object to avoid accidental scaling.
-- **`mode: "dimensions"`** – **non-uniform** scaling (independently along X/Y/Z axes) based on the direction of the gesture relative to the object's center. Only the closest `stretchable` object to the gesture contact point will be activated.
+The component listens to global gesture events such as `hand-pinch-started`, `hand-pinch-moved`, `hand-pinch-ended`, and their controller equivalents (`controller-triggerdown`, `controller-move`, `controller-triggerup`).  
+When a gesture begins, the component checks if the interaction point is close enough to one of the object's corners. Only the nearest valid corner activates the stretch interaction to prevent accidental resizing.
+
+Two scaling modes are supported:
+
+- **`mode: "scale"`** – uniform scaling that preserves proportions, based on distance change from the object's center.
+- **`mode: "dimensions"`** – non-uniform scaling, allowing independent resizing along selected axes (`dimensionAxes: ["x","y","z"]`).
+
+Scaling respects the configured minimum and maximum size limits, and works with both hands and controllers.
 
 > Tested on **Meta Quest Pro** (hands/controllers).
 
@@ -47,17 +54,32 @@ import 'spatial-design-system/components/stretchable.js';
 ```
 
 ```html
-document.querySelector("#app").innerHTML = `
 <a-scene auto-xr>
   <!-- This line enables hand tracking for both hands -->
   <a-entity id="rig" hands> </a-entity>
   <!-- or with controllers -->
   <a-entity id="rig" controllers> </a-entity>
 
-  <!-- This enables stretchable interaction on the box -->
-  <a-box stretchable="mode: dimensions" position="0 1.5 -1"></a-box>
+  <!-- This enables stretchable interaction on the box when using dimensions mode -->
+  <a-box
+    position="-0.5 1.2 -0.7"
+    width="0.5"
+    height="0.5"
+    depth="0.5"
+    color="#03FCC6"
+    stretchable="dimensionAxes: x, z"
+  ></a-box>
+
+  <!-- This enables stretchable interaction on the box when using scale mode -->
+  <a-box
+    position="0.5 1.2 -0.7"
+    width="0.5"
+    height="0.5"
+    depth="0.5"
+    color="#2196F3"
+    stretchable="mode: scale; maxSize: 2; minSize: 0.5"
+  ></a-box>
 </a-scene>
->`;
 ```
 
 </template>
@@ -66,11 +88,14 @@ document.querySelector("#app").innerHTML = `
 
 ## Props
 
-| Property         | Type   | Default      | Description                                                                                                       |
-| ---------------- | ------ | ------------ | ----------------------------------------------------------------------------------------------------------------- |
-| _mode_           | string | "dimensions" | Stretch mode: "scale" for uniform scaling (corners only) or "dimensions" for non-uniform scaling along X/Y/Z axes |
-| _maxScaleFactor_ | number | 1.5          | Maximum scale factor allowed when stretching the object                                                           |
-| _minScaleFactor_ | number | 0.5          | Minimum scale factor allowed when stretching the object                                                           |
+| Property                  | Type   | Default         | Description                                                                                                 |
+| ------------------------- | ------ | --------------- | ----------------------------------------------------------------------------------------------------------- |
+| `mode`                    | string | `"dimensions"`  | Stretch mode: `"scale"` for uniform scaling, `"dimensions"` for axis-specific scaling.                      |
+| `dimensionAxes`           | array  | `["x","y","z"]` | Axes allowed for non-uniform scaling when `mode: "dimensions"`.                                             |
+| `maxSize`                 | number | `1.5`           | Maximum allowed size multiplier applied to the original scale of the object.                                |
+| `minSize`                 | number | `0.5`           | Minimum allowed size multiplier applied to the original scale of the object.                                |
+| `maxBoxTouchDistance`     | number | `0.03`          | Distance (in meters) within which a gesture must be to consider the object’s bounding box as “touching.”    |
+| `maxCornerSelectDistance` | number | `0.06`          | Distance threshold for selecting the nearest corner of the bounding box. Looser than `maxBoxTouchDistance`. |
 
 ## Features
 
@@ -85,5 +110,5 @@ document.querySelector("#app").innerHTML = `
 ## Limitations
 
 - Component has fixed default values for `minScaleFactor` (0.5) and `maxScaleFactor` (1.5) that constrain scaling relative to the object's initial scale to prevent accidental infinite scaling. These factors are applied to each axis independently in both modes.
-- The `stretchable` should not be combined with another component using pinch gesture (e.g., `grabbable`). It can cause conflicts and one of the components might not work as expected.
-- Must be used in conjunction with the `hands` component and a hand-tracking-enabled XR device. It is not supported in mobile browsers.
+- The `stretchable` can be combined with another component using pinch gesture (e.g., `grabbable`, `hands-hoverable`).
+- Must be used in conjunction with the `hands` component and a hand-tracking-enabled XR device or `controllers` component. It is not supported in mobile browsers.

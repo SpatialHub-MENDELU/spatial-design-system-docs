@@ -25,22 +25,7 @@ The `hands` component enables full hand tracking interaction in AR scenes using 
 
 Below is an example showing how to use the `hands` component in a scene. Try this demo with hand tracking enabled AR hardware (e.g., Meta Quest Pro).
 
-<ComponentExample :fixed="true">
-
-<template #output v-if="renderScene">
-<a-entity id="rig" position="0 1.6 0" controllers="
-    leftColor: #03FCC6;
-    rightColor: #018A6C;
-    cursorSize: 0.01;
-    raycastLength: 10
-  ">
-<a-camera></a-camera>
-</a-entity>
-
-  <!-- Interactive objects will respond to controller events -->
-
-<a-box position="0 1.5 -5" color="#03FCC6" vr-interactive></a-box>
-</template>
+<ComponentExample :fixed="true" :hideOutput="true">
 
 <template #code>
 
@@ -52,7 +37,6 @@ import 'spatial-design-system/primitives/ar-button.js';
 ```
 
 ```html
-document.querySelector("#app").innerHTML = `
 <a-scene auto-xr>
   <!-- This line enables hand tracking for both hands -->
   <a-entity id="rig" hands> </a-entity>
@@ -67,7 +51,6 @@ document.querySelector("#app").innerHTML = `
     size="large"
   ></a-ar-button>
 </a-scene>
->`;
 ```
 
 </template>
@@ -85,33 +68,46 @@ document.querySelector("#app").innerHTML = `
 
 ## Events
 
-The `hands` component emits the following custom event:
+The `hands` component emits the following custom events:
 
-| Event   | Parameters                                         | Description                                                                                            |
-| ------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `click` | \`{ hand: HTMLElement, side: "left" \| "right" }\` | Emitted when the user's index fingertip touches a clickable/interactable object with pointing gesture. |
+#### Pinch gesture events (global)
+
+These events are emitted to the whole scene, so it can be used to detect pinch gestures on all entities in the scene.
+
+| Event                | Parameters                                                                                  | Description                                       |
+| -------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| `hand-pinch-started` | `{ hand, handId: "left" \| "right", pinchPointWorld: { x: number, y: number, z: number } }` | Emitted when a pinch gesture begins.              |
+| `hand-pinch-moved`   | `{ hand, handId: "left" \| "right", pinchPointWorld: { x: number, y: number, z: number } }` | Emitted continuously while a pinch gesture moves. |
+| `hand-pinch-ended`   | `{ hand, handId: "left" \| "right" }`                                                       | Emitted when a pinch gesture ends.                |
+
+#### Hover collision events (object-level)
+
+These events are emitted directly to the target element.
+
+| Event                | Parameters                                       | Description                                         |
+| -------------------- | ------------------------------------------------ | --------------------------------------------------- |
+| `hand-hover-started` | `{ hand: HTMLElement, side: "left" \| "right" }` | Emitted when a hand starts hovering over an object. |
+| `hand-hover-ended`   | `{ hand: HTMLElement, side: "left" \| "right" }` | Emitted when a hand stops hovering over an object.  |
 
 ## Usage Tips
 
-### Making Elements Clickable
+#### Using the component on mobile devices
 
-It is also possible to allow an object to react to hand-based interaction, add the `interactable` class. For example:
+Mobile WebXR currently does **not** support `hand-tracking`. So you are not able to detect hand gestures on mobile devices.
+
+However, you can still interact with UI elements by using the standard A-Frame cursor:
 
 ```html
-<a-entity
-  class="interactable"
-  geometry="primitive: box"
-  material="color: #03A9F4"
-></a-entity>
+<a-camera>
+  <a-cursor></a-cursor>
+</a-camera>
 ```
 
-The `click` event will be triggered when the user's index finger approaches and touches the object. You can listen to it in your component:
+When using a cursor:
 
-```js
-el.addEventListener('click', (e) => {
-  console.log('Clicked by hand side:', e.detail.side);
-});
-```
+- The cursor behaves like a virtual pointer in the center of the screen.
+- Interactive components such as `ar-button`, `vr-interactive`, or entities with `interactable` will respond to cursor events.
+- Interactions are triggered by tapping the screen.
 
 ## Limitations
 

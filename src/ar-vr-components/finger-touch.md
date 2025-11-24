@@ -19,28 +19,14 @@ onMounted(async () => {
 
 # {{ \$frontmatter.title }}
 
-The `finger-touch` component is a simple utility component that marks an entity as interactable with hand gestures in AR scenes. It works together with the `hands` component by setting up a collider and adding the appropriate class for interaction.
+The `finger-touch` component turns a **pointing finger gesture** into `click` and `click-ended` events on an entity.  
+It works together with the `hands` component by adding an OBB collider and listening for hand-hover events emitted when a hand enters or leaves the object’s bounds.
 
 ## Example
 
 Add the `finger-touch` component to any entity that should respond to hand touch interaction:
 
-<ComponentExample :fixed="true">
-
-<template #output v-if="renderScene">
-<a-entity id="rig" position="0 1.6 0" controllers="
-    leftColor: #03FCC6;
-    rightColor: #018A6C;
-    cursorSize: 0.01;
-    raycastLength: 10
-  ">
-<a-camera></a-camera>
-</a-entity>
-
-  <!-- Interactive objects will respond to controller events -->
-
-<a-box position="0 1.5 -5" color="#03FCC6" vr-interactive></a-box>
-</template>
+<ComponentExample :fixed="true" :hideOutput="true">
 
 <template #code>
 
@@ -49,10 +35,10 @@ import 'spatial-design-system/components/auto-xr.js';
 import 'spatial-design-system/components/hands.js';
 import 'spatial-design-system/components/finger-touch.js';
 import 'spatial-design-system/primitives/ar-button.js';
+import 'spatial-design-system/primitives/ar-textbox.js';
 ```
 
 ```html
-document.querySelector("#app").innerHTML = `
 <a-scene auto-xr>
   <!-- This line enables hand tracking for both hands -->
   <a-entity id="rig" hands> </a-entity>
@@ -60,7 +46,6 @@ document.querySelector("#app").innerHTML = `
   <!-- This button will be clickable by hand gestures -->
   <a-ar-button finger-touch position="0 1.5 -1" content="Button"></a-ar-button>
 </a-scene>
->`;
 ```
 
 </template>
@@ -69,19 +54,31 @@ document.querySelector("#app").innerHTML = `
 
 This will ensure the object is recognized as a potential interactive target for hand-tracked gestures, such as finger taps.
 
+## Events
+
+The `finger-touch` component emits the following events when interacting with a pointing finger:
+
+| Event         | Parameters                                       | Description                                                      |
+| ------------- | ------------------------------------------------ | ---------------------------------------------------------------- |
+| `click`       | `{ hand: HTMLElement, side: "left" \| "right" }` | Emitted when a pointing finger begins hovering over the entity.  |
+| `click-ended` | `{ hand: HTMLElement, side: "left" \| "right" }` | Emitted when the pointing finger stops hovering over the entity. |
+
 ## Features
 
-- Automatically applies `obb-collider` to the entity for accurate bounding box detection.
-- Adds the `interactable` class to the entity so that it can be targeted by the `hands` component.
+- Applies `obb-collider` for accurate collision detection.
+- Adds the `clickable` class to the entity to mark it as an interactive target.
+- Listens for:
+  - `hand-hover-started`
+  - `hand-hover-ended`
 
 ## Usage Tips
 
-- Combine `finger-touch` with other interaction components like `button` or `clickable` to respond to `click` events.
+- Combine `finger-touch` with other interaction components like `textbox` or `clickable` to respond to `click` events.
 
 ```html
 <a-scene auto-xr>
   <a-entity id="rig" hands> </a-entity>
-  <a-entity button="text: Confirm" finger-touch></a-entity>
+  <a-ar-textbox position="0 1.6 -3" label="Label" finger-touch></a-ar-textbox>
 </a-scene>
 ```
 
@@ -95,5 +92,7 @@ el.addEventListener('click', (e) => {
 
 ## Limitations
 
-- The `finger-touch` component does not handle click logic itself. It only prepares the entity to be clickable using hand gestures.
-- Must be used in conjunction with the `hands` component and a hand-tracking-enabled XR device. It is not supported in mobile browsers.
+- Does not provide visuals on its own; it only emits gesture-based events.
+- Requires the `hands` component to supply `hand-hover-started` and `hand-hover-ended` events.
+- Works only with WebXR devices that support hand tracking (e.g., Meta Quest Pro).
+- Not supported on mobile browsers; use a cursor-based fallback there.

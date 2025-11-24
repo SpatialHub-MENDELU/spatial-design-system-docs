@@ -102,6 +102,10 @@ export default defineConfig({
           { text: 'hands', link: '/ar-vr-components/hands' },
           { text: 'vr-interactive', link: '/ar-vr-components/vr-interactive' },
           { text: 'finger-touch', link: '/ar-vr-components/finger-touch' },
+          {
+            text: 'touch-raycaster',
+            link: '/ar-vr-components/touch-raycaster',
+          },
           { text: 'grabbable', link: '/ar-vr-components/grabbable' },
           {
             text: 'hands-hoverable',

@@ -19,7 +19,7 @@ onMounted(async () => {
 
 # {{ $frontmatter.title }}
 
-The `ar-hoverable` component adds an interactive hover effect to any A‑Frame entity. When a hand intersects the entity’s oriented bounding box (via the companion `obb-collider` component), the entity is visually highlighted either by changing its **color** or drawing an **outline/border** around its mesh.
+The `hands-hoverable` component adds an interactive hover effect to any A‑Frame entity. When a hand intersects the entity’s oriented bounding box (via the companion `obb-collider` component), the entity is visually highlighted by rendering a 3D overlay box around it or a wireframe.
 
 ## Example
 
@@ -39,12 +39,12 @@ import 'spatial-design-system/components/hands-hoverable.js';
   <a-entity id="rig" hands></a-entity>
   <a-box
     position="0 1.5 -2"
-    ar-hoverable="hoverEffect: color; hoverColor: #fc0000;"
+    hands-hoverable="useWireframe: true; hoverColor:#fc0000;"
   ></a-box>
-  <!-- or -->
+  <!-- or this component will use overlay geometry by default -->
   <a-ar-button
     content="Click Me"
-    hands-hoverable="hoverEffect: border; hoverColor:#fc0000;"
+    hands-hoverable="hoverColor: #fc0000;"
     position="1 2 -2"
   ></a-ar-button>
 </a-scene>
@@ -56,27 +56,17 @@ import 'spatial-design-system/components/hands-hoverable.js';
 
 ## Props
 
-| Property      | Type   | Default   | Description                                                                                          |
-| ------------- | ------ | --------- | ---------------------------------------------------------------------------------------------------- |
-| _hoverEffect_ | string | "border"  | Visual style when hovered: `border` draws an outline; `color` temporarily changes the material color |
-| _hoverColor_  | color  | `#545454` | Color used for the border or material tint while the entity is hovered                               |
+| Property             | Type    | Default              | Description                                                                             |
+| -------------------- | ------- | -------------------- | --------------------------------------------------------------------------------------- |
+| `useOverlayGeometry` | boolean | true                 | Whether to render a 3D overlay box around the hovered object.                           |
+| `useWireframe`       | boolean | false                | Whether the hover overlay should be rendered as a wireframe instead of a colored box.   |
+| `overlaySizeRatio`   | number  | 0.005                | Additional padding applied to the overlay box to make the hover highlight more visible. |
+| `hoverColor`         | color   | `VARIANT_DARK_COLOR` | Color of the overlay geometry or wireframe when the element is hovered.                 |
 
 ## How It Works
 
-1. On init, the component adds `obb-collider` (centerModel mode) and the CSS class `interactable`, so the entity becomes a target for A‑Frame’s raycaster.
-2. It listens for `obbcollisionstarted` and `obbcollisionended` events to detect hover state.
-3. When the hover starts (`obbcollisionstarted`):
-
-   - **Color mode** – stores the original material color, then sets it to `hoverColor`.
-   - **Border mode** – builds a `THREE.LineSegments` outline (if not cached) around the entity’s geometry and shows it.
-
-4. When the hover ends (`obbcollisionended`):
-
-   - **Color mode** – restores the saved original color.
-   - **Border mode** – hides the outline.
-
-5. Property updates at runtime (`update` lifecycle) instantly refresh the active effect if the entity is currently hovered.
-6. On `remove`, listeners and any created outline geometry/material are cleaned up to avoid memory leaks.
+- On init, the component adds `obb-collider` (centerModel mode) and the CSS class `interactable`, so the entity becomes a target for A‑Frame’s raycaster.
+- It listens for `hand-hover-started` and `obbcollisionended` events from `hands` component to detect hover state.
 
 ## Events
 
@@ -97,11 +87,11 @@ box.addEventListener('obbcollisionended', () => {
 ## Notes
 
 - Requires the `obb-collider` component to be available (included automatically in the example import above).
-- Works with 2D hand gestures.
-- The border outline is rendered slightly in front of the mesh (`z = 0.001`) to avoid z‑fighting.
-- Default hover color is `#545454` which is Spatial Design System's primary color.
-- Tested on Meta Quest Pro and desktop browsers.
+- Works with 2D hand gestures and other components such as `finger-touch`, `grabbable`, `stretchable`, etc.
+- The overlay geometry is rendered slightly around the mesh with small padding `.overlaySizeRatio` (default is 0.005).
+- Default hover color is `VARIANT_DARK_COLOR=#545454` which is Spatial Design System's primary color.
+- Tested on Meta Quest Pro and desktop browsers.
 
 ## Limitations
 
-- Must be used in conjunction with the `hands` component and a hand-tracking-enabled XR device. It is not supported in mobile browsers.
+- Must be used in conjunction with the `hands` component and a hand-tracking-enabled XR device. It is not supported in mobile browsers or using controllers.
