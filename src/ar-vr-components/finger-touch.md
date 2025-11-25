@@ -31,11 +31,10 @@ Add the `finger-touch` component to any entity that should respond to hand touch
 <template #code>
 
 ```js
-import 'spatial-design-system/components/auto-xr.js';
+import 'spatial-design-system/components/autoXr.js';
 import 'spatial-design-system/components/hands.js';
 import 'spatial-design-system/components/finger-touch.js';
 import 'spatial-design-system/primitives/ar-button.js';
-import 'spatial-design-system/primitives/ar-textbox.js';
 ```
 
 ```html

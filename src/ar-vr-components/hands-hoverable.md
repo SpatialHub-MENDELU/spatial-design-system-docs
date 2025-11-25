@@ -1,5 +1,5 @@
 ---
-title: ar-hoverable
+title: hands-hoverable
 ---
 
 <script setup lang="ts">
@@ -30,22 +30,23 @@ This component is mainly prepared for hand gestures. You should use it with the 
 <template #code>
 
 ```js
+import 'spatial-design-system/components/autoXr.js';
 import 'spatial-design-system/components/hands.js';
 import 'spatial-design-system/components/hands-hoverable.js';
 ```
 
 ```html
-<a-scene>
+<a-scene auto-xr>
   <a-entity id="rig" hands></a-entity>
   <a-box
-    position="0 1.5 -2"
+    position="0 1.5 -0.5"
     hands-hoverable="useWireframe: true; hoverColor:#fc0000;"
   ></a-box>
   <!-- or this component will use overlay geometry by default -->
   <a-ar-button
     content="Click Me"
     hands-hoverable="hoverColor: #fc0000;"
-    position="1 2 -2"
+    position="1.5 1.5 -0.5"
   ></a-ar-button>
 </a-scene>
 ```
