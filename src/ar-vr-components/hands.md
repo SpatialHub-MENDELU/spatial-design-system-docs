@@ -30,7 +30,7 @@ Below is an example showing how to use the `hands` component in a scene. Try thi
 <template #code>
 
 ```js
-import 'spatial-design-system/components/auto-xr.js';
+import 'spatial-design-system/components/autoXr.js';
 import 'spatial-design-system/components/hands.js';
 import 'spatial-design-system/components/finger-touch.js';
 import 'spatial-design-system/primitives/ar-button.js';
@@ -44,7 +44,7 @@ import 'spatial-design-system/primitives/ar-button.js';
   <!-- This button shows how to add interactive component to the scene -->
   <a-ar-button
     finger-touch
-    position="0 1.5 -1"
+    position="0 1.5 -0.5"
     content="Button"
     primary="#018A6C"
     textcolor="white"

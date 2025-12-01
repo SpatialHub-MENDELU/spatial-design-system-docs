@@ -34,13 +34,14 @@ This component is mainly prepared for hand gestures. You should use it with the 
 <template #code>
 
 ```js
+import 'spatial-design-system/components/autoXr.js';
 import 'spatial-design-system/components/hands.js';
 ```
 
 ```html
-<a-scene>
+<a-scene auto-xr>
   <a-entity id="rig" hands></a-entity>
-  <a-box position="0 1.5 -2" grabbable></a-box>
+  <a-box position="0 1.5 -0.5" grabbable></a-box>
 </a-scene>
 ```
 

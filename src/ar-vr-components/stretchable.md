@@ -47,7 +47,7 @@ Below is an example showing how to use the `stretchable` component in a scene. T
 <template #code>
 
 ```js
-import 'spatial-design-system/components/auto-xr.js';
+import 'spatial-design-system/components/autoXr.js';
 import 'spatial-design-system/components/hands.js';
 import 'spatial-design-system/components/controllers.js';
 import 'spatial-design-system/components/stretchable.js';
@@ -96,6 +96,14 @@ import 'spatial-design-system/components/stretchable.js';
 | `minSize`                 | number | `0.5`           | Minimum allowed size multiplier applied to the original scale of the object.                                |
 | `maxBoxTouchDistance`     | number | `0.03`          | Distance (in meters) within which a gesture must be to consider the object’s bounding box as “touching.”    |
 | `maxCornerSelectDistance` | number | `0.06`          | Distance threshold for selecting the nearest corner of the bounding box. Looser than `maxBoxTouchDistance`. |
+
+## Events
+
+| Event             | Parameters                                                 | Description                                                                                                                                                                                                                                    |
+| ----------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `stretch-started` | `{ handOrController, intersectionPoint, pinchState }`      | Fired when a valid stretch gesture begins. Includes the input source (`hand` or `controller`), the world-space point of the initial pinch/touch, and an internal `pinchState` snapshot storing initial scale, axes, and corner selection data. |
+| `stretch-moved`   | `{ handOrController, currentPoint, newScale, pinchState }` | Fired continuously during stretching. Provides current world-space gesture position, the updated scale applied to the object, and the original `pinchState` used to compute scaling.                                                           |
+| `stretch-ended`   | `{ handOrController, finalScale, pinchState }`             | Fired when the stretch gesture finishes. Contains the gesture source, the final applied scale, and the full `pinchState` from the interaction session.                                                                                         |
 
 ## Features
 
