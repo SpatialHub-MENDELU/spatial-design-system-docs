@@ -55,6 +55,7 @@ export default defineConfig({
       {
         text: 'Primitives',
         items: [
+          { text: 'Avatar', link: '/ar-vr-primitives/avatar' },
           { text: 'Button', link: '/ar-vr-primitives/button' },
           { text: 'Checkbox', link: '/ar-vr-primitives/checkbox' },
           { text: 'Menu', link: '/ar-vr-primitives/menu' },
