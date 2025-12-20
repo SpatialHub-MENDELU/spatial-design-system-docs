@@ -48,11 +48,6 @@ import "spatial-design-system/primitives/ar-checkbox.js";
     position="-0.5 1.6 -3"
     size="extra-large"
 ></a-ar-checkbox>
-<a-ar-checkbox
-    position="0.5 1.6 -3"
-    value="true"
-    size="extra-large"
-></a-ar-checkbox>
 ```
 
 </template>
