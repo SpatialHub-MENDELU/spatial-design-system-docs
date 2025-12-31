@@ -60,6 +60,12 @@ import 'spatial-design-system/primitives/ar-button.js';
 5. That entity receives a `click` event.
 6. The component can be enabled or disabled at runtime using the event `toggle-touch-raycaster-disable-state`.
 
+## Events
+
+| Event   | Parameters            | Description                                                                                                        |
+| ------- | --------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `click` | `{ el: HTMLElement }` | Emitted on the first visible intersected entity when a screen tap occurs. The `el` is the entity that was clicked. |
+
 ## Features
 
 - Enables touch-based interaction across the entire scene.
