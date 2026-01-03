@@ -39,6 +39,9 @@ Below is an example with [circle](/ar-vr-components/circle) layout.
 <ComponentExample :fixed="true">
 
 <template #output v-if="renderScene">
+    <a-entity id="mouseRaycaster" raycaster="objects: .clickable"
+              cursor="rayOrigin: mouse; fuse: false;">
+    </a-entity>
     <a-ar-menu 
         position="0 1.5 -3"
         visible="true" 
@@ -57,17 +60,17 @@ import "spatial-design-system/primitives/ar-menu.js";
 
 ```html
 <a-ar-menu
-    position="0 1.5 -3"
-    visible="true"
-    primary="#018A6C"
-    items="[
+  position="0 1.5 -3"
+  visible="true"
+  primary="#018A6C"
+  items="[
             {'color':'white','icon':'/content-save','title':'Save','textColor':'black'},
             {'color':'white','icon':'/close-circle','title':'Quit','textColor':'black'},
             {'color':'white','icon':'/settings','title':'Settings','textColor':'black'},
             {'color':'white','icon':'/file-plus','title':'New file','textColor':'black'}
         ]"
-    variant="filled"
-    layout="circle"
+  variant="filled"
+  layout="circle"
 ></a-ar-menu>
 ```
 
@@ -76,12 +79,12 @@ You can use `stringifyForHTML` from `spatial-design-system/utils/utils.js` to co
 
 ```html
 <a-ar-menu
-    position="0 1.5 -3"
-    visible="true"
-    primary="lightblue"
-    :items="stringifyForHTML(items)"
-    variant="filled"
-    layout="circle"
+  position="0 1.5 -3"
+  visible="true"
+  primary="lightblue"
+  :items="stringifyForHTML(items)"
+  variant="filled"
+  layout="circle"
 ></a-ar-menu>
 ```
 
@@ -93,15 +96,15 @@ You can use `stringifyForHTML` from `spatial-design-system/utils/utils.js` to co
 
 ## Props
 
-| Property       | Type                           | Default | Description                                                                                                           |
-|----------------|--------------------------------|---------|-----------------------------------------------------------------------------------------------------------------------|
-| _visible_      | boolean                        | true    | Shows or hides the menu.                                                                                              |
-| _size_         | enum (small, medium, large)    | medium  | Influences the compactness of the menu (paddings, font sizes, etc.)                                                   |
-| _position_     | number[]                       | 0 0 0   | Sets menu position.                                                                                                   |
-| _primary_        | string (blue, #fff)            | #0091E3     | Alters menu color (text, background, icon background).                                                                                                    |
-| _items_        | string (JSON)                  |  "" | Decorates menu using title, color or icon. Format: `{ icon: "home.svg", title: "", color: "red" }`. Icon is a URL or asset ID with hashtag. Default color is white. |
-| _variant_      | enum (filled, transparent) | filled        | Alters overall menu look.                                                                                             |
-| _logoicon_ | image url or asset ID (string) | ""         | Sets a menu prepend icon based on the image's url or asset ID with hashtag.                                           |
-| _layout_ | string (circle, grid)          | grid | Sets menu layout.|
-| _highlighted_ | string(red, #fff) | #C1080C | Sets color of elements when clicked on
-| _backbutton_ | boolean | false | Displays back button in the middle of the menu
+| Property      | Type                           | Default | Description                                                                                                                                                         |
+| ------------- | ------------------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| _visible_     | boolean                        | true    | Shows or hides the menu.                                                                                                                                            |
+| _size_        | enum (small, medium, large)    | medium  | Influences the compactness of the menu (paddings, font sizes, etc.)                                                                                                 |
+| _position_    | number[]                       | 0 0 0   | Sets menu position.                                                                                                                                                 |
+| _primary_     | string (blue, #fff)            | #0091E3 | Alters menu color (text, background, icon background).                                                                                                              |
+| _items_       | string (JSON)                  | ""      | Decorates menu using title, color or icon. Format: `{ icon: "home.svg", title: "", color: "red" }`. Icon is a URL or asset ID with hashtag. Default color is white. |
+| _variant_     | enum (filled, transparent)     | filled  | Alters overall menu look.                                                                                                                                           |
+| _logoicon_    | image url or asset ID (string) | ""      | Sets a menu prepend icon based on the image's url or asset ID with hashtag.                                                                                         |
+| _layout_      | string (circle, grid)          | grid    | Sets menu layout.                                                                                                                                                   |
+| _highlighted_ | string(red, #fff)              | #C1080C | Sets color of elements when clicked on                                                                                                                              |
+| _backbutton_  | boolean                        | false   | Displays back button in the middle of the menu                                                                                                                      |

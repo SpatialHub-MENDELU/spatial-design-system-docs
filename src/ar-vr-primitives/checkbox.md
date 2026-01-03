@@ -28,15 +28,13 @@ Below is an example showcasing two checkbox components. The checkbox on the left
 <ComponentExample :fixed="true">
 
 <template #output v-if="renderScene">
-<a-ar-checkbox
-    position="-0.5 1.6 -3"
-    size="extra-large"
-></a-ar-checkbox>
-<a-ar-checkbox
-    position="0.5 1.6 -3"
-    value="true"
-    size="extra-large"
-></a-ar-checkbox>
+  <a-entity id="mouseRaycaster" raycaster="objects: .clickable"
+            cursor="rayOrigin: mouse; fuse: false;">
+  </a-entity>
+  <a-ar-checkbox
+      position="0 1.6 -3"
+      size="extra-large"
+  ></a-ar-checkbox>
 </template>
 
 <template #code>

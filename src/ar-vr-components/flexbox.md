@@ -10,7 +10,7 @@ const renderScene = ref(false);
 
 onMounted(async () => {
   try {
-    await import("spatial-design-system/components/flexbox.js");
+    await import("spatial-design-system/components/flexbox/flexbox.js");
     renderScene.value = true;
   } catch(e) {
     console.error(e);
@@ -20,63 +20,113 @@ onMounted(async () => {
 
 # {{ $frontmatter.title }}
 
-Creates a one-dimensional layout, similar to [CSS Flexbox](https://developer.mozilla.org/en-US/docs/Web/CSS/flex).
+The `flexbox` component creates a flexible one-dimensional layout container, similar to [CSS Flexbox](https://developer.mozilla.org/en-US/docs/Web/CSS/flex). It allows you to arrange child elements in rows or columns with advanced alignment and spacing options.
 
-Flexbox consists of two parts: **container** (parent element) and **items** (child nodes of the container). The container must be a primitive that has width and height, such as a box, a plane or an entity with geometry like the previous mentioned. One of the dimensions is the *main* and affects the overall arrangement.
- 
-By default flexbox will place all items into one *row* or *column* depending on the `direction` value. Use `wrap` to have multiple rows or columns. The number of items that can fit in a row or column is set via `width` and `height` element attributes. For example, if you set flexbox `wrap: true; direction: row;` and `width="2"`, then each row will have a maximum of two items.
+## Examples
 
-The items themselves are automatically scaled to fit in the flexbox, so you can use any [A-Frame primitives](https://aframe.io/docs/1.5.0/introduction/html-and-primitives.html#primitives) within the component.
-
-## Example
+### Basic Row Layout
 
 <ComponentExample :fixed="true">
 
 <template #output v-if="renderScene">
-<a-plane 
-  position="0 1.6 -3" 
-  width="2"
-  height="2"
-  material="color: #018A6C"
-  flexbox="
-      direction: row;
-      mainAlign: center;
-      secondaryAlign: center;
-      gap: 50 50;
-      wrap: true;
-  "
->
-  <a-plane color="white"></a-plane>
-  <a-plane color="white"></a-plane>
-  <a-plane color="white"></a-plane>
-  <a-plane color="white"></a-plane>
+<a-plane
+position="0 1.6 -3"
+width="2"
+height="0.5"
+material="color: #018A6C"
+flexbox="
+direction: row;
+justify: space-between;
+items: center;
+">
+
+  <a-box color="white" width="0.3" height="0.3" depth="0.3"></a-box>
+  <a-box color="white" width="0.3" height="0.3" depth="0.3"></a-box>
+  <a-box color="white" width="0.3" height="0.3" depth="0.3"></a-box>
 </a-plane>
 </template>
 
 <template #code>
 
 ```js
-import "spatial-design-system/components/flexbox.js";
+import "spatial-design-system/components/flexbox/flexbox.js";
 ```
 
 ```html
-<a-plane 
-  position="0 1.6 -3" 
+<a-plane
+  position="0 1.6 -3"
   width="2"
-  height="2"
+  height="0.5"
   material="color: #018A6C"
   flexbox="
       direction: row;
-      mainAlign: center;
-      secondaryAlign: center;
-      gap: 50 50;
-      wrap: true;
+      justify: space-between;
+      items: center;
   "
 >
-  <a-plane color="white"></a-plane>
-  <a-plane color="white"></a-plane>
-  <a-plane color="white"></a-plane>
-  <a-plane color="white"></a-plane>
+  <a-box color="white" width="0.3" height="0.3" depth="0.3"></a-box>
+  <a-box color="white" width="0.3" height="0.3" depth="0.3"></a-box>
+  <a-box color="white" width="0.3" height="0.3" depth="0.3"></a-box>
+</a-plane>
+```
+
+</template>
+
+</ComponentExample>
+
+### Column Layout with Wrapping
+
+<ComponentExample :fixed="true">
+
+<template #output v-if="renderScene">
+<a-plane
+position="0 1.6 -3"
+width="1.2"
+height="1.2"
+material="color: #018A6C"
+flexbox="
+direction: column;
+justify: space-around;
+items: center;
+wrap: true;
+gap: 20 20;
+">
+
+  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
+  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
+  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
+  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
+  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
+  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
+</a-plane>
+</template>
+
+<template #code>
+
+```js
+import "spatial-design-system/components/flexbox/flexbox.js";
+```
+
+```html
+<a-plane
+  position="0 1.6 -3"
+  width="1.2"
+  height="1.2"
+  material="color: #018A6C"
+  flexbox="
+      direction: column;
+      justify: space-around;
+      items: center;
+      wrap: true;
+      gap: 20 20;
+  "
+>
+  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
+  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
+  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
+  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
+  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
+  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
 </a-plane>
 ```
 
@@ -86,22 +136,39 @@ import "spatial-design-system/components/flexbox.js";
 
 ## Props
 
-| Property | Type      | Default | Description                    |
-|----------|-----------|---------|--------------------------------|
-| _direction_   | enum(row, column)    | row       | Defines the direction in which the items in the flexbox are arranged.
-| _gap_    | vec2     | 0 0     | Sets the space inside the item cell. The first value is the space in the main axis and the second in the secondary axis. <br><br> Gap values are percentages and must be between 0 and 100 (not included). For example, `gap: 50 50` creates a space in the cell occupying 50% in both axes. <br><br> If `mainAlign` is set to `space-around` or `space-between`, then space is automatically adjusted and the gap for main axis has no effect. |
-| _mainAlign_   | enum(start, center, end, space-around, space-between)    | start       | Aligns items along the main axis. If `direction` is set to `column`, it aligns along the secondary axis. |
-| _secondaryAlign_   | enum(start, center, end, stretch)    | stretch       | Aligns items along the secondary axis. If `direction` is set to `column`, it aligns along the main axis. |
-| _wrap_  | boolean    | false       | Wraps items into multiple rows/columns if the item position exceeds the container boundary. |
+| Property    | Type                                                | Default  | Description                                                                                                          |
+| ----------- | --------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------- |
+| _direction_ | enum(row, column)                                   | row      | Sets main layout direction (horizontal or vertical)                                                                   |
+| _justify_   | enum(start, end, center, between, around)           | start    | Aligns items along the main axis                                                                                     |
+| _items_     | enum(start, end, center)                            | start    | Aligns items along the cross axis                                                                                    |
+| _wrap_      | boolean                                             | false    | Enables wrapping of items to new lines when they exceed container dimensions                                          |
+| _gap_       | vec2                                                | 0 0      | Sets spacing between items. First value is main axis gap, second is cross axis gap          |
 
-## How does gap work?
+## Justify Values Explained
 
-The `gap` property allows to add more space for each cell in the container. This is an important factor, because it affects the whole arrangement. For instance, consider the following layout:
+- **start**: Items are positioned at the beginning of the container
+- **end**: Items are positioned at the end of the container
+- **center**: Items are centered in the container
+- **between**: Items are evenly distributed with the first item at the start and the last item at the end
+- **around**: Items are evenly distributed with equal space around them
 
-![gap-example-1](../assets/components/start.png)
+## Items Alignment Values Explained
 
-The left plane has no gap, thus each item takes the whole cell space. When you set a gap, for instance `gap: 50 50`, as in the right plane, the scale of each item will be reduced. In this case, they occupy 50% percent on both axes and the remaining 50% on both axes is space.
+- **start**: Items are aligned to the start of the cross axis
+- **end**: Items are aligned to the end of the cross axis
+- **center**: Items are centered along the cross axis
 
-The position of the items will be updated with respect to the alignment values. In the above example the items are positioned at the beginning of both axes. If you have other alignment values, such as `center`, then items will be placed according to those alignment values and gap. For example:
+## How Gap Works
 
-![gap-example-2](../assets/components/center.png)
+The `gap` property adds spacing between items in the flexbox container. It creates consistent spacing between each element without affecting their size.
+
+When you set `gap: 10 20`:
+- The first value (`10`) adds horizontal spacing between elements
+- The second value (`20`) adds vertical spacing between elements
+
+In row layouts with wrapping, the vertical gap affects the space between rows.
+In column layouts with wrapping, the horizontal gap affects the space between columns.
+
+## Notes
+
+- The flexbox container must be a primitive that has width and height (box, plane, entity with geometry)

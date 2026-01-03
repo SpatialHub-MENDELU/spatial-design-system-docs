@@ -1,0 +1,224 @@
+@use "sass:color";
+@use '../../variables' as *;
+
+.p-dialog {
+  min-width: 20rem;
+  max-width: 90vw;
+
+  border-radius: 0 !important;
+
+  .p-dropdown-items-wrapper .p-dropdown-item {
+    &.p-highlight {
+      background-color: color.adjust($color: $primary, $lightness: 50%) !important;
+    }
+  }
+
+  .p-dialog, .p-dialog-header, .p-dialog-content, pre, .p-dialog-footer {
+    background-color: var(--vp-custom-block-tip-bg) !important;
+    opacity: 1!important;
+  }
+
+  .p-dialog-footer {
+    display: block !important;
+  }
+
+  @media screen and (min-width: $breakpointMd) {
+    min-width: 25rem;
+  }
+
+  @media screen and (min-width: $breakpointLg) {
+    min-width: 30rem;
+  }
+
+  &-header {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+
+    border-bottom: 1px solid $border-color;
+    color: var(--vp-c-text-1);
+  }
+
+  &-content {
+    padding-top: 1rem !important;
+    
+    color: var(--vp-c-text-1);
+
+    input, .p-dropdown {
+      padding: 0.25rem 0.5rem;
+      height: 100%;
+
+      border-bottom: 1px solid $primary;
+      border-radius: 0;
+
+      &:focus {
+        box-shadow: none;
+        outline: none;
+      }
+
+      &.p-invalid {
+        border-color: $red;
+      }
+    }
+
+    .p-dropdown {
+      padding: 0 !important;
+      padding-right: 0.5rem !important;
+      max-width: 7rem;
+
+      @media screen and (min-width: $breakpointMd) {
+        width: 9rem;
+      }
+    
+      @media screen and (min-width: $breakpointLg) {
+        width: 10rem;
+      }
+
+      span {
+        padding-bottom: 0.25rem !important;
+        display: block !important;
+
+        line-height: 1 !important;
+      }
+
+      &.p-focus {
+        box-shadow: none;
+      }
+    }
+
+    .flex {
+      gap: 0.5rem;
+    }
+
+    button:not(.p-tree-toggler):not(.p-tree-node-toggle-button) {
+      margin-top: 2rem;
+      padding: 0.25rem 1rem;
+      color: white;
+
+      &[aria-label="Cancel"], &[aria-label="Close"], &.p-confirmdialog-reject-button {
+        background-color: $dark-background !important;
+        border-color: $dark-background;
+
+        &:hover {
+          color: $white;
+          background-color: color.adjust($color: $dark-background, $lightness: 5%);
+        }
+      }
+
+      &[aria-label="Create"], &[aria-label="Choose"], &[aria-label="New file"], &[aria-label="Upload files"], &[aria-label="Copy"], &[aria-label="Copied"] {
+        background-color: $primary !important;
+
+        &:hover {
+          color: $white;
+          background-color: color.adjust($color: $primary, $lightness: 5%) !important;
+        }
+      }
+    }
+  }
+
+  #imports, #hint {
+    min-height: 3rem;
+  }
+
+  #hint {
+    margin-top: 1rem;
+  }
+
+  .p-dialog-close-button:hover, .p-dialog-maximize-button {
+    background-color: transparent !important;
+    color: var(--vp-c-text-1) !important;
+  }
+
+  .p-fileupload-advanced {
+    background-color: transparent !important;
+    border: none !important;
+  }
+
+  .p-fileupload-content {
+    .delete-button {
+      margin-top: 0 !important;
+      span {
+        color: $red !important;
+      }
+
+      &:hover {
+        border: none !important;
+        background-color: transparent !important;
+      }
+    }
+  }
+}
+
+.error-dialog, .success-dialog {
+  text-align: center;
+
+  img {
+    margin: 2rem auto;
+    max-height: 150px;
+
+    object-fit: contain;
+  }
+
+  .title {
+    font-weight: 600;
+    font-size: clamp(1.5rem, 1.7vw, 2rem);
+  }
+
+  p {
+    font-size: clamp(0.9rem, 0.9vw, 1.35rem);
+  }
+}
+
+.error-dialog .title {
+  color: $red;
+}
+
+.success-dialog .title {
+  color: $primary;
+}
+
+.moving-file-dialog {
+  .p-treenode-label, .p-treenode-label span {
+    display: block;
+    width: 100%;
+    color: var(--vp-c-text-1);
+  }
+}
+
+.p-confirmdialog {
+
+  .p-dialog-content {
+    padding-top: 1rem;
+  }
+
+  .p-confirmdialog-icon {
+    color: $primary !important;
+  }
+
+  .p-dialog-footer {
+    display: flex !important;
+    align-items: center;
+
+    .p-confirm-dialog-accept, .p-confirm-dialog-reject {
+      padding: 0.25rem 1rem;
+
+      color: white;
+    }
+
+    .p-button-danger {
+      background-color: $primary !important;
+      border-color: $primary !important;
+      color: $white;
+    
+      &:hover {
+        color: $white;
+        background-color: color.adjust($color: $primary, $lightness: 5%) !important;
+      }
+    }
+  }
+}
+
+.moving-file-dialog .p-dialog-footer {
+  span, p {
+    color: var(--vp-c-text-1) !important;
+  }
+}

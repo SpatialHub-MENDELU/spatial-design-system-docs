@@ -27,9 +27,9 @@ Aligns the element inside its parent node.
 <ComponentExample :fixed="true">
 
 <template #output v-if="renderScene">
-  <a-plane width="5" height="5" position="0 1.5 -5" color="#018A6C">
-    <a-box color="#03FCC6" auto-position></a-box>
-  </a-plane>
+<a-plane width="5" height="5" position="0 1.5 -5" color="#018A6C">
+<a-box color="#03FCC6" auto-position></a-box>
+</a-plane>
 </template>
 
 <template #code>
@@ -50,7 +50,7 @@ import "spatial-design-system/components/position.js";
 
 ## Props
 
-| Property | Type      | Default | Description                    |
-|----------|-----------|---------|--------------------------------|
-| _hAlign_ | enum(left, center, right) | center       | Sets horizontal alignment.
-| _vAlign_ | enum(top, center, bottom) | center       | Sets vertical alignment.
+| Property | Type                      | Default | Description                |
+| -------- | ------------------------- | ------- | -------------------------- |
+| _hAlign_ | enum(left, center, right) | center  | Sets horizontal alignment. |
+| _vAlign_ | enum(top, center, bottom) | center  | Sets vertical alignment.   |

@@ -1,0 +1,156 @@
+@use '../variables' as *;
+.lesson {
+  &__content {
+    p, span {
+      font-size: clamp(0.95rem, 0.9vw, 1.1rem);
+
+      &:not(&:last-of-type) {
+        margin-bottom: 1rem;
+      }
+    }
+
+    h2 {
+      margin-bottom: 0.5rem;
+
+      color: $primary;
+      font-size: clamp(1.3rem, 1.1vw, 1.85rem);
+      font-weight: 600;
+    }
+
+    span {
+      font-weight: 600;
+    }
+
+    #placeholder {
+      margin: 2rem 0;
+    }
+
+    .bordered-section {
+      padding-bottom: 1rem;
+      margin-bottom: 1rem;
+
+      border-bottom: 1px solid $border-color !important;
+    }
+
+    table {
+      display: block;
+      border-collapse: collapse;
+      margin: 20px 0;
+      overflow-x: auto
+     }
+  
+    tr {
+      background-color: transparent;
+      border-top: 1px solid $border-color;
+      transition: background-color .5s;
+    }
+  
+    tr:nth-child(2n) {
+      background-color: var(--vp-custom-block-tip-bg)
+    }
+  
+    th, td {
+      border: 1px solid $border-color;
+      padding: 8px 16px;
+    }
+  
+    th {
+      text-align: left;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--vp-custom-text-1);
+      background-color: var(--vp-custom-block-tip-bg);
+    }
+  
+    td {
+      font-size: 14px
+    }
+  
+    hr {
+      margin: 16px 0;
+
+      border: none;
+      border-top: 1px solid $border-color;
+    }
+  }
+}
+
+.p-dialog .code-block, .lesson__content .code-block {
+  position: relative;
+
+  &:not(:last-child) {
+    padding-bottom: 1.5rem;
+  }
+
+  pre span {
+    font-weight: normal !important;
+  }
+
+  .language-label {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+
+    color: $grey;
+    font-size: clamp(0.7rem, 0.7vw, 1.1rem);
+    font-weight: 600;
+  }
+
+  .copy-button {
+    position: absolute;
+    top: 0.15rem;
+    right: 0.5rem;
+
+    padding: 0.25rem;
+    opacity: 0;
+
+    background-color: $white;
+    border-radius: 4px;
+    border: 1px solid $grey;
+    color: $grey !important;
+
+    transition: all 350ms;
+
+    i {
+      font-size: clamp(1.3rem, 1.2vw, 1.75rem) !important;
+    }
+  }
+
+  &:hover {
+    .copy-button {
+      opacity: 1;
+    }
+  }
+
+  :not(pre) > code[class*="language-"], pre[class*="language-"] {
+    background: $extra-light-background !important; 
+    border-radius: 4px;
+    * {
+      font-size: clamp(0.85rem, 0.85vw, 1.35rem) !important;
+    }
+  }
+
+  pre code {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+    font-size: clamp(0.85rem, 0.85vw, 1.35rem) !important;
+
+    * {
+      font-size: clamp(0.85rem, 0.85vw, 1.35rem) !important;
+    }
+  }  
+}
+
+.p-dialog {
+  .copy-button {
+    top: -1.5rem !important;
+  }
+}
+
+.lesson-detail--list li {
+  margin-left: 2rem;
+
+  list-style-type: disc !important;
+}

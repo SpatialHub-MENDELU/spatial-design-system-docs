@@ -1,0 +1,8 @@
+@use '../variables' as *;
+
+.settings {
+  margin: 0 !important;
+  margin: auto;
+  max-width: calc($max-width - 64px) !important;
+  width: 100%;
+}

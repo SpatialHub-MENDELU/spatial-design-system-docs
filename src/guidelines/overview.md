@@ -21,7 +21,6 @@ See [how to choose](/guidelines/behavior) the right behavior for your app.
 - [Adaptive](/guidelines/adaptive)
 - [Follow](/guidelines/follow)
 
-
 ### Menu type
 
 Guidelines related to selecting an appropriate form of menu for the given use case.\

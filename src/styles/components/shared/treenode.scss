@@ -1,0 +1,38 @@
+@use '../../variables' as *;
+
+.p-treenode-content {
+  cursor: pointer;
+  font-size: clamp(0.8rem, 1.1vw, 1.5rem);
+}
+
+.p-tree-toggler {
+  @media screen and (max-width: $breakpointMd) {
+    height: 20px;
+
+    svg {
+      height: 12px;
+    }
+  }
+}
+
+.p-treenode-icon  {
+  color: $primary;
+}
+
+.p-tree .p-treenode-children {
+  padding: 0 0 0 1rem !important;
+}
+
+.p-tree {
+  background-color: transparent;
+  color: var(--vp-c-text-1);
+}
+
+.p-tree-node-label, .p-tree-node-content {
+  width: 100% !important;
+  text-align: left !important;
+}
+
+.p-treenode-label {
+  display: block;
+}

@@ -1,0 +1,25 @@
+@use '../../variables' as *;
+
+.output {
+  overflow-y: hidden !important;
+  width: 100% !important;
+  height: 100% !important;
+
+  background-color: transparent !important;
+
+  transition: all 350ms ease-in-out;
+
+  @media screen and (max-width: $breakpointMd) {
+    height: 20rem !important;
+  }
+}
+
+html.a-fullscreen {
+  background-color: $grey !important;
+}
+
+.output--full-height .output-container {
+  @media screen and (max-width: $breakpointLg) {
+    height: 20rem !important;
+  }
+}

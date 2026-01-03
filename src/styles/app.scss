@@ -1,0 +1,30 @@
+@use "./variables.scss";
+@use "./global.scss";
+
+// components
+@use "./components/shared/sidebar.scss";
+@use "./components/shared/loading.scss";
+@use "./components/shared/dialog.scss";
+@use "./components/shared/switcher.scss";
+@use "./components/shared/dropdown.scss";
+@use "./components/shared/treenode.scss";
+@use "./components/shared/breadcrumbs.scss";
+@use "./components/shared/select.scss";
+@use "./components/shared/contextMenu.scss";
+@use "./components/shared/input.scss";
+@use "./components/shared/toast.scss";
+@use "./components/shared/chip.scss";
+@use "./components/shared/splitter.scss";
+
+@use "./components/editor/output.scss";
+@use "./components/editor/codemirror.scss";
+@use "./components/editor/files.scss";
+@use "./components/editor/folderFileUploader.scss";
+
+@use "./components/courses/overview.scss";
+
+// pages
+@use "./pages/editor.scss";
+@use "./pages/settings.scss";
+@use "./pages/courses.scss";
+@use "./pages/lessons.scss";

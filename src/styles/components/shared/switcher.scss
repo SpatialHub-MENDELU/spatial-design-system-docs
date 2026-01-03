@@ -1,0 +1,7 @@
+@use '../../variables' as *;
+
+.p-inputswitch.p-highlight {
+  .p-inputswitch-slider {
+    background-color: $primary;
+  }
+}

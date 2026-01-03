@@ -29,12 +29,12 @@ Move back (S key) and see the effect. The left box is static and the right box h
 <ComponentExample>
 
 <template #output v-if="renderScene">
-  <a-box color="#8A8A8A" position="-0.6 1.5 -2.5"></a-box>
-  <a-box color="#03FCC6" position="0.6 1.5 -2.5" auto-scale></a-box>
-  <a-box position="0 0.95 -2.5" width="5" height="0.1" depth="1" src="../grid-light-1850w.png"></a-box>
+<a-box color="#8A8A8A" position="-0.6 1.5 -2.5"></a-box>
+<a-box color="#03FCC6" position="0.6 1.5 -2.5" auto-scale></a-box>
+<a-box position="0 0.95 -2.5" width="5" height="0.1" depth="1" src="../grid-light-1850w.png"></a-box>
 </template>
 
-<template #code>  
+<template #code>
 
 ```js
 import "spatial-design-system/components/position.js";
@@ -50,6 +50,6 @@ import "spatial-design-system/components/position.js";
 
 ## Props
 
-| Property | Type      | Default | Description                    |
-|----------|-----------|---------|--------------------------------|
-| _factor_   | number    | 1.0       | A scaling factor to control the rate at which the entity scales.
+| Property | Type   | Default | Description                                                      |
+| -------- | ------ | ------- | ---------------------------------------------------------------- |
+| _factor_ | number | 1.0     | A scaling factor to control the rate at which the entity scales. |

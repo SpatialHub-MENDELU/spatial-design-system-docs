@@ -1,0 +1,13 @@
+@use '../variables' as *;
+
+.editor-content {
+  @media screen and (max-width: $breakpointLg) {
+    height: fit-content !important;
+  }
+}
+
+.editor--horizontal {
+  @media screen and (min-width: $breakpointLg) {
+    height: calc(100% - 2rem);
+  }
+}

@@ -24,23 +24,23 @@ Creates a _billboard effect_ so element is always watching towards camera (user)
 
 ## Example
 
-Move to the right (D key) and see the effect. The left plane is static and the right plane has billboard (always facing the camera). 
+Move to the right (D key) and see the effect. The left plane is static and the right plane has billboard (always facing the camera).
 
 <ComponentExample>
 
 <template #output v-if="renderScene">
-    <a-plane
+<a-plane
         position="-0.6 1.5 -2"
         color="#8A8A8A"
         text="value: STATIC; width: 3; align: center; color: black;"
     ></a-plane>
-    <a-plane
+<a-plane
         position="0.6 1.5 -2"
         color="#03FCC6"
         text="value: BILLBOARD; width: 3; align: center; color: black;"
         billboard
     ></a-plane>
-    <a-box position="0 0.9 -2.5" width="5" height="0.1" depth="2" src="../grid-light-1850w.png"></a-box>
+<a-box position="0 0.9 -2.5" width="5" height="0.1" depth="2" src="../grid-light-1850w.png"></a-box>
 </template>
 
 <template #code>
@@ -52,8 +52,8 @@ import "spatial-design-system/components/position.js";
 ```html
 <a-plane
   position="0 1.5 -2"
-  color="#03FCC6" 
-  text="value: BILLBOARD; width: 3; align: center; color: black;" 
+  color="#03FCC6"
+  text="value: BILLBOARD; width: 3; align: center; color: black;"
   billboard
 ></a-plane>
 ```
@@ -64,6 +64,6 @@ import "spatial-design-system/components/position.js";
 
 ## Props
 
-| Property | Type      | Default | Description                    |
-|----------|-----------|---------|--------------------------------|
-| -   | -    | -       | -
+| Property | Type | Default | Description |
+| -------- | ---- | ------- | ----------- |
+| -        | -    | -       | -           |
