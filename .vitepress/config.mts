@@ -55,6 +55,7 @@ export default defineConfig({
         text: 'UI elements',
         items: [
           { text: 'button', link: '/ar-vr-primitives/button' },
+          { text: 'chip', link: '/ar-vr-primitives/chip' },
           { text: 'checkbox', link: '/ar-vr-primitives/checkbox' },
           { text: 'divider', link: '/ar-vr-primitives/divider' },
           { text: 'menu', link: '/ar-vr-primitives/menu' },
