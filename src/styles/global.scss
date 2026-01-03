@@ -22,10 +22,10 @@
     height: calc(100vh - $header-height) !important;
   }
 
-  @media screen and (max-width: $breakpointLg) {
+  @media screen and (max-width: 1023px) {
     padding: 32px;
     margin: auto;
-    height: full !important;
+    height: 100% !important;
   }
 
   @media screen and (max-width: $breakpointMd) {
@@ -52,6 +52,14 @@
 
 .primaryBorder {
   border-color: var(--vp-c-brand-1);
+}
+
+.primaryBg {
+  background-color: $tertiary;
+
+  i, p {
+    color: $white !important
+  }
 }
 
 .mainColor {

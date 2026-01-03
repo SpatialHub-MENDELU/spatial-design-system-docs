@@ -25,7 +25,7 @@ The `controller-attach` component attaches entities to VR controllers, allowing 
 
 ## Example
 
-Below is an example of attaching UI panel to the right controller:
+Below is an example of attaching UI panel to the right controller. Test this demo by opening this page in a VR headset and clicking on the "VR" button.
 
 <ComponentExample :fixed="true">
 
@@ -77,7 +77,7 @@ import "spatial-design-system/components/controllerAttach.js";
 | _hand_      | string  | "right"    | Which controller to attach to ("left" or "right")      |
 | _offset_    | vec3    | "0 0 0"    | Position offset from the controller in meters          |
 | _rotation_  | vec3    | "0 0 0"    | Rotation offset in degrees (x, y, z Euler angles)      |
-
+| _faceCamera_| boolean | false      | Makes the attached object always face the camera       |
 ## Usage Tips
 
 ### Ensured visibility

@@ -13,11 +13,6 @@ export const sidebarData: SidebarLink[] = [
         icon: "cog",
     },
     {
-        text: "Docs",
-        route: ROUTES.DOCS,
-        icon: "book",
-    },
-    {
         text: "Courses",
         route: ROUTES.COURSE_MAIN,
         icon: "box",

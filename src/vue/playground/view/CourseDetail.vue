@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Sidebar from '../components/shared/Sidebar.vue';
+import RightBar from '../components/shared/RightBar.vue';
 
 import { useData } from 'vitepress';
 import { onMounted } from 'vue';
@@ -17,12 +18,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="h-full flex gap-0 mx-auto w-full justify-center">
     <div
-      class="main-content courses lg:h-full h-full mx-auto relative flex w-full lg:flex-row flex-col"
+    class="h-full flex gap-0 lg:flex-row flex-col mx-auto w-full lg:overflow-y-hidden"
     >
       <Sidebar />
-      <div class="w-full xl:p-16 lg:p-12 pt-6 lg:h-auto h-full overflow-y-auto">
+      <div class="main-content settings lg:h-full h-full mx-auto relative flex w-full flex-col xl:p-16 lg:p-12 pt-6">
         <div class="flex border-b border-border-color pb-2">
           <CourseDetailMainInfo :courseDetailService="courseDetailService" />
           <CourseDetailProgress :courseDetailService="courseDetailService" />
@@ -32,6 +32,7 @@ onMounted(() => {
           :courseDetailService="courseDetailService"
         />
       </div>
+
+      <RightBar :show-layout-icon="false" />
     </div>
-  </div>
 </template>

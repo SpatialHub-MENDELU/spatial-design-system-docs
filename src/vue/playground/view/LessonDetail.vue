@@ -6,7 +6,7 @@ import { ICourseDetail } from '../types/courses/CourseDetail';
 import CoursesOverview from '../components/courses/CoursesOverview.vue';
 import LessonError from '../components/lessons/LessonError.vue';
 import Toast from 'primevue/toast';
-
+import EditorLoadError from '../components/editor/EditorLoadError.vue';
 // !!! after adding new courses, update the imports !!!
 // import * as BUTTON from "spatial-design-system/primitives/ar-button.js";
 // import * as CHECKBOX from "spatial-design-system/primitives/ar-checkbox.js";
@@ -16,6 +16,7 @@ import { LessonDetailService } from '../services/lessonDetailService';
 import LessonDetailTask from '../components/lessons/LessonDetailTask.vue';
 import LessonDetailContent from '../components/lessons/LessonDetailContent.vue';
 import LessonDetailDialogs from '../components/lessons/LessonDetailDialogs.vue';
+import RightBar from '../components/shared/RightBar.vue';
 
 const { params } = useData();
 const playgroundStore = useStore();
@@ -23,6 +24,7 @@ const lessonDetailService = new LessonDetailService();
 
 const renderScene = ref(false);
 const loading = ref(true);
+const showError = ref(false);
 
 onMounted(async () => {
   try {
@@ -33,6 +35,8 @@ onMounted(async () => {
     renderScene.value = true;
   } catch (error) {
     console.error('Error during project creation:', error);
+    showError.value = true;
+    throw new Error(error);
   } finally {
     loading.value = false;
   }
@@ -40,16 +44,18 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="h-full lesson flex gap-0 mx-auto w-full justify-center lg:max-h-screen">
-    <Toast position="bottom-center" />
+  <Toast position="bottom-center" />
+
+  <EditorLoadError v-if="showError" />
 
     <div
-      class="main-content courses lg:h-full h-full mx-auto relative flex w-full lg:flex-row flex-col w-screen"
+    v-else
+      class="h-full flex gap-0 lg:flex-row flex-col mx-auto w-full lg:overflow-y-hidden"
     >
       <Sidebar />
       <div
-        class="relative w-full xl:p-16 lg:p-12 pt-6 h-auto overflow-y-hidden flex lg:flex-row flex-col duration-300"
-        v-if="lessonDetailService.state.canBeDisplayed && !loading"
+        class="relative min-content overflow-y-hidden lg:h-full h-full mx-auto relative flex w-full lg:flex-row flex-col  xl:p-16 lg:p-12 pt-6"
+        v-if="lessonDetailService.state.canBeDisplayed"
         style="max-width: 100%"
         :class="{
           ' lg:gap-16 gap-8': lessonDetailService.state.isContentVisible,
@@ -66,23 +72,20 @@ onMounted(async () => {
         />
 
         <LessonDetailContent :lessonDetailService="lessonDetailService" />
-        <LessonDetailTask :lessonDetailService="lessonDetailService" />
+        <div
+          v-if="loading"
+          class="lg:h-full flex flex-col items-center justify-center w-full h-[25rem] border border-border-colo"
+        >
+          <div class="spinner" />
+          <p class="text-grey md:text-[16px] text-[15px] text-center mt-3">
+            Loading task...
+          </p>
+        </div>
+        <LessonDetailTask v-else :lessonDetailService="lessonDetailService" />
       </div>
       <LessonError v-else v-if="!loading" />
-      <div
-      v-if="loading"
-      class="lg:h-full flex flex-col items-center justify-center w-full h-[25rem]"
-    >
-      <div class="spinner" />
-      <p
-        class="text-grey md:text-[16px] text-[15px] text-center mt-3"
-      >
-        Loading lesson...
-      </p>
-    </div>   
-        
+      <RightBar :show-layout-icon="false"/>
     </div>
-  </div>
 
   <LessonDetailDialogs :lessonDetailService="lessonDetailService" />
 </template>

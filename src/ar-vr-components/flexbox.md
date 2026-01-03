@@ -10,7 +10,7 @@ const renderScene = ref(false);
 
 onMounted(async () => {
   try {
-    await import("spatial-design-system/components/flexbox.js");
+    await import("spatial-design-system/components/flexbox/flexbox.js");
     renderScene.value = true;
   } catch(e) {
     console.error(e);
@@ -20,19 +20,11 @@ onMounted(async () => {
 
 # {{ $frontmatter.title }}
 
-Flexbox is a powerful one-dimensional layout system inspired by [CSS Flexbox](https://developer.mozilla.org/en-US/docs/Web/CSS/flex). It helps you create flexible layouts that can adapt to different sizes and arrangements in your AR/VR scenes.
+The `flexbox` component creates a flexible one-dimensional layout container, similar to [CSS Flexbox](https://developer.mozilla.org/en-US/docs/Web/CSS/flex). It allows you to arrange child elements in rows or columns with advanced alignment and spacing options.
 
-## Overview
+## Examples
 
-The Flexbox component family consists of several components that work together:
-
-- [**flexbox**](/ar-vr-components/flexbox-container) - Main container component
-- [**flex-col**](/ar-vr-components/flex-col) - Grid column specification
-- [**flex-grow**](/ar-vr-components/flex-grow) - Dynamic space distribution
-
-## Basic Usage
-
-Flexbox uses a container/item pattern - you apply the `flexbox` component to a parent element, then place child elements inside it.
+### Basic Row Layout
 
 <ComponentExample :fixed="true">
 
@@ -40,79 +32,143 @@ Flexbox uses a container/item pattern - you apply the `flexbox` component to a p
 <a-plane
 position="0 1.6 -3"
 width="2"
-height="2"
+height="0.5"
 material="color: #018A6C"
 flexbox="
 direction: row;
-justify: center;
+justify: space-between;
 items: center;
-gap: 50 50;
-wrap: true;
 ">
 
-  <a-plane color="white"></a-plane>
-  <a-plane color="white"></a-plane>
-  <a-plane color="white"></a-plane>
-  <a-plane color="white"></a-plane>
+  <a-box color="white" width="0.3" height="0.3" depth="0.3"></a-box>
+  <a-box color="white" width="0.3" height="0.3" depth="0.3"></a-box>
+  <a-box color="white" width="0.3" height="0.3" depth="0.3"></a-box>
 </a-plane>
 </template>
 
 <template #code>
 
 ```js
-import "spatial-design-system/components/flexbox.js";
+import "spatial-design-system/components/flexbox/flexbox.js";
 ```
 
 ```html
-
-
-
-
-
-
+<a-plane
+  position="0 1.6 -3"
+  width="2"
+  height="0.5"
+  material="color: #018A6C"
+  flexbox="
+      direction: row;
+      justify: space-between;
+      items: center;
+  "
+>
+  <a-box color="white" width="0.3" height="0.3" depth="0.3"></a-box>
+  <a-box color="white" width="0.3" height="0.3" depth="0.3"></a-box>
+  <a-box color="white" width="0.3" height="0.3" depth="0.3"></a-box>
+</a-plane>
 ```
 
 </template>
 
 </ComponentExample>
 
-## Advanced Features
+### Column Layout with Wrapping
 
-### Responsive Layout with flex-col
+<ComponentExample :fixed="true">
 
-You can create responsive grid-based layouts using the `flex-col` component:
+<template #output v-if="renderScene">
+<a-plane
+position="0 1.6 -3"
+width="1.2"
+height="1.2"
+material="color: #018A6C"
+flexbox="
+direction: column;
+justify: space-around;
+items: center;
+wrap: true;
+gap: 20 20;
+">
 
-```html
+  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
+  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
+  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
+  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
+  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
+  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
+</a-plane>
+</template>
 
+<template #code>
 
-
-
-
+```js
+import "spatial-design-system/components/flexbox/flexbox.js";
 ```
 
-This will create a layout that adapts based on viewport size:
-- On small screens (sm): Each child takes up full width (12 columns)
-- On medium screens (md): First two children share a row (6 columns each), third child is on its own row
-- On large screens (lg): All three children fit on one row (4 columns each)
-
-### Flexible Item Sizing with flex-grow
-
-Use `flex-grow` to make items fill available space:
-
 ```html
-
-
-
-
-
+<a-plane
+  position="0 1.6 -3"
+  width="1.2"
+  height="1.2"
+  material="color: #018A6C"
+  flexbox="
+      direction: column;
+      justify: space-around;
+      items: center;
+      wrap: true;
+      gap: 20 20;
+  "
+>
+  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
+  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
+  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
+  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
+  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
+  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
+</a-plane>
 ```
 
-The middle element will automatically expand to fill the remaining space.
+</template>
 
-## Component Documentation
+</ComponentExample>
 
-For detailed information about each component in the Flexbox family, see:
+## Props
 
-- [flexbox-container](/ar-vr-components/flexbox-container) - Container properties and layout control
-- [flex-col](/ar-vr-components/flex-col) - Responsive grid column system
-- [flex-grow](/ar-vr-components/flex-grow) - Dynamic space allocation
+| Property    | Type                                                | Default  | Description                                                                                                          |
+| ----------- | --------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------- |
+| _direction_ | enum(row, column)                                   | row      | Sets main layout direction (horizontal or vertical)                                                                   |
+| _justify_   | enum(start, end, center, between, around)           | start    | Aligns items along the main axis                                                                                     |
+| _items_     | enum(start, end, center)                            | start    | Aligns items along the cross axis                                                                                    |
+| _wrap_      | boolean                                             | false    | Enables wrapping of items to new lines when they exceed container dimensions                                          |
+| _gap_       | vec2                                                | 0 0      | Sets spacing between items. First value is main axis gap, second is cross axis gap          |
+
+## Justify Values Explained
+
+- **start**: Items are positioned at the beginning of the container
+- **end**: Items are positioned at the end of the container
+- **center**: Items are centered in the container
+- **between**: Items are evenly distributed with the first item at the start and the last item at the end
+- **around**: Items are evenly distributed with equal space around them
+
+## Items Alignment Values Explained
+
+- **start**: Items are aligned to the start of the cross axis
+- **end**: Items are aligned to the end of the cross axis
+- **center**: Items are centered along the cross axis
+
+## How Gap Works
+
+The `gap` property adds spacing between items in the flexbox container. It creates consistent spacing between each element without affecting their size.
+
+When you set `gap: 10 20`:
+- The first value (`10`) adds horizontal spacing between elements
+- The second value (`20`) adds vertical spacing between elements
+
+In row layouts with wrapping, the vertical gap affects the space between rows.
+In column layouts with wrapping, the horizontal gap affects the space between columns.
+
+## Notes
+
+- The flexbox container must be a primitive that has width and height (box, plane, entity with geometry)

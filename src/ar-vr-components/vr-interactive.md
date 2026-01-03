@@ -11,7 +11,7 @@ const renderScene = ref(false);
 onMounted(async () => {
   try {
     // await import("spatial-design-system/components/controllers.js");
-    // await import("spatial-design-system/components/vr-interactive.js");
+    // await import("spatial-design-system/components/vrinteractive.js");
     renderScene.value = true;
   } catch (e) {
     console.error(e);
@@ -25,7 +25,7 @@ The `vr-interactive` component adds enhanced interactivity to A-Frame entities w
 
 ## Example
 
-Below is an example of using the vr-interactive component with objects in a VR scene:
+Below is an example of using the vr-interactive component with objects in a VR scene. Test this demo by opening this page in a VR headset and clicking on the "VR" button.
 
 <ComponentExample :fixed="true">
 
@@ -49,7 +49,7 @@ Below is an example of using the vr-interactive component with objects in a VR s
 
 ```js
 import "spatial-design-system/components/controllers.js";
-import "spatial-design-system/components/vr-interactive.js";
+import "spatial-design-system/components/vrinteractive.js";
 ```
 
 ```html

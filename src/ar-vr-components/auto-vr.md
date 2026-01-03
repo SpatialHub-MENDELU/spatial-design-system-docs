@@ -24,7 +24,7 @@ The `auto-vr` component simplifies VR mode entry by automatically detecting VR c
 
 ## Example
 
-Below is an example of using the auto-vr component to automatically enter VR mode when available:
+Below is an example of using the auto-vr component to automatically enter VR mode when available.Test this demo by opening this page in a VR headset.
 
 <ComponentExample :fixed="true">
 
@@ -37,11 +37,13 @@ Below is an example of using the auto-vr component to automatically enter VR mod
 
 ```js
 import "spatial-design-system/components/autoVr.js";
-// Set up controllers directly on the scene
-const scene = document.createElement("a-scene");
-scene.setAttribute("auto-vr", {
-  autoEnter: true,
-});
+```
+```html
+<!-- Set up controllers directly on the scene -->
+<a-scene auto-vr="autoEnter: true">
+    <a-camera></a-camera>
+</a-scene>
+
 ```
 
 </template>

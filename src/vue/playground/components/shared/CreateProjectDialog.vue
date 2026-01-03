@@ -34,12 +34,13 @@ const updateProjectType = (projectType: ProjectType) => {
 
 <template>
   <Dialog
-    :visible="visible"
-    modal
-    header="Create new project"
-    :closable="false"
-    :style="{ width: '25rem' }"
-  >
+  :visible="visible"
+  modal
+  dismissableMask
+  @update:visible="() => closeDialog()" 
+  header="Create new project"
+  :style="{ width: '25rem' }"
+>
     <span class="text-surface-500 dark:text-surface-400 block mb-8"
       >Choose the technology for your new project.</span
     >
@@ -50,14 +51,18 @@ const updateProjectType = (projectType: ProjectType) => {
         v-for="(item, index) of createProjectData"
         :class="
           state.projectType === item.projectType
-            ? 'primaryBorder'
+            ? 'primaryBg'
             : 'border-border-color'
         "
         :key="index"
         @click="updateProjectType(item.projectType)"
       >
         <i class="text-[32px] text-primary" :class="item.icon" />
-        <p class="md:text-[16px] text-[15px] duration-300">{{ item.text }}</p>
+        <p class="md:text-[16px] text-[15px] duration-300 border-white"
+          :class="
+            state.projectType === item.projectType
+              ? 'border-b'
+              : ''">{{ item.text }}</p>
       </div>
     </div>
 
