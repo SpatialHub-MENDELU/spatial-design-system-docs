@@ -64,26 +64,17 @@ import 'spatial-design-system/components/hands-hoverable.js';
 | `overlaySizeRatio`   | number  | 0.005                | Additional padding applied to the overlay box to make the hover highlight more visible. |
 | `hoverColor`         | color   | `VARIANT_DARK_COLOR` | Color of the overlay geometry or wireframe when the element is hovered.                 |
 
+## Events
+
+| Event           | Parameters | Description                                          |
+| --------------- | ---------- | ---------------------------------------------------- |
+| `hover-started` | -          | Emitted when a hand begins hovering over the entity. |
+| `hover-ended`   | -          | Emitted when a hand stops hovering over the entity.  |
+
 ## How It Works
 
 - On init, the component adds `obb-collider` (centerModel mode) and the CSS class `interactable`, so the entity becomes a target for A‑Frame’s raycaster.
 - It listens for `hand-hover-started` and `obbcollisionended` events from `hands` component to detect hover state.
-
-## Events
-
-The component itself does not emit custom events, but you can use the `obbcollisionstarted/ended` events fired by `obb-collider` for further logic:
-
-```javascript
-const box = document.querySelector('[hands-hoverable]');
-
-box.addEventListener('obbcollisionstarted', () => {
-  console.log('Entity hovered');
-});
-
-box.addEventListener('obbcollisionended', () => {
-  console.log('Hover left');
-});
-```
 
 ## Notes
 
