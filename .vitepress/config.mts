@@ -58,6 +58,7 @@ export default defineConfig({
           { text: 'checkbox', link: '/ar-vr-primitives/checkbox' },
           { text: 'divider', link: '/ar-vr-primitives/divider' },
           { text: 'menu', link: '/ar-vr-primitives/menu' },
+          { text: 'progress bar', link: '/ar-vr-primitives/progressbar' },
           { text: 'row, column', link: '/ar-vr-primitives/rowcolumn' },
           { text: 'switch', link: '/ar-vr-primitives/switch' },
           { text: 'textbox', link: '/ar-vr-primitives/textbox' },
