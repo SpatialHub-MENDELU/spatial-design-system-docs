@@ -10,7 +10,7 @@ const renderScene = ref(false);
 
 onMounted(async () => {
   try {
-    await import("spatial-design-system/primitives/ar-button");
+    await import("spatial-design-system/primitives/ar-avatar");
     renderScene.value = true;
   } catch (e) {
     console.error(e);
