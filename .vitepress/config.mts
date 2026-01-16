@@ -54,10 +54,13 @@ export default defineConfig({
       {
         text: 'UI elements',
         items: [
+          { text: 'avatar', link: '/ar-vr-primitives/avatar' },
           { text: 'button', link: '/ar-vr-primitives/button' },
+          { text: 'chip', link: '/ar-vr-primitives/chip' },
           { text: 'checkbox', link: '/ar-vr-primitives/checkbox' },
           { text: 'divider', link: '/ar-vr-primitives/divider' },
           { text: 'menu', link: '/ar-vr-primitives/menu' },
+          { text: 'progress bar', link: '/ar-vr-primitives/progressbar' },
           { text: 'row, column', link: '/ar-vr-primitives/rowcolumn' },
           { text: 'switch', link: '/ar-vr-primitives/switch' },
           { text: 'textbox', link: '/ar-vr-primitives/textbox' },
@@ -92,6 +95,14 @@ export default defineConfig({
           { text: 'follow-element', link: '/ar-vr-components/follow-element' },
           { text: 'follow-camera', link: '/ar-vr-components/follow-camera' },
         ],
+      },
+      {
+        text: "Game components",
+        items: [
+          {text: 'walk', link: '/game-components/walk'},
+          {text: 'fly', link: '/game-components/fly'},
+          {text: 'npc-walk', link: '/game-components/npc-walk'}
+        ]
       },
       {
         text: 'AR/VR',

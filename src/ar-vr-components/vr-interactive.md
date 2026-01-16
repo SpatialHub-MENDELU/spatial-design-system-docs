@@ -11,7 +11,7 @@ const renderScene = ref(false);
 onMounted(async () => {
   try {
     // await import("spatial-design-system/components/controllers.js");
-    // await import("spatial-design-system/components/vr-interactive.js");
+    // await import("spatial-design-system/components/vrinteractive.js");
     renderScene.value = true;
   } catch (e) {
     console.error(e);
@@ -49,7 +49,7 @@ Below is an example of using the vr-interactive component with objects in a VR s
 
 ```js
 import "spatial-design-system/components/controllers.js";
-import "spatial-design-system/components/vr-interactive.js";
+import "spatial-design-system/components/vrinteractive.js";
 ```
 
 ```html

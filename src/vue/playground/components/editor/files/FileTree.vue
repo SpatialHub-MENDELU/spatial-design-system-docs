@@ -62,15 +62,15 @@ const updateItems = async () => {
   await fileTreeService.fetchFolders().then(() => {
     movingLoading.value = false
   });
-};
-
-const updateMovingLoading = async () => {
-  movingLoading.value = true
 
   const data = await webContainersService?.fetchFolderStructureInTreeNode('/');
   if (data) {
     folders.value = data;
   }
+};
+
+const updateMovingLoading = async () => {
+  movingLoading.value = true
 }
 </script>
 
