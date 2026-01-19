@@ -7,6 +7,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  hideOutput: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 enum Tab {
@@ -21,7 +25,7 @@ enum CameraMoveDirection {
   Left = 'left',
 }
 
-const selectedTab = ref(Tab.Output);
+const selectedTab = ref(props.hideOutput ? Tab.Code : Tab.Output);
 // Below boolean is needed to avoid this problem: https://github.com/aframevr/aframe/issues/4038
 const isAframeImported = ref(false);
 const aframeScene = ref(null);
@@ -42,6 +46,8 @@ function selectTab(tab: Tab) {
 
 onMounted(async () => {
   isAframeImported.value = true;
+  if (props.hideOutput) return;
+
   registerPointerChange();
 });
 
@@ -98,6 +104,7 @@ function moveCamera(direction: CameraMoveDirection) {
   <section class="tabs">
     <div class="tabs__row">
       <button
+        v-if="!props.hideOutput"
         @click="selectTab(Tab.Output)"
         :class="{ tabs__button_selected: selectedTab === Tab.Output }"
         type="button"
@@ -117,7 +124,7 @@ function moveCamera(direction: CameraMoveDirection) {
     </div>
 
     <div
-      v-if="isAframeImported"
+      v-if="isAframeImported && !props.hideOutput"
       v-show="selectedTab === Tab.Output"
       class="tabs__content"
     >
@@ -142,7 +149,10 @@ function moveCamera(direction: CameraMoveDirection) {
       <slot name="code"></slot>
     </div>
 
-    <div class="move-controls tabs__move-controls" v-if="showMoveControllers">
+    <div
+      class="move-controls tabs__move-controls"
+      v-if="showMoveControllers && !props.hideOutput"
+    >
       <VPButton
         class="move-controls__button move-controls__button_forward"
         v-html="moveControllersIcons.forward"
@@ -165,11 +175,11 @@ function moveCamera(direction: CameraMoveDirection) {
       />
     </div>
 
-    <p class="tabs__note" v-if="showMoveControllers">
+    <p class="tabs__note" v-if="showMoveControllers && !props.hideOutput">
       Tap and hold your finger on the scene and drag it to rotate.
     </p>
 
-    <p class="tabs__note" v-else-if="!props.fixed">
+    <p class="tabs__note" v-else-if="!props.fixed && !props.hideOutput">
       Use the mouse to rotate the scene.
     </p>
   </section>

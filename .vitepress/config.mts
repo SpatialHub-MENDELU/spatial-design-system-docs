@@ -9,8 +9,8 @@ function crossOriginIsolationMiddleware(_, response, next) {
 
 const crossOriginIsolation = {
   name: 'cross-origin-isolation',
-  configureServer: server => { 
-    server.middlewares.use(crossOriginIsolationMiddleware); 
+  configureServer: (server) => {
+    server.middlewares.use(crossOriginIsolationMiddleware);
   },
 };
 
@@ -108,11 +108,36 @@ export default defineConfig({
         text: 'AR/VR',
         items: [
           { text: 'auto-vr', link: '/ar-vr-components/auto-vr' },
-          { text: 'controllers', link: '/ar-vr-components/controllers'},
+          { text: 'auto-xr', link: '/ar-vr-components/auto-xr' },
+          { text: 'controllers', link: '/ar-vr-components/controllers' },
+          { text: 'hands', link: '/ar-vr-components/hands' },
           { text: 'vr-interactive', link: '/ar-vr-components/vr-interactive' },
-          { text: 'controller-attach', link: '/ar-vr-components/controller-attach' },
-          { text: 'controller-teleport', link: '/ar-vr-components/controller-teleport' },
-          { text: 'controller-movement', link: '/ar-vr-components/controller-movement' },
+          { text: 'finger-touch', link: '/ar-vr-components/finger-touch' },
+          {
+            text: 'touch-raycaster',
+            link: '/ar-vr-components/touch-raycaster',
+          },
+          { text: 'grabbable', link: '/ar-vr-components/grabbable' },
+          {
+            text: 'hands-hoverable',
+            link: '/ar-vr-components/hands-hoverable',
+          },
+          {
+            text: 'stretchable',
+            link: '/ar-vr-components/stretchable',
+          },
+          {
+            text: 'controller-attach',
+            link: '/ar-vr-components/controller-attach',
+          },
+          {
+            text: 'controller-teleport',
+            link: '/ar-vr-components/controller-teleport',
+          },
+          {
+            text: 'controller-movement',
+            link: '/ar-vr-components/controller-movement',
+          },
           {
             text: 'Placing objects in AR',
             link: '/ar-vr-components/place-object-components',
@@ -131,7 +156,7 @@ export default defineConfig({
               },
             ],
           },
-        ]
+        ],
       },
       {
         text: 'Guidelines',
