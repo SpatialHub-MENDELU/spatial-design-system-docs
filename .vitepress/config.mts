@@ -59,6 +59,7 @@ export default defineConfig({
           { text: 'chip', link: '/ar-vr-primitives/chip' },
           { text: 'checkbox', link: '/ar-vr-primitives/checkbox' },
           { text: 'divider', link: '/ar-vr-primitives/divider' },
+          { text: 'dialog', link: '/ar-vr-primitives/dialog' },
           { text: 'menu', link: '/ar-vr-primitives/menu' },
           { text: 'progress bar', link: '/ar-vr-primitives/progressbar' },
           { text: 'row, column', link: '/ar-vr-primitives/rowcolumn' },
