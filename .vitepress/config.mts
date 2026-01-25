@@ -56,6 +56,7 @@ export default defineConfig({
         items: [
           { text: 'avatar', link: '/ar-vr-primitives/avatar' },
           { text: 'button', link: '/ar-vr-primitives/button' },
+          { text: 'card', link: '/ar-vr-primitives/card' },
           { text: 'chip', link: '/ar-vr-primitives/chip' },
           { text: 'checkbox', link: '/ar-vr-primitives/checkbox' },
           { text: 'divider', link: '/ar-vr-primitives/divider' },
