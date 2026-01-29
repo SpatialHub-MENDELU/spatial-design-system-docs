@@ -25,7 +25,7 @@ The chip component presents information in a compact, visually distinct format. 
 
 ### Basic Chip
 
-The following example demonstrates a simple, outlined chip with default styling. Here, the _textcolor_ property is explicitly set to white, but because the contrast with the background is insufficient, the chip automatically falls back to black text for better readability.
+The following example demonstrates a simple, _outlined_ chip with default label.
 
 <ComponentExample :fixed="true">
 
@@ -37,8 +37,7 @@ The following example demonstrates a simple, outlined chip with default styling.
       position="0 1.5 -3"
       size="medium"
       outlined="true"
-      label="Chip"
-      textcolor="white"
+      color="#03FCC6"
     ></a-ar-chip>
 </template>
 
@@ -53,8 +52,7 @@ import "spatial-design-system/primitives/ar-chip.js";
   position="0 1.5 -3"
   size="medium"
   outlined="true"
-  label="Chip"
-  textcolor="white"
+  color="#03FCC6"
 ></a-ar-chip>
 ```
 
