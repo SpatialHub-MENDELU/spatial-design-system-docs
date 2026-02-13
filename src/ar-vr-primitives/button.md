@@ -32,11 +32,11 @@ Below is an example of the button component.
               cursor="rayOrigin: mouse; fuse: false;">
     </a-entity>
     <a-ar-button
-        position="0 1.5 -3"
+        position="0 1.6 -1"
         content="Button"
-        primary="#018A6C"
+        color="#03FCC6"
         textcolor="white"
-        size="large"
+        size="medium"
     ></a-ar-button>
 </template>
 
@@ -48,11 +48,11 @@ import "spatial-design-system/primitives/ar-button.js";
 
 ```html
 <a-ar-button
-    position="0 1.5 -3"
+    position="0 1.6 -1"
     content="Button"
-    primary="#018A6C"
+    color="#03FCC6"
     textcolor="white"
-    size="large"
+    size="medium"
 ></a-ar-button>
 ```
 
@@ -64,14 +64,20 @@ import "spatial-design-system/primitives/ar-button.js";
 
 | Property    | Type                        | Default | Description                                                                                       |
 |-------------|-----------------------------|---------|---------------------------------------------------------------------------------------------------|
-| _visible_   | boolean                     | true    | Controls the button's visibility. When `true`, the button is visible; when `false`, it is hidden. |
-| _size_      | enum (small, medium, large) | medium  | Sets the button's size, adjusting padding, font size, and layout compactness accordingly.         |
-| _position_  | number[]                    | 0 0 0   | Specifies the button's position.                                                                  |
-| _primary_   | string (blue, #fff)         | #00BA92 | Defines the primary color of the button (affecting text, background, icon background).            |
-| _text_      | string                      | ""      | Sets the button's label text, such as "Open dialog" or "Close".                                   |
-| _textcolor_ | string                      | black   | Specifies the color of the button's text.                                                         |
-| _uppercase_ | boolean                     | false   | When `true`, displays the button text in uppercase letters.                                       |
-| _rounded_   | boolean                     | false   | When `true`, gives the button rounded corners.                                                    |
-| _textonly_  | boolean                     | false   | When `true`, renders the button as a text-only button with no background.                         |                               
-| _outline_   | boolean                     | false   | When `true`, displays the button with an outline.                                                 |
-| _variant_   | string (light, dark)        | ""      | Sets the button's color scheme mode, either "light" or "dark," for visual theme consistency.      |
+| _visible_   | boolean                     | true    | Determines whether the button is rendered. If `false`, the button is hidden from the interface.|
+| _position_  | number[]                    | 0 0 0   | Defines the button’s position in 3D space as an array of coordinates.           | 
+| _size_      | enum (small, medium, large, extra-large) | medium  | Controls the overall button size, including padding, font size, and layout density. | 
+| _opacity_   | number                      | 1       | Specifies the button's opacity. |      
+| _color_     | string (blue, #fff)       | #00BA92 | Defines the primary button color, affecting the background, text, and icon styling. |
+| _mode_      | string (light, dark)        | ""      | Applies a light or dark visual theme to the button for consistent appearance within different UI themes.  |
+| _content_   | string                      | ""      | Specifies the label text displayed inside the button (e.g., “Open dialog”, “Close”). |
+| _icon_      | string                      | ""      | Defines the icon displayed within the button. |
+| _iconpos_   | string(left, right)         | "left"  | Determines whether the icon is displayed to the left or right of the button text. |
+| _textcolor_ | string                      | black   | Sets the color of the button's text. If the contrast with the background is insufficient, the text color will __not__ be applied. |
+| _textonly_  | boolean                     | false   | When set to `true`, it renders the button as text-only, removing the background. |  
+| _uppercase_ | boolean                     | false   | Displays the button label in uppercase letters when enabled. |
+| _elevated_  | boolean                     | true    | Adds a shadow effect to create a raised, three-dimensional appearance. |
+| _rounded_   | boolean                     | false   | Applies rounded corners to the button. |
+| _roundedsides_ | string(full, left, right)| "full"  | Defines which sides of the button are `rounded` when rounded is enabled (full, left, or right). |
+| _tile_      | boolean                     | false   | Removes rounded styling and renders the button with square edges. |                             
+| _outlined_  | boolean                     | false   | When `true`, displays the button with an outline. |
