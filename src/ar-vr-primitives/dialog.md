@@ -58,37 +58,48 @@ The dialog component deliveres specific information to the users or requires a s
 The dialog component is intended for quick actions and should be used thoughtfully to avoid disrupting the user's flow.
 
 ## Dialog Usage Setup
-Unlike static components, the Dialog must be triggered programmatically. To display the dialog, you need to access the component through its entity and call the `openDialog()` method. You can also listen for actions emitted by the buttons.
+Unlike static components, the Dialog must be triggered programmatically. To display the dialog, you should **emit the `open-dialog` event** on the dialog entity. You can also listen for actions emitted by the buttons.
 
 ### Initial Setup Example
-This is how you typically initialize a dialog and a trigger button in your project.
+This is an example of how you could initialize a dialog and a trigger button in your project.
 
 ```js
-// 1. Get references to the elements
-const button = document.getElementById("openDialogButton");
-const dialog = document.getElementById("dialogBox");
+scene.addEventListener("loaded", () => {
+    // Get references to the elements
+    const button = document.getElementById("openDialogButton");
+    const dialog = document.getElementById("dialogBox");
 
-// 2. Open the dialog on button click
-button.addEventListener("click", () => {
-    // Access the A-Frame component method
-    dialog.components.dialog.openDialog();
-    
-    // Optional: Hide the button while dialog is open
+    // Open the dialog on button click
+    button.addEventListener("click", () => {
+        openDialog(dialog, button);
+    });
+
+    // Handle dialog actions
+    dialog.addEventListener("dialogAction", (e) => {
+        console.log("Dialog action:", e.detail.action);
+        // Logic for custom actions like 'confirm', 'cancel', etc.
+    });
+});
+
+function openDialog(dialog, button) {
+    dialog.emit("open-dialog");
+
     button.setAttribute("visible", false);
     button.classList.remove("clickable");
-});
 
-// 3. Handle user decisions
-dialog.addEventListener("dialogAction", (e) => {
-    console.log("Action selected:", e.detail.action);
-    // Logic for 'confirm', 'cancel', or custom actions
-});
+    // Attach event to re-enable button
+    dialog.addEventListener("dialogClosed", () => {
+        enableButton(button);
+    }); 
+}
 
-// 4. Reset UI when dialog finishes its closing animation
-dialog.addEventListener("dialogClosed", () => {
+// Function to show the button again and re-enable interaction
+function enableButton(button) {
+    setTimeout(() => {
     button.setAttribute("visible", true);
     button.classList.add("clickable");
-});
+    }, 100);
+}
 ```
 
 ## Example
@@ -127,17 +138,30 @@ import "spatial-design-system/primitives/ar-button.js";
 
 ```html
 <a-ar-dialog
+  id="dialogBox"
   position="0 1.5 -3"
   title="Basic Info"
   content="This is a simple dialog used for providing non-critical information."
 ></a-ar-dialog>
 <a-ar-button
-  id="btnBasic"
+  id="openDialogButton"
   class="clickable"
   position="0 1.5 -3"
   content="Open Basic Dialog"
   rounded="true"
 ></a-ar-button>
+```
+
+### Opening Dialog
+```js
+const dialog = document.getElementById("dialogBox");
+const button = document.getElementById("openDialogButton");
+
+button.addEventListener("click", () => {
+    // Use emit to trigger the opening sequence
+    dialog.emit("open-dialog");
+    button.setAttribute("visible", false);
+});
 ```
 
 </template>
@@ -185,7 +209,8 @@ import "spatial-design-system/primitives/ar-button.js";
 ```
 
 ```html
-<a-ar-dialog 
+<a-ar-dialog
+  id="dialogBox"
   position="0 1.5 -3" 
   title="Save Changes?" 
   content="Are you sure you want to save your current progress?" 
@@ -196,13 +221,25 @@ import "spatial-design-system/primitives/ar-button.js";
   transition="bottom-top" 
 ></a-ar-dialog>
 <a-ar-button
-    id="btnCustom"
+    id="openDialogButton"
     class="clickable"
     position="0 1.5 -3"
     content="Open Custom Dialog"
     rounded="true"
     textcolor="black"
 ></a-ar-button>
+```
+
+### Opening Dialog
+```js
+const dialog = document.getElementById("dialogBox");
+const button = document.getElementById("openDialogButton");
+
+button.addEventListener("click", () => {
+    // Use emit to trigger the opening sequence
+    dialog.emit("open-dialog");
+    button.setAttribute("visible", false);
+});
 ```
 
 </template>
@@ -224,5 +261,4 @@ import "spatial-design-system/primitives/ar-button.js";
 | _title_     | string                      | "Dialog Title" | Sets the title text displayed at the top of the dialog. |
 | _content_   | string                      | "This is an example of the basic dialog component." | Sets the main body text of the dialog. | 
 | _buttons_   | array                       | [{ label: "Close", action: "close" }]  | Defines the action buttons displayed at the bottom of the dialog. Supports up to two buttons. Buttons emit a `dialogAction` event containing their action string. | 
-| _persistent_ | boolean                    | true | When enabled, the dialog cannot be closed until a button action is selected. If `persistent` is `true`, the closing icon is suppressed even if `closingicon` is enabled. |
 | _transition_ | string (bottom-top, top-bottom) | ""  | Specifies the enter animation direction, either sliding in from the bottom or from the top. |
