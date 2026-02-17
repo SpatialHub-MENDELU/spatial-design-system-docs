@@ -20,14 +20,13 @@ onMounted(async () => {
 
 # {{ $frontmatter.title }}
 
-The Avatar component displays an image, icon, or text in a flexible, scalable container. It is designed to easily integrate with other components, making it ideal for profile pictures, initials, or symbolic icons.
+The Avatar component displays an image or text in a flexible, scalable container. It is designed to easily integrate with other components, making it ideal for profile pictures, initials, or symbolic icons.
 
 ## Example
 
 ### Basic Avatar
 
 This example demonstrates the basic usage of the Avatar component, displaying a custom background color and a single initial.
-Although the default text color of the avatar is black, it is automatically changed to white in this case to ensure sufficient contrast against the selected background color. This guarantees that the text remains readable without requiring manual adjustment.
 
 <ComponentExample :fixed="true">
 
@@ -64,9 +63,9 @@ import "spatial-design-system/primitives/ar-avatar.js";
 
 </br>
 
-### Avatar with Icon
+### Avatar with Image
 
-This example shows the Avatar component displaying an icon. Even though the _initial_ property is set, the _icon_ is rendered instead because it has a higher display priority. If the _image_ property were also provided, the image would take precedence and be displayed instead of both the icon and the initial.
+This example shows the Avatar component displaying an image. Even though the _initial_ property is set, the _image_ is rendered instead because it has a higher display priority.
 
 <ComponentExample :fixed="true">
 
@@ -79,7 +78,7 @@ This example shows the Avatar component displaying an icon. Even though the _ini
         size="medium"
         color="#03FCC6"
         initial="B"
-        icon="/settings.png"
+        image="/settings.png"
     ></a-ar-avatar>
 </template>
 
@@ -95,7 +94,7 @@ import "spatial-design-system/primitives/ar-avatar.js";
     size="medium"
     color="#03FCC6"
     initial="B"
-    icon="/settings.png"
+    image="/settings.png"
 ></a-ar-avatar>
 ```
 
@@ -119,12 +118,14 @@ The first avatar uses only the tile property, producing a fully square appearanc
     <a-ar-avatar
         position="0 1.7 -1"
         size="small"
+        color="#168669"
         initial="SP"
         tile="true"
     ></a-ar-avatar>
     <a-ar-avatar
         position="0 1.4 -1"
         size="small"
+        color="#11B96C"
         initial="SP"
         tile="true"
         rounded="md"
@@ -141,12 +142,14 @@ import "spatial-design-system/primitives/ar-avatar.js";
 <a-ar-avatar
     position="0 1.7 -1"
     size="small"
+    color="#168669"
     initial="SP"
     tile="true"
 ></a-ar-avatar>
 <a-ar-avatar
     position="0 1.4 -1"
     size="small"
+    color="#11B96C"
     initial="SP"
     tile="true"
     rounded="md"
@@ -169,7 +172,6 @@ import "spatial-design-system/primitives/ar-avatar.js";
 | _color_     | string (blue, #fff)         | #00BA92 | Defines the background color of the avatar.|
 | _textcolor_ | string                      | black   | Specifies the color of the text displayed within the avatar. If the contrast with the background is insufficient, the text color will __not__ be applied.|
 | _text_      | string                      | ""      | Specifies the text to be displayed inside the avatar.|
-| _icon_      | string                      | ""      | Specifies the icon to be displayed inside the avatar.|
 | _image_     | string                      | ""      | Specifies the image to be displayed inside the avatar.|
 | _tile_      | boolean                     | false   | If `true`, removes the circular shape and makes the avatar square. Can be used with the `rounded` property for custom border radius.|
 | _rounded_   | enum (sm, md, lg)           | ""      | Applies rounded corners to the avatar. Uses predefined sizes (`sm`, `md`, `lg`)|
