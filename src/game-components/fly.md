@@ -67,12 +67,12 @@ The _fly_ component rely on the Ammo.js physics engine. Ensure that Ammo.js is i
 | _canMoveVertically_ | boolean                                                              | true | When using AutoForwardFixedDirection movement, this property allows the character to move up and down                                                                                                                                                                                                                                         | autoForwardFixedDirection          |
 | _canMoveHorizontally_ | boolean                                                              | true | When using AutoForwardFixedDirection movement, this property allows the character to move left and right.                                                                                                                                                                                                                                     | autoForwardFixedDirection          |
 
-## type
+### type
 - `freeDirectionalFlight`: This mode allows the player to fly freely in any direction using the defined movement keys. The player can control ascent and descent using specific keys, and gravity can be enabled when not flying. Learn more about [freeDirectionalFlight](#freedirectionalflight).
 - `autoForward`: In this mode, the character automatically moves forward in the direction it is facing. The player can control the pitch and roll of the character to change its flight path, but the forward movement is constant. Learn more about [autoForward](#autoforward).
 - `autoForwardFixedDirection`: The character flies forward automatically in a locked direction. Player can only dodge slightly left/right or up/down, but orientation does not change. Learn more about [autoForwardFixedDirection](#autoforwardfixeddirection).
 
-### freeDirectionalFlight
+## freeDirectionalFlight
 The `freeDirectionalFlight` mode is designed to simulate freely flying creatures, such as birds or dragons. It allows movement in all directions, including ascending, descending, and optional sprinting.
 
 ##### Example: freeDirectionalFlight
@@ -170,7 +170,7 @@ The pitch and roll is in this flying mode automatically leveled back to neutral 
 </a-entity>
 ```
 
-### autoForward
+## autoForward
 The `autoForward` mode is intended for simulating aircraft-style flight, such as airplanes or spaceships. In this mode, the character moves forward automatically at a constant speed, while the player controls pitch and roll to steer.
 ##### Example: autoForward
 ```html
@@ -257,7 +257,7 @@ By default, the character automatically levels back to a neutral pitch and roll 
 </a-entity>
 ```
 
-### autoForwardFixedDirection
+## autoForwardFixedDirection
 The `autoForwardFixedDirection` mode is similar to autoForward, but the character always flies forward in a fixed direction. The player can only make minor horizontal or vertical adjustments (dodging left/right or up/down), but the character’s orientation does not change.
 
 ##### Example: autoForwardFixedDirection
