@@ -56,6 +56,8 @@ export default defineConfig({
         items: [
           { text: 'avatar', link: '/ar-vr-primitives/avatar' },
           { text: 'button', link: '/ar-vr-primitives/button' },
+          { text: 'button toggles', link: '/ar-vr-primitives/button-toggles' },
+          { text: 'card', link: '/ar-vr-primitives/card' },
           { text: 'chip', link: '/ar-vr-primitives/chip' },
           { text: 'checkbox', link: '/ar-vr-primitives/checkbox' },
           { text: 'divider', link: '/ar-vr-primitives/divider' },
@@ -100,9 +102,10 @@ export default defineConfig({
       {
         text: "Game components",
         items: [
-          {text: 'walk', link: '/game-components/walk'},
           {text: 'fly', link: '/game-components/fly'},
-          {text: 'npc-walk', link: '/game-components/npc-walk'}
+          {text: 'game-view', link: '/game-components/game-view'},
+          {text: 'npc-walk', link: '/game-components/npc-walk'},
+          {text: 'walk', link: '/game-components/walk'},
         ]
       },
       {
