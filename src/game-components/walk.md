@@ -28,14 +28,14 @@ The _walk_ component relies on the Ammo.js physics engine. Ensure that Ammo.js i
 
 ## How it works 
 1. **Animations:** Set the `walkClipName` and `idleClipName` properties. If you want to use sprinting, define `sprintClipName`.
-2. **Movement Mode:** Choose your `turnType`. The default is `smoothTurn`, you can switch to `stepTurnCardinal` or `stepTurnDiagonal`.
+2. **Movement Mode:** Choose your `turnType`. The default is [smoothTurn](#smoothturn), you can switch to [stepTurnCardinal](#stepturncardinal) or [stepTurnDiagonal](#stepturndiagonal).
 3. **Controls:** Customize key bindings using `keyUp`, `keyDown`, `keyLeft`, and `keyRight`.
 4. **Speed:** Adjust `speed` for base movement and `rotationSpeed` for turning sensitivity.
 5. **Advanced Modes:** 
-   - Enable **Sprinting** by setting `sprint` to `true`.
-   - Enable **Point-and-Click** by setting `targetWalk` to `true`.
-   - Enable **Auto-Walk** (continuous movement) by setting `autoWalk` to `true`.
-6. **Orientation:** If your model faces the wrong way, fix it using `forwardOffsetAngle`.
+   - Enable **Sprinting** by setting [sprint](#sprint) to `true`. Adjust `sprintSpeed` and `keySprint` as needed.
+   - Enable **Point-and-Click** by setting [targetWalk](#targetwalk) to `true`.
+   - Enable **Auto-Walk** (continuous movement) by setting [autoWalk](#autowalk) to `true`.
+6. **Orientation:** If your model faces the wrong way, fix it using [forwardOffsetAngle](#forwardoffsetangle).
 
 ## Setting up the scene
 To create a functional character controller, we recommend using a parent-child structure. This separates the physics calculations from the visual representation, allowing for better control over the character's pivot point and grounding.
