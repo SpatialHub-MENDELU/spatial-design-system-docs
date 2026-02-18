@@ -43,7 +43,7 @@ To create a functional character controller, we recommend using a parent-child s
 **Parent Entity (The Logic)**: The main container holds the walk component and the physics body (ammo-body). It represents the character's physical presence in the world.
 - We set `angularFactor`: 0 0 0 to prevent the character from tipping over or rolling like a ball.
 - We use `activationState: disableDeactivation` to ensure the physics engine never puts the character to "sleep" when standing still.
-- **Camera usage**: Assign a unique id (e.g., `id="fox-character"`). This ID is required for the camera to identify and follow the player. For more details on setting up the follow behavior of the camera, please refer to the game-view documentation.
+- **Camera usage**: Assign a unique id (e.g., `id="fox-character"`). This ID is required for the camera to identify and follow the player. For more details on setting up the follow behavior of the camera, please refer to the [game-view](game-view.md) documentation.
 
 **Child Entity (The Visual)**: This entity contains the 3D model (gltf-model) and the physics shape (ammo-shape).
 - You often need to adjust the child's position (e.g., `y: -1.3`) to ensure the model's feet touch the ground, as the parent physics body is usually centered at its middle point.
