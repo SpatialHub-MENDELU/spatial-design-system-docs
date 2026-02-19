@@ -22,18 +22,59 @@ title: fly
 The `fly` component defines the flying behavior of a character in a game. It allows customization of flying styles, including key bindings, speed settings, and flight types. The component also supports realistic flight dynamics through pitch and roll adjustments.
 
 ::: warning ⚠️ PHYSICS ENGINE
-The _fly_ component rely on the Ammo.js physics engine. Ensure that Ammo.js is installed in your project for proper functionality.
+The _fly_ component relies on the Ammo.js physics engine. Ensure that Ammo.js is installed in your project for proper functionality.
 :::
 
 ## How it works
-1. If your character has animations, set the `flyClipName` and `idleClipName` properties.
-2. Set the character’s flying `type` property to define the flying behavior. Learn more about the flying [types](#type). See examples: [free directional flight](#freedirectionalflight), [auto forward](#example-autoforward) and [auto forward fixed direction](#example-autoforwardfixeddirection).
-3. To rotate the character, use its `rotation` built-in property.
-   If the model’s visual forward direction doesn’t match its logical forward axis, adjust the `forwardOffsetAngle` property. Learn more about the [forward offset angle](#forwardoffsetangle).
-4. For more realistic flight, tweak the pitch and roll properties: `maxPitchDeg`, `pitchSpeed`, `maxRollDeg` and `rollSpeed`. When using the `autoForward` type, you can disable `autoLevelPitch` and `autoLevelRoll`. Learn more about pitch and roll [here](#allowpitch-and-allowroll).
-5. Control the movement speed and rotation with `speed` and `rotationSpeed`. Change key bindings for movement using `keyUp`, `keyDown`, `keyLeft`, and `keyRight`. When using `freeDirectionalFlight` type, you can also enable sprinting by setting `sprint` to true and customize the sprint key and speed with `keySprint` and `sprintSpeed`.
-6. To let gravity affect the character when not flying, set `allowGravity` to `true`. This works only with the `freeDirectionalFlight` type. You can also adjust vertical controls with `keyAscend` and `keyDescend`.
-7. In `autoForwardFixedDirection` type, you can restrict vertical or horizontal movement by setting `canMoveVertically` or `canMoveHorizontally` properties to `false`.
+1. **Animations:** Set the `flyClipName` and `idleClipName` properties. If you enable sprint, define `sprintClipName`.
+2. **Flight Mode:** Choose a `type` that fits your needs: [freeDirectionalFlight](#freedirectionalflight), [autoForward](#autoforward), or [autoForwardFixedDirection](#autoforwardfixeddirection).
+3. **Movement Speed**: Control the movement speed and rotation with `speed` and `rotationSpeed`.
+4. **Controls:** Customize movement keys `keyUp`, `keyDown`, `keyLeft`, and `keyRight`. For `freeDirectionalFlight`, use `keyAscend` and `keyDescend` to control altitude.
+5. **Dynamics:** For more realistic flight, tweak the pitch and roll properties: `maxPitchDeg`, `pitchSpeed`, `maxRollDeg` and `rollSpeed`. When using the `autoForward` type, you can disable `autoLevelPitch` and `autoLevelRoll`.
+6. **Sprinting:** Enable `sprint` to allow the character to boost speed using the `keySprint`. Set the sprint speed with `sprintSpeed`.
+7. **Gravity**: To let gravity affect the character when not flying, set `allowGravity` to `true`. This works only with the `freeDirectionalFlight` type.
+8. **Orientation:** If the model’s visual forward direction doesn’t match its logical forward axis, fix it using [forwardOffsetAngle](#forwardoffsetangle).
+9. **Restrict Movement**: In `autoForwardFixedDirection` type, you can restrict vertical or horizontal movement by setting `canMoveVertically` or `canMoveHorizontally` properties to `false`.
+
+## Setting up the scene 
+To ensure stable flight and proper physics interaction, we recommend using a parent-child entity structure. This separates the physics "hitbox" from the visual model and its rotations.
+
+**Parent Entity (The Logic)**:
+- Holds the `fly` component and the `ammo-body`.
+- Set `angularFactor: 0 0 0` to prevent the physics engine from causing the character to tumble or roll upon collision.
+- Use `activationState: disableDeactivation` to ensure the character remains responsive even when hovering in place.
+- - **Camera usage**: Assign a unique id (e.g., `id="fox-character"`). This ID is required for the camera to identify and follow the player. For more details on setting up the follow behavior of the camera, please refer to the [game-view](game-view.md) documentation.
+
+**Child Entity (The Visual)**:
+- Contains the `gltf-model` and the `ammo-shape`.
+- Adjust the child's position to ensure the model is centered correctly within the parent's physics body.
+
+```js
+import "spatial-design-system/components/game/fly.js";
+```
+
+```html
+<a-scene>
+   <a-entity
+      id="dragon-character"
+      fly="
+         type: freeDirectionalFlight;
+         rotationSpeed: 60;
+         flyClipName: Flying;
+         idleClipName: Flying_Idle;   
+      "
+      position="0 0.2 0"
+      rotation="0 180 0"
+      ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation">
+      <a-entity
+              gltf-model="#dragon"
+              ammo-shape="type: hull;"
+              position="0 -1.7 0"
+              scale="1 1 1">
+      </a-entity>
+   </a-entity>
+</a-scene>
+```
 
 # Props
 
@@ -51,9 +92,9 @@ The _fly_ component rely on the Ammo.js physics engine. Ensure that Ammo.js is i
 | _allowGravity_ | boolean                                                              | false | If true, gravity affects the character when not flying.                                                                                                                                                                                                                                                                                       | freeDirectionalFlight              |
 | _speed_ | number                                                               | 4 | Defines the player's base flying speed.                                                                                                                                                                                                                                                                                                       | All types                          |
 | _rotationSpeed_ | number                                                               | 40 | Defines the turning speed.                                                                                                                                                                                                                                                                                                                    | freeDirectionalFlight, autoForward |
-| _sprint_ | boolean                                                              | false | If true, the player can sprint when holding the sprintKey, increasing their speed to sprintSpeed.                                                                                                                                                                                                                                             | freeDirectionalFlight              |
-| _keySprint_ | string                                                               | shift | Key used to sprint with the character.                                                                                                                                                                                                                                                                                                        | freeDirectionalFlight              |
-| _sprintSpeed_ | number                                                               | 10 | Defines the sprinting speed when the sprint mode is active.                                                                                                                                                                                                                                                                                   | freeDirectionalFlight              |
+| _sprint_ | boolean                                                              | false | If true, the player can sprint when holding the sprintKey, increasing their speed to sprintSpeed.                                                                                                                                                                                                                                             |  All types              |
+| _keySprint_ | string                                                               | shift | Key used to sprint with the character.                                                                                                                                                                                                                                                                                                        |  All types              |
+| _sprintSpeed_ | number                                                               | 10 | Defines the sprinting speed when the sprint mode is active.                                                                                                                                                                                                                                                                                   |  All types              |
 | _type_ | enum (freeDirectionalFlight, autoForward, autoForwardFixedDirection) | freeDirectionalFlight | freeDirectionalFlight, autoForward, autoForwardFixedDirection. Defines the flying mode and how the player turns the character.                                                                                                                                                                                                                | All types                          |
 | _allowPitch_ | boolean                                                              | true | If true, the player can tilt the model up and down (change pitch).                                                                                                                                                                                                                                                                            | All types                          |
 | _autoLevelPitch_ | boolean                                                              | true | Determines whether the model automatically returns its pitch to a neutral (level) position after being tilted up or down. Only autoForward flight type can have the false value.                                                                                                                                                              | autoForward                        |
@@ -67,40 +108,18 @@ The _fly_ component rely on the Ammo.js physics engine. Ensure that Ammo.js is i
 | _canMoveVertically_ | boolean                                                              | true | When using AutoForwardFixedDirection movement, this property allows the character to move up and down                                                                                                                                                                                                                                         | autoForwardFixedDirection          |
 | _canMoveHorizontally_ | boolean                                                              | true | When using AutoForwardFixedDirection movement, this property allows the character to move left and right.                                                                                                                                                                                                                                     | autoForwardFixedDirection          |
 
-### type
-- `freeDirectionalFlight`: This mode allows the player to fly freely in any direction using the defined movement keys. The player can control ascent and descent using specific keys, and gravity can be enabled when not flying. Learn more about [freeDirectionalFlight](#freedirectionalflight).
-- `autoForward`: In this mode, the character automatically moves forward in the direction it is facing. The player can control the pitch and roll of the character to change its flight path, but the forward movement is constant. Learn more about [autoForward](#autoforward).
-- `autoForwardFixedDirection`: The character flies forward automatically in a locked direction. Player can only dodge slightly left/right or up/down, but orientation does not change. Learn more about [autoForwardFixedDirection](#autoforwardfixeddirection).
-
 ## freeDirectionalFlight
-The `freeDirectionalFlight` mode is designed to simulate freely flying creatures, such as birds or dragons. It allows movement in all directions, including ascending, descending, and optional sprinting.
+The `freeDirectionalFlight` mode is designed to simulate freely flying creatures, such as birds or dragons, by allowing movement in all directions. Horizontal navigation is defined by the `keyUp`, `keyDown`, `keyLeft`, and `keyRight` properties.
+Vertical movement is explicitly controlled through the `keyAscend` and `keyDescend` properties, allowing the player to climb or dive.
 
-##### Example: freeDirectionalFlight
+By setting the `allowGravity` property to `true`, the character will be affected by gravity and sink when no upward input is provided. Additionally, the player can increase flight velocity by setting the `sprint` property to `true` and defining the boost behavior via the `keySprint` and `sprintSpeed` properties.
+
 ```html
-<a-scene>
-   <a-entity
-      id="dragon-character"
-      fly="
-         type: freeDirectionalFlight;
-         forwardOffsetAngle: 0;
-         maxPitchDeg: 20;
-         pitchSpeed: 120;
-         maxRollDeg: 15;
-         rollSpeed: 60;
-         rotationSpeed: 60;
-         sprint: true;"
-      position="0 0.2 0"
-      rotation="0 180 0"
-      ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation">
-      <a-entity
-              gltf-model="#dragon"
-              ammo-shape="type: hull;"
-              position="0 -1.7 0"
-              scale="1 1 1">
-      </a-entity>
-
-   </a-entity>
-</a-scene>
+<a-entity
+   fly="
+      type: freeDirectionalFlight;
+   >
+</a-entity>
 ```
 
 You can customize the movement controls using the `keyUp`, `keyDown`, `keyLeft`, `keyRight`, `keyAscend`, and `keyDescend` properties. The default values are `w`, `s`, `a`, `d`, `space`, and `c`, respectively.
@@ -125,7 +144,7 @@ The base flying speed is defined by the `speed` property, while the turning spee
   fly="
     type: freeDirectionalFlight;
     speed: 5; 
-    rotationSpeed: 500;
+    rotationSpeed: 60;
  "
 >
 </a-entity>
@@ -138,6 +157,7 @@ Sprinting can be enabled by setting `sprint` to true, allowing the character to 
     type: freeDirectionalFlight;
     sprint: true;
     keySprint: shift;
+    sprintSpeed: 10;
  "
 >
 </a-entity>
@@ -154,15 +174,16 @@ This mode also supports optional gravity. When `allowGravity` is set to true, th
 </a-entity>
 ```
 
-
 For more realistic flight behavior, **pitch** and **roll** are enabled by default. You can adjust their limits and speed using the `maxPitchDeg`, `pitchSpeed`, `maxRollDeg`, and `rollSpeed` properties.
-The pitch and roll is in this flying mode automatically leveled back to neutral position. The pitch and roll is enabled by default, but you can disable them by setting the `allowPitch` and `allowRoll` properties to `false`.
+The pitch and roll are in this flying mode automatically leveled back to neutral position. The pitch and roll is enabled by default, but you can disable them by setting the `allowPitch` and `allowRoll` properties to `false`.
 ```html
 <a-entity
   fly="
     type: freeDirectionalFlight;
+    allowPitch: true;
     maxPitchDeg: 30;
     pitchSpeed: 120;
+    allowRoll: true;
     maxRollDeg: 25;
     rollSpeed: 80;
  "
@@ -171,34 +192,16 @@ The pitch and roll is in this flying mode automatically leveled back to neutral 
 ```
 
 ## autoForward
-The `autoForward` mode is intended for simulating aircraft-style flight, such as airplanes or spaceships. In this mode, the character moves forward automatically at a constant speed, while the player controls pitch and roll to steer.
-##### Example: autoForward
-```html
-<a-scene>
-   <a-entity
-      id="dragon-character"
-      fly="
-         type: autoForward;
-         forwardOffsetAngle: 0;
-         maxPitchDeg: 20;
-         pitchSpeed: 120;
-         maxRollDeg: 15;
-         rollSpeed: 60;
-         rotationSpeed: 60;
-         autoLevelPitch: false; 
-         autoLevelRoll: false;"
-      position="0 0.2 0"
-      rotation="0 180 0"
-      ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation">
-      <a-entity
-              gltf-model="#dragon"
-              ammo-shape="type: hull;"
-              position="0 -1.7 0"
-              scale="1 1 1">
-      </a-entity>
+The `autoForward` mode simulates aircraft-style flight where the character moves forward automatically at a constant speed defined by the `speed` property, while the player controls pitch and roll to steer.
 
-   </a-entity>
-</a-scene>
+
+```html
+<a-entity
+  id="dragon-character"
+  fly="
+     type: autoForward;
+  ">
+</a-entity>
 ```
 
 You can customize the control keys using the `keyUp`, `keyDown`, `keyLeft` and `keyRight` properties.
@@ -232,8 +235,10 @@ Pitch and roll behavior is enabled by default to make flight feel more realistic
 <a-entity
   fly="
     type: autoForward;
+    allowPitch: true;
     maxPitchDeg: 30;
     pitchSpeed: 120;
+    allowRoll: true;
     maxRollDeg: 25;
     rollSpeed: 80;
  "
@@ -246,8 +251,10 @@ By default, the character automatically levels back to a neutral pitch and roll 
 <a-entity
   fly="
     type: autoForward;
+    allowPitch: true;
     maxPitchDeg: 30;
     pitchSpeed: 120;
+    allowRoll: true;
     maxRollDeg: 25;
     rollSpeed: 80;
     autoLevelPitch: false; 
@@ -260,29 +267,17 @@ By default, the character automatically levels back to a neutral pitch and roll 
 ## autoForwardFixedDirection
 The `autoForwardFixedDirection` mode is similar to autoForward, but the character always flies forward in a fixed direction. The player can only make minor horizontal or vertical adjustments (dodging left/right or up/down), but the character’s orientation does not change.
 
-##### Example: autoForwardFixedDirection
 ```html
-<a-scene>
-   <a-entity
-      id="dragon-character"
-      fly="
-         type: autoForwardFixedDirection;
-         forwardOffsetAngle: 0;
-         maxRollDeg: 15;
-         rollSpeed: 60;
-         canMoveVertically: false;"
-      position="0 0.2 0"
-      rotation="0 180 0"
-      ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation">
-      <a-entity
-              gltf-model="#dragon"
-              ammo-shape="type: hull;"
-              position="0 -1.7 0"
-              scale="1 1 1">
-      </a-entity>
-
-   </a-entity>
-</a-scene>
+<a-entity
+  fly="
+     type: autoForwardFixedDirection;
+     forwardOffsetAngle: 0;
+     maxRollDeg: 15;
+     rollSpeed: 60;
+     canMoveVertically: false;
+"
+>
+</a-entity>
 ```
 
 You can customize the control keys using the `keyUp`, `keyDown`, `keyLeft` and `keyRight` properties.
