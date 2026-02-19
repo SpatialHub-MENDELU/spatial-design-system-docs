@@ -30,7 +30,7 @@ The _npc-walk_ component rely on the Ammo.js physics engine. Ensure that Ammo.js
 ## How it works
 1. If the character has animations, set them with the `walkClipName` and `idleClipName` properties.
 2. Define how the character moves by setting the `type` property. Learn more about movement types [here](#type).
-3. Adjust movement behavior with the `speed`, [`checkHeight`](#checkheight), [`pauseAtPoints`](#pauseatpoints), [`waitBeforeStart`](#waitbeforestart), [`allowRotation`](#allowrotation), and `rotationSpeed` properties.
+3. Adjust movement behavior with the `speed`, [`altitude`](#altitude), [`pauseAtPoints`](#pauseatpoints), [`waitBeforeStart`](#waitbeforestart), [`allowRotation`](#allowrotation), and `rotationSpeed` properties.
 4. In `points` mode, set the path using the `points` property and control how the NPC follows it with `cyclePath` and `randomizePointsOrder`. Learn more about `points` mode [here](#points) and see the [points type example](#example-points-type).
 5. In `randomMoving` mode, limit the movement area using the `xMin`, `xMax`, `yMin`, `yMax`, zMin, and `zMax` properties. Learn more about `randomMoving` mode [here](#randommoving) and see the [randomMoving type example](#example-randommoving-type).
 
@@ -40,7 +40,7 @@ The _npc-walk_ component rely on the Ammo.js physics engine. Ensure that Ammo.js
 | _walkClipName_         | string                      | Walk                              | Name of the animation clip used when the NPC is walking.                                                                                                                                                 | All types    |
 | _idleClipName_         | string                      | Idle                              | Name of the animation clip used when the NPC is idle.                                                                                                                                                    | All types    |
 | _speed_                | number                      | 4                                 | Movement speed of the NPC in units per second.                                                                                                                                                           | All types    |
-| _checkHeigh_           | boolean                     | false                             | If `checkHeight` is true, the character adjusts its height to reach the target’s exact position.                                      | All types    |
+| _altitude_           | boolean                     | false                             | If `altitude` is true, the character adjusts its height to reach the target’s exact position.                                      | All types    |
 | _pauseAtPoints_        | number                      | 0                                 | Duration (in seconds) the NPC waits after reaching each point.                                                                                                                                           | All types    |
 | _waitBeforeStart_      | number                      | 0                                 | Delay (in seconds) before the NPC begins moving when initialized.                                                                                                                                        | All types    |
 | _allowRotation_        | boolean                     | true                              | When true, it allows the NPC to rotate smoothly in the direction of movement.                                                                                                                            | All types    |
@@ -56,8 +56,8 @@ The _npc-walk_ component rely on the Ammo.js physics engine. Ensure that Ammo.js
 | _yMin_                 | number                      | 0                                 | Minimum allowed position along the Y-axis.                                 | randomMoving |
 | _yMax_                 | number                      | 5                                 | Maximum allowed position along the Y-axis.                                      | randomMoving |
 
-### checkHeight
-The `checkHeight` property is defined to control whether the character should adjust its height while moving toward a target. 
+### altitude
+The `altitude` property is defined to control whether the character should adjust its height while moving toward a target. 
 When set to `true`, the character moves vertically as well, matching the target’s height. 
 When set to `false`, the character moves only horizontally and keeps its current height.
 The default value is `false`.
