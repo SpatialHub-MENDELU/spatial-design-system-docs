@@ -172,7 +172,7 @@ button.addEventListener("click", () => {
 
 ### Customized Actions and Style
 
-This example demonstrates a dialog with customized buttons (save/cancel), a prependicon, and a specific background color. It also uses a transition to animate from the bottom. As can be seen from the output, eventhough the tect color is set to white, it is changed to black, for better contrast with the background.
+This example demonstrates a dialog with customized buttons (save/cancel), a prependicon, and a specific background color. It also uses a transition to animate from the bottom. As can be seen from the output, eventhough the text color is set to white, it is changed to black, for better contrast with the background.
 
 <ComponentExample :fixed="true">
 
