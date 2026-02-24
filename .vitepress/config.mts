@@ -54,6 +54,7 @@ export default defineConfig({
       {
         text: 'UI elements',
         items: [
+          { text: 'alert', link: '/ar-vr-primitives/alert' },
           { text: 'avatar', link: '/ar-vr-primitives/avatar' },
           { text: 'button', link: '/ar-vr-primitives/button' },
           { text: 'button toggles', link: '/ar-vr-primitives/button-toggles' },
