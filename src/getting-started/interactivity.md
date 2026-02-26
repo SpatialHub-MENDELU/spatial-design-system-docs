@@ -103,7 +103,7 @@ Once the basic setup is complete, you can insert objects into the scene accordin
 
 ```js
 import 'spatial-design-system/components/autoXr.js';
-import 'spatial-design-system/components/hands.js';
+import 'spatial-design-system/components/ar/hands.js';
 import 'spatial-design-system/components/hands-hoverable.js';
 import 'spatial-design-system/components/stretchable.js';
 import 'spatial-design-system/components/finger-touch.js';
@@ -152,7 +152,7 @@ To enable interaction on mobile devices, you must apply the `touch-raycaster` co
 
 ```js
 import 'spatial-design-system/components/autoXr.js';
-import 'spatial-design-system/components/touch-raycaster.js';
+import 'spatial-design-system/components/ar/touch-raycaster.js';
 import 'spatial-design-system/primitives/ar-button.js';
 ```
 
