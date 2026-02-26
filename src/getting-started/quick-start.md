@@ -103,10 +103,14 @@ const items = [
 
 <!-- Globally scoped! -->
 <style>
-#app {
-  width: 100%;
-  height: 100%;
-}
+  /* Make sure the scene fills the entire viewport and has a transparent background to see AR camera on mobile devices. */
+  #app {
+    width: 100%;
+    height: 100%;
+  }
+  html, body {
+    background-color: transparent !important;
+  }
 </style>
 ```
 
