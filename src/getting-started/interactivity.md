@@ -22,7 +22,7 @@ onMounted(async () => {
 
 This section explains how to enable interactivity for components in the Spatial Design System. Most UI elements, such as buttons, switches, and text fields, should be interactive and respond to user actions with animations and visual feedback. Below, you will find the necessary setup and an explanation of how interaction works in the AR/VR environment.
 
-## Enabling interactivity
+## Enabling interactivity on Desktop (mouse)
 
 To enable interactivity, a mechanism must be set up to detect user interactions. This is achieved using a raycaster and a cursor. The following code snippet enables this functionality:
 
