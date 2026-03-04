@@ -23,8 +23,9 @@
   },
   "scripts": {
     "dev": "vitepress dev --port 5174",
-    "build": "vitepress build && tailwindcss build src/styles/global.scss -o .vitepress/theme/tailwind.css --no-cache",
-    "preview": "node preview-server.cjs"
+    "build": "tailwindcss build src/styles/global.scss -o .vitepress/theme/tailwind.css --no-cache && vitepress build",
+    "preview": "node preview-server.cjs",
+    "build-preview": "npm run build && npm run preview"
   },
   "dependencies": {
     "@babel/runtime": "^7.26.10",

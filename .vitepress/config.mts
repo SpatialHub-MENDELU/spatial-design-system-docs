@@ -21,10 +21,6 @@ export default defineConfig({
     'AR/VR Design System with detailed guidelines and ready to use components',
   srcDir: './src',
   head: [
-    [
-      'link',
-      { rel: 'stylesheet', href: '../../../.vitepress/theme/tailwind.css' },
-    ],
     ['script', { type: 'text/javascript' }, handlePlaygroundPageClass],
   ],
   themeConfig: {

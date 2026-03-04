@@ -23,7 +23,7 @@
   @media screen and (min-width: $breakpointLg) {
     height: calc(100vh - $header-height) !important;
   }
-  @media screen and (max-width: $breakpointLg) {
+  @media screen and (max-width: 1023px) {
     padding: 32px;
 
     margin: auto;
