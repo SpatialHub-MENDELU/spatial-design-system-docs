@@ -60,6 +60,7 @@ export default defineConfig({
           { text: 'button', link: '/ar-vr-primitives/button' },
           { text: 'button toggles', link: '/ar-vr-primitives/button-toggles' },
           { text: 'card', link: '/ar-vr-primitives/card' },
+          { text: 'carousel', link: '/ar-vr-primitives/carousel' },
           { text: 'chip', link: '/ar-vr-primitives/chip' },
           { text: 'checkbox', link: '/ar-vr-primitives/checkbox' },
           { text: 'divider', link: '/ar-vr-primitives/divider' },
