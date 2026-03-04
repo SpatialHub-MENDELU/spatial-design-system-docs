@@ -73,7 +73,7 @@ This example demonstrates the _outlined_ mode and the use of _icons_. The card u
         content="Please read the instructions carefully before proceeding." 
         buttons='[{"label": "cancel", "action": "cancel"}, {"label": "procede", "action": "procede"}]'
         outlined="true"
-        prependicon="/public/info.png"
+        prependicon="/info.png"
         color="#2196F3"
         textcolor="white"
     ></a-ar-card>
