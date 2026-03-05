@@ -11,9 +11,6 @@ const renderScene = ref(false);
 onMounted(async () => {
     if (typeof window !== 'undefined') {
     try {
-        // 1. Force A-Frame to be global first
-        const AFRAME = await import("aframe");
-        window.AFRAME = AFRAME.default || AFRAME;
         await import("spatial-design-system/primitives/ar-carousel");
         renderScene.value = true;
     } catch (e) {
@@ -167,6 +164,5 @@ import "spatial-design-system/primitives/ar-carousel.js";
 | _images_    | array                       | []      | Specifies the list of images displayed in the carousel. Accepts external URLs or local asset references (e.g., #asset-id). |
 | _arrows_    | boolean                     | true    | Controls whether navigation arrows are displayed. |
 | _custombuttons_ | boolean                 | false   | Enables or disables custom-styled navigation buttons. When set to `true`, the carousel uses the button configuration defined in the `previous` and `next` properties instead of default arrows. |
-| _previous_  | object ({"label": "Previous", "color": "white}) | { "label": "Previous", "color": “#00BA92”} | Customizes the “Previous” navigation button, including its text label and color.|
+| _previous_  | object ({"label": "Previous", "color": "white"}) | { "label": "Previous", "color": “#00BA92”} | Customizes the “Previous” navigation button, including its text label and color.|
 | _next_  | object ({"label": "Next", "color": "black"}) | { "label": "Next", "color": “#00BA92”} | Customizes the “Next” navigation button, including its text label and color. |
-
