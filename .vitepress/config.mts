@@ -46,6 +46,7 @@ export default defineConfig({
           { text: 'Quick Start', link: '/getting-started/quick-start' },
           { text: 'Interactivity', link: '/getting-started/interactivity' },
           { text: 'Running on devices', link: '/getting-started/running-on-devices' },
+          { text: 'Testing', link: '/getting-started/testing' },
         ],
       },
       {

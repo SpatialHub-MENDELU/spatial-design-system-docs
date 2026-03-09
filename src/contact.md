@@ -1,5 +1,4 @@
 ---
-sidebar: false
 title: Contact
 prev: false
 next: false
