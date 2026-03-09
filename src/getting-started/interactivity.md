@@ -43,7 +43,7 @@ To enable interactivity, a mechanism must be set up to detect user interactions.
 
 This setup ensures that only components designed for interaction (those with assigned animations or behaviors) will respond to user actions. If an object has no defined animations or interaction logic, it will remain inactive, preventing unintended behavior.
 
-## Example: Interactive Switch
+### Example: Interactive Switch
 
 Once interactivity is set up, you can use predefined components that include animations and interactions. Here’s an example of an interactive switch:
 
@@ -90,7 +90,20 @@ By default, this switch will respond to user clicks, triggering animations and c
 
 In the next section, **Primitives**, you will find more details on using interactive elements within your projects.
 
-## Enabling interactivity using hands
+
+## Enabling interactivity using controllers (VR headsets)
+
+First, you should enable XR mode using either the general [auto-xr](/ar-vr-components/auto-xr) component 
+or the [auto-vr](/ar-vr-components/auto-vr) component, which is specifically designed for VR applications. 
+Also, you should configure the [controllers](/ar-vr-components/controllers) component. 
+
+Then, use [vr-interactive](/ar-vr-components/vr-interactive) component to enable interaction with objects.
+
+See [controllers usage tips](/ar-vr-components/controllers.html#usage-tips) and 
+[vr-interactive usage tips](/ar-vr-components/vr-interactive.html#usage-with-controllers).
+
+
+## Enabling interactivity using hands (AR headsets)
 
 You can interact with objects using hand gestures. This section explains how to properly set up the environment to enable gestures such as `pinch` for stretching or moving objects, and `finger touch` for pressing primitives with your hand.
 
@@ -143,7 +156,7 @@ import 'spatial-design-system/components/finger-touch.js';
 </template>
 </ComponentExample>
 
-## Enabling interactivity on mobile devices
+## Enabling interactivity on mobile devices (touch)
 
 To enable interaction on mobile devices, you must apply the `touch-raycaster` component to the scene element. This allows you to press buttons by touching elements on the screen.
 
