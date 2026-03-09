@@ -11,4 +11,4 @@ See instrcutions in the repository and start writing tests for your A-Frame appl
 
 [Playwright A-Frame E2E Testing Library](https://github.com/SpatialHub-MENDELU/playwright-aframe)
 
-![Playwright A-Frame E2E Testing Library](../../assets/getting-started/playwright-aframe.png)
+![Playwright A-Frame E2E Testing Library](../assets/getting-started/playwright-aframe.png)
