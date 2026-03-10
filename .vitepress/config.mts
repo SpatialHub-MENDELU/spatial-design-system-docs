@@ -64,6 +64,7 @@ export default defineConfig({
           { text: 'dialog', link: '/ar-vr-primitives/dialog' },
           { text: 'menu', link: '/ar-vr-primitives/menu' },
           { text: 'progress bar', link: '/ar-vr-primitives/progressbar' },
+          { text: 'ratings', link: '/ar-vr-primitives/ratings' },
           { text: 'row, column', link: '/ar-vr-primitives/rowcolumn' },
           { text: 'switch', link: '/ar-vr-primitives/switch' },
           { text: 'textbox', link: '/ar-vr-primitives/textbox' },
