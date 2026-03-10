@@ -152,4 +152,21 @@ import "spatial-design-system/primitives/ar-ratings.js";
 | _readonly_  | boolean                     | false   | If enabled, the rating cannot be changed by the user and is displayed for informational purposes only. |
 | _clearable_ | boolean                     | false   | Allows the user to clear the selected rating by clicking the currently selected value again. |
 
+## Events
 
+The ratings component emits the following event when interacted with:
+
+| Event            | Parameters            | Description                                                      |
+| ---------------- | --------------------- | ---------------------------------------------------------------- |
+| _rating-changed_ | `{ value: number }`   | Emitted whenever the selected rating changes. Returns the newly selected rating value. |
+
+::: tip Note
+You can listen to the `rating-changed` event to react whenever the selected rating value changes.  
+The event provides the updated rating value through the `event.detail` object, allowing you to handle the result in your application logic (for example, saving the rating or updating the UI).
+
+```js
+el.addEventListener("rating-changed", (event) => {
+  console.log(event.detail.value);
+});
+```
+:::
