@@ -29,45 +29,29 @@ const killedAstronauts = ref(0);
 const timeLeft = ref(180);
 let timerInterval: number | null = null;
 
-const formattedTime = computed(() => {
-  const minutes = Math.floor(timeLeft.value / 60);
-  const seconds = timeLeft.value % 60;
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-});
-
-const startTimer = () => {
-  timeLeft.value = 180;
-  if (timerInterval) clearInterval(timerInterval);
-
-  timerInterval = window.setInterval(() => {
-    if (timeLeft.value > 0) {
-      timeLeft.value--;
-    } else {
-      clearInterval(timerInterval!);
-      gameState.value = 'menu';
-      if (document.fullscreenElement) document.exitFullscreen();
-      alert('Time is up! You lost. Try again!');
-    }
-  }, 1000);
-};
 
 const handleFullscreenChange = () => {
   if (!document.fullscreenElement) {
     gameState.value = 'menu';
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
   }
 };
 
 onMounted(() => {
   isMounted.value = true;
+  window.addEventListener('keydown', handleKeyDown);
   document.addEventListener('fullscreenchange', handleFullscreenChange);
 });
 
 onMounted(async () => {
   try {
-    // Here import Spatial Design System components that you need
     await import('spatial-design-system/components/game/fly');
     await import('spatial-design-system/components/game/gameview');
     await import('spatial-design-system/components/game/npcWalk');
+    registerAframeComponents();
     renderScene.value = true;
   } catch (e) {
     console.error(e);
@@ -76,6 +60,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  window.removeEventListener('keydown', handleKeyDown);
   if (timerInterval) clearInterval(timerInterval);
 });
 
@@ -98,6 +83,118 @@ const startGame = async () => {
     }
   }
 };
+
+// TIMER
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+const formattedTime = computed(() => {
+    const minutes = Math.floor(timeLeft.value / 60);
+    const seconds = timeLeft.value % 60;
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+});
+
+const startTimer = () => {
+    timeLeft.value = 180;
+    if (timerInterval) clearInterval(timerInterval);
+
+    timerInterval = window.setInterval(() => {
+        if (timeLeft.value > 0) {
+            timeLeft.value--;
+        } else {
+            clearInterval(timerInterval!);
+            gameState.value = 'menu';
+            if (document.fullscreenElement) document.exitFullscreen();
+            alert('Time is up! You lost. Try again!');
+        }
+    }, 1000);
+};
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// LASER
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+const registerAframeComponents = () => {
+    if (typeof AFRAME === 'undefined' || AFRAME.components['laser-behavior'])
+        return;
+
+    const THREE = AFRAME.THREE;
+
+    AFRAME.registerComponent('laser-behavior', {
+        schema: { speed: { type: 'number', default: 150 } },
+        init: function () {
+            this.direction = new THREE.Vector3(0, 0, 1);
+            this.direction.applyQuaternion(this.el.object3D.quaternion);
+            this.direction.normalize();
+
+            this.destroyTimeout = setTimeout(() => {
+                if (this.el.parentNode) {
+                    this.el.parentNode.removeChild(this.el);
+                }
+            }, 2000);
+        },
+        tick: function (time, timeDelta) {
+            if (!timeDelta) return;
+            const distance = (this.data.speed * timeDelta) / 1000;
+            this.el.object3D.position.addScaledVector(this.direction, distance);
+        },
+        remove: function () {
+            clearTimeout(this.destroyTimeout);
+        },
+    });
+};
+
+const shootLaser = () => {
+    if (gameState.value !== 'playing') return;
+
+    const spaceship = document.querySelector('#spaceship');
+    const scene = document.querySelector('a-scene');
+    if (!spaceship || !scene) return;
+
+    const THREE = AFRAME.THREE;
+
+    const position = new THREE.Vector3();
+    const quaternion = new THREE.Quaternion();
+    spaceship.object3D.getWorldPosition(position);
+    spaceship.object3D.getWorldQuaternion(quaternion);
+
+    const forward = new THREE.Vector3(0, 0, 4);
+    forward.applyQuaternion(quaternion);
+    position.add(forward);
+
+    const euler = new THREE.Euler().setFromQuaternion(quaternion, 'YXZ');
+    const rotX = THREE.MathUtils.radToDeg(euler.x);
+    const rotY = THREE.MathUtils.radToDeg(euler.y);
+    const rotZ = THREE.MathUtils.radToDeg(euler.z);
+
+    const laser = document.createElement('a-entity');
+    laser.setAttribute('position', `${position.x} ${position.y} ${position.z}`);
+    laser.setAttribute('rotation', `${rotX} ${rotY} ${rotZ}`);
+    laser.setAttribute('laser-behavior', 'speed: 150');
+    laser.setAttribute('class', 'laser');
+
+    const visual = document.createElement('a-cylinder');
+    visual.setAttribute('color', '#ff3333');
+    visual.setAttribute('radius', '0.15');
+    visual.setAttribute('height', '3');
+    visual.setAttribute('rotation', '90 0 0');
+    laser.appendChild(visual);
+
+    laser.setAttribute(
+        'ammo-body',
+        'type: kinematic; activationState: disableDeactivation;'
+    );
+    laser.setAttribute('ammo-shape', 'type: cylinder;');
+
+    scene.appendChild(laser);
+};
+
+const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.code === 'Space') {
+        e.preventDefault();
+        shootLaser();
+    }
+};
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 </script>
 
 <template>
@@ -376,37 +473,48 @@ const startGame = async () => {
 }
 
 .game-hud {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    right: 20px;
-    display: flex;
-    justify-content: space-between;
-    z-index: 100;
-    pointer-events: none;
-    font-family: 'Courier New', Courier, monospace;
-    color: #00ffcc;
-    text-shadow: 2px 2px 0px #000, -1px -1px 0px #000, 1px -1px 0px #000, -1px 1px 0px #000, 1px 1px 0px #000;
-    font-size: 1.5rem;
-    font-weight: bold;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 100;
+  pointer-events: none;
+  font-family: 'Courier New', Courier, monospace;
+  color: #00ffcc;
+  text-shadow:
+    2px 2px 0px #000,
+    -1px -1px 0px #000,
+    1px -1px 0px #000,
+    -1px 1px 0px #000,
+    1px 1px 0px #000;
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
 .hud-item {
-    background: rgba(0, 0, 0, 0.4);
-    padding: 10px 20px;
-    border-radius: 8px;
-    border: 1px solid rgba(0, 255, 204, 0.3);
+  background: rgba(0, 0, 0, 0.4);
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 255, 204, 0.3);
 }
 
 .time-warning {
-    color: #ff3333;
-    animation: pulse 1s infinite;
-    border-color: #ff3333;
+  color: #ff3333;
+  animation: pulse 1s infinite;
+  border-color: #ff3333;
 }
 
 @keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 </style>
