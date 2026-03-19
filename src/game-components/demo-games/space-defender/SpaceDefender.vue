@@ -11,6 +11,25 @@ const SpaceshipEnemyModelSrc =
 const astronautModel =
   '../../public/glb_models/game_components/fly/astronaut.glb';
 
+const JupiterModelSrc =
+  '../../public/glb_models/game_components/fly/Jupiter.glb';
+const SaturnModelSrc =
+  '../../public/glb_models/game_components/fly/Saturn.glb';
+const UranusModelSrc =
+  '../../public/glb_models/game_components/fly/Uranus.glb';
+const NeptuneModelSrc =
+  '../../public/glb_models/game_components/fly/Neptune.glb';
+const MarsModelSrc =
+  '../../public/glb_models/game_components/fly/Mars.glb';
+const VenusModelSrc =
+  '../../public/glb_models/game_components/fly/Venus.glb';
+const MercuryModelSrc =
+  '../../public/glb_models/game_components/fly/Mercury.glb';
+const EarthModelSrc =
+  '../../public/glb_models/game_components/fly/Earth.glb';
+const SunModelSrc =
+  '../../public/glb_models/game_components/fly/Sun.glb';
+
 const gameState = ref<GameState>('menu');
 const isMounted = ref(false);
 const gameWrapperRef = ref<HTMLElement | null>(null);
@@ -166,7 +185,7 @@ const startGame = async () => {
           depth="200"
         />
 
-        CAMERA
+<!--        CAMERA-->
 <!--        <a-entity-->
 <!--          camera-->
 <!--          game-view="target: #spaceship; type: thirdPersonFollow; distance: 40; height: 25; tilt: -27;"-->
@@ -176,6 +195,79 @@ const startGame = async () => {
         <a-entity position="0 20 50" rotation="0 0 0">
           <a-camera position="0 0 0"></a-camera>
         </a-entity>
+
+<!--          PLANETS-->
+          <a-entity
+              :gltf-model="SunModelSrc"
+              ammo-body="type: static;"
+              ammo-shape="type: hull;"
+              position="0 250 -450"
+              scale="300 300 300"
+          ></a-entity>
+
+          <a-entity
+              :gltf-model="MercuryModelSrc"
+              ammo-body="type: static;"
+              ammo-shape="type: hull; offset: 0 16 0;"
+              position="0 30 -190"
+              scale="0.4 0.4 0.4"
+          ></a-entity>
+
+          <a-entity
+              :gltf-model="VenusModelSrc"
+              ammo-body="type: static;"
+              ammo-shape="type: hull; offset: 0 30 0;"
+              position="50 50 -120"
+              scale="0.3 0.3 0.3"
+          ></a-entity>
+
+          <a-entity
+              :gltf-model="EarthModelSrc"
+              ammo-body="type: static;"
+              ammo-shape="type: hull; offset: 0 40 0;"
+              position="0 30 -40"
+              scale="0.1 0.1 0.1"
+          ></a-entity>
+
+          <a-entity
+              :gltf-model="MarsModelSrc"
+              ammo-body="type: static;"
+              ammo-shape="type: hull; offset: 0 22 0;"
+              position="0 30 30"
+              scale="0.2 0.2 0.2"
+          ></a-entity>
+
+          <a-entity
+              :gltf-model="JupiterModelSrc"
+              ammo-body="type: static;"
+              ammo-shape="type: hull; offset: 0 80 0;"
+              position="0 30 170"
+              scale="0.8 0.8 0.8"
+          ></a-entity>
+
+          <a-entity
+              :gltf-model="SaturnModelSrc"
+              ammo-body="type: static;"
+              ammo-shape="type: hull;"
+              position="0 30 350"
+              scale="40 40 40"
+          ></a-entity>
+
+<!--          <a-entity-->
+<!--              :gltf-model="UranusModelSrc"-->
+<!--              ammo-body="type: static;"-->
+<!--              ammo-shape="type: hull;"-->
+<!--              position="0 30 500"-->
+<!--              scale="80 80 80"-->
+<!--          ></a-entity>-->
+
+<!--          <a-entity-->
+<!--              :gltf-model="NeptuneModelSrc"-->
+<!--              ammo-body="type: static;"-->
+<!--              ammo-shape="type: hull;"-->
+<!--              position="0 30 -1250"-->
+<!--              scale="1.9 1.9 1.9"-->
+<!--          ></a-entity>-->
       </a-scene>
     </div>
   </div>
