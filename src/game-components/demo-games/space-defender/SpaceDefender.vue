@@ -16,7 +16,7 @@ import {
   VenusModelSrc,
 } from '../constants';
 
-type GameState = 'menu' | 'playing' | 'victory';
+type GameState = 'menu' | 'playing' | 'victory' | 'defeat';
 
 const gameState = ref<GameState>('menu');
 const isMounted = ref(false);
@@ -45,7 +45,11 @@ const timeLeft = ref(180);
 let timerInterval: number | null = null;
 
 const handleFullscreenChange = () => {
-  if (!document.fullscreenElement && gameState.value !== 'victory') {
+  if (
+    !document.fullscreenElement &&
+    gameState.value !== 'victory' &&
+    gameState.value !== 'defeat'
+  ) {
     gameState.value = 'menu';
     if (timerInterval) {
       clearInterval(timerInterval);
@@ -143,9 +147,8 @@ const startTimer = () => {
       timeLeft.value--;
     } else {
       clearInterval(timerInterval!);
-      gameState.value = 'menu';
-      if (document.fullscreenElement) document.exitFullscreen();
-      alert('Time is up! You lost. Try again!');
+      timerInterval = null;
+      gameState.value = 'defeat';
     }
   }, 1000);
 };
@@ -286,7 +289,6 @@ const handleEnemyHit = (enemyId: number) => {
     }
   }
 };
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 </script>
 
@@ -300,6 +302,17 @@ const handleEnemyHit = (enemyId: number) => {
       <div class="victory-content">
         <h1>🏆 VICTORY! 🏆</h1>
         <p>All enemies destroyed in {{ 180 - timeLeft }} seconds!</p>
+        <div class="btn-group">
+          <button class="action-btn" @click="startGame">🔄 Retry</button>
+          <button class="action-btn" @click="quitGame">❌ Quit</button>
+        </div>
+      </div>
+    </div>
+
+    <div v-else-if="gameState === 'defeat'" class="screen screen--defeat">
+      <div class="defeat-content">
+        <h1>💀 GAME OVER 💀</h1>
+        <p>Time is up! You failed to destroy all enemies.</p>
         <div class="btn-group">
           <button class="action-btn" @click="startGame">🔄 Retry</button>
           <button class="action-btn" @click="quitGame">❌ Quit</button>
@@ -525,7 +538,8 @@ const handleEnemyHit = (enemyId: number) => {
   color: #333;
 }
 
-.screen--victory {
+.screen--victory,
+.screen--defeat {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -536,13 +550,22 @@ const handleEnemyHit = (enemyId: number) => {
   z-index: 1000;
 }
 
-.victory-content {
+.victory-content,
+.defeat-content {
   text-align: center;
   background: rgba(0, 0, 0, 0.6);
   padding: 40px 60px;
   border-radius: 12px;
-  border: 1px solid rgba(0, 255, 204, 0.5);
   box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+}
+
+.victory-content {
+  border: 1px solid rgba(0, 255, 204, 0.5);
+}
+
+.defeat-content {
+  border: 1px solid rgba(255, 51, 51, 0.5);
+  box-shadow: 0 0 15px rgba(255, 51, 51, 0.2);
 }
 
 .victory-content h1 {
@@ -558,7 +581,21 @@ const handleEnemyHit = (enemyId: number) => {
     1px 1px 0px #000;
 }
 
-.victory-content p {
+.defeat-content h1 {
+  font-family: 'Courier New', Courier, monospace;
+  color: #ff3333;
+  font-size: 3rem;
+  margin: 0 0 10px 0;
+  text-shadow:
+    2px 2px 0px #000,
+    -1px -1px 0px #000,
+    1px -1px 0px #000,
+    -1px 1px 0px #000,
+    1px 1px 0px #000;
+}
+
+.victory-content p,
+.defeat-content p {
   font-family: 'Courier New', Courier, monospace;
   color: #fff;
   font-size: 1.2rem;
