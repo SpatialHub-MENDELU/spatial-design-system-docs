@@ -295,7 +295,10 @@ const handleEnemyHit = (enemyId: number) => {
 <template>
   <div class="game-wrapper" ref="gameWrapperRef" v-if="renderScene">
     <div v-if="gameState === 'menu'" class="screen screen--menu">
-      <button class="start-btn" @click="startGame">Start the game</button>
+      <div class="menu-content">
+        <h1>🚀 SPACE DEFENDER 🚀</h1>
+        <button class="start-btn" @click="startGame">▶ Start the game</button>
+      </div>
     </div>
 
     <div v-else-if="gameState === 'victory'" class="screen screen--victory">
@@ -397,14 +400,6 @@ const handleEnemyHit = (enemyId: number) => {
         <!--          />-->
         <!--        </a-entity>-->
 
-        <a-box
-          ammo-body="type: static; friction: 0.2;"
-          ammo-shape="type: box"
-          position="0 -20 0"
-          width="200"
-          height="1"
-          depth="200"
-        />
 
         <!--        CAMERA-->
         <a-entity
@@ -518,24 +513,51 @@ const handleEnemyHit = (enemyId: number) => {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #808080;
+  background-color: #111424;
+}
+
+.menu-content {
+  text-align: center;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 40px 60px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 255, 204, 0.5);
+  box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+}
+
+.menu-content h1 {
+  font-family: 'Courier New', Courier, monospace;
+  color: #fff;
+  font-size: 2.5rem;
+  margin: 0 0 30px 0;
+  text-shadow:
+    2px 2px 0px #000,
+    -1px -1px 0px #000,
+    1px -1px 0px #000,
+    -1px 1px 0px #000,
+    1px 1px 0px #000;
 }
 
 .start-btn {
-  padding: 15px 30px;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: white;
-  background-color: #333;
-  border: 2px solid white;
-  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 12px 24px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  font-family: 'Courier New', Courier, monospace;
+  color: #00ffcc;
+  border: 1px solid rgba(0, 255, 204, 0.5);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 auto;
 }
 
 .start-btn:hover {
-  background-color: white;
-  color: #333;
+  background: rgba(0, 255, 204, 0.2);
+  transform: scale(1.05);
 }
 
 .screen--victory,
