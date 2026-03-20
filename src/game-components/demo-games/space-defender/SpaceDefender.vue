@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
 import 'aframe';
 import {
   SpaceshipEnemyModelSrc,
@@ -24,8 +24,23 @@ const gameWrapperRef = ref<HTMLElement | null>(null);
 const isLoading = ref(true);
 const renderScene = ref(false);
 
-const totalAstronauts = ref(3);
-const killedAstronauts = ref(0);
+interface EnemyTarget {
+    id: number;
+    position: string;
+    points: string;
+    // xMin: number;
+    // xMax: number;
+    // zMin: number;
+    // zMax: number;
+    // yMin: number;
+    // yMax: number;
+}
+
+const enemiesList = ref<EnemyTarget[]>([]);
+const initialTotalEnemies = 3;
+const totalEnemiesGoal = ref(initialTotalEnemies);
+const killedEnemies = ref(0);
+
 const timeLeft = ref(180);
 let timerInterval: number | null = null;
 
@@ -67,13 +82,22 @@ onUnmounted(() => {
 const startGame = async () => {
   gameState.value = 'playing';
   isLoading.value = true;
-  killedAstronauts.value = 0;
+  killedEnemies.value = 0;
+  totalEnemiesGoal.value = initialTotalEnemies;
 
-  setTimeout(() => {
-    isLoading.value = false;
-    window.dispatchEvent(new Event('resize'));
-    startTimer();
-  }, 50);
+  enemiesList.value = [
+      { id: 1, position: '0 10 5', points: '0 10 5, 10 10 5' },
+      { id: 2, position: '0 10 -10', points: '0 10 -10, 10 10 -10' },
+      { id: 3, position: '0 10 -25', points: '0 10 -25, 10 10 -25' },
+  ]
+
+    setTimeout(() => {
+        isLoading.value = false;
+        nextTick(() => {
+            window.dispatchEvent(new Event('resize'));
+        });
+        startTimer();
+    }, 50);
 
   if (gameWrapperRef.value && gameWrapperRef.value.requestFullscreen) {
     try {
@@ -91,6 +115,13 @@ const formattedTime = computed(() => {
     const seconds = timeLeft.value % 60;
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 });
+
+const stopTimer = () => {
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+};
 
 const startTimer = () => {
     timeLeft.value = 180;
@@ -129,7 +160,7 @@ const registerAframeComponents = () => {
                 if (this.el.parentNode) {
                     this.el.parentNode.removeChild(this.el);
                 }
-            }, 2000);
+            }, 2000000000);
         },
         tick: function (time, timeDelta) {
             if (!timeDelta) return;
@@ -140,6 +171,32 @@ const registerAframeComponents = () => {
             clearTimeout(this.destroyTimeout);
         },
     });
+
+    if (!AFRAME.components['enemy-target']) {
+        AFRAME.registerComponent('enemy-target', {
+            init: function () {
+                this.onCollisionBound = this.onCollision.bind(this);
+                this.el.addEventListener('collidestart', this.onCollisionBound);
+            },
+            onCollision: function (event) {
+                const collidingEl = event.detail.targetEl;
+
+                if (collidingEl && typeof collidingEl.classList !== 'undefined' && collidingEl.classList.contains('laser')) {
+
+                    const enemyId = parseInt(this.el.id.replace('enemy-', ''));
+
+                    if (collidingEl.parentNode) {
+                        collidingEl.parentNode.removeChild(collidingEl);
+                    }
+
+                    handleEnemyHit(enemyId);
+                }
+            },
+            remove: function () {
+                this.el.removeEventListener('collidestart', this.onCollisionBound);
+            }
+        });
+    }
 };
 
 const shootLaser = () => {
@@ -178,13 +235,14 @@ const shootLaser = () => {
     visual.setAttribute('rotation', '90 0 0');
     laser.appendChild(visual);
 
+    scene.appendChild(laser);
+
     laser.setAttribute(
         'ammo-body',
-        'type: kinematic; activationState: disableDeactivation;'
+        'type: kinematic; activationState: disableDeactivation; emitCollisionEvents: true;'
     );
-    laser.setAttribute('ammo-shape', 'type: cylinder;');
 
-    scene.appendChild(laser);
+    laser.setAttribute('ammo-shape', 'type: box; fit: manual; halfExtents: 0.15 0.15 1.5;');
 };
 
 const handleKeyDown = (e: KeyboardEvent) => {
@@ -193,8 +251,29 @@ const handleKeyDown = (e: KeyboardEvent) => {
         shootLaser();
     }
 };
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// COLLISION
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+const handleEnemyHit = (enemyId: number) => {
+    if (gameState.value !== 'playing') return;
+
+    const index = enemiesList.value.findIndex(a => a.id === enemyId);
+    if (index !== -1) {
+        enemiesList.value.splice(index, 1);
+        killedEnemies.value++;
+
+        if (enemiesList.value.length === 0) {
+            stopTimer();
+            setTimeout(() => {
+                alert(`Congratulations! You shot all enemies in ${180 - timeLeft.value} seconds! YOU WIN! 🏆`);
+                gameState.value = 'menu';
+                if (document.fullscreenElement) document.exitFullscreen();
+            }, 500);
+        }
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 </script>
 
 <template>
@@ -210,7 +289,7 @@ const handleKeyDown = (e: KeyboardEvent) => {
 
       <div v-if="!isLoading" class="game-hud">
         <div class="hud-item">
-          🎯 Goal: {{ killedAstronauts }} / {{ totalAstronauts }}
+            🎯 Goal: {{ killedEnemies }} / {{ totalEnemiesGoal }}
         </div>
         <div class="hud-item" :class="{ 'time-warning': timeLeft <= 30 }">
           ⏱️ Time: {{ formattedTime }}
@@ -230,9 +309,9 @@ const handleKeyDown = (e: KeyboardEvent) => {
         <a-entity
           id="spaceship"
           ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation"
-          position="0 30 -10"
-          rotation="0 0 0"
-          fly="speed: 3; maxPitchDeg: 40; type: autoForward; keyUp: arrowup; keyDown: arrowdown; keyLeft: arrowleft; keyRight: arrowright;"
+          position="80 10 -1"
+          rotation="0 -90 0"
+          fly="speed: 7; maxPitchDeg: 40; type: autoForward; keyUp: arrowup; keyDown: arrowdown; keyLeft: arrowleft; keyRight: arrowright;"
         >
           <a-entity
             :gltf-model="SpaceshipModelSrc"
@@ -243,44 +322,24 @@ const handleKeyDown = (e: KeyboardEvent) => {
           ></a-entity>
         </a-entity>
 
-        <a-entity
-          ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation"
-          position="0 10 5"
-          npc-walk="points: 0 10 5, 10 10 5; speed: 3; walkClipName: CharacterArmature|Walk; idleClipName: CharacterArmature|Idle; altitude: true;"
-        >
-          <a-entity
-            :gltf-model="astronautModel"
-            ammo-shape="type: hull;"
-            position="0 -3 0"
-            scale="3 3 3"
-          ></a-entity>
-        </a-entity>
+<!--          ENEMIES-->
 
-        <a-entity
-          ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation"
-          position="0 10 -10"
-          npc-walk="points: 0 10 -10, 10 10 -10; speed: 3; walkClipName: CharacterArmature|Walk; idleClipName: CharacterArmature|Idle; altitude: true;"
-        >
           <a-entity
-            :gltf-model="astronautModel"
-            ammo-shape="type: hull;"
-            position="0 -3 0"
-            scale="3 3 3"
-          ></a-entity>
-        </a-entity>
-
-        <a-entity
-          ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation"
-          position="0 10 -25"
-          npc-walk="points: 0 10 -25, 10 10 -25; speed: 3; walkClipName: CharacterArmature|Walk; idleClipName: CharacterArmature|Idle; altitude: true;"
-        >
-          <a-entity
-            :gltf-model="astronautModel"
-            ammo-shape="type: hull;"
-            position="0 -3 0"
-            scale="3 3 3"
-          ></a-entity>
-        </a-entity>
+              v-for="enemy in enemiesList"
+              :key="enemy.id"
+              :id="'enemy-' + enemy.id"
+              ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation; emitCollisionEvents: true;"
+              :position="enemy.position"
+              :npc-walk="`points: ${enemy.points}; speed: 3; walkClipName: CharacterArmature|Walk; idleClipName: CharacterArmature|Idle; altitude: true;`"
+              enemy-target=""
+          >
+              <a-entity
+                  :gltf-model="astronautModel"
+                  ammo-shape="type: hull;"
+                  position="0 -3 0"
+                  scale="3 3 3"
+              ></a-entity>
+          </a-entity>
 
         <!--                ENEMIES-->
         <!--        <a-entity-->
@@ -310,15 +369,15 @@ const handleKeyDown = (e: KeyboardEvent) => {
         />
 
         <!--        CAMERA-->
-        <!--        <a-entity-->
-        <!--          camera-->
-        <!--          game-view="target: #spaceship; type: thirdPersonFollow; distance: 40; height: 25; tilt: -27;"-->
-        <!--        >-->
-        <!--        </a-entity>-->
+                <a-entity
+                  camera
+                  game-view="target: #spaceship; type: thirdPersonFollow; distance: 40; height: 25; tilt: -27;"
+                >
+                </a-entity>
 
-        <a-entity position="0 20 50" rotation="0 0 0">
-          <a-camera position="0 0 0"></a-camera>
-        </a-entity>
+<!--        <a-entity position="0 20 50" rotation="0 0 0">-->
+<!--          <a-camera position="0 0 0"></a-camera>-->
+<!--        </a-entity>-->
 
         <!--          PLANETS-->
         <a-entity
