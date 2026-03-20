@@ -16,7 +16,7 @@ import {
   VenusModelSrc,
 } from '../constants';
 
-type GameState = 'menu' | 'playing';
+type GameState = 'menu' | 'playing' | 'victory';
 
 const gameState = ref<GameState>('menu');
 const isMounted = ref(false);
@@ -45,7 +45,7 @@ const timeLeft = ref(180);
 let timerInterval: number | null = null;
 
 const handleFullscreenChange = () => {
-  if (!document.fullscreenElement) {
+  if (!document.fullscreenElement && gameState.value !== 'victory') {
     gameState.value = 'menu';
     if (timerInterval) {
       clearInterval(timerInterval);
@@ -98,12 +98,24 @@ const startGame = async () => {
     startTimer();
   }, 50);
 
-  if (gameWrapperRef.value && gameWrapperRef.value.requestFullscreen) {
+  if (
+    gameWrapperRef.value &&
+    gameWrapperRef.value.requestFullscreen &&
+    !document.fullscreenElement
+  ) {
     try {
       await gameWrapperRef.value.requestFullscreen();
     } catch (err) {
       console.warn('Failed to start full screen mode:', err);
     }
+  }
+};
+
+const quitGame = () => {
+  gameState.value = 'menu';
+  stopTimer();
+  if (document.fullscreenElement) {
+    document.exitFullscreen().catch((err) => console.warn(err));
   }
 };
 
@@ -176,7 +188,7 @@ const registerAframeComponents = () => {
         this.onCollisionBound = this.onCollision.bind(this);
         this.el.addEventListener('collidestart', this.onCollisionBound);
       },
-      onCollision: function (event) {
+      onCollision: function (event: any) {
         const collidingEl = event.detail.targetEl;
 
         if (
@@ -269,11 +281,7 @@ const handleEnemyHit = (enemyId: number) => {
     if (enemiesList.value.length === 0) {
       stopTimer();
       setTimeout(() => {
-        alert(
-          `Congratulations! You shot all enemies in ${180 - timeLeft.value} seconds! YOU WIN! 🏆`
-        );
-        gameState.value = 'menu';
-        if (document.fullscreenElement) document.exitFullscreen();
+        gameState.value = 'victory';
       }, 500);
     }
   }
@@ -286,6 +294,17 @@ const handleEnemyHit = (enemyId: number) => {
   <div class="game-wrapper" ref="gameWrapperRef" v-if="renderScene">
     <div v-if="gameState === 'menu'" class="screen screen--menu">
       <button class="start-btn" @click="startGame">Start the game</button>
+    </div>
+
+    <div v-else-if="gameState === 'victory'" class="screen screen--victory">
+      <div class="victory-content">
+        <h1>🏆 VICTORY! 🏆</h1>
+        <p>All enemies destroyed in {{ 180 - timeLeft }} seconds!</p>
+        <div class="btn-group">
+          <button class="action-btn" @click="startGame">🔄 Retry</button>
+          <button class="action-btn" @click="quitGame">❌ Quit</button>
+        </div>
+      </div>
     </div>
 
     <div v-else-if="gameState === 'playing'" class="screen screen--game">
@@ -504,6 +523,74 @@ const handleEnemyHit = (enemyId: number) => {
 .start-btn:hover {
   background-color: white;
   color: #333;
+}
+
+.screen--victory {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #111424;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.victory-content {
+  text-align: center;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 40px 60px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 255, 204, 0.5);
+  box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+}
+
+.victory-content h1 {
+  font-family: 'Courier New', Courier, monospace;
+  color: #00ffcc;
+  font-size: 3rem;
+  margin: 0 0 10px 0;
+  text-shadow:
+    2px 2px 0px #000,
+    -1px -1px 0px #000,
+    1px -1px 0px #000,
+    -1px 1px 0px #000,
+    1px 1px 0px #000;
+}
+
+.victory-content p {
+  font-family: 'Courier New', Courier, monospace;
+  color: #fff;
+  font-size: 1.2rem;
+  margin: 0 0 30px 0;
+  font-weight: bold;
+}
+
+.btn-group {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.action-btn {
+  background: rgba(0, 0, 0, 0.8);
+  padding: 12px 24px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  font-family: 'Courier New', Courier, monospace;
+  color: #00ffcc;
+  border: 1px solid rgba(0, 255, 204, 0.5);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.action-btn:hover {
+  background: rgba(0, 255, 204, 0.2);
+  transform: scale(1.05);
 }
 
 .screen--game {
