@@ -25,15 +25,15 @@ const isLoading = ref(true);
 const renderScene = ref(false);
 
 interface EnemyTarget {
-    id: number;
-    position: string;
-    points: string;
-    // xMin: number;
-    // xMax: number;
-    // zMin: number;
-    // zMax: number;
-    // yMin: number;
-    // yMax: number;
+  id: number;
+  position: string;
+  points: string;
+  // xMin: number;
+  // xMax: number;
+  // zMin: number;
+  // zMax: number;
+  // yMin: number;
+  // yMax: number;
 }
 
 const enemiesList = ref<EnemyTarget[]>([]);
@@ -43,7 +43,6 @@ const killedEnemies = ref(0);
 
 const timeLeft = ref(180);
 let timerInterval: number | null = null;
-
 
 const handleFullscreenChange = () => {
   if (!document.fullscreenElement) {
@@ -86,18 +85,18 @@ const startGame = async () => {
   totalEnemiesGoal.value = initialTotalEnemies;
 
   enemiesList.value = [
-      { id: 1, position: '0 10 5', points: '0 10 5, 10 10 5' },
-      { id: 2, position: '0 10 -10', points: '0 10 -10, 10 10 -10' },
-      { id: 3, position: '0 10 -25', points: '0 10 -25, 10 10 -25' },
-  ]
+    { id: 1, position: '0 10 5', points: '0 10 5, 10 10 5' },
+    { id: 2, position: '0 10 -10', points: '0 10 -10, 10 10 -10' },
+    { id: 3, position: '0 10 -25', points: '0 10 -25, 10 10 -25' },
+  ];
 
-    setTimeout(() => {
-        isLoading.value = false;
-        nextTick(() => {
-            window.dispatchEvent(new Event('resize'));
-        });
-        startTimer();
-    }, 50);
+  setTimeout(() => {
+    isLoading.value = false;
+    nextTick(() => {
+      window.dispatchEvent(new Event('resize'));
+    });
+    startTimer();
+  }, 50);
 
   if (gameWrapperRef.value && gameWrapperRef.value.requestFullscreen) {
     try {
@@ -111,166 +110,173 @@ const startGame = async () => {
 // TIMER
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const formattedTime = computed(() => {
-    const minutes = Math.floor(timeLeft.value / 60);
-    const seconds = timeLeft.value % 60;
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  const minutes = Math.floor(timeLeft.value / 60);
+  const seconds = timeLeft.value % 60;
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 });
 
 const stopTimer = () => {
-    if (timerInterval) {
-        clearInterval(timerInterval);
-        timerInterval = null;
-    }
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
 };
 
 const startTimer = () => {
-    timeLeft.value = 180;
-    if (timerInterval) clearInterval(timerInterval);
+  timeLeft.value = 180;
+  if (timerInterval) clearInterval(timerInterval);
 
-    timerInterval = window.setInterval(() => {
-        if (timeLeft.value > 0) {
-            timeLeft.value--;
-        } else {
-            clearInterval(timerInterval!);
-            gameState.value = 'menu';
-            if (document.fullscreenElement) document.exitFullscreen();
-            alert('Time is up! You lost. Try again!');
-        }
-    }, 1000);
+  timerInterval = window.setInterval(() => {
+    if (timeLeft.value > 0) {
+      timeLeft.value--;
+    } else {
+      clearInterval(timerInterval!);
+      gameState.value = 'menu';
+      if (document.fullscreenElement) document.exitFullscreen();
+      alert('Time is up! You lost. Try again!');
+    }
+  }, 1000);
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 // LASER
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const registerAframeComponents = () => {
-    if (typeof AFRAME === 'undefined' || AFRAME.components['laser-behavior'])
-        return;
+  if (typeof AFRAME === 'undefined' || AFRAME.components['laser-behavior'])
+    return;
 
-    const THREE = AFRAME.THREE;
+  const THREE = AFRAME.THREE;
 
-    AFRAME.registerComponent('laser-behavior', {
-        schema: { speed: { type: 'number', default: 150 } },
-        init: function () {
-            this.direction = new THREE.Vector3(0, 0, 1);
-            this.direction.applyQuaternion(this.el.object3D.quaternion);
-            this.direction.normalize();
+  AFRAME.registerComponent('laser-behavior', {
+    schema: { speed: { type: 'number', default: 150 } },
+    init: function () {
+      this.direction = new THREE.Vector3(0, 0, 1);
+      this.direction.applyQuaternion(this.el.object3D.quaternion);
+      this.direction.normalize();
 
-            this.destroyTimeout = setTimeout(() => {
-                if (this.el.parentNode) {
-                    this.el.parentNode.removeChild(this.el);
-                }
-            }, 2000000000);
-        },
-        tick: function (time, timeDelta) {
-            if (!timeDelta) return;
-            const distance = (this.data.speed * timeDelta) / 1000;
-            this.el.object3D.position.addScaledVector(this.direction, distance);
-        },
-        remove: function () {
-            clearTimeout(this.destroyTimeout);
-        },
+      this.destroyTimeout = setTimeout(() => {
+        if (this.el.parentNode) {
+          this.el.parentNode.removeChild(this.el);
+        }
+      }, 2000000000);
+    },
+    tick: function (time, timeDelta) {
+      if (!timeDelta) return;
+      const distance = (this.data.speed * timeDelta) / 1000;
+      this.el.object3D.position.addScaledVector(this.direction, distance);
+    },
+    remove: function () {
+      clearTimeout(this.destroyTimeout);
+    },
+  });
+
+  if (!AFRAME.components['enemy-target']) {
+    AFRAME.registerComponent('enemy-target', {
+      init: function () {
+        this.onCollisionBound = this.onCollision.bind(this);
+        this.el.addEventListener('collidestart', this.onCollisionBound);
+      },
+      onCollision: function (event) {
+        const collidingEl = event.detail.targetEl;
+
+        if (
+          collidingEl &&
+          typeof collidingEl.classList !== 'undefined' &&
+          collidingEl.classList.contains('laser')
+        ) {
+          const enemyId = parseInt(this.el.id.replace('enemy-', ''));
+
+          if (collidingEl.parentNode) {
+            collidingEl.parentNode.removeChild(collidingEl);
+          }
+
+          handleEnemyHit(enemyId);
+        }
+      },
+      remove: function () {
+        this.el.removeEventListener('collidestart', this.onCollisionBound);
+      },
     });
-
-    if (!AFRAME.components['enemy-target']) {
-        AFRAME.registerComponent('enemy-target', {
-            init: function () {
-                this.onCollisionBound = this.onCollision.bind(this);
-                this.el.addEventListener('collidestart', this.onCollisionBound);
-            },
-            onCollision: function (event) {
-                const collidingEl = event.detail.targetEl;
-
-                if (collidingEl && typeof collidingEl.classList !== 'undefined' && collidingEl.classList.contains('laser')) {
-
-                    const enemyId = parseInt(this.el.id.replace('enemy-', ''));
-
-                    if (collidingEl.parentNode) {
-                        collidingEl.parentNode.removeChild(collidingEl);
-                    }
-
-                    handleEnemyHit(enemyId);
-                }
-            },
-            remove: function () {
-                this.el.removeEventListener('collidestart', this.onCollisionBound);
-            }
-        });
-    }
+  }
 };
 
 const shootLaser = () => {
-    if (gameState.value !== 'playing') return;
+  if (gameState.value !== 'playing') return;
 
-    const spaceship = document.querySelector('#spaceship');
-    const scene = document.querySelector('a-scene');
-    if (!spaceship || !scene) return;
+  const spaceship = document.querySelector('#spaceship');
+  const scene = document.querySelector('a-scene');
+  if (!spaceship || !scene) return;
 
-    const THREE = AFRAME.THREE;
+  const THREE = AFRAME.THREE;
 
-    const position = new THREE.Vector3();
-    const quaternion = new THREE.Quaternion();
-    spaceship.object3D.getWorldPosition(position);
-    spaceship.object3D.getWorldQuaternion(quaternion);
+  const position = new THREE.Vector3();
+  const quaternion = new THREE.Quaternion();
+  spaceship.object3D.getWorldPosition(position);
+  spaceship.object3D.getWorldQuaternion(quaternion);
 
-    const forward = new THREE.Vector3(0, 0, 4);
-    forward.applyQuaternion(quaternion);
-    position.add(forward);
+  const forward = new THREE.Vector3(0, 0, 4);
+  forward.applyQuaternion(quaternion);
+  position.add(forward);
 
-    const euler = new THREE.Euler().setFromQuaternion(quaternion, 'YXZ');
-    const rotX = THREE.MathUtils.radToDeg(euler.x);
-    const rotY = THREE.MathUtils.radToDeg(euler.y);
-    const rotZ = THREE.MathUtils.radToDeg(euler.z);
+  const euler = new THREE.Euler().setFromQuaternion(quaternion, 'YXZ');
+  const rotX = THREE.MathUtils.radToDeg(euler.x);
+  const rotY = THREE.MathUtils.radToDeg(euler.y);
+  const rotZ = THREE.MathUtils.radToDeg(euler.z);
 
-    const laser = document.createElement('a-entity');
-    laser.setAttribute('position', `${position.x} ${position.y} ${position.z}`);
-    laser.setAttribute('rotation', `${rotX} ${rotY} ${rotZ}`);
-    laser.setAttribute('laser-behavior', 'speed: 150');
-    laser.setAttribute('class', 'laser');
+  const laser = document.createElement('a-entity');
+  laser.setAttribute('position', `${position.x} ${position.y} ${position.z}`);
+  laser.setAttribute('rotation', `${rotX} ${rotY} ${rotZ}`);
+  laser.setAttribute('laser-behavior', 'speed: 150');
+  laser.setAttribute('class', 'laser');
 
-    const visual = document.createElement('a-cylinder');
-    visual.setAttribute('color', '#ff3333');
-    visual.setAttribute('radius', '0.15');
-    visual.setAttribute('height', '3');
-    visual.setAttribute('rotation', '90 0 0');
-    laser.appendChild(visual);
+  const visual = document.createElement('a-cylinder');
+  visual.setAttribute('color', '#ff3333');
+  visual.setAttribute('radius', '0.15');
+  visual.setAttribute('height', '3');
+  visual.setAttribute('rotation', '90 0 0');
+  laser.appendChild(visual);
 
-    scene.appendChild(laser);
+  scene.appendChild(laser);
 
-    laser.setAttribute(
-        'ammo-body',
-        'type: kinematic; activationState: disableDeactivation; emitCollisionEvents: true;'
-    );
+  laser.setAttribute(
+    'ammo-body',
+    'type: kinematic; activationState: disableDeactivation; emitCollisionEvents: true;'
+  );
 
-    laser.setAttribute('ammo-shape', 'type: box; fit: manual; halfExtents: 0.15 0.15 1.5;');
+  laser.setAttribute(
+    'ammo-shape',
+    'type: box; fit: manual; halfExtents: 0.15 0.15 1.5;'
+  );
 };
 
 const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.code === 'Space') {
-        e.preventDefault();
-        shootLaser();
-    }
+  if (e.code === 'Space') {
+    e.preventDefault();
+    shootLaser();
+  }
 };
 
 // COLLISION
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const handleEnemyHit = (enemyId: number) => {
-    if (gameState.value !== 'playing') return;
+  if (gameState.value !== 'playing') return;
 
-    const index = enemiesList.value.findIndex(a => a.id === enemyId);
-    if (index !== -1) {
-        enemiesList.value.splice(index, 1);
-        killedEnemies.value++;
+  const index = enemiesList.value.findIndex((a) => a.id === enemyId);
+  if (index !== -1) {
+    enemiesList.value.splice(index, 1);
+    killedEnemies.value++;
 
-        if (enemiesList.value.length === 0) {
-            stopTimer();
-            setTimeout(() => {
-                alert(`Congratulations! You shot all enemies in ${180 - timeLeft.value} seconds! YOU WIN! 🏆`);
-                gameState.value = 'menu';
-                if (document.fullscreenElement) document.exitFullscreen();
-            }, 500);
-        }
+    if (enemiesList.value.length === 0) {
+      stopTimer();
+      setTimeout(() => {
+        alert(
+          `Congratulations! You shot all enemies in ${180 - timeLeft.value} seconds! YOU WIN! 🏆`
+        );
+        gameState.value = 'menu';
+        if (document.fullscreenElement) document.exitFullscreen();
+      }, 500);
     }
+  }
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -289,7 +295,7 @@ const handleEnemyHit = (enemyId: number) => {
 
       <div v-if="!isLoading" class="game-hud">
         <div class="hud-item">
-            🎯 Goal: {{ killedEnemies }} / {{ totalEnemiesGoal }}
+          🎯 Goal: {{ killedEnemies }} / {{ totalEnemiesGoal }}
         </div>
         <div class="hud-item" :class="{ 'time-warning': timeLeft <= 30 }">
           ⏱️ Time: {{ formattedTime }}
@@ -322,24 +328,24 @@ const handleEnemyHit = (enemyId: number) => {
           ></a-entity>
         </a-entity>
 
-<!--          ENEMIES-->
+        <!--          ENEMIES-->
 
+        <a-entity
+          v-for="enemy in enemiesList"
+          :key="enemy.id"
+          :id="'enemy-' + enemy.id"
+          ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation; emitCollisionEvents: true;"
+          :position="enemy.position"
+          :npc-walk="`points: ${enemy.points}; speed: 3; walkClipName: CharacterArmature|Walk; idleClipName: CharacterArmature|Idle; altitude: true;`"
+          enemy-target=""
+        >
           <a-entity
-              v-for="enemy in enemiesList"
-              :key="enemy.id"
-              :id="'enemy-' + enemy.id"
-              ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation; emitCollisionEvents: true;"
-              :position="enemy.position"
-              :npc-walk="`points: ${enemy.points}; speed: 3; walkClipName: CharacterArmature|Walk; idleClipName: CharacterArmature|Idle; altitude: true;`"
-              enemy-target=""
-          >
-              <a-entity
-                  :gltf-model="astronautModel"
-                  ammo-shape="type: hull;"
-                  position="0 -3 0"
-                  scale="3 3 3"
-              ></a-entity>
-          </a-entity>
+            :gltf-model="astronautModel"
+            ammo-shape="type: hull;"
+            position="0 -3 0"
+            scale="3 3 3"
+          ></a-entity>
+        </a-entity>
 
         <!--                ENEMIES-->
         <!--        <a-entity-->
@@ -369,15 +375,15 @@ const handleEnemyHit = (enemyId: number) => {
         />
 
         <!--        CAMERA-->
-                <a-entity
-                  camera
-                  game-view="target: #spaceship; type: thirdPersonFollow; distance: 40; height: 25; tilt: -27;"
-                >
-                </a-entity>
+        <a-entity
+          camera
+          game-view="target: #spaceship; type: thirdPersonFollow; distance: 40; height: 25; tilt: -27;"
+        >
+        </a-entity>
 
-<!--        <a-entity position="0 20 50" rotation="0 0 0">-->
-<!--          <a-camera position="0 0 0"></a-camera>-->
-<!--        </a-entity>-->
+        <!--        <a-entity position="0 20 50" rotation="0 0 0">-->
+        <!--          <a-camera position="0 0 0"></a-camera>-->
+        <!--        </a-entity>-->
 
         <!--          PLANETS-->
         <a-entity
