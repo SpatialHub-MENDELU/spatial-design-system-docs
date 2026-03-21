@@ -5,6 +5,7 @@ title: fly
 <script setup lang="ts">
   import { ref, onMounted } from "vue";
   import SpaceDefender from './demo-games/space-defender/SpaceDefender.vue';
+import DragonsQuest from './demo-games/dragons-quest/DragonsQuest.vue';
 
   const renderScene = ref(false);
 
@@ -24,6 +25,8 @@ title: fly
 # {{ $frontmatter.title }}
 
 <SpaceDefender />
+
+<DragonsQuest />
 
 The `fly` component defines the flying behavior of a character in a game. It allows customization of flying styles, including key bindings, speed settings, and flight types. The component also supports realistic flight dynamics through pitch and roll adjustments.
 
