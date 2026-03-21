@@ -417,7 +417,7 @@ const handleEnemyHit = (enemyId: number) => {
           :gltf-model="SunModelSrc"
           ammo-body="type: static;"
           ammo-shape="type: hull;"
-          position="0 250 -450"
+          position="0 -30 -450"
           scale="300 300 300"
         ></a-entity>
 
@@ -425,7 +425,7 @@ const handleEnemyHit = (enemyId: number) => {
           :gltf-model="MercuryModelSrc"
           ammo-body="type: static;"
           ammo-shape="type: hull; offset: 0 16 0;"
-          position="0 30 -190"
+          position="0 -30 -190"
           scale="0.4 0.4 0.4"
         ></a-entity>
 
@@ -433,7 +433,7 @@ const handleEnemyHit = (enemyId: number) => {
           :gltf-model="VenusModelSrc"
           ammo-body="type: static;"
           ammo-shape="type: hull; offset: 0 30 0;"
-          position="50 50 -120"
+          position="50 -40 -120"
           scale="0.3 0.3 0.3"
         ></a-entity>
 
@@ -441,7 +441,7 @@ const handleEnemyHit = (enemyId: number) => {
           :gltf-model="EarthModelSrc"
           ammo-body="type: static;"
           ammo-shape="type: hull; offset: 0 40 0;"
-          position="0 30 -40"
+          position="0 -80 -40"
           scale="0.1 0.1 0.1"
         ></a-entity>
 
@@ -449,7 +449,7 @@ const handleEnemyHit = (enemyId: number) => {
           :gltf-model="MarsModelSrc"
           ammo-body="type: static;"
           ammo-shape="type: hull; offset: 0 22 0;"
-          position="0 30 30"
+          position="0 -40 30"
           scale="0.2 0.2 0.2"
         ></a-entity>
 
@@ -457,7 +457,7 @@ const handleEnemyHit = (enemyId: number) => {
           :gltf-model="JupiterModelSrc"
           ammo-body="type: static;"
           ammo-shape="type: hull; offset: 0 80 0;"
-          position="0 30 170"
+          position="0 -30 170"
           scale="0.8 0.8 0.8"
         ></a-entity>
 
@@ -465,7 +465,7 @@ const handleEnemyHit = (enemyId: number) => {
           :gltf-model="SaturnModelSrc"
           ammo-body="type: static;"
           ammo-shape="type: hull;"
-          position="0 30 350"
+          position="0 -30 350"
           scale="40 40 40"
         ></a-entity>
 
