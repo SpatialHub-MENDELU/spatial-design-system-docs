@@ -1,12 +1,25 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick } from 'vue';
 import 'aframe';
+import {IslandModelSrc, VolcanoModelSrc, WinterMountainModelSrc, PalmIslandModelSrc} from '../constants';
+
 
 type GameState = 'menu' | 'playing';
 
 const gameState = ref<GameState>('menu');
 const gameWrapperRef = ref<HTMLElement | null>(null);
 const renderScene = ref(false);
+
+interface StaticModel {
+    id: number;
+    src: string;
+    position: string;
+    rotation: string;
+    scale: string;
+    offset: string;
+}
+
+const staticModelsList = ref<StaticModel[]>([]);
 
 const handleFullscreenChange = () => {
     if (!document.fullscreenElement) {
@@ -25,6 +38,57 @@ onUnmounted(() => {
 
 const startGame = async () => {
     gameState.value = 'playing';
+
+    staticModelsList.value = [
+        {
+            id: 1,
+            src: IslandModelSrc,
+            position: '0 -50 -50',
+            rotation: '0 0 0',
+            scale: '60 60 60',
+            offset: '0 22 0',
+        },
+        {
+            id: 2,
+            src: VolcanoModelSrc,
+            position: '0 0 -50',
+            rotation: '0 0 0',
+            scale: '15 15 15',
+            offset: '2 2 2',
+        },
+        {
+            id: 3,
+            src: PalmIslandModelSrc,
+            position: '-20 -5 0',
+            rotation: '0 -45 0',
+            scale: '0.3 0.3 0.3',
+            offset: '-4 7 -1',
+        },
+        {
+            id: 5,
+            src: IslandModelSrc,
+            position: '-20 -50 0',
+            rotation: '0 0 0',
+            scale: '60 60 60',
+            offset: '0 22 0',
+        },
+        {
+            id: 6,
+            src: WinterMountainModelSrc,
+            position: '40 0 0',
+            rotation: '0 0 0',
+            scale: '15 15 15',
+            offset: '0 1 3',
+        },
+        {
+            id: 7,
+            src: IslandModelSrc,
+            position: '40 -50 0',
+            rotation: '0 -45 0',
+            scale: '60 60 60',
+            offset: '0 22 0',
+        },
+    ]
 
     nextTick(() => {
         window.dispatchEvent(new Event('resize'));
@@ -54,12 +118,24 @@ const startGame = async () => {
         </div>
 
         <div v-else-if="gameState === 'playing'" class="screen screen--game">
-            <a-scene>
+            <a-scene physics="driver: ammo; debug: true;">
                 <a-sky color="#AEE2FF"></a-sky>
 
-                <a-box position="0 1 -4" rotation="0 45 0" color="#FFFFFF"></a-box>
+<!--                <a-box position="0 1 -4" rotation="0 45 0" color="#FFFFFF"></a-box>-->
 
                 <a-camera position="0 1.6 0"></a-camera>
+
+<!--                ISLANDS -->
+                <a-entity
+                    v-for="model in staticModelsList"
+                    :key="model.id"
+                    :gltf-model="model.src"
+                    :position="model.position"
+                    :rotation="model.rotation"
+                    :scale="model.scale"
+                    ammo-body="type: static;"
+                    :ammo-shape="`type: hull; offset: ${model.offset};`"
+                ></a-entity>
             </a-scene>
         </div>
     </div>
