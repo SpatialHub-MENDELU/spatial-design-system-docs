@@ -12,7 +12,35 @@ import {
   DragonModelSrc,
 } from '../constants';
 
-type GameState = 'menu' | 'playing';
+if (typeof AFRAME !== 'undefined' && !AFRAME.components['html-compass']) {
+  AFRAME.registerComponent('html-compass', {
+    schema: {
+      target: { type: 'string' },
+      indicator: { type: 'string' },
+    },
+    tick: function () {
+      const targetEl = document.querySelector(this.data.target);
+      const indicatorEl = document.querySelector(
+        this.data.indicator
+      ) as HTMLElement;
+      if (!targetEl || !indicatorEl) return;
+
+      const cam = this.el.sceneEl?.camera;
+      if (!cam) return;
+
+      const targetPos = new THREE.Vector3();
+      targetEl.object3D.getWorldPosition(targetPos);
+
+      cam.updateMatrixWorld();
+      targetPos.applyMatrix4(cam.matrixWorldInverse);
+
+      const angle = Math.atan2(targetPos.x, -targetPos.z) * (180 / Math.PI);
+      indicatorEl.style.transform = `rotate(${angle}deg)`;
+    },
+  });
+}
+
+type GameState = 'menu' | 'intro' | 'playing';
 
 const gameState = ref<GameState>('menu');
 const gameWrapperRef = ref<HTMLElement | null>(null);
@@ -37,6 +65,7 @@ interface NpcModel {
   walkClipName: string;
   idleClipName: string;
   points: string;
+  hasQuestMarker?: boolean;
 }
 
 const staticModelsList = ref<StaticModel[]>([]);
@@ -48,17 +77,25 @@ const handleFullscreenChange = () => {
   }
 };
 
+const handleKeydown = (e: KeyboardEvent) => {
+  if (gameState.value === 'intro' && e.key === 'Enter') {
+    gameState.value = 'playing';
+  }
+};
+
 onMounted(() => {
   document.addEventListener('fullscreenchange', handleFullscreenChange);
+  window.addEventListener('keydown', handleKeydown);
   renderScene.value = true;
 });
 
 onUnmounted(() => {
   document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  window.removeEventListener('keydown', handleKeydown);
 });
 
 const startGame = async () => {
-  gameState.value = 'playing';
+  gameState.value = 'intro';
 
   staticModelsList.value = [
     {
@@ -151,6 +188,7 @@ const startGame = async () => {
       walkClipName: '*Walk*',
       idleClipName: '*Idle*',
       points: '85 -5 0,',
+      hasQuestMarker: true,
     },
   ];
 
@@ -175,21 +213,48 @@ const startGame = async () => {
 <template>
   <div class="game-wrapper" ref="gameWrapperRef" v-if="renderScene">
     <div v-if="gameState === 'menu'" class="screen screen--menu">
-      <div class="menu-content">
+      <div class="fantasy-dialog">
         <h1>DRAGONS' QUEST</h1>
-        <button class="start-btn" @click="startGame">START</button>
+        <button class="fantasy-btn" @click="startGame">START ADVENTURE</button>
+      </div>
+    </div>
+
+    <div v-else-if="gameState === 'intro'" class="screen screen--intro">
+      <div class="fantasy-dialog story-dialog">
+        <h2>Chapter 1: The Lost Fire</h2>
+        <p>
+          Oh no! You woke up and your dragon fire is gone! You caught a terrible
+          dragon cold. You must find a cure to get your flames back.
+        </p>
+        <p>
+          Go find the <strong>Yeti</strong> in the snowy mountains. He might
+          know what to do!
+        </p>
+        <div class="press-enter">Press [ENTER] to start your quest</div>
       </div>
     </div>
 
     <div v-else-if="gameState === 'playing'" class="screen screen--game">
-      <a-scene physics="driver: ammo; debug: true;">
+      <div class="compass-container">
+        <div id="quest-arrow" class="quest-arrow">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M12 2L20 20L12 16L4 20L12 2Z"
+              fill="#FFD700"
+              stroke="#4a0e0e"
+              stroke-width="1.5"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <a-scene
+        physics="driver: ammo; debug: true;"
+        html-compass="target: #npc-3; indicator: #quest-arrow"
+      >
         <a-sky color="#AEE2FF"></a-sky>
 
-        <!--                <a-box position="0 1 -4" rotation="0 45 0" color="#FFFFFF"></a-box>-->
-
-<!--        <a-camera position="0 20 10"></a-camera>-->
-
-        <!--                MAIN CHARACTER -->
         <a-entity
           fly="type: freeDirectionalFlight; flyClipName: *Dragon_Flying*; idleClipName: *Dragon_Flying*; sprintClipName:  *Dragon_Flying*; forwardOffsetAngle: 0; maxPitchDeg: 20; pitchSpeed: 120; maxRollDeg: 15; rollSpeed: 60; rotationSpeed: 60; sprint: true;"
           id="dragon-character"
@@ -211,7 +276,6 @@ const startGame = async () => {
           rotation="-30 0 0"
         ></a-entity>
 
-        <!--                ISLANDS -->
         <a-entity
           v-for="model in staticModelsList"
           :key="'static-' + model.id"
@@ -223,15 +287,21 @@ const startGame = async () => {
           :ammo-shape="`type: hull; offset: ${model.offset};`"
         ></a-entity>
 
-        <!--                NPC -->
         <a-entity
           v-for="model in npcModelsList"
           :key="'npc-' + model.id"
+          :id="'npc-' + model.id"
           :position="model.position"
           :rotation="model.rotation"
           ammo-body="type: dynamic; gravity: 0 0 0; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation;"
-          animation-mixer="clip: idle; loop: repeat;"
         >
+          <a-entity
+            v-if="model.hasQuestMarker"
+            text="value: !; color: #FFD700; align: center; width: 20; wrapCount: 10; font: mozillavr;"
+            position="0 6.5 0"
+            material="emissive: #FFD700"
+          ></a-entity>
+
           <a-entity
             :gltf-model="model.src"
             :ammo-shape="`type: hull; offset: ${model.offset};`"
@@ -248,9 +318,10 @@ const startGame = async () => {
 .game-wrapper {
   width: 100%;
   height: 400px;
-  background-color: #000000;
+  background-color: #1a0505;
   position: relative;
   overflow: hidden;
+  font-family: 'Georgia', 'Times New Roman', serif;
 }
 
 .game-wrapper:fullscreen {
@@ -260,44 +331,88 @@ const startGame = async () => {
 .screen {
   width: 100%;
   height: 100%;
-}
-
-.screen--menu {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #000000;
+  background-color: #1a0505;
 }
 
-.menu-content {
+.fantasy-dialog {
   text-align: center;
-  background: #000000;
+  background: #4a0e0e;
   padding: 40px 60px;
-  border: 2px solid #ffffff;
+  border: 3px solid #ffd700;
+  border-radius: 8px;
+  box-shadow:
+    0 0 30px rgba(255, 215, 0, 0.2),
+    inset 0 0 20px rgba(0, 0, 0, 0.8);
 }
 
-.menu-content h1 {
-  font-family: monospace;
-  color: #ffffff;
-  font-size: 2.5rem;
+.fantasy-dialog h1 {
+  color: #ffd700;
+  font-size: 3rem;
   margin: 0 0 30px 0;
+  text-shadow: 2px 2px 4px #000000;
+  letter-spacing: 2px;
 }
 
-.start-btn {
+.story-dialog {
+  max-width: 600px;
+  padding: 30px 50px;
+}
+
+.story-dialog h2 {
+  color: #ffd700;
+  font-size: 2rem;
+  margin-top: 0;
+  border-bottom: 1px solid #ffd700;
+  padding-bottom: 10px;
+}
+
+.story-dialog p {
+  color: #fdf5e6;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.press-enter {
+  margin-top: 30px;
+  color: #ffd700;
+  font-size: 1rem;
+  font-style: italic;
+  animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.fantasy-btn {
   cursor: pointer;
-  background: #000000;
-  padding: 12px 24px;
+  background: #2a0505;
+  padding: 15px 30px;
   font-size: 1.2rem;
   font-weight: bold;
-  font-family: monospace;
-  color: #ffffff;
-  border: 2px solid #ffffff;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  color: #ffd700;
+  border: 2px solid #ffd700;
+  border-radius: 4px;
   transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.start-btn:hover {
-  background: #ffffff;
-  color: #000000;
+.fantasy-btn:hover {
+  background: #ffd700;
+  color: #2a0505;
+  box-shadow: 0 0 15px #ffd700;
 }
 
 .screen--game {
@@ -306,6 +421,7 @@ const startGame = async () => {
   left: 0;
   width: 100%;
   height: 100%;
+  display: block;
 }
 
 .screen--game a-scene {
@@ -315,5 +431,28 @@ const startGame = async () => {
   left: 0;
   width: 100%;
   height: 100%;
+}
+
+.compass-container {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 60px;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.quest-arrow {
+  width: 100%;
+  height: 100%;
+  transform-origin: center center;
+}
+
+.quest-arrow svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.6));
 }
 </style>
