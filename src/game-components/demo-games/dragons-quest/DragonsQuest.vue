@@ -12,30 +12,43 @@ import {
   DragonModelSrc,
 } from '../constants';
 
-if (typeof AFRAME !== 'undefined' && !AFRAME.components['html-compass']) {
-  AFRAME.registerComponent('html-compass', {
-    schema: {
-      target: { type: 'string' },
-      indicator: { type: 'string' },
-    },
+if (typeof AFRAME !== 'undefined' && !AFRAME.components['minimap-updater']) {
+  AFRAME.registerComponent('minimap-updater', {
     tick: function () {
-      const targetEl = document.querySelector(this.data.target);
-      const indicatorEl = document.querySelector(
-        this.data.indicator
-      ) as HTMLElement;
-      if (!targetEl || !indicatorEl) return;
+      const player = document.querySelector('#dragon-character');
+      if (!player) return;
 
-      const cam = this.el.sceneEl?.camera;
-      if (!cam) return;
+      const pPos = player.object3D.position;
+      const pRotY = player.object3D.rotation.y;
 
-      const targetPos = new THREE.Vector3();
-      targetEl.object3D.getWorldPosition(targetPos);
+      const playerIcon = document.getElementById('minimap-player-icon');
+      if (playerIcon) {
+        playerIcon.style.transform = `rotate(${-pRotY + Math.PI}rad)`;
+      }
 
-      cam.updateMatrixWorld();
-      targetPos.applyMatrix4(cam.matrixWorldInverse);
+      const scale = 0.5;
 
-      const angle = Math.atan2(targetPos.x, -targetPos.z) * (180 / Math.PI);
-      indicatorEl.style.transform = `rotate(${angle}deg)`;
+      const updateMarkers = (selector: string) => {
+        const markers = document.querySelectorAll(selector);
+        markers.forEach((marker) => {
+          const m = marker as HTMLElement;
+          const targetId = m.getAttribute('data-target');
+          if (!targetId) return;
+
+          const targetEl = document.querySelector(targetId);
+          if (targetEl) {
+            const tPos = targetEl.object3D.position;
+            const dx = (tPos.x - pPos.x) * scale;
+            const dz = (tPos.z - pPos.z) * scale;
+
+            m.style.left = `calc(50% + ${dx}px)`;
+            m.style.top = `calc(50% + ${dz}px)`;
+          }
+        });
+      };
+
+      updateMarkers('.minimap-marker-island');
+      updateMarkers('.minimap-marker-npc');
     },
   });
 }
@@ -235,24 +248,37 @@ const startGame = async () => {
     </div>
 
     <div v-else-if="gameState === 'playing'" class="screen screen--game">
-      <div class="compass-container">
-        <div id="quest-arrow" class="quest-arrow">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M12 2L20 20L12 16L4 20L12 2Z"
-              fill="#FFD700"
-              stroke="#4a0e0e"
-              stroke-width="1.5"
-              stroke-linejoin="round"
-            />
-          </svg>
+      <div class="minimap-wrapper">
+        <div class="minimap-content">
+          <div id="minimap-player-icon" class="minimap-player">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M12 2L20 20L12 16L4 20L12 2Z"
+                fill="#FFD700"
+                stroke="#4a0e0e"
+                stroke-width="1.5"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+          <div
+            v-for="model in staticModelsList"
+            :key="'mm-stat-' + model.id"
+            class="minimap-marker-island"
+            :data-target="`#static-${model.id}`"
+          ></div>
+          <div
+            v-for="model in npcModelsList"
+            :key="'mm-npc-' + model.id"
+            class="minimap-marker-npc"
+            :data-target="`#npc-${model.id}`"
+          >
+            <span v-if="model.hasQuestMarker" class="minimap-quest">!</span>
+          </div>
         </div>
       </div>
 
-      <a-scene
-        physics="driver: ammo; debug: true;"
-        html-compass="target: #npc-3; indicator: #quest-arrow"
-      >
+      <a-scene physics="driver: ammo; debug: true;" minimap-updater>
         <a-sky color="#AEE2FF"></a-sky>
 
         <a-entity
@@ -279,6 +305,7 @@ const startGame = async () => {
         <a-entity
           v-for="model in staticModelsList"
           :key="'static-' + model.id"
+          :id="'static-' + model.id"
           :gltf-model="model.src"
           :position="model.position"
           :rotation="model.rotation"
@@ -433,26 +460,80 @@ const startGame = async () => {
   height: 100%;
 }
 
-.compass-container {
+.minimap-wrapper {
   position: absolute;
-  top: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 60px;
+  top: 20px;
+  left: 20px;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 4px solid #ffd700;
+  background-color: rgba(30, 10, 10, 0.9);
+  overflow: hidden;
   z-index: 100;
-  pointer-events: none;
+  box-shadow:
+    0 0 20px rgba(0, 0, 0, 0.8),
+    inset 0 0 15px rgba(0, 0, 0, 0.7);
 }
 
-.quest-arrow {
+.minimap-content {
+  position: relative;
   width: 100%;
   height: 100%;
+}
+
+.minimap-player {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 30px;
+  height: 30px;
+  margin-top: -15px;
+  margin-left: -15px;
+  z-index: 10;
   transform-origin: center center;
 }
 
-.quest-arrow svg {
+.minimap-player svg {
   width: 100%;
   height: 100%;
-  filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.6));
+  filter: drop-shadow(0px 3px 4px rgba(0, 0, 0, 0.9));
+}
+
+.minimap-marker-island {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background-color: rgba(80, 60, 45, 0.5);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+.minimap-marker-npc {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: #666666;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.minimap-quest {
+  color: #ffd700;
+  font-weight: 900;
+  font-size: 28px;
+  text-shadow:
+    2px 2px 0 #000,
+    -2px -2px 0 #000,
+    2px -2px 0 #000,
+    -2px 2px 0 #000;
+  position: absolute;
+  top: -24px;
+  font-family: Arial, sans-serif;
+  z-index: 20;
 }
 </style>
