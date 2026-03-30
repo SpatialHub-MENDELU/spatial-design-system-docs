@@ -194,7 +194,7 @@ const startGame = async () => {
           fly="type: freeDirectionalFlight; flyClipName: *Dragon_Flying*; idleClipName: *Dragon_Flying*; sprintClipName:  *Dragon_Flying*; forwardOffsetAngle: 0; maxPitchDeg: 20; pitchSpeed: 120; maxRollDeg: 15; rollSpeed: 60; rotationSpeed: 60; sprint: true;"
           id="dragon-character"
           ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation"
-          position="0 20 0"
+          position="0 0 100"
           rotation="0 180 0"
         >
           <a-entity
@@ -207,7 +207,7 @@ const startGame = async () => {
 
         <a-entity
           camera
-          game-view="target: #dragon-character; distance: 5; height: 5;"
+          game-view="target: #dragon-character; type: thirdPersonFollow; distance: 5; height: 5;"
           rotation="-30 0 0"
         ></a-entity>
 
