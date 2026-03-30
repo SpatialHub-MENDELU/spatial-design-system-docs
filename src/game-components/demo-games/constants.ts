@@ -32,3 +32,4 @@ export const  WinterMountainModelSrc = '../../public/glb_models/game_components/
 export const DemonModelSrc = '../../public/glb_models/game_components/fly/Demon.glb';
 export const TribalModelSrc = '../../public/glb_models/game_components/fly/Tribal.glb';
 export const YetiModelSrc = '../../public/glb_models/game_components/fly/Yeti.glb';
+export const DragonModelSrc = '../../public/glb_models/game_components/fly/Dragon.glb';
