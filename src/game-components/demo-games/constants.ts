@@ -29,3 +29,6 @@ export const IslandModelSrc = '../../public/glb_models/game_components/fly/Islan
 export const VolcanoModelSrc = '../../public/glb_models/game_components/fly/Volcano.glb';
 export const PalmIslandModelSrc = '../../public/glb_models/game_components/fly/Palm_Island.glb';
 export const  WinterMountainModelSrc = '../../public/glb_models/game_components/fly/Winter_Mountain.glb';
+export const DemonModelSrc = '../../public/glb_models/game_components/fly/Demon.glb';
+export const TribalModelSrc = '../../public/glb_models/game_components/fly/Tribal.glb';
+export const YetiModelSrc = '../../public/glb_models/game_components/fly/Yeti.glb';

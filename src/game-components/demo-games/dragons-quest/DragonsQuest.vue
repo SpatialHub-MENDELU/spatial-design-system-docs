@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick } from 'vue';
 import 'aframe';
-import {IslandModelSrc, VolcanoModelSrc, WinterMountainModelSrc, PalmIslandModelSrc} from '../constants';
+import {DemonModelSrc, TribalModelSrc, YetiModelSrc, IslandModelSrc, VolcanoModelSrc, WinterMountainModelSrc, PalmIslandModelSrc} from '../constants';
 
 
 type GameState = 'menu' | 'playing';
@@ -19,7 +19,20 @@ interface StaticModel {
     offset: string;
 }
 
+interface NpcModel {
+    id: number;
+    src: string;
+    position: string;
+    rotation: string;
+    scale: string;
+    offset: string;
+    walkClipName: string;
+    idleClipName: string;
+    points: string;
+}
+
 const staticModelsList = ref<StaticModel[]>([]);
+const npcModelsList = ref<NpcModel[]>([]);
 
 const handleFullscreenChange = () => {
     if (!document.fullscreenElement) {
@@ -43,7 +56,7 @@ const startGame = async () => {
         {
             id: 1,
             src: IslandModelSrc,
-            position: '0 -50 -50',
+            position: '0 -50 -100',
             rotation: '0 0 0',
             scale: '60 60 60',
             offset: '0 22 0',
@@ -51,7 +64,7 @@ const startGame = async () => {
         {
             id: 2,
             src: VolcanoModelSrc,
-            position: '0 0 -50',
+            position: '0 0 -100',
             rotation: '0 0 0',
             scale: '15 15 15',
             offset: '2 2 2',
@@ -59,7 +72,7 @@ const startGame = async () => {
         {
             id: 3,
             src: PalmIslandModelSrc,
-            position: '-20 -5 0',
+            position: '-100 -5 0',
             rotation: '0 -45 0',
             scale: '0.3 0.3 0.3',
             offset: '-4 7 -1',
@@ -67,7 +80,7 @@ const startGame = async () => {
         {
             id: 5,
             src: IslandModelSrc,
-            position: '-20 -50 0',
+            position: '-100 -50 0',
             rotation: '0 0 0',
             scale: '60 60 60',
             offset: '0 22 0',
@@ -75,18 +88,61 @@ const startGame = async () => {
         {
             id: 6,
             src: WinterMountainModelSrc,
-            position: '40 0 0',
+            position: '100 0 0',
             rotation: '0 0 0',
-            scale: '15 15 15',
+            scale: '25 25 25',
             offset: '0 1 3',
         },
         {
             id: 7,
             src: IslandModelSrc,
-            position: '40 -50 0',
+            position: '100 -50 0',
             rotation: '0 -45 0',
             scale: '60 60 60',
             offset: '0 22 0',
+        },
+        {
+            id: 8,
+            src: IslandModelSrc,
+            position: '0 -50 100',
+            rotation: '0 -45 0',
+            scale: '60 60 60',
+            offset: '0 22 0',
+        },
+    ]
+    npcModelsList.value = [
+        {
+            id: 1,
+            src: DemonModelSrc,
+            position: '0 0 -85',
+            rotation: '0 0 0',
+            scale: '1 1 1',
+            offset: '0 1.5 0',
+            walkClipName: 'CharacterArmature|Fast_Flying',
+            idleClipName: 'CharacterArmature|Flying_Idle',
+            points: "0 0 -85,",
+        },
+        {
+            id: 2,
+            src: TribalModelSrc,
+            position: '-85 -5 0',
+            rotation: '0 0 0',
+            scale: '1 1 1',
+            offset: '0 2 0',
+            walkClipName: 'CharacterArmature|Fast_Flying',
+            idleClipName: 'CharacterArmature|Flying_Idle',
+            points: "-85 -5 0,"
+        },
+        {
+            id: 3,
+            src: YetiModelSrc,
+            position: '85 -5 0',
+            rotation: '0 0 0',
+            scale: '1 1 1',
+            offset: '0 1.5 0.5',
+            walkClipName: '*Walk*',
+            idleClipName: '*Idle*',
+            points: "85 -5 0,"
         },
     ]
 
@@ -123,12 +179,12 @@ const startGame = async () => {
 
 <!--                <a-box position="0 1 -4" rotation="0 45 0" color="#FFFFFF"></a-box>-->
 
-                <a-camera position="0 1.6 0"></a-camera>
+                <a-camera position="0 1.6 130"></a-camera>
 
 <!--                ISLANDS -->
                 <a-entity
                     v-for="model in staticModelsList"
-                    :key="model.id"
+                    :key="'static-' + model.id"
                     :gltf-model="model.src"
                     :position="model.position"
                     :rotation="model.rotation"
@@ -136,6 +192,24 @@ const startGame = async () => {
                     ammo-body="type: static;"
                     :ammo-shape="`type: hull; offset: ${model.offset};`"
                 ></a-entity>
+
+<!--                NPC -->
+                <a-entity
+                    v-for="model in npcModelsList"
+                    :key="'npc-' + model.id"
+                    :position="model.position"
+                    :rotation="model.rotation"
+                    ammo-body="type: dynamic; gravity: 0 0 0; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation;"
+                    animation-mixer="clip: idle; loop: repeat;"
+                >
+                    <a-entity
+                        :gltf-model="model.src"
+                        :ammo-shape="`type: hull; offset: ${model.offset};`"
+                        :scale="model.scale"
+                        :animation-mixer="`clip: ${model.idleClipName}; loop: repeat; crossFadeDuration: 0.3;`"
+                    ></a-entity>
+
+                </a-entity>
             </a-scene>
         </div>
     </div>
