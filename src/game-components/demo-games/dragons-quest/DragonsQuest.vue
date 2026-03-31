@@ -337,6 +337,20 @@ const startGame = async () => {
           ></a-entity>
         </a-entity>
       </a-scene>
+
+        <div class="controls-guide">
+            <div class="controls-title">DRAGON CONTROLS</div>
+            <div class="controls-grid">
+                <div class="control-item"><span class="key">W</span> <span>Forward</span></div>
+                <div class="control-item"><span class="key">S</span> <span>Backward</span></div>
+                <div class="control-item"><span class="key">A</span> <span>Left</span></div>
+                <div class="control-item"><span class="key">D</span> <span>Right</span></div>
+                <hr class="controls-divider" />
+                <div class="control-item"><span class="key">Space</span> <span>Fly Up</span></div>
+                <div class="control-item"><span class="key">C</span> <span>Descend</span></div>
+                <div class="control-item"><span class="key">Shift</span> <span>Sprint</span></div>
+            </div>
+        </div>
     </div>
   </div>
 </template>
@@ -463,7 +477,7 @@ const startGame = async () => {
 .minimap-wrapper {
   position: absolute;
   top: 20px;
-  left: 20px;
+  right: 20px;
   width: 160px;
   height: 160px;
   border-radius: 50%;
@@ -536,4 +550,82 @@ const startGame = async () => {
   font-family: Arial, sans-serif;
   z-index: 20;
 }
+
+.controls-guide {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(74, 14, 14, 0.85);
+    border: 2px solid #ffd700;
+    border-radius: 8px;
+    padding: 15px;
+    color: #fdf5e6;
+    z-index: 100;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+    min-width: 180px;
+}
+
+.controls-title {
+    color: #ffd700;
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+    padding-bottom: 5px;
+    letter-spacing: 1px;
+}
+
+.controls-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+}
+
+.control-item {
+    display: flex;
+    align-items: center;
+    font-size: 0.85rem;
+}
+
+.key {
+    display: inline-block;
+    min-width: 26px;
+    height: 24px;
+    background: #2a0505;
+    border: 1px solid #ffd700;
+    border-radius: 4px;
+    color: #ffd700;
+    text-align: center;
+    line-height: 22px;
+    margin-right: 12px;
+    font-weight: bold;
+    font-size: 0.7rem;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.5), 0 2px 0 rgba(0,0,0,0.3);
+    padding: 0 4px;
+}
+
+.control-item:nth-child(5) .key {
+    min-width: 50px;
+}
+
+.controls-divider {
+    border: 0;
+    border-top: 1px solid rgba(255, 215, 0, 0.2);
+    margin: 4px 0;
+}
+
+.control-item {
+    display: flex;
+    align-items: center;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+}
+
+.control-item:nth-child(6) .key,
+.control-item:nth-child(8) .key  {
+    min-width: 55px;
+}
+
 </style>
