@@ -33,3 +33,6 @@ export const DemonModelSrc = '../../public/glb_models/game_components/fly/Demon.
 export const TribalModelSrc = '../../public/glb_models/game_components/fly/Tribal.glb';
 export const YetiModelSrc = '../../public/glb_models/game_components/fly/Yeti.glb';
 export const DragonModelSrc = '../../public/glb_models/game_components/fly/Dragon.glb';
+
+// FOREST FLIGHT
+export const PaperAirplaneModelSrc = '../../public/glb_models/game_components/fly/paper_airplane.glb';
