@@ -12,6 +12,12 @@ import {
   DragonModelSrc,
 } from '../constants';
 
+type GameState = 'menu' | 'intro' | 'playing' | 'end';
+
+const gameState = ref<GameState>('menu');
+const gameWrapperRef = ref<HTMLElement | null>(null);
+const renderScene = ref(false);
+
 const currentQuestStep = ref(0);
 const showInteractPrompt = ref(false);
 const activeDialogText = ref<string | null>(null);
@@ -20,28 +26,22 @@ const arrowRotation = ref(0);
 
 const questSteps = [
   {
-    npcId: 'npc-3', // Yeti
+    npcId: 'npc-3',
     marker: '!',
     dialog:
       "Yeti: Hello dragon! I see you lost your fire. I have a 'Healing Herb' frozen in this ice, but it's too hard for me to break. Go to the Demon in the Volcano, his hellfire is the only thing that can melt magical ice!",
   },
   {
-    npcId: 'npc-1', // Demon
+    npcId: 'npc-1',
     marker: '?',
     dialog:
       'Demon: A frozen herb? I can melt it, but my fire is too wild. I would burn it to ashes! Go to the Tribal Shaman on the tropical island, I need a special Fireproof Leaf to protect the herb.',
   },
   {
-    npcId: 'npc-2', // Tribal
+    npcId: 'npc-2',
     marker: '?',
     dialog:
       'Tribal Shaman: Welcome, dragon. I have been guarding this ancient Fireproof Leaf in our sanctuary. Take it! Now you can safely melt the herb and get your dragon fire back!',
-  },
-  {
-    npcId: '',
-    marker: '',
-    dialog:
-      'Congratulations! You found the leaf and saved your fire. Your dragon cold is gone!',
   },
 ];
 
@@ -91,7 +91,8 @@ if (typeof AFRAME !== 'undefined' && !AFRAME.components['game-logic']) {
     tick: function () {
       const player = document.querySelector('#dragon-character');
       const currentStep = questSteps[currentQuestStep.value];
-      if (!player || !currentStep || !currentStep.npcId) {
+
+      if (!player || !currentStep || gameState.value !== 'playing') {
         showInteractPrompt.value = false;
         return;
       }
@@ -115,12 +116,6 @@ if (typeof AFRAME !== 'undefined' && !AFRAME.components['game-logic']) {
     },
   });
 }
-
-type GameState = 'menu' | 'intro' | 'playing';
-
-const gameState = ref<GameState>('menu');
-const gameWrapperRef = ref<HTMLElement | null>(null);
-const renderScene = ref(false);
 
 interface StaticModel {
   id: number;
@@ -148,7 +143,7 @@ const staticModelsList = ref<StaticModel[]>([]);
 const npcModelsList = ref<NpcModel[]>([]);
 
 const handleFullscreenChange = () => {
-  if (!document.fullscreenElement) {
+  if (!document.fullscreenElement && gameState.value !== 'menu') {
     gameState.value = 'menu';
   }
 };
@@ -160,6 +155,8 @@ const handleInteraction = () => {
     activeDialogText.value = null;
     if (currentQuestStep.value < questSteps.length - 1) {
       currentQuestStep.value++;
+    } else {
+      gameState.value = 'end';
     }
   }
 };
@@ -182,6 +179,25 @@ onUnmounted(() => {
   document.removeEventListener('fullscreenchange', handleFullscreenChange);
   window.removeEventListener('keydown', handleKeydown);
 });
+
+const restartGame = () => {
+  currentQuestStep.value = 0;
+  activeDialogText.value = null;
+  gameState.value = 'playing';
+};
+
+const quitGame = async () => {
+  if (document.fullscreenElement) {
+    try {
+      await document.exitFullscreen();
+    } catch (err) {
+      console.warn(err);
+    }
+  }
+  gameState.value = 'menu';
+  currentQuestStep.value = 0;
+  activeDialogText.value = null;
+};
 
 const startGame = async () => {
   gameState.value = 'intro';
@@ -284,11 +300,7 @@ const startGame = async () => {
     window.dispatchEvent(new Event('resize'));
   });
 
-  if (
-    gameWrapperRef.value &&
-    gameWrapperRef.value.requestFullscreen &&
-    !document.fullscreenElement
-  ) {
+  if (gameWrapperRef.value && !document.fullscreenElement) {
     try {
       await gameWrapperRef.value.requestFullscreen();
     } catch (err) {
@@ -309,7 +321,7 @@ const startGame = async () => {
 
     <div v-else-if="gameState === 'intro'" class="screen screen--intro">
       <div class="fantasy-dialog story-dialog">
-        <h2>Chapter 1: The Lost Fire</h2>
+        <h2>The Lost Fire</h2>
         <p>
           Oh no! You woke up and your dragon fire is gone! You caught a terrible
           dragon cold. You must find a cure to get your flames back.
@@ -319,6 +331,24 @@ const startGame = async () => {
           know what to do!
         </p>
         <div class="press-enter">Press [ENTER] to start your quest</div>
+      </div>
+    </div>
+
+    <div v-else-if="gameState === 'end'" class="screen screen--end">
+      <div class="fantasy-dialog">
+        <h1>QUEST COMPLETE</h1>
+        <p style="color: #fdf5e6; font-size: 1.2rem; margin-bottom: 30px">
+          You have found the Fireproof Leaf and cured your dragon cold!<br />
+          The skies are yours to burn again.
+        </p>
+        <div class="end-actions">
+          <button class="fantasy-btn" @click="restartGame">
+            RESTART QUEST
+          </button>
+          <button class="fantasy-btn fantasy-btn--secondary" @click="quitGame">
+            QUIT TO MENU
+          </button>
+        </div>
       </div>
     </div>
 
@@ -436,7 +466,6 @@ const startGame = async () => {
             material="emissive: #FFD700"
             animation="property: position; to: 0 7.5 0; dir: alternate; dur: 1000; loop: true"
           ></a-entity>
-
           <a-entity
             :gltf-model="model.src"
             :ammo-shape="`type: hull; offset: ${model.offset};`"
@@ -578,6 +607,20 @@ const startGame = async () => {
   box-shadow: 0 0 15px #ffd700;
 }
 
+.fantasy-btn--secondary {
+  background: #1a0505;
+  border-color: rgba(255, 215, 0, 0.5);
+  font-size: 1rem;
+  margin-top: 10px;
+}
+
+.end-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+}
+
 .screen--game {
   position: absolute;
   top: 0;
@@ -673,7 +716,6 @@ const startGame = async () => {
   z-index: 20;
 }
 
-/* Controls UI */
 .controls-guide {
   position: absolute;
   bottom: 20px;
@@ -743,7 +785,6 @@ const startGame = async () => {
   min-width: 55px;
 }
 
-/* Quest Navigation & Interaction UI */
 .quest-arrow-container {
   position: absolute;
   top: 20px;
