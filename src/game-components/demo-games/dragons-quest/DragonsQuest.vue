@@ -12,6 +12,39 @@ import {
   DragonModelSrc,
 } from '../constants';
 
+const currentQuestStep = ref(0);
+const showInteractPrompt = ref(false);
+const activeDialogText = ref<string | null>(null);
+const distToTarget = ref(0);
+const arrowRotation = ref(0);
+
+const questSteps = [
+  {
+    npcId: 'npc-3', // Yeti
+    marker: '!',
+    dialog:
+      "Yeti: Hello dragon! I see you lost your fire. I have a 'Healing Herb' frozen in this ice, but it's too hard for me to break. Go to the Demon in the Volcano, his hellfire is the only thing that can melt magical ice!",
+  },
+  {
+    npcId: 'npc-1', // Demon
+    marker: '?',
+    dialog:
+      'Demon: A frozen herb? I can melt it, but my fire is too wild. I would burn it to ashes! Go to the Tribal Shaman on the tropical island, I need a special Fireproof Leaf to protect the herb.',
+  },
+  {
+    npcId: 'npc-2', // Tribal
+    marker: '?',
+    dialog:
+      'Tribal Shaman: Welcome, dragon. I have been guarding this ancient Fireproof Leaf in our sanctuary. Take it! Now you can safely melt the herb and get your dragon fire back!',
+  },
+  {
+    npcId: '',
+    marker: '',
+    dialog:
+      'Congratulations! You found the leaf and saved your fire. Your dragon cold is gone!',
+  },
+];
+
 if (typeof AFRAME !== 'undefined' && !AFRAME.components['minimap-updater']) {
   AFRAME.registerComponent('minimap-updater', {
     tick: function () {
@@ -53,6 +86,36 @@ if (typeof AFRAME !== 'undefined' && !AFRAME.components['minimap-updater']) {
   });
 }
 
+if (typeof AFRAME !== 'undefined' && !AFRAME.components['game-logic']) {
+  AFRAME.registerComponent('game-logic', {
+    tick: function () {
+      const player = document.querySelector('#dragon-character');
+      const currentStep = questSteps[currentQuestStep.value];
+      if (!player || !currentStep || !currentStep.npcId) {
+        showInteractPrompt.value = false;
+        return;
+      }
+
+      const targetNpc = document.querySelector(`#${currentStep.npcId}`);
+      if (!targetNpc) return;
+
+      const pPos = player.object3D.position;
+      const tPos = targetNpc.object3D.position;
+
+      const dist = pPos.distanceTo(tPos);
+      distToTarget.value = dist;
+      showInteractPrompt.value = dist < 12;
+
+      const dx = tPos.x - pPos.x;
+      const dz = tPos.z - pPos.z;
+      const angleToTarget = Math.atan2(dx, dz);
+      const playerRotation = player.object3D.rotation.y;
+      arrowRotation.value =
+        (angleToTarget - playerRotation) * (180 / Math.PI) + 180;
+    },
+  });
+}
+
 type GameState = 'menu' | 'intro' | 'playing';
 
 const gameState = ref<GameState>('menu');
@@ -90,9 +153,22 @@ const handleFullscreenChange = () => {
   }
 };
 
+const handleInteraction = () => {
+  if (showInteractPrompt.value && !activeDialogText.value) {
+    activeDialogText.value = questSteps[currentQuestStep.value].dialog;
+  } else if (activeDialogText.value) {
+    activeDialogText.value = null;
+    if (currentQuestStep.value < questSteps.length - 1) {
+      currentQuestStep.value++;
+    }
+  }
+};
+
 const handleKeydown = (e: KeyboardEvent) => {
   if (gameState.value === 'intro' && e.key === 'Enter') {
     gameState.value = 'playing';
+  } else if (gameState.value === 'playing' && e.key === 'Enter') {
+    handleInteraction();
   }
 };
 
@@ -201,7 +277,6 @@ const startGame = async () => {
       walkClipName: '*Walk*',
       idleClipName: '*Idle*',
       points: '85 -5 0,',
-      hasQuestMarker: true,
     },
   ];
 
@@ -248,6 +323,33 @@ const startGame = async () => {
     </div>
 
     <div v-else-if="gameState === 'playing'" class="screen screen--game">
+      <div
+        class="quest-arrow-container"
+        v-if="questSteps[currentQuestStep]?.npcId"
+      >
+        <div
+          class="quest-arrow"
+          :style="{ transform: `rotate(${arrowRotation}deg)` }"
+        >
+          ▲
+        </div>
+        <div class="quest-dist">{{ Math.round(distToTarget) }}m</div>
+      </div>
+
+      <div
+        v-if="showInteractPrompt && !activeDialogText"
+        class="interact-prompt"
+      >
+        Press <span class="key-hint">ENTER</span> to talk
+      </div>
+
+      <div v-if="activeDialogText" class="dialog-overlay">
+        <div class="fantasy-dialog quest-box">
+          <p>{{ activeDialogText }}</p>
+          <div class="press-enter">[ Press ENTER to continue ]</div>
+        </div>
+      </div>
+
       <div class="minimap-wrapper">
         <div class="minimap-content">
           <div id="minimap-player-icon" class="minimap-player">
@@ -273,12 +375,17 @@ const startGame = async () => {
             class="minimap-marker-npc"
             :data-target="`#npc-${model.id}`"
           >
-            <span v-if="model.hasQuestMarker" class="minimap-quest">!</span>
+            <span
+              v-if="questSteps[currentQuestStep]?.npcId === 'npc-' + model.id"
+              class="minimap-quest"
+            >
+              {{ questSteps[currentQuestStep].marker }}
+            </span>
           </div>
         </div>
       </div>
 
-      <a-scene physics="driver: ammo; debug: true;" minimap-updater>
+      <a-scene physics="driver: ammo; debug: false;" minimap-updater game-logic>
         <a-sky color="#AEE2FF"></a-sky>
 
         <a-entity
@@ -323,10 +430,11 @@ const startGame = async () => {
           ammo-body="type: dynamic; gravity: 0 0 0; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation;"
         >
           <a-entity
-            v-if="model.hasQuestMarker"
-            text="value: !; color: #FFD700; align: center; width: 20; wrapCount: 10; font: mozillavr;"
-            position="0 6.5 0"
+            v-if="questSteps[currentQuestStep]?.npcId === 'npc-' + model.id"
+            :text="`value: ${questSteps[currentQuestStep].marker}; color: #FFD700; align: center; width: 15; wrapCount: 10; font: mozillavr;`"
+            position="0 7 0"
             material="emissive: #FFD700"
+            animation="property: position; to: 0 7.5 0; dir: alternate; dur: 1000; loop: true"
           ></a-entity>
 
           <a-entity
@@ -565,6 +673,7 @@ const startGame = async () => {
   z-index: 20;
 }
 
+/* Controls UI */
 .controls-guide {
   position: absolute;
   bottom: 20px;
@@ -601,6 +710,7 @@ const startGame = async () => {
   display: flex;
   align-items: center;
   font-size: 0.85rem;
+  margin-bottom: 4px;
 }
 
 .key {
@@ -622,25 +732,87 @@ const startGame = async () => {
   padding: 0 4px;
 }
 
-.control-item:nth-child(5) .key {
-  min-width: 50px;
-}
-
 .controls-divider {
   border: 0;
   border-top: 1px solid rgba(255, 215, 0, 0.2);
   margin: 4px 0;
 }
 
-.control-item {
-  display: flex;
-  align-items: center;
-  font-size: 0.85rem;
-  margin-bottom: 4px;
-}
-
 .control-item:nth-child(6) .key,
 .control-item:nth-child(8) .key {
   min-width: 55px;
+}
+
+/* Quest Navigation & Interaction UI */
+.quest-arrow-container {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 110;
+  pointer-events: none;
+}
+
+.quest-arrow {
+  font-size: 40px;
+  color: #ffd700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  transition: transform 0.1s ease-out;
+}
+
+.quest-dist {
+  color: #fdf5e6;
+  font-size: 14px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px #000;
+}
+
+.interact-prompt {
+  position: absolute;
+  bottom: 180px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(74, 14, 14, 0.9);
+  padding: 12px 25px;
+  border: 2px solid #ffd700;
+  color: #fdf5e6;
+  border-radius: 8px;
+  z-index: 100;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  font-weight: bold;
+}
+
+.key-hint {
+  color: #ffd700;
+  background: #2a0505;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid #ffd700;
+  margin: 0 5px;
+}
+
+.dialog-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 200;
+}
+
+.quest-box {
+  max-width: 500px;
+  border-width: 4px;
+}
+
+.quest-box p {
+  color: #fdf5e6;
+  font-size: 1.3rem;
+  line-height: 1.5;
 }
 </style>
