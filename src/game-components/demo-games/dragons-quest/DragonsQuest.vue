@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick } from 'vue';
-import 'AFRAME';
+import 'aframe';
 import {
   DemonModelSrc,
   TribalModelSrc,
