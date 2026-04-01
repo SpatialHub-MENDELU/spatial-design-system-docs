@@ -545,7 +545,7 @@ const startGame = async () => {
 
         <a-entity
           camera
-          game-view="target: #dragon-character; type: thirdPersonFollow; distance: 5; height: 5;"
+          game-view="target: #dragon-character; type: thirdPersonFollow; distance: 5; height: 5; zoom: true;"
           rotation="-30 0 0"
         ></a-entity>
 
@@ -622,6 +622,34 @@ const startGame = async () => {
           </div>
           <div class="control-item">
             <span class="key">Shift</span> <span>Sprint</span>
+          </div>
+          <hr class="controls-divider" />
+          <div class="control-item">
+            <span class="key key--icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                style="width: 16px; height: 16px; vertical-align: middle"
+              >
+                <rect
+                  x="5"
+                  y="3"
+                  width="14"
+                  height="18"
+                  rx="7"
+                  stroke="#FFD700"
+                  stroke-width="2"
+                />
+                <path
+                  d="M12 7V11"
+                  stroke="#FFD700"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </span>
+            <span>Zoom In/Out</span>
           </div>
         </div>
       </div>
@@ -879,22 +907,35 @@ const startGame = async () => {
 }
 
 .key {
-  display: inline-block;
-  min-width: 26px;
-  height: 24px;
-  background: #2a0505;
-  border: 1px solid #ffd700;
-  border-radius: 4px;
-  color: #ffd700;
-  text-align: center;
-  line-height: 22px;
-  margin-right: 12px;
-  font-weight: bold;
-  font-size: 0.7rem;
-  box-shadow:
-    inset 0 0 5px rgba(0, 0, 0, 0.5),
-    0 2px 0 rgba(0, 0, 0, 0.3);
-  padding: 0 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 26px;
+    height: 24px;
+    background: #2a0505;
+    border: 1px solid #ffd700;
+    border-radius: 4px;
+    color: #ffd700;
+    margin-right: 12px;
+    font-weight: bold;
+    font-size: 0.7rem;
+    box-shadow:
+        inset 0 0 5px rgba(0, 0, 0, 0.5),
+        0 2px 0 rgba(0, 0, 0, 0.3);
+    padding: 0 4px;
+}
+
+.key--icon {
+    padding: 0 6px;
+}
+
+.key--icon svg path {
+    animation: scroll-hint 2s infinite;
+}
+
+@keyframes scroll-hint {
+    0%, 100% { opacity: 1; transform: translateY(0); }
+    50% { opacity: 0.3; transform: translateY(2px); }
 }
 
 .controls-divider {
