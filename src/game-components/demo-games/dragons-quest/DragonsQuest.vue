@@ -33,13 +33,13 @@ const questSteps = [
   },
   {
     npcId: 'npc-1',
-    marker: '?',
+    marker: '!',
     dialog:
       'Demon: A frozen herb? I can melt it, but my fire is too wild. I would burn it to ashes! Go to the Tribal Shaman on the tropical island, I need a special Fireproof Leaf to protect the herb.',
   },
   {
     npcId: 'npc-2',
-    marker: '?',
+    marker: '!',
     dialog:
       'Tribal Shaman: Welcome, dragon. I have been guarding this ancient Fireproof Leaf in our sanctuary. Take it! Now you can safely melt the herb and get your dragon fire back!',
   },
@@ -459,13 +459,17 @@ const startGame = async () => {
           :rotation="model.rotation"
           ammo-body="type: dynamic; gravity: 0 0 0; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation;"
         >
-          <a-entity
-            v-if="questSteps[currentQuestStep]?.npcId === 'npc-' + model.id"
-            :text="`value: ${questSteps[currentQuestStep].marker}; color: #FFD700; align: center; width: 15; wrapCount: 10; font: mozillavr;`"
-            position="0 7 0"
-            material="emissive: #FFD700"
-            animation="property: position; to: 0 7.5 0; dir: alternate; dur: 1000; loop: true"
-          ></a-entity>
+            <a-entity
+                v-if="questSteps[currentQuestStep]?.npcId === 'npc-' + model.id"
+                position="0 5 0"
+                animation="property: position; to: 0 7.5 0; dir: alternate; dur: 1000; loop: true; easing: easeInOutSine"
+                animation__rotate="property: rotation; to: 0 360 0; dur: 4000; loop: true; easing: linear"
+            >
+                <a-entity v-if="questSteps[currentQuestStep].marker === '!'">
+                    <a-cylinder color="#FFD700" height="1.5" radius="0.15" position="0 1.1 0"></a-cylinder>
+                    <a-sphere color="#FFD700" radius="0.2" position="0 0 0"></a-sphere>
+                </a-entity>
+            </a-entity>
           <a-entity
             :gltf-model="model.src"
             :ammo-shape="`type: hull; offset: ${model.offset};`"
