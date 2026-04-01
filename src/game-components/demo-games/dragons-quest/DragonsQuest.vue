@@ -567,7 +567,7 @@ const startGame = async () => {
           :id="'npc-' + model.id"
           :position="model.position"
           :rotation="model.rotation"
-          ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 100; activationState: disableDeactivation;"
+          ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 500; activationState: disableDeactivation;"
         >
           <a-entity
             v-if="questSteps[currentQuestStep]?.npcId === 'npc-' + model.id"
