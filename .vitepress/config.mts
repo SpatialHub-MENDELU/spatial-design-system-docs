@@ -22,6 +22,7 @@ export default defineConfig({
   srcDir: './src',
   head: [
     ['script', { type: 'text/javascript' }, handlePlaygroundPageClass],
+    ['script', { src: 'https://unpkg.com/aframe-ocean-shader@1.0.0/dist/aframe-ocean-shader.min.js' }],
     ['script', { src: 'https://aframe.io/releases/1.7.0/aframe.min.js' }],
     ['script', { src: 'https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.4/dist/aframe-extras.min.js' }],
     ['script', { src: 'https://cdn.jsdelivr.net/gh/MozillaReality/ammo.js@8bbc0ea/builds/ammo.wasm.js' }],

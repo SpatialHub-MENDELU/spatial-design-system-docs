@@ -141,6 +141,7 @@ interface NpcModel {
 
 const staticModelsList = ref<StaticModel[]>([]);
 const npcModelsList = ref<NpcModel[]>([]);
+const cloudsList = ref<{ id: number; position: string; scale: string }[]>([]);
 
 const handleFullscreenChange = () => {
   if (!document.fullscreenElement && gameState.value !== 'menu') {
@@ -417,6 +418,18 @@ const startGame = async () => {
 
       <a-scene physics="driver: ammo; debug: false;" minimap-updater game-logic>
         <a-sky color="#AEE2FF"></a-sky>
+          <a-ocean
+              position="0 -10 0"
+              width="600"
+              depth="600"
+              density="150"
+              speed="2"
+              color="#40E0D0"
+              color-horizon="#20B2AA"
+              metalness="0.1"
+              roughness="0.8"
+          >
+          </a-ocean>
 
         <a-entity
           fly="type: freeDirectionalFlight; flyClipName: *Dragon_Flying*; idleClipName: *Dragon_Flying*; sprintClipName:  *Dragon_Flying*; forwardOffsetAngle: 0; maxPitchDeg: 20; pitchSpeed: 120; maxRollDeg: 15; rollSpeed: 60; rotationSpeed: 60; sprint: true;"
@@ -459,17 +472,26 @@ const startGame = async () => {
           :rotation="model.rotation"
           ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 100; activationState: disableDeactivation;"
         >
-            <a-entity
-                v-if="questSteps[currentQuestStep]?.npcId === 'npc-' + model.id"
-                position="0 5 0"
-                animation="property: position; to: 0 7.5 0; dir: alternate; dur: 1000; loop: true; easing: easeInOutSine"
-                animation__rotate="property: rotation; to: 0 360 0; dur: 4000; loop: true; easing: linear"
-            >
-                <a-entity v-if="questSteps[currentQuestStep].marker === '!'">
-                    <a-cylinder color="#FFD700" height="1.5" radius="0.15" position="0 1.1 0"></a-cylinder>
-                    <a-sphere color="#FFD700" radius="0.2" position="0 0 0"></a-sphere>
-                </a-entity>
+          <a-entity
+            v-if="questSteps[currentQuestStep]?.npcId === 'npc-' + model.id"
+            position="0 5 0"
+            animation="property: position; to: 0 7.5 0; dir: alternate; dur: 1000; loop: true; easing: easeInOutSine"
+            animation__rotate="property: rotation; to: 0 360 0; dur: 4000; loop: true; easing: linear"
+          >
+            <a-entity v-if="questSteps[currentQuestStep].marker === '!'">
+              <a-cylinder
+                color="#FFD700"
+                height="1.5"
+                radius="0.15"
+                position="0 1.1 0"
+              ></a-cylinder>
+              <a-sphere
+                color="#FFD700"
+                radius="0.2"
+                position="0 0 0"
+              ></a-sphere>
             </a-entity>
+          </a-entity>
           <a-entity
             :gltf-model="model.src"
             :ammo-shape="`type: hull; offset: ${model.offset};`"
