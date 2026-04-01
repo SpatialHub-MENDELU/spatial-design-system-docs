@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick } from 'vue';
-import 'aframe';
+import 'AFRAME';
 import {
   DemonModelSrc,
   TribalModelSrc,
@@ -211,43 +211,42 @@ const quitGame = async () => {
 };
 
 const generateClouds = () => {
-    const clouds: any[] = [];
-    const countSide = 5;
+  const clouds: any[] = [];
+  const countSide = 5;
 
-    const minX = -150;
-    const maxX = 150;
-    const minZ = -150;
-    const maxZ = 150;
+  const minX = -150;
+  const maxX = 150;
+  const minZ = -150;
+  const maxZ = 150;
 
-    const stepX = (maxX - minX) / (countSide - 1);
-    const stepZ = (maxZ - minZ) / (countSide - 1);
+  const stepX = (maxX - minX) / (countSide - 1);
+  const stepZ = (maxZ - minZ) / (countSide - 1);
 
-    let id = 0;
-    for (let i = 0; i < countSide; i++) {
-        for (let j = 0; j < countSide; j++) {
+  let id = 0;
+  for (let i = 0; i < countSide; i++) {
+    for (let j = 0; j < countSide; j++) {
+      const baseX = minX + j * stepX;
+      const baseZ = minZ + i * stepZ;
 
-            const baseX = minX + (j * stepX);
-            const baseZ = minZ + (i * stepZ);
+      const jitterX = (Math.random() - 0.5) * 100;
+      const jitterZ = (Math.random() - 0.5) * 100;
 
-            const jitterX = (Math.random() - 0.5) * 100;
-            const jitterZ = (Math.random() - 0.5) * 100;
+      const x = baseX + jitterX;
+      const z = baseZ + jitterZ;
+      const y = 30 + Math.random() * 50;
 
-            const x = baseX + jitterX;
-            const z = baseZ + jitterZ;
-            const y = 30 + (Math.random() * 50);
-
-            clouds.push({
-                id: id++,
-                position: `${x} ${y} ${z}`,
-                startX: x - 60,
-                endX: x + 60,
-                duration: 60000 + (Math.random() * 2000),
-                scale: `${4 + Math.random() * 2} ${2 + Math.random() * 1.5} ${4 + Math.random() * 2}`,
-                rotation: `0 ${Math.random() * 360} 0`,
-            });
-        }
+      clouds.push({
+        id: id++,
+        position: `${x} ${y} ${z}`,
+        startX: x - 60,
+        endX: x + 60,
+        duration: 60000 + Math.random() * 2000,
+        scale: `${4 + Math.random() * 2} ${2 + Math.random() * 1.5} ${4 + Math.random() * 2}`,
+        rotation: `0 ${Math.random() * 360} 0`,
+      });
     }
-    return clouds;
+  }
+  return clouds;
 };
 
 const startGame = async () => {
@@ -471,65 +470,63 @@ const startGame = async () => {
       <a-scene physics="driver: ammo; debug: false;" minimap-updater game-logic>
         <a-sky color="#AEE2FF"></a-sky>
 
-          <a-entity id="clouds-container">
-              <a-entity
-                  v-for="cloud in cloudsList"
-                  :key="'cloud-' + cloud.id"
-                  :position="cloud.position"
-              >
-                  <a-entity
-                      :rotation="cloud.rotation"
-                      :scale="cloud.scale"
-                      :animation="`property: position.x; from: -70; to: 50; dur: ${cloud.duration}; loop: true; easing: linear; dir: alternate;`"
-                  >
-                      <a-sphere
-                          color="white"
-                          radius="5"
-                          material="shader: flat; opacity: 0.85;"
-                      ></a-sphere>
-                      <a-sphere
-                          color="white"
-                          radius="4"
-                          position="4 0.5 2"
-                          material="shader: flat; opacity: 0.85;"
-                      ></a-sphere>
-                      <a-sphere
-                          color="white"
-                          radius="4"
-                          position="-4 -0.5 1"
-                          material="shader: flat; opacity: 0.85;"
-                      ></a-sphere>
-                      <a-sphere
-                          color="white"
-                          radius="3.5"
-                          position="0 2 -1"
-                          material="shader: flat; opacity: 0.85;"
-                      ></a-sphere>
-                      <a-sphere
-                          color="white"
-                          radius="3"
-                          position="2 -1.5 3"
-                          material="shader: flat; opacity: 0.85;"
-                      ></a-sphere>
-                  </a-entity>
-              </a-entity>
+        <a-entity id="clouds-container">
+          <a-entity
+            v-for="cloud in cloudsList"
+            :key="'cloud-' + cloud.id"
+            :position="cloud.position"
+          >
+            <a-entity
+              :rotation="cloud.rotation"
+              :scale="cloud.scale"
+              :animation="`property: position.x; from: -70; to: 50; dur: ${cloud.duration}; loop: true; easing: linear; dir: alternate;`"
+            >
+              <a-sphere
+                color="white"
+                radius="5"
+                material="shader: flat; opacity: 0.85;"
+              ></a-sphere>
+              <a-sphere
+                color="white"
+                radius="4"
+                position="4 0.5 2"
+                material="shader: flat; opacity: 0.85;"
+              ></a-sphere>
+              <a-sphere
+                color="white"
+                radius="4"
+                position="-4 -0.5 1"
+                material="shader: flat; opacity: 0.85;"
+              ></a-sphere>
+              <a-sphere
+                color="white"
+                radius="3.5"
+                position="0 2 -1"
+                material="shader: flat; opacity: 0.85;"
+              ></a-sphere>
+              <a-sphere
+                color="white"
+                radius="3"
+                position="2 -1.5 3"
+                material="shader: flat; opacity: 0.85;"
+              ></a-sphere>
+            </a-entity>
           </a-entity>
-          <a-entity>
-              <a-ocean
-                  position="0 -10 0"
-                  width="600"
-                  depth="600"
-                  density="150"
-                  speed="2"
-                  color="#40E0D0"
-                  color-horizon="#20B2AA"
-                  metalness="0.1"
-                  roughness="0.8"
-              >
-              </a-ocean>
-          </a-entity>
-
-
+        </a-entity>
+        <a-entity>
+          <a-ocean
+            position="0 -10 0"
+            width="600"
+            depth="600"
+            density="150"
+            speed="2"
+            color="#40E0D0"
+            color-horizon="#20B2AA"
+            metalness="0.1"
+            roughness="0.8"
+          >
+          </a-ocean>
+        </a-entity>
 
         <a-entity
           fly="type: freeDirectionalFlight; flyClipName: *Dragon_Flying*; idleClipName: *Dragon_Flying*; sprintClipName:  *Dragon_Flying*; forwardOffsetAngle: 0; maxPitchDeg: 20; pitchSpeed: 120; maxRollDeg: 15; rollSpeed: 60; rotationSpeed: 60; sprint: true;"
