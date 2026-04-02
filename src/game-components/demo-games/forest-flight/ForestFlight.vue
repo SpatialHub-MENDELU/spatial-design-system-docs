@@ -1,9 +1,20 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick } from 'vue';
 import 'aframe';
-import { PaperAirplaneModelSrc } from '../constants';
+import { PaperAirplaneModelSrc, ForestModelSrc } from '../constants';
 
 type GameState = 'menu' | 'playing';
+
+interface StaticModel {
+  id: number;
+  src: string;
+  position: string;
+  rotation: string;
+  scale: string;
+  offset: string;
+}
+
+const staticModelsList = ref<StaticModel[]>([]);
 
 const gameState = ref<GameState>('menu');
 const gameWrapperRef = ref<HTMLElement | null>(null);
@@ -24,6 +35,138 @@ onUnmounted(() => {
 
 const startGame = async () => {
   gameState.value = 'playing';
+
+  staticModelsList.value = [
+    {
+      id: 1,
+      src: ForestModelSrc,
+      position: '-50 15 170',
+      rotation: '0 0 0',
+      scale: '70 70 70',
+      offset: '8 20 1',
+    },
+    {
+      id: 2,
+      src: ForestModelSrc,
+      position: '-43 15 122',
+      rotation: '0 90 0',
+      scale: '70 70 70',
+      offset: '8 20 1',
+    },
+    {
+      id: 3,
+      src: ForestModelSrc,
+      position: '-33.1 15 57',
+      rotation: '0 180 0',
+      scale: '70 70 70',
+      offset: '8 20 1',
+    },
+    {
+      id: 4,
+      src: ForestModelSrc,
+      position: '-38 15 -12',
+      rotation: '0 270 0',
+      scale: '70 70 70',
+      offset: '8 20 1',
+    },
+    {
+      id: 5,
+      src: ForestModelSrc,
+      position: '-50 15 -56',
+      rotation: '0 0 0',
+      scale: '70 70 70',
+      offset: '8 20 1',
+    },
+    {
+      id: 6,
+      src: ForestModelSrc,
+      position: '-43 15 -104',
+      rotation: '0 90 0',
+      scale: '70 70 70',
+      offset: '8 20 1',
+    },
+    {
+      id: 7,
+      src: ForestModelSrc,
+      position: '-33.1 15 -169',
+      rotation: '0 180 0',
+      scale: '70 70 70',
+      offset: '8 20 1',
+    },
+    {
+      id: 8,
+      src: ForestModelSrc,
+      position: '-38 15 -234',
+      rotation: '0 270 0',
+      scale: '70 70 70',
+      offset: '8 20 1',
+    },
+    // Other side of the river
+    {
+      id: 9,
+      src: ForestModelSrc,
+      position: '33 15 170',
+      rotation: '0 0 0',
+      scale: '70 70 70',
+      offset: '8 20 1',
+    },
+    {
+      id: 10,
+      src: ForestModelSrc,
+      position: '38 15 122',
+      rotation: '0 90 0',
+      scale: '70 70 70',
+      offset: '8 20 1',
+    },
+    {
+      id: 11,
+      src: ForestModelSrc,
+      position: '50 15 57',
+      rotation: '0 180 0',
+      scale: '70 70 70',
+      offset: '8 20 1',
+    },
+    {
+      id: 12,
+      src: ForestModelSrc,
+      position: '43 15 -12',
+      rotation: '0 270 0',
+      scale: '70 70 70',
+      offset: '8 20 1',
+    },
+    {
+      id: 13,
+      src: ForestModelSrc,
+      position: '33 15 -77',
+      rotation: '0 0 0',
+      scale: '70 70 70',
+      offset: '8 20 1',
+    },
+    {
+      id: 14,
+      src: ForestModelSrc,
+      position: '38 15 -125',
+      rotation: '0 90 0',
+      scale: '70 70 70',
+      offset: '8 20 1',
+    },
+    {
+      id: 15,
+      src: ForestModelSrc,
+      position: '50 15 -190',
+      rotation: '0 180 0',
+      scale: '70 70 70',
+      offset: '8 20 1',
+    },
+    {
+      id: 16,
+      src: ForestModelSrc,
+      position: '43 15 -259',
+      rotation: '0 270 0',
+      scale: '70 70 70',
+      offset: '8 20 1',
+    },
+  ];
 
   nextTick(async () => {
     if (gameWrapperRef.value && !document.fullscreenElement) {
@@ -74,6 +217,18 @@ const startGame = async () => {
           roughness="0.8"
         >
         </a-ocean>
+
+        <a-entity
+          v-for="model in staticModelsList"
+          :key="'static-' + model.id"
+          :id="'static-' + model.id"
+          :gltf-model="ForestModelSrc"
+          :position="model.position"
+          :rotation="model.rotation"
+          :scale="model.scale"
+          ammo-body="type: static;"
+          :ammo-shape="`type: hull; offset: ${model.offset};`"
+        ></a-entity>
 
         <a-entity
           camera

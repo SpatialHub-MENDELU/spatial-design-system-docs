@@ -36,3 +36,4 @@ export const DragonModelSrc = '../../public/glb_models/game_components/fly/Drago
 
 // FOREST FLIGHT
 export const PaperAirplaneModelSrc = '../../public/glb_models/game_components/fly/paper_airplane.glb';
+export const ForestModelSrc = '../../public/glb_models/game_components/fly/Forest.glb';
