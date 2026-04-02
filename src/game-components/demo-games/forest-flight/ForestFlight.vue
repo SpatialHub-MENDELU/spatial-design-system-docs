@@ -48,11 +48,11 @@ onMounted(() => {
 });
 
 onMounted(async () => {
-    try {
-        await import('spatial-design-system/components/game/fly');
-    } catch (e) {
-        console.error(e);
-    }
+  try {
+    await import('spatial-design-system/components/game/fly');
+  } catch (e) {
+    console.error(e);
+  }
 });
 
 onUnmounted(() => {
