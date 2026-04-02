@@ -47,6 +47,14 @@ onMounted(() => {
   document.addEventListener('fullscreenchange', handleFullscreenChange);
 });
 
+onMounted(async () => {
+    try {
+        await import('spatial-design-system/components/game/fly');
+    } catch (e) {
+        console.error(e);
+    }
+});
+
 onUnmounted(() => {
   document.removeEventListener('fullscreenchange', handleFullscreenChange);
 });
@@ -308,15 +316,17 @@ const startGame = async () => {
 
         <a-entity
           id="plane-character"
-          ammo-body="type: static; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation"
-          position="0 2 180"
-          rotation="0 0 0"
+          ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation"
+          position="0 4 180"
+          rotation="0 180 0"
+          fly="speed: 4; forwardOffsetAngle: 180; maxPitchDeg: 40; type: autoForwardFixedDirection; canMoveVertically: false; keyUp: arrowup; keyDown: arrowdown; keyLeft: arrowleft; keyRight: arrowright;"
         >
           <a-entity
             :gltf-model="`${PaperAirplaneModelSrc}`"
             ammo-shape="type: hull;"
             position="0 0 0"
             scale="0.02 0.02 0.02"
+            rotation="0 0 0"
           ></a-entity>
         </a-entity>
 
