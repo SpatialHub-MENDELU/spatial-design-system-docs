@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick } from 'vue';
 import 'aframe';
-import { PaperAirplaneModelSrc, ForestModelSrc } from '../constants';
+import {
+  PaperAirplaneModelSrc,
+  ForestModelSrc,
+  DockModelSrc,
+} from '../constants';
 
 type GameState = 'menu' | 'playing';
 
@@ -37,6 +41,7 @@ const startGame = async () => {
   gameState.value = 'playing';
 
   staticModelsList.value = [
+    //forest models on one side of the river
     {
       id: 1,
       src: ForestModelSrc,
@@ -137,7 +142,7 @@ const startGame = async () => {
     {
       id: 13,
       src: ForestModelSrc,
-      position: '33 15 -77',
+      position: '33 15 -56',
       rotation: '0 0 0',
       scale: '70 70 70',
       offset: '8 20 1',
@@ -145,7 +150,7 @@ const startGame = async () => {
     {
       id: 14,
       src: ForestModelSrc,
-      position: '38 15 -125',
+      position: '38 15 -104',
       rotation: '0 90 0',
       scale: '70 70 70',
       offset: '8 20 1',
@@ -153,7 +158,7 @@ const startGame = async () => {
     {
       id: 15,
       src: ForestModelSrc,
-      position: '50 15 -190',
+      position: '50 15 -169',
       rotation: '0 180 0',
       scale: '70 70 70',
       offset: '8 20 1',
@@ -161,10 +166,43 @@ const startGame = async () => {
     {
       id: 16,
       src: ForestModelSrc,
-      position: '43 15 -259',
+      position: '43 15 -234',
       rotation: '0 270 0',
       scale: '70 70 70',
       offset: '8 20 1',
+    },
+    // bridges
+    {
+      id: 17,
+      src: DockModelSrc,
+      position: '0 0 140',
+      rotation: '0 90 0',
+      scale: '19 19 19',
+      offset: '0 -2.9 0',
+    },
+    {
+      id: 18,
+      src: DockModelSrc,
+      position: '0 0 90',
+      rotation: '0 90 0',
+      scale: '19 19 19',
+      offset: '0 -2.9 0',
+    },
+    {
+      id: 19,
+      src: DockModelSrc,
+      position: '0 0 40',
+      rotation: '0 90 0',
+      scale: '19 19 19',
+      offset: '0 -2.9 0',
+    },
+    {
+      id: 20,
+      src: DockModelSrc,
+      position: '0 0 0',
+      rotation: '0 90 0',
+      scale: '19 19 19',
+      offset: '0 -2.9 0',
     },
   ];
 
@@ -189,7 +227,16 @@ const startGame = async () => {
 
     <div v-else-if="gameState === 'playing'" class="screen screen--game">
       <a-scene physics="driver: ammo; debug: true;">
-        <a-sky color="blue"></a-sky>
+        <a-sky color="#00BFFF"></a-sky>
+
+        <a-sphere
+          id="sun"
+          position="0 25 -400"
+          radius="40"
+          material="color: #FFD700; shader: flat"
+          segments-width="16"
+          segments-height="16"
+        ></a-sphere>
 
         <a-entity
           id="plane-character"
@@ -201,7 +248,7 @@ const startGame = async () => {
             :gltf-model="`${PaperAirplaneModelSrc}`"
             ammo-shape="type: hull;"
             position="0 0 0"
-            scale="0.03 0.03 0.03"
+            scale="0.02 0.02 0.02"
           ></a-entity>
         </a-entity>
 
@@ -211,8 +258,8 @@ const startGame = async () => {
           depth="400"
           density="100"
           speed="2"
-          color="#40E0D0"
-          color-horizon="#20B2AA"
+          color="#006994"
+          color-horizon="#004B6B"
           metalness="0.1"
           roughness="0.8"
         >
@@ -222,7 +269,7 @@ const startGame = async () => {
           v-for="model in staticModelsList"
           :key="'static-' + model.id"
           :id="'static-' + model.id"
-          :gltf-model="ForestModelSrc"
+          :gltf-model="model.src"
           :position="model.position"
           :rotation="model.rotation"
           :scale="model.scale"
