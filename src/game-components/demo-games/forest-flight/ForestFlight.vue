@@ -297,8 +297,10 @@ const startGame = async () => {
 <template>
   <div class="game-wrapper" ref="gameWrapperRef">
     <div v-if="gameState === 'menu'" class="screen screen--menu">
-      <h1>FOREST FLIGHT</h1>
-      <button @click="startGame">START GAME</button>
+      <div class="menu-content">
+        <h1 class="game-title">FOREST FLIGHT</h1>
+        <button class="start-btn" @click="startGame">START GAME</button>
+      </div>
     </div>
 
     <div v-else-if="gameState === 'playing'" class="screen screen--game">
@@ -316,7 +318,7 @@ const startGame = async () => {
 
         <a-entity
           id="plane-character"
-          ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation"
+          ammo-body="type: dynamic; gravity: 0 0 0; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation"
           position="0 4 180"
           rotation="0 180 0"
           fly="speed: 4; forwardOffsetAngle: 180; maxPitchDeg: 40; type: autoForwardFixedDirection; canMoveVertically: false; keyUp: arrowup; keyDown: arrowdown; keyLeft: arrowleft; keyRight: arrowright;"
@@ -383,13 +385,15 @@ const startGame = async () => {
 </template>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+
 .game-wrapper {
   width: 100%;
   height: 500px;
   background-color: #222;
   position: relative;
   overflow: hidden;
-  font-family: sans-serif;
+  font-family: 'Fredoka One', 'Comic Sans MS', cursive, sans-serif;
 }
 
 .game-wrapper:fullscreen {
@@ -406,14 +410,87 @@ const startGame = async () => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-image: linear-gradient(to bottom, #a8e063 0%, #2e7d32 100%);
   color: white;
+  position: relative;
 }
 
-.screen--menu button {
-  padding: 15px 30px;
-  font-size: 1.2rem;
+.screen--menu::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+
+.menu-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.game-title {
+  font-size: 6rem;
+  line-height: 0.6;
+  letter-spacing: 4px;
+  color: #ffffff;
+  margin: 0 0 50px 0;
+  text-transform: uppercase;
+  text-align: center;
+  -webkit-text-stroke: 3px #4e342e;
+  text-shadow:
+    0 8px 0 #4e342e,
+    0 15px 20px rgba(0, 0, 0, 0.5);
+  animation: floatTitle 4s ease-in-out infinite;
+}
+
+.start-btn {
+  font-family: 'Fredoka One', 'Comic Sans MS', cursive, sans-serif;
+  font-size: 2.5rem;
+  padding: 15px 70px;
+  background-color: #ff8c00;
+  color: white;
+  border: 5px solid #4e342e;
+  border-radius: 50px;
   cursor: pointer;
-  margin-top: 20px;
+  text-transform: uppercase;
+  box-shadow:
+    0 10px 0 #bf360c,
+    0 20px 25px rgba(0, 0, 0, 0.4);
+  transition: all 0.1s ease;
+}
+
+.start-btn:hover {
+  background-color: #ffa726;
+  transform: translateY(-2px);
+  box-shadow:
+    0 12px 0 #bf360c,
+    0 25px 30px rgba(0, 0, 0, 0.4);
+}
+
+.start-btn:active {
+  transform: translateY(10px);
+  box-shadow:
+    0 0 0 #bf360c,
+    0 5px 10px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes floatTitle {
+  0% {
+    transform: translateY(0px) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-15px) rotate(1deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(-1deg);
+  }
 }
 
 .screen--game {
