@@ -5,6 +5,7 @@ import {
   PaperAirplaneModelSrc,
   ForestModelSrc,
   DockModelSrc,
+  FoxModelSrc,
 } from '../constants';
 
 type GameState = 'menu' | 'playing';
@@ -18,7 +19,20 @@ interface StaticModel {
   offset: string;
 }
 
+interface NpcModel {
+  id: number;
+  src: string;
+  position: string;
+  rotation: string;
+  scale: string;
+  offset: string;
+  walkClipName: string;
+  idleClipName: string;
+  points: string;
+}
+
 const staticModelsList = ref<StaticModel[]>([]);
+const npcModelsList = ref<NpcModel[]>([]);
 
 const gameState = ref<GameState>('menu');
 const gameWrapperRef = ref<HTMLElement | null>(null);
@@ -37,10 +51,8 @@ onUnmounted(() => {
   document.removeEventListener('fullscreenchange', handleFullscreenChange);
 });
 
-const startGame = async () => {
-  gameState.value = 'playing';
-
-  staticModelsList.value = [
+const generateStaticModels = () => {
+  return [
     //forest models on one side of the river
     {
       id: 1,
@@ -205,6 +217,62 @@ const startGame = async () => {
       offset: '0 -2.9 0',
     },
   ];
+};
+
+const generateNpcModels = () => {
+  return [
+    {
+      id: 1,
+      src: FoxModelSrc,
+      position: '0 1 140',
+      rotation: '0 90 0',
+      scale: '1.4 1.4 1.4',
+      offset: '-0.5 1.8 0',
+      walkClipName: 'Walk',
+      idleClipName: 'Idle',
+      points: '',
+    },
+    {
+      id: 2,
+      src: FoxModelSrc,
+      position: '0 1 90',
+      rotation: '0 90 0',
+      scale: '1.4 1.4 1.4',
+      offset: '-0.5 1.8 0',
+      walkClipName: 'Walk',
+      idleClipName: 'Idle',
+      points: '',
+    },
+    {
+      id: 3,
+      src: FoxModelSrc,
+      position: '0 1 40',
+      rotation: '0 90 0',
+      scale: '1.4 1.4 1.4',
+      offset: '-0.5 1.8 0',
+      walkClipName: 'Walk',
+      idleClipName: 'Idle',
+      points: '',
+    },
+    {
+      id: 4,
+      src: FoxModelSrc,
+      position: '0 1 0',
+      rotation: '0 90 0',
+      scale: '1.4 1.4 1.4',
+      offset: '-0.5 1.8 0',
+      walkClipName: 'Walk',
+      idleClipName: 'Idle',
+      points: '',
+    },
+  ];
+};
+
+const startGame = async () => {
+  gameState.value = 'playing';
+
+  staticModelsList.value = generateStaticModels();
+  npcModelsList.value = generateNpcModels();
 
   nextTick(async () => {
     if (gameWrapperRef.value && !document.fullscreenElement) {
@@ -276,6 +344,22 @@ const startGame = async () => {
           ammo-body="type: static;"
           :ammo-shape="`type: hull; offset: ${model.offset};`"
         ></a-entity>
+
+        <a-entity
+          v-for="model in npcModelsList"
+          :key="'npc-' + model.id"
+          :id="'npc-' + model.id"
+          :position="model.position"
+          :rotation="model.rotation"
+          ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 5000; activationState: disableDeactivation;"
+        >
+          <a-entity
+            :gltf-model="model.src"
+            :ammo-shape="`type: hull; offset: ${model.offset};`"
+            :scale="model.scale"
+            :animation-mixer="`clip: ${model.idleClipName}; loop: repeat; crossFadeDuration: 0.3;`"
+          ></a-entity>
+        </a-entity>
 
         <a-entity
           camera
