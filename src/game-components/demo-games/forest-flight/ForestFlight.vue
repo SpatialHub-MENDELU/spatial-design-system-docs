@@ -10,7 +10,7 @@ import {
   RockModelSrc,
 } from '../constants';
 
-type GameState = 'menu' | 'playing' | 'gameover';
+type GameState = 'menu' | 'playing' | 'gameover' | 'victory';
 
 interface StaticModel {
   id: number;
@@ -52,22 +52,43 @@ if (typeof AFRAME !== 'undefined' && !AFRAME.components['fox-collider']) {
   });
 }
 
+if (typeof AFRAME !== 'undefined' && !AFRAME.components['victory-checker']) {
+  AFRAME.registerComponent('victory-checker', {
+    tick: function () {
+      if (this.el.object3D.position.z <= -20) {
+        window.dispatchEvent(new Event('victory-event'));
+      }
+    },
+  });
+}
+
 const handleFullscreenChange = () => {
   if (
     !document.fullscreenElement &&
-    (gameState.value === 'playing' || gameState.value === 'gameover')
+    (gameState.value === 'playing' ||
+      gameState.value === 'gameover' ||
+      gameState.value === 'victory')
   ) {
     gameState.value = 'menu';
   }
 };
 
 const handleGameOver = () => {
-  gameState.value = 'gameover';
+  if (gameState.value === 'playing') {
+    gameState.value = 'gameover';
+  }
+};
+
+const handleVictory = () => {
+  if (gameState.value === 'playing') {
+    gameState.value = 'victory';
+  }
 };
 
 onMounted(() => {
   document.addEventListener('fullscreenchange', handleFullscreenChange);
   window.addEventListener('gameover-event', handleGameOver);
+  window.addEventListener('victory-event', handleVictory);
 });
 
 onMounted(async () => {
@@ -81,6 +102,7 @@ onMounted(async () => {
 onUnmounted(() => {
   document.removeEventListener('fullscreenchange', handleFullscreenChange);
   window.removeEventListener('gameover-event', handleGameOver);
+  window.removeEventListener('victory-event', handleVictory);
 });
 
 const generateStaticModels = () => {
@@ -640,6 +662,16 @@ const quitGame = async () => {
       </div>
     </div>
 
+    <div v-else-if="gameState === 'victory'" class="screen screen--victory">
+      <div class="menu-content">
+        <h1 class="game-title">VICTORY!</h1>
+        <div class="button-group">
+          <button class="start-btn" @click="startGame">PLAY AGAIN</button>
+          <button class="quit-btn" @click="quitGame">QUIT</button>
+        </div>
+      </div>
+    </div>
+
     <div v-else-if="gameState === 'playing'" class="screen screen--game">
       <a-scene physics="driver: ammo; debug: true;">
         <a-sky color="#00BFFF"></a-sky>
@@ -656,6 +688,7 @@ const quitGame = async () => {
         <a-entity
           id="plane-character"
           fox-collider
+          victory-checker
           ammo-body="type: dynamic; emitCollisionEvents: true; gravity: 0 0 0; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation"
           position="0 3 200"
           rotation="0 180 0"
@@ -744,7 +777,8 @@ const quitGame = async () => {
 }
 
 .screen--menu,
-.screen--gameover {
+.screen--gameover,
+.screen--victory {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -755,7 +789,8 @@ const quitGame = async () => {
 }
 
 .screen--menu::before,
-.screen--gameover::before {
+.screen--gameover::before,
+.screen--victory::before {
   content: '';
   position: absolute;
   top: 0;
