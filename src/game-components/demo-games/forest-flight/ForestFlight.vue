@@ -40,6 +40,9 @@ const npcModelsList = ref<NpcModel[]>([]);
 const gameState = ref<GameState>('menu');
 const gameWrapperRef = ref<HTMLElement | null>(null);
 
+const showHint = ref(false);
+let hintTimeout: ReturnType<typeof setTimeout>;
+
 if (typeof AFRAME !== 'undefined' && !AFRAME.components['fox-collider']) {
   AFRAME.registerComponent('fox-collider', {
     init: function () {
@@ -113,6 +116,7 @@ onUnmounted(() => {
   document.removeEventListener('fullscreenchange', handleFullscreenChange);
   window.removeEventListener('gameover-event', handleGameOver);
   window.removeEventListener('victory-event', handleVictory);
+  if (hintTimeout) clearTimeout(hintTimeout);
 });
 
 const generateStaticModels = () => {
@@ -610,7 +614,7 @@ const generateNpcModels = () => {
       offset: '-0.5 1.8 0',
       walkClipName: 'Walk',
       idleClipName: 'Idle',
-      points: '-6 0 40, 6 0 40',
+      points: '-5.5 0 40, 5.5 0 40',
       speed: 6,
     },
     {
@@ -631,6 +635,12 @@ const generateNpcModels = () => {
 const startGame = async () => {
   gameState.value = 'playing';
 
+  showHint.value = true;
+  if (hintTimeout) clearTimeout(hintTimeout);
+  hintTimeout = setTimeout(() => {
+    showHint.value = false;
+  }, 5000);
+
   staticModelsList.value = generateStaticModels();
   npcModelsList.value = generateNpcModels();
 
@@ -647,6 +657,8 @@ const startGame = async () => {
 
 const quitGame = async () => {
   gameState.value = 'menu';
+  if (hintTimeout) clearTimeout(hintTimeout);
+  showHint.value = false;
   if (document.fullscreenElement) {
     try {
       await document.exitFullscreen();
@@ -687,6 +699,11 @@ const quitGame = async () => {
     </div>
 
     <div v-else-if="gameState === 'playing'" class="screen screen--game">
+      <div v-if="showHint" class="game-hint">
+        <div class="hint-line">USE <span class="arrows">⬅ ➡</span></div>
+        <div class="hint-line">ARROWS TO MOVE</div>
+      </div>
+
       <a-scene physics="driver: ammo; debug: true;">
         <a-sky color="#00BFFF"></a-sky>
 
@@ -932,5 +949,59 @@ const quitGame = async () => {
   left: 0;
   width: 100%;
   height: 100%;
+}
+
+.game-hint {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  color: white;
+  font-size: 3.5rem;
+  text-align: center;
+  background: rgba(34, 64, 86, 0.85);
+  padding: 50px 90px;
+  border-radius: 40px;
+  border: 8px solid #ff8c00;
+  pointer-events: none;
+  animation: fadeOutHint 5s forwards;
+  text-shadow: 4px 4px 0 #000;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
+}
+
+.hint-line {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.arrows {
+  font-size: 5rem;
+  margin: 0 30px;
+  letter-spacing: 30px;
+}
+
+@keyframes fadeOutHint {
+  0% {
+    opacity: 0;
+    top: 10%;
+  }
+  10% {
+    opacity: 1;
+    top: 15%;
+  }
+  80% {
+    opacity: 1;
+    top: 15%;
+  }
+  100% {
+    opacity: 0;
+    top: 10%;
+  }
 }
 </style>
