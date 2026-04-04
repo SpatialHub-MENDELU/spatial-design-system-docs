@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick } from 'vue';
+import AFRAME from 'aframe';
 import 'aframe';
 import {
   PaperAirplaneModelSrc,
@@ -8,7 +9,7 @@ import {
   FoxModelSrc,
 } from '../constants';
 
-type GameState = 'menu' | 'playing';
+type GameState = 'menu' | 'playing' | 'gameover';
 
 interface StaticModel {
   id: number;
@@ -37,14 +38,35 @@ const npcModelsList = ref<NpcModel[]>([]);
 const gameState = ref<GameState>('menu');
 const gameWrapperRef = ref<HTMLElement | null>(null);
 
+if (typeof AFRAME !== 'undefined' && !AFRAME.components['fox-collider']) {
+  AFRAME.registerComponent('fox-collider', {
+    init: function () {
+      this.el.addEventListener('collidestart', (e: any) => {
+        const targetEl = e.detail.targetEl;
+        if (targetEl && targetEl.id && targetEl.id.startsWith('npc-')) {
+          window.dispatchEvent(new Event('gameover-event'));
+        }
+      });
+    },
+  });
+}
+
 const handleFullscreenChange = () => {
-  if (!document.fullscreenElement && gameState.value === 'playing') {
+  if (
+    !document.fullscreenElement &&
+    (gameState.value === 'playing' || gameState.value === 'gameover')
+  ) {
     gameState.value = 'menu';
   }
 };
 
+const handleGameOver = () => {
+  gameState.value = 'gameover';
+};
+
 onMounted(() => {
   document.addEventListener('fullscreenchange', handleFullscreenChange);
+  window.addEventListener('gameover-event', handleGameOver);
 });
 
 onMounted(async () => {
@@ -57,6 +79,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  window.removeEventListener('gameover-event', handleGameOver);
 });
 
 const generateStaticModels = () => {
@@ -292,6 +315,17 @@ const startGame = async () => {
     }
   });
 };
+
+const quitGame = async () => {
+  gameState.value = 'menu';
+  if (document.fullscreenElement) {
+    try {
+      await document.exitFullscreen();
+    } catch (err) {
+      console.warn(err);
+    }
+  }
+};
 </script>
 
 <template>
@@ -300,6 +334,16 @@ const startGame = async () => {
       <div class="menu-content">
         <h1 class="game-title">FOREST FLIGHT</h1>
         <button class="start-btn" @click="startGame">START GAME</button>
+      </div>
+    </div>
+
+    <div v-else-if="gameState === 'gameover'" class="screen screen--gameover">
+      <div class="menu-content">
+        <h1 class="game-title">GAME OVER</h1>
+        <div class="button-group">
+          <button class="start-btn" @click="startGame">RESTART</button>
+          <button class="quit-btn" @click="quitGame">QUIT</button>
+        </div>
       </div>
     </div>
 
@@ -318,10 +362,11 @@ const startGame = async () => {
 
         <a-entity
           id="plane-character"
-          ammo-body="type: dynamic; gravity: 0 0 0; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation"
+          fox-collider
+          ammo-body="type: dynamic; emitCollisionEvents: true; gravity: 0 0 0; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation"
           position="0 4 180"
           rotation="0 180 0"
-          fly="speed: 4; forwardOffsetAngle: 180; maxPitchDeg: 40; type: autoForwardFixedDirection; canMoveVertically: false; keyUp: arrowup; keyDown: arrowdown; keyLeft: arrowleft; keyRight: arrowright;"
+          fly="speed: 7; forwardOffsetAngle: 180; maxPitchDeg: 40; type: autoForwardFixedDirection; canMoveVertically: false; keyUp: arrowup; keyDown: arrowdown; keyLeft: arrowleft; keyRight: arrowright;"
         >
           <a-entity
             :gltf-model="`${PaperAirplaneModelSrc}`"
@@ -363,7 +408,7 @@ const startGame = async () => {
           :id="'npc-' + model.id"
           :position="model.position"
           :rotation="model.rotation"
-          ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 5000; activationState: disableDeactivation;"
+          ammo-body="type: dynamic; emitCollisionEvents: true; angularFactor: 0 0 0; mass: 5000; activationState: disableDeactivation;"
         >
           <a-entity
             :gltf-model="model.src"
@@ -405,7 +450,8 @@ const startGame = async () => {
   height: 100%;
 }
 
-.screen--menu {
+.screen--menu,
+.screen--gameover {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -415,7 +461,8 @@ const startGame = async () => {
   position: relative;
 }
 
-.screen--menu::before {
+.screen--menu::before,
+.screen--gameover::before {
   content: '';
   position: absolute;
   top: 0;
@@ -450,6 +497,12 @@ const startGame = async () => {
   animation: floatTitle 4s ease-in-out infinite;
 }
 
+.button-group {
+  display: flex;
+  gap: 20px;
+  flex-direction: row;
+}
+
 .start-btn {
   font-family: 'Fredoka One', 'Comic Sans MS', cursive, sans-serif;
   font-size: 2.5rem;
@@ -478,6 +531,37 @@ const startGame = async () => {
   transform: translateY(10px);
   box-shadow:
     0 0 0 #bf360c,
+    0 5px 10px rgba(0, 0, 0, 0.4);
+}
+
+.quit-btn {
+  font-family: 'Fredoka One', 'Comic Sans MS', cursive, sans-serif;
+  font-size: 2.5rem;
+  padding: 15px 70px;
+  background-color: #e53935;
+  color: white;
+  border: 5px solid #4e342e;
+  border-radius: 50px;
+  cursor: pointer;
+  text-transform: uppercase;
+  box-shadow:
+    0 10px 0 #b71c1c,
+    0 20px 25px rgba(0, 0, 0, 0.4);
+  transition: all 0.1s ease;
+}
+
+.quit-btn:hover {
+  background-color: #ef5350;
+  transform: translateY(-2px);
+  box-shadow:
+    0 12px 0 #b71c1c,
+    0 25px 30px rgba(0, 0, 0, 0.4);
+}
+
+.quit-btn:active {
+  transform: translateY(10px);
+  box-shadow:
+    0 0 0 #b71c1c,
     0 5px 10px rgba(0, 0, 0, 0.4);
 }
 
