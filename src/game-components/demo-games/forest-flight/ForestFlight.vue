@@ -590,8 +590,8 @@ const generateNpcModels = () => {
       offset: '-0.5 1.8 0',
       walkClipName: 'Walk',
       idleClipName: 'Idle',
-      points: '-6 0 140, 6 0 140',
-      speed: 4,
+      points: '-5.5 0 140, 5.5 0 140',
+      speed: 6,
     },
     {
       id: 2,
@@ -602,8 +602,8 @@ const generateNpcModels = () => {
       offset: '-0.5 1.8 0',
       walkClipName: 'Walk',
       idleClipName: 'Idle',
-      points: '-6 0 90, 6 0 90',
-      speed: 5,
+      points: '-5.5 0 90, 5.5 0 90',
+      speed: 6,
     },
     {
       id: 3,
@@ -615,7 +615,7 @@ const generateNpcModels = () => {
       walkClipName: 'Walk',
       idleClipName: 'Idle',
       points: '-5.5 0 40, 5.5 0 40',
-      speed: 6,
+      speed: 8,
     },
     {
       id: 4,
@@ -626,8 +626,8 @@ const generateNpcModels = () => {
       offset: '-0.5 1.8 0',
       walkClipName: 'Walk',
       idleClipName: 'Idle',
-      points: '-6 0 0, 6 0 0',
-      speed: 7,
+      points: '-5.5 0 0, 5.5 0 0',
+      speed: 8,
     },
   ];
 };
