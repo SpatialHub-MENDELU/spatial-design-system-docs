@@ -44,8 +44,15 @@ if (typeof AFRAME !== 'undefined' && !AFRAME.components['fox-collider']) {
     init: function () {
       this.el.addEventListener('collidestart', (e: any) => {
         const targetEl = e.detail.targetEl;
-        if (targetEl && targetEl.id && targetEl.id.startsWith('npc-')) {
-          window.dispatchEvent(new Event('gameover-event'));
+        if (targetEl && targetEl.id) {
+          if (targetEl.id.startsWith('npc-')) {
+            window.dispatchEvent(new Event('gameover-event'));
+          } else if (targetEl.id.startsWith('static-')) {
+            const idNum = parseInt(targetEl.id.replace('static-', ''));
+            if (idNum >= 21) {
+              window.dispatchEvent(new Event('gameover-event'));
+            }
+          }
         }
       });
     },
@@ -690,7 +697,7 @@ const quitGame = async () => {
           fox-collider
           victory-checker
           ammo-body="type: dynamic; emitCollisionEvents: true; gravity: 0 0 0; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation"
-          position="0 3 200"
+          position="0 2 200"
           rotation="0 180 0"
           fly="speed: 7; forwardOffsetAngle: 180; maxPitchDeg: 40; type: autoForwardFixedDirection; canMoveVertically: false; keyUp: arrowup; keyDown: arrowdown; keyLeft: arrowleft; keyRight: arrowright;"
         >
@@ -724,7 +731,7 @@ const quitGame = async () => {
           :position="model.position"
           :rotation="model.rotation"
           :scale="model.scale"
-          ammo-body="type: static;"
+          ammo-body="type: static; emitCollisionEvents: true;"
           :ammo-shape="`type: hull; offset: ${model.offset};`"
         ></a-entity>
 
