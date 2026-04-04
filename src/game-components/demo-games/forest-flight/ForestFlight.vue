@@ -31,6 +31,7 @@ interface NpcModel {
   walkClipName: string;
   idleClipName: string;
   points: string;
+  speed: number;
 }
 
 const staticModelsList = ref<StaticModel[]>([]);
@@ -583,7 +584,8 @@ const generateNpcModels = () => {
       offset: '-0.5 1.8 0',
       walkClipName: 'Walk',
       idleClipName: 'Idle',
-      points: '',
+      points: '-6 0 140, 6 0 140',
+      speed: 4,
     },
     {
       id: 2,
@@ -594,7 +596,8 @@ const generateNpcModels = () => {
       offset: '-0.5 1.8 0',
       walkClipName: 'Walk',
       idleClipName: 'Idle',
-      points: '',
+      points: '-6 0 90, 6 0 90',
+      speed: 5,
     },
     {
       id: 3,
@@ -605,7 +608,8 @@ const generateNpcModels = () => {
       offset: '-0.5 1.8 0',
       walkClipName: 'Walk',
       idleClipName: 'Idle',
-      points: '',
+      points: '-6 0 40, 6 0 40',
+      speed: 6,
     },
     {
       id: 4,
@@ -616,7 +620,8 @@ const generateNpcModels = () => {
       offset: '-0.5 1.8 0',
       walkClipName: 'Walk',
       idleClipName: 'Idle',
-      points: '',
+      points: '-6 0 0, 6 0 0',
+      speed: 7,
     },
   ];
 };
@@ -699,7 +704,7 @@ const quitGame = async () => {
           ammo-body="type: dynamic; emitCollisionEvents: true; gravity: 0 0 0; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation"
           position="0 2 200"
           rotation="0 180 0"
-          fly="speed: 7; forwardOffsetAngle: 180; maxPitchDeg: 40; type: autoForwardFixedDirection; canMoveVertically: false; keyUp: arrowup; keyDown: arrowdown; keyLeft: arrowleft; keyRight: arrowright;"
+          fly="speed: 8; forwardOffsetAngle: 180; maxPitchDeg: 40; type: autoForwardFixedDirection; canMoveVertically: false; keyUp: arrowup; keyDown: arrowdown; keyLeft: arrowleft; keyRight: arrowright;"
         >
           <a-entity
             :gltf-model="`${PaperAirplaneModelSrc}`"
@@ -742,12 +747,12 @@ const quitGame = async () => {
           :position="model.position"
           :rotation="model.rotation"
           ammo-body="type: dynamic; emitCollisionEvents: true; angularFactor: 0 0 0; mass: 5000; activationState: disableDeactivation;"
+          :npc-walk="`points: ${model.points}; speed: ${model.speed}; walkClipName: ${model.walkClipName}; idleClipName: ${model.idleClipName};`"
         >
           <a-entity
             :gltf-model="model.src"
             :ammo-shape="`type: hull; offset: ${model.offset};`"
             :scale="model.scale"
-            :animation-mixer="`clip: ${model.idleClipName}; loop: repeat; crossFadeDuration: 0.3;`"
           ></a-entity>
         </a-entity>
 
