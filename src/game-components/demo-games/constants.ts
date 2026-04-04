@@ -39,3 +39,4 @@ export const PaperAirplaneModelSrc = '../../public/glb_models/game_components/fl
 export const ForestModelSrc = '../../public/glb_models/game_components/fly/Forest.glb';
 export const DockModelSrc = '../../public/glb_models/game_components/fly/Dock.glb';
 export const FoxModelSrc = '../../public/glb_models/game_components/fly/Fox.glb';
+export const RockModelSrc = '../../public/glb_models/game_components/fly/Rock.glb';

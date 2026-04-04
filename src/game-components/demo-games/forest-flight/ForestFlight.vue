@@ -7,6 +7,7 @@ import {
   ForestModelSrc,
   DockModelSrc,
   FoxModelSrc,
+  RockModelSrc,
 } from '../constants';
 
 type GameState = 'menu' | 'playing' | 'gameover';
@@ -218,7 +219,7 @@ const generateStaticModels = () => {
     {
       id: 17,
       src: DockModelSrc,
-      position: '0 0 140',
+      position: '0 -1.5 140',
       rotation: '0 90 0',
       scale: '19 19 19',
       offset: '0 -2.9 0',
@@ -226,7 +227,7 @@ const generateStaticModels = () => {
     {
       id: 18,
       src: DockModelSrc,
-      position: '0 0 90',
+      position: '0 -1.5 90',
       rotation: '0 90 0',
       scale: '19 19 19',
       offset: '0 -2.9 0',
@@ -234,7 +235,7 @@ const generateStaticModels = () => {
     {
       id: 19,
       src: DockModelSrc,
-      position: '0 0 40',
+      position: '0 -1.5 40',
       rotation: '0 90 0',
       scale: '19 19 19',
       offset: '0 -2.9 0',
@@ -242,10 +243,302 @@ const generateStaticModels = () => {
     {
       id: 20,
       src: DockModelSrc,
-      position: '0 0 0',
+      position: '0 -1.5 0',
       rotation: '0 90 0',
       scale: '19 19 19',
       offset: '0 -2.9 0',
+    },
+    // rocks
+    {
+      id: 21,
+      src: RockModelSrc,
+      position: '0 -0.2 175',
+      rotation: '0 0 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 22,
+      src: RockModelSrc,
+      position: '-5 -0.4 165',
+      rotation: '0 180 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 23,
+      src: RockModelSrc,
+      position: '3 0 160',
+      rotation: '0 45 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 24,
+      src: RockModelSrc,
+      position: '8 -0.1 165',
+      rotation: '0 90 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 25,
+      src: RockModelSrc,
+      position: '-6 -0.5 157',
+      rotation: '0 90 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 26,
+      src: RockModelSrc,
+      position: '0 -0.3 150',
+      rotation: '0 90 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    // next set of rocks
+    {
+      id: 27,
+      src: RockModelSrc,
+      position: '4 -0.2 132',
+      rotation: '0 15 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 28,
+      src: RockModelSrc,
+      position: '-5 -0.1 128',
+      rotation: '0 87 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 30,
+      src: RockModelSrc,
+      position: '-1 -0.4 119',
+      rotation: '0 210 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 31,
+      src: RockModelSrc,
+      position: '-8 0 116',
+      rotation: '0 305 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 32,
+      src: RockModelSrc,
+      position: '8 -0.5 113',
+      rotation: '0 45 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 33,
+      src: RockModelSrc,
+      position: '-6 -0.2 110',
+      rotation: '0 175 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 35,
+      src: RockModelSrc,
+      position: '6 -0.3 102',
+      rotation: '0 95 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 36,
+      src: RockModelSrc,
+      position: '-4 -0.1 100',
+      rotation: '0 330 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    // next set of rocks
+    {
+      id: 37,
+      src: RockModelSrc,
+      position: '5 -0.4 84',
+      rotation: '0 12 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 38,
+      src: RockModelSrc,
+      position: '-6 -0.2 82',
+      rotation: '0 104 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 39,
+      src: RockModelSrc,
+      position: '2 0 77',
+      rotation: '0 220 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 40,
+      src: RockModelSrc,
+      position: '-2 -0.5 73',
+      rotation: '0 55 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 41,
+      src: RockModelSrc,
+      position: '8 -0.1 69',
+      rotation: '0 310 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 42,
+      src: RockModelSrc,
+      position: '-7 -0.3 64',
+      rotation: '0 180 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 43,
+      src: RockModelSrc,
+      position: '0 -0.2 60',
+      rotation: '0 275 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 44,
+      src: RockModelSrc,
+      position: '-4 -0.4 56',
+      rotation: '0 90 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 45,
+      src: RockModelSrc,
+      position: '6 -0.1 52',
+      rotation: '0 15 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 46,
+      src: RockModelSrc,
+      position: '-1 0 52',
+      rotation: '0 199 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    // next set of rocks
+    {
+      id: 47,
+      src: RockModelSrc,
+      position: '0 -0.5 32',
+      rotation: '0 15 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 48,
+      src: RockModelSrc,
+      position: '-7 -0.2 30',
+      rotation: '0 84 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 49,
+      src: RockModelSrc,
+      position: '5 -0.3 28',
+      rotation: '0 170 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 50,
+      src: RockModelSrc,
+      position: '-2 -0.1 26',
+      rotation: '0 220 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 51,
+      src: RockModelSrc,
+      position: '8 -0.4 24',
+      rotation: '0 310 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 52,
+      src: RockModelSrc,
+      position: '1 -0.2 22',
+      rotation: '0 45 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 53,
+      src: RockModelSrc,
+      position: '-9 -0.5 19',
+      rotation: '0 135 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 54,
+      src: RockModelSrc,
+      position: '-4 0 17',
+      rotation: '0 260 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 55,
+      src: RockModelSrc,
+      position: '4 -0.1 15',
+      rotation: '0 15 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 56,
+      src: RockModelSrc,
+      position: '10 -0.3 13',
+      rotation: '0 105 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 57,
+      src: RockModelSrc,
+      position: '-1 -0.4 10',
+      rotation: '0 200 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
+    },
+    {
+      id: 58,
+      src: RockModelSrc,
+      position: '-6 -0.2 8',
+      rotation: '0 340 0',
+      scale: '15 15 15',
+      offset: '0 1.6 -0.2',
     },
   ];
 };
@@ -255,7 +548,7 @@ const generateNpcModels = () => {
     {
       id: 1,
       src: FoxModelSrc,
-      position: '0 1 140',
+      position: '0 0 140',
       rotation: '0 90 0',
       scale: '1.4 1.4 1.4',
       offset: '-0.5 1.8 0',
@@ -266,7 +559,7 @@ const generateNpcModels = () => {
     {
       id: 2,
       src: FoxModelSrc,
-      position: '0 1 90',
+      position: '0 0 90',
       rotation: '0 90 0',
       scale: '1.4 1.4 1.4',
       offset: '-0.5 1.8 0',
@@ -277,7 +570,7 @@ const generateNpcModels = () => {
     {
       id: 3,
       src: FoxModelSrc,
-      position: '0 1 40',
+      position: '0 0 40',
       rotation: '0 90 0',
       scale: '1.4 1.4 1.4',
       offset: '-0.5 1.8 0',
@@ -288,7 +581,7 @@ const generateNpcModels = () => {
     {
       id: 4,
       src: FoxModelSrc,
-      position: '0 1 0',
+      position: '0 0 0',
       rotation: '0 90 0',
       scale: '1.4 1.4 1.4',
       offset: '-0.5 1.8 0',
@@ -364,7 +657,7 @@ const quitGame = async () => {
           id="plane-character"
           fox-collider
           ammo-body="type: dynamic; emitCollisionEvents: true; gravity: 0 0 0; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation"
-          position="0 4 180"
+          position="0 3 200"
           rotation="0 180 0"
           fly="speed: 7; forwardOffsetAngle: 180; maxPitchDeg: 40; type: autoForwardFixedDirection; canMoveVertically: false; keyUp: arrowup; keyDown: arrowdown; keyLeft: arrowleft; keyRight: arrowright;"
         >
@@ -372,7 +665,7 @@ const quitGame = async () => {
             :gltf-model="`${PaperAirplaneModelSrc}`"
             ammo-shape="type: hull;"
             position="0 0 0"
-            scale="0.02 0.02 0.02"
+            scale="0.01 0.01 0.01"
             rotation="0 0 0"
           ></a-entity>
         </a-entity>
