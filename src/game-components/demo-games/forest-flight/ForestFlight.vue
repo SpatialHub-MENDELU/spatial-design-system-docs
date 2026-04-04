@@ -102,6 +102,8 @@ onMounted(() => {
 onMounted(async () => {
   try {
     await import('spatial-design-system/components/game/fly');
+    await import('spatial-design-system/components/game/gameview');
+    await import('spatial-design-system/components/game/npcWalk');
   } catch (e) {
     console.error(e);
   }
@@ -698,13 +700,13 @@ const quitGame = async () => {
         ></a-sphere>
 
         <a-entity
-          id="plane-character"
+          id="plane"
           fox-collider
           victory-checker
           ammo-body="type: dynamic; emitCollisionEvents: true; gravity: 0 0 0; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation"
           position="0 2 200"
           rotation="0 180 0"
-          fly="speed: 8; forwardOffsetAngle: 180; maxPitchDeg: 40; type: autoForwardFixedDirection; canMoveVertically: false; keyUp: arrowup; keyDown: arrowdown; keyLeft: arrowleft; keyRight: arrowright;"
+          fly="speed: 10; forwardOffsetAngle: 180; rollSpeed: 150; maxRollDeg: 15;  type: autoForwardFixedDirection; canMoveVertically: false; keyLeft: arrowleft; keyRight: arrowright;"
         >
           <a-entity
             :gltf-model="`${PaperAirplaneModelSrc}`"
@@ -713,6 +715,12 @@ const quitGame = async () => {
             scale="0.01 0.01 0.01"
             rotation="0 0 0"
           ></a-entity>
+        </a-entity>
+
+        <a-entity
+          camera
+          game-view="target: #plane; type: thirdPersonFixed; distance: 9; height: 7; tilt: -10;"
+        >
         </a-entity>
 
         <a-ocean
@@ -755,13 +763,6 @@ const quitGame = async () => {
             :scale="model.scale"
           ></a-entity>
         </a-entity>
-
-        <a-entity
-          camera
-          wasd-controls
-          look-controls
-          position="0 10 200"
-        ></a-entity>
       </a-scene>
     </div>
   </div>
