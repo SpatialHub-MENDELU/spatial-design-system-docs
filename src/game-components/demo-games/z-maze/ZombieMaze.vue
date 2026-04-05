@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick } from 'vue';
 import 'aframe';
-import { generateZombies } from './utils';
-import { AdventurerModelSrc } from '../constants';
+import { AdventurerModelSrc, ZombieModelSrc } from '../constants';
 
 type GameState = 'menu' | 'playing';
 
@@ -17,8 +16,127 @@ const handleFullscreenChange = () => {
   }
 };
 
+const generateZombies = () => {
+  const scale = '0.5 0.5 0.5';
+  const offset = '0 0 0';
+  return [
+    {
+      id: 1,
+      src: ZombieModelSrc,
+      position: '25 0 5',
+      rotation: '0 0 0',
+      scale,
+      offset,
+    },
+    {
+      id: 2,
+      src: ZombieModelSrc,
+      position: '65 0 15',
+      rotation: '0 -90 0',
+      scale,
+      offset,
+    },
+    {
+      id: 3,
+      src: ZombieModelSrc,
+      position: '25 0 35',
+      rotation: '0 90 0',
+      scale,
+      offset,
+    },
+    {
+      id: 4,
+      src: ZombieModelSrc,
+      position: '60 0 45',
+      rotation: '0 180 0',
+      scale,
+      offset,
+    },
+  ];
+};
+
 onMounted(() => {
   document.addEventListener('fullscreenchange', handleFullscreenChange);
+  if (window.AFRAME) {
+    window.AFRAME.registerComponent('maze-generator', {
+      init: function () {
+        // 1 = bush, 0 = road, 2 = Start, 3 = Finish
+        const mazeMap = [
+          [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+          [1, 2, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+          [1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1],
+          [1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1],
+          [1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1],
+          [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
+          [1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
+          [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1],
+          [1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1],
+          [1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1],
+          [1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1],
+          [1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1],
+          [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1],
+        ];
+
+        const blockSize = 5;
+        const wallHeight = 4;
+        const sceneEl = this.el;
+        const playerEl = document.querySelector('#adventurer');
+
+        for (let z = 0; z < mazeMap.length; z++) {
+          for (let x = 0; x < mazeMap[z].length; x++) {
+            let posX = x * blockSize;
+            let posZ = z * blockSize;
+            let type = mazeMap[z][x];
+
+            if (type === 1) {
+              let wall = document.createElement('a-box');
+              let posY = wallHeight / 2;
+              wall.setAttribute('position', `${posX} ${posY} ${posZ}`);
+              wall.setAttribute('width', blockSize);
+              wall.setAttribute('height', wallHeight);
+              wall.setAttribute('depth', blockSize);
+              // wall.setAttribute('src', '#bushTexture');
+              wall.setAttribute('color', 'green');
+              wall.setAttribute('repeat', `${blockSize} ${wallHeight}`);
+              wall.setAttribute('roughness', 0.9);
+              wall.setAttribute('ammo-body', 'type: static');
+              wall.setAttribute('ammo-shape', 'type: box');
+              sceneEl.appendChild(wall);
+            } else if (type === 2) {
+              let startPad = document.createElement('a-box');
+              startPad.setAttribute('position', `${posX} 0.05 ${posZ}`);
+              startPad.setAttribute('width', blockSize);
+              startPad.setAttribute('height', 0.1);
+              startPad.setAttribute('depth', blockSize);
+              startPad.setAttribute('color', '#8b0000');
+              sceneEl.appendChild(startPad);
+
+              if (playerEl) {
+                playerEl.setAttribute('position', `${posX} 1.6 ${posZ}`);
+              }
+            } else if (type === 3) {
+              let endPad = document.createElement('a-box');
+              endPad.setAttribute('position', `${posX} 0.05 ${posZ}`);
+              endPad.setAttribute('width', blockSize);
+              endPad.setAttribute('height', 0.1);
+              endPad.setAttribute('depth', blockSize);
+              endPad.setAttribute('color', '#006400');
+
+              let endLight = document.createElement('a-light');
+              endLight.setAttribute('type', 'point');
+              endLight.setAttribute('color', '#00ff00');
+              endLight.setAttribute('intensity', '0.5');
+              endLight.setAttribute('distance', '8');
+              endLight.setAttribute('position', `0 1 0`);
+              endPad.appendChild(endLight);
+
+              sceneEl.appendChild(endPad);
+            }
+          }
+        }
+      },
+    });
+  }
 });
 
 onMounted(async () => {
@@ -49,85 +167,6 @@ const startGame = async () => {
     }
   });
 };
-
-AFRAME.registerComponent('maze-generator', {
-  init: function () {
-    // 1 = bush, 0 = road, 2 = Start, 3 = Finish
-    const mazeMap = [
-      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-      [1, 2, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
-      [1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1],
-      [1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1],
-      [1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1],
-      [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
-      [1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
-      [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1],
-      [1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1],
-      [1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1],
-      [1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1],
-      [1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1],
-    ];
-
-    const blockSize = 5;
-    const wallHeight = 4;
-    const sceneEl = this.el;
-    const playerEl = document.querySelector('#adventurer');
-
-    for (let z = 0; z < mazeMap.length; z++) {
-      for (let x = 0; x < mazeMap[z].length; x++) {
-        let posX = x * blockSize;
-        let posZ = z * blockSize;
-        let type = mazeMap[z][x];
-
-        if (type === 1) {
-          let wall = document.createElement('a-box');
-          let posY = wallHeight / 2;
-          wall.setAttribute('position', `${posX} ${posY} ${posZ}`);
-          wall.setAttribute('width', blockSize);
-          wall.setAttribute('height', wallHeight);
-          wall.setAttribute('depth', blockSize);
-          // wall.setAttribute('src', '#bushTexture');
-          wall.setAttribute('color', 'green');
-          wall.setAttribute('repeat', `${blockSize} ${wallHeight}`);
-          wall.setAttribute('roughness', 0.9);
-          wall.setAttribute('ammo-body', 'type: static');
-          wall.setAttribute('ammo-shape', 'type: box');
-          sceneEl.appendChild(wall);
-        } else if (type === 2) {
-          let startPad = document.createElement('a-box');
-          startPad.setAttribute('position', `${posX} 0.05 ${posZ}`);
-          startPad.setAttribute('width', blockSize);
-          startPad.setAttribute('height', 0.1);
-          startPad.setAttribute('depth', blockSize);
-          startPad.setAttribute('color', '#8b0000');
-          sceneEl.appendChild(startPad);
-
-          if (playerEl) {
-            playerEl.setAttribute('position', `${posX} 1.6 ${posZ}`);
-          }
-        } else if (type === 3) {
-          let endPad = document.createElement('a-box');
-          endPad.setAttribute('position', `${posX} 0.05 ${posZ}`);
-          endPad.setAttribute('width', blockSize);
-          endPad.setAttribute('height', 0.1);
-          endPad.setAttribute('depth', blockSize);
-          endPad.setAttribute('color', '#006400');
-
-          let endLight = document.createElement('a-light');
-          endLight.setAttribute('type', 'point');
-          endLight.setAttribute('color', '#00ff00');
-          endLight.setAttribute('intensity', '0.5');
-          endLight.setAttribute('distance', '8');
-          endLight.setAttribute('position', `0 1 0`);
-          endPad.appendChild(endLight);
-
-          sceneEl.appendChild(endPad);
-        }
-      }
-    }
-  },
-});
 </script>
 
 <template>
