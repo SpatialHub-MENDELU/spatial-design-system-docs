@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick } from 'vue';
 import 'aframe';
+import { generateZombies } from './utils';
+import { AdventurerModelSrc } from '../constants';
 
 type GameState = 'menu' | 'playing';
 
 const gameState = ref<GameState>('menu');
 const gameWrapperRef = ref<HTMLElement | null>(null);
+
+const zombiesList = ref([]);
 
 const handleFullscreenChange = () => {
   if (!document.fullscreenElement && gameState.value === 'playing') {
@@ -17,12 +21,23 @@ onMounted(() => {
   document.addEventListener('fullscreenchange', handleFullscreenChange);
 });
 
+onMounted(async () => {
+  try {
+    await import('spatial-design-system/components/game/walk');
+    await import('spatial-design-system/components/game/gameview');
+  } catch (e) {
+    console.error(e);
+  }
+});
+
 onUnmounted(() => {
   document.removeEventListener('fullscreenchange', handleFullscreenChange);
 });
 
 const startGame = async () => {
   gameState.value = 'playing';
+
+  zombiesList.value = generateZombies();
 
   nextTick(async () => {
     if (gameWrapperRef.value && !document.fullscreenElement) {
@@ -57,7 +72,7 @@ AFRAME.registerComponent('maze-generator', {
     const blockSize = 5;
     const wallHeight = 4;
     const sceneEl = this.el;
-    const playerEl = document.querySelector('#adventurer-character');
+    const playerEl = document.querySelector('#adventurer');
 
     for (let z = 0; z < mazeMap.length; z++) {
       for (let x = 0; x < mazeMap[z].length; x++) {
@@ -72,7 +87,8 @@ AFRAME.registerComponent('maze-generator', {
           wall.setAttribute('width', blockSize);
           wall.setAttribute('height', wallHeight);
           wall.setAttribute('depth', blockSize);
-          wall.setAttribute('src', '#bushTexture');
+          // wall.setAttribute('src', '#bushTexture');
+          wall.setAttribute('color', 'green');
           wall.setAttribute('repeat', `${blockSize} ${wallHeight}`);
           wall.setAttribute('roughness', 0.9);
           wall.setAttribute('ammo-body', 'type: static');
@@ -129,14 +145,72 @@ AFRAME.registerComponent('maze-generator', {
         inspector="true"
         maze-generator
       >
-        <a-sky color="#ffffff"></a-sky>
+        <a-light
+          type="hemisphere"
+          color="#111111"
+          groundColor="#ff1111"
+          intensity="2"
+        >
+        </a-light>
+
+        <a-light
+          type="point"
+          position="35 -5 35"
+          color="#ff0000"
+          intensity="3"
+          distance="100"
+        >
+        </a-light>
+
+        <a-plane
+          position="20 0 20"
+          rotation="-90 0 0"
+          width="100"
+          height="100"
+          color="#009900"
+          ammo-body="type: static"
+          ammo-shape="type: box"
+        ></a-plane>
+
+        <a-entity
+          v-for="model in zombiesList"
+          key="'zombie-' + model.id"
+          :id="'zombie-' + model.id"
+          :gltf-model="model.src"
+          :position="model.position"
+          :rotation="model.rotation"
+          :scale="model.scale"
+          ammo-body="type: static; gravity: 0 0 0;"
+          :ammo-shape="`type: hull; offset: ${model.offset};`"
+        >
+        </a-entity>
+
+        <a-entity
+          walk="sprint: true; speed: 4; sprintSpeed: 6; idleClipName: CharacterArmature|Idle_Neutral; walkClipName: CharacterArmature|Run; sprintClipName: CharacterArmature|Run; rotationSpeed: 180;"
+          id="adventurer"
+          ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation"
+          ammo-shape="type: box; fit: manual; halfExtents: 0.2 1.1 0.2; offset: 0 -0.2 0;"
+          position="0 15.8 0"
+        >
+          <a-entity
+            :gltf-model="AdventurerModelSrc"
+            position="0 -1 0"
+            scale="1.1 1.1 1.1"
+          ></a-entity>
+        </a-entity>
+
         <a-entity
           camera
-          rotation="-45 0 0"
-          position="35 60 70"
-          look-controls
-          wasd-controls
+          game-view="type: thirdPersonFollow; target: #adventurer; distance: 2; height: 2; "
         ></a-entity>
+
+        <!--        <a-entity-->
+        <!--          camera-->
+        <!--          rotation="-45 0 0"-->
+        <!--          position="35 30 70"-->
+        <!--          look-controls-->
+        <!--          wasd-controls-->
+        <!--        ></a-entity>-->
       </a-scene>
     </div>
   </div>

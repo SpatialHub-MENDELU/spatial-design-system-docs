@@ -40,3 +40,7 @@ export const ForestModelSrc = '../../public/glb_models/game_components/fly/Fores
 export const DockModelSrc = '../../public/glb_models/game_components/fly/Dock.glb';
 export const FoxModelSrc = '../../public/glb_models/game_components/fly/Fox.glb';
 export const RockModelSrc = '../../public/glb_models/game_components/fly/Rock.glb';
+
+// Z-MAZE
+export const ZombieModelSrc = '../../public/glb_models/game_components/walk/Zombie.glb';
+export const AdventurerModelSrc = '../../public/glb_models/game_components/walk/Adventurer.glb';
