@@ -172,18 +172,18 @@ const startGame = async () => {
 <template>
   <div class="game-wrapper" ref="gameWrapperRef">
     <div v-if="gameState === 'menu'" class="screen screen--menu">
+      <div class="overlay vignette"></div>
+      <div class="overlay scanlines"></div>
+
       <div class="menu-content">
-        <h1 class="game-title">ZOMBIE MAZE</h1>
-        <button class="start-btn" @click="startGame">PŘEŽÍT</button>
+        <h1 class="game-title">Z-MAZE</h1>
+        <p class="game-subtitle">NO ONE ESCAPES THE LABYRINTH</p>
+        <button class="start-btn" @click="startGame">SURVIVE</button>
       </div>
     </div>
 
     <div v-else-if="gameState === 'playing'" class="screen screen--game">
-      <a-scene
-        physics=" driver: ammo; debug: true; debugDrawMode: 1;"
-        inspector="true"
-        maze-generator
-      >
+      <a-scene physics="driver: ammo; debug: false;" maze-generator>
         <a-light
           type="hemisphere"
           color="#111111"
@@ -201,19 +201,19 @@ const startGame = async () => {
         >
         </a-light>
 
-        <a-plane
-          position="20 0 20"
-          rotation="-90 0 0"
+        <a-box
+          position="20 -0.5 20"
           width="100"
-          height="100"
+          depth="100"
+          height="1"
           color="#009900"
           ammo-body="type: static"
           ammo-shape="type: box"
-        ></a-plane>
+        ></a-box>
 
         <a-entity
           v-for="model in zombiesList"
-          key="'zombie-' + model.id"
+          :key="'zombie-' + model.id"
           :id="'zombie-' + model.id"
           :gltf-model="model.src"
           :position="model.position"
@@ -269,6 +269,29 @@ const startGame = async () => {
   height: 100vh;
 }
 
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.vignette {
+  background: radial-gradient(circle, transparent 20%, rgba(0, 0, 0, 0.8) 100%);
+}
+
+.scanlines {
+  background: linear-gradient(
+    to bottom,
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.25) 50%
+  );
+  background-size: 100% 4px;
+}
+
 .screen {
   width: 100%;
   height: 100%;
@@ -284,23 +307,35 @@ const startGame = async () => {
 }
 
 .menu-content {
+  position: relative;
+  z-index: 10;
   text-align: center;
 }
 
 .game-title {
-  font-size: 5rem;
-  color: #ff3333;
-  margin: 0 0 40px 0;
+  font-size: 6rem;
+  color: #eee;
+  margin: 0;
   text-transform: uppercase;
-  letter-spacing: 10px;
-  text-shadow: 0 0 20px rgba(255, 51, 51, 0.5);
+  letter-spacing: 15px;
+  text-shadow: 0 0 10px rgba(255, 51, 51, 0.7);
+  animation: flicker 3s infinite;
+}
+
+.game-subtitle {
+  font-size: 1.2rem;
+  letter-spacing: 5px;
+  color: #666;
+  margin-top: 20px; /* Oprava: Přidána mezera, aby nedocházelo k překryvu */
+  margin-bottom: 50px;
+  text-transform: uppercase;
 }
 
 .start-btn {
   font-family: 'Courier New', Courier, monospace;
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: bold;
-  padding: 15px 60px;
+  padding: 15px 80px;
   background-color: transparent;
   color: #ff3333;
   border: 3px solid #ff3333;
@@ -313,7 +348,31 @@ const startGame = async () => {
 .start-btn:hover {
   background-color: #ff3333;
   color: #000;
-  box-shadow: 0 0 15px #ff3333;
+  box-shadow: 0 0 30px #ff3333;
+  transform: scale(1.05);
+}
+
+@keyframes flicker {
+  0%,
+  19.999%,
+  22%,
+  62.999%,
+  64%,
+  64.999%,
+  70%,
+  100% {
+    opacity: 1;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+  }
+  20%,
+  21.999%,
+  63%,
+  63.999%,
+  65%,
+  69.999% {
+    opacity: 0.4;
+    text-shadow: none;
+  }
 }
 
 .screen--game {
