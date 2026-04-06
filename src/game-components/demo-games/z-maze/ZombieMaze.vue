@@ -273,14 +273,14 @@ const quitGame = () => {
         ></a-entity>
 
         <a-entity
-          walk="sprint: true; speed: 4; sprintSpeed: 6; idleClipName: CharacterArmature|Idle_Neutral; walkClipName: CharacterArmature|Run; sprintClipName: CharacterArmature|Run; rotationSpeed: 180;"
           id="adventurer"
           ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation"
-          ammo-shape="type: box; fit: manual; halfExtents: 0.2 1.1 0.2; offset: 0 -0.2 0;"
           position="0 15.8 0"
+          walk="sprint: true; speed: 4; sprintSpeed: 6; idleClipName: CharacterArmature|Idle_Neutral; walkClipName: CharacterArmature|Run; sprintClipName: CharacterArmature|Run; rotationSpeed: 180;"
         >
           <a-entity
             :gltf-model="AdventurerModelSrc"
+            ammo-shape="type: hull;"
             position="0 -1 0"
             scale="1.1 1.1 1.1"
           ></a-entity>
