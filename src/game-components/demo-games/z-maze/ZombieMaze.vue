@@ -4,7 +4,7 @@ import 'aframe';
 import 'aframe-star-system-component';
 import { AdventurerModelSrc, ZombieModelSrc } from '../constants';
 
-type GameState = 'menu' | 'playing' | 'gameover';
+type GameState = 'menu' | 'playing' | 'gameover' | 'win';
 
 const gameState = ref<GameState>('menu');
 const gameWrapperRef = ref<HTMLElement | null>(null);
@@ -37,6 +37,13 @@ const startTimer = () => {
       gameState.value = 'gameover';
     }
   }, 1000);
+};
+
+const handleGameWon = () => {
+  if (gameState.value === 'playing') {
+    stopTimer();
+    gameState.value = 'win';
+  }
 };
 
 const generateZombies = () => {
@@ -129,7 +136,33 @@ const generateZombies = () => {
 
 onMounted(() => {
   document.addEventListener('fullscreenchange', handleFullscreenChange);
+  window.addEventListener('game-won', handleGameWon);
+
   if (window.AFRAME) {
+    window.AFRAME.registerComponent('finish-trigger', {
+      init: function () {
+        this.won = false;
+      },
+      tick: function () {
+        if (this.won) return;
+
+        const playerEl = document.querySelector('#adventurer');
+        if (!playerEl) return;
+
+        const playerPos = playerEl.object3D.position;
+        const finishPos = this.el.object3D.position;
+
+        const dx = playerPos.x - finishPos.x;
+        const dz = playerPos.z - finishPos.z;
+        const distance = Math.sqrt(dx * dx + dz * dz);
+
+        if (distance < 3) {
+          this.won = true;
+          window.dispatchEvent(new Event('game-won'));
+        }
+      },
+    });
+
     window.AFRAME.registerComponent('maze-generator', {
       init: function () {
         // 1 = bush, 0 = road, 2 = Start, 3 = Finish
@@ -194,6 +227,8 @@ onMounted(() => {
               endPad.setAttribute('depth', blockSize);
               endPad.setAttribute('color', '#006400');
 
+              endPad.setAttribute('finish-trigger', '');
+
               let endLight = document.createElement('a-light');
               endLight.setAttribute('type', 'point');
               endLight.setAttribute('color', '#00ff00');
@@ -223,6 +258,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  window.removeEventListener('game-won', handleGameWon);
   stopTimer();
 });
 
@@ -272,6 +308,21 @@ const quitGame = () => {
         <p class="game-subtitle">THE ZOMBIES FOUND THEIR PREY</p>
         <div class="button-group">
           <button class="btn btn--primary" @click="startGame">RETRY</button>
+          <button class="btn btn--secondary" @click="quitGame">
+            QUIT GAME
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div v-else-if="gameState === 'win'" class="screen screen--win">
+      <div class="menu-content">
+        <h1 class="game-title title--win">ESCAPED!</h1>
+        <p class="game-subtitle subtitle--win">YOU SURVIVED THE LABYRINTH</p>
+        <div class="button-group">
+          <button class="btn btn--win-primary" @click="startGame">
+            PLAY AGAIN
+          </button>
           <button class="btn btn--secondary" @click="quitGame">
             QUIT GAME
           </button>
@@ -369,7 +420,6 @@ const quitGame = () => {
   height: 100vh;
 }
 
-/* Overlays */
 .overlay-container {
   position: absolute;
   top: 0;
@@ -401,7 +451,6 @@ const quitGame = () => {
   background-size: 100% 4px;
 }
 
-/* Screen Basics */
 .screen {
   width: 100%;
   height: 100%;
@@ -418,12 +467,16 @@ const quitGame = () => {
   color: white;
 }
 
+.screen--win {
+  background: radial-gradient(circle, #0a2a0a 0%, #000000 100%);
+  color: white;
+}
+
 .menu-content {
   position: relative;
   z-index: 10;
 }
 
-/* Titles */
 .game-title {
   font-size: 6rem;
   color: #eee;
@@ -439,6 +492,12 @@ const quitGame = () => {
   text-shadow: 0 0 20px rgba(139, 0, 0, 0.9);
 }
 
+.title--win {
+  color: #00ff00;
+  text-shadow: 0 0 20px rgba(0, 255, 0, 0.9);
+  animation: flicker-green 3s infinite;
+}
+
 .game-subtitle {
   font-size: 1.2rem;
   letter-spacing: 5px;
@@ -448,7 +507,10 @@ const quitGame = () => {
   text-transform: uppercase;
 }
 
-/* Buttons */
+.subtitle--win {
+  color: #88ff88;
+}
+
 .button-group {
   display: flex;
   gap: 20px;
@@ -478,6 +540,18 @@ const quitGame = () => {
   box-shadow: 0 0 30px #ff3333;
 }
 
+.btn--win-primary {
+  background-color: transparent;
+  color: #00ff00;
+  border: 3px solid #00ff00;
+}
+
+.btn--win-primary:hover {
+  background-color: #00ff00;
+  color: #000;
+  box-shadow: 0 0 30px #00ff00;
+}
+
 .btn--secondary {
   background-color: transparent;
   color: #666;
@@ -489,7 +563,6 @@ const quitGame = () => {
   color: #fff;
 }
 
-/* HUD */
 .game-hud {
   position: absolute;
   top: 20px;
@@ -536,6 +609,29 @@ const quitGame = () => {
   100% {
     opacity: 1;
     text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+  }
+  20%,
+  21.999%,
+  63%,
+  63.999%,
+  65%,
+  69.999% {
+    opacity: 0.4;
+    text-shadow: none;
+  }
+}
+
+@keyframes flicker-green {
+  0%,
+  19.999%,
+  22%,
+  62.999%,
+  64%,
+  64.999%,
+  70%,
+  100% {
+    opacity: 1;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
   }
   20%,
   21.999%,
