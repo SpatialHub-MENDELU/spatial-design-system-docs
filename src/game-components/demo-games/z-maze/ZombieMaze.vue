@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick } from 'vue';
 import 'aframe';
+import 'aframe-star-system-component';
 import { AdventurerModelSrc, ZombieModelSrc } from '../constants';
 
 type GameState = 'menu' | 'playing' | 'gameover';
@@ -120,6 +121,7 @@ onMounted(() => {
               wall.setAttribute('color', 'green');
               wall.setAttribute('repeat', `${blockSize} ${wallHeight}`);
               wall.setAttribute('roughness', 0.9);
+              wall.setAttribute('color', '#013220');
               wall.setAttribute('ammo-body', 'type: static');
               wall.setAttribute('ammo-shape', 'type: box');
               sceneEl.appendChild(wall);
@@ -146,7 +148,7 @@ onMounted(() => {
               let endLight = document.createElement('a-light');
               endLight.setAttribute('type', 'point');
               endLight.setAttribute('color', '#00ff00');
-              endLight.setAttribute('intensity', '0.5');
+              endLight.setAttribute('intensity', '2');
               endLight.setAttribute('distance', '8');
               endLight.setAttribute('position', `0 1 0`);
               endPad.appendChild(endLight);
@@ -238,15 +240,22 @@ const quitGame = () => {
       <a-scene physics="driver: ammo; debug: false;" maze-generator>
         <a-light
           type="hemisphere"
+          color="#111"
+          groundColor="#000"
+          intensity="0.2"
+        >
+        </a-light>
+        <a-light
+          type="hemisphere"
           color="#111111"
           groundColor="#ff1111"
-          intensity="2"
+          intensity="0.2"
         ></a-light>
         <a-light
           type="point"
           position="35 -5 35"
           color="#ff0000"
-          intensity="3"
+          intensity="0.2"
           distance="100"
         ></a-light>
 
@@ -255,7 +264,7 @@ const quitGame = () => {
           width="100"
           depth="100"
           height="1"
-          color="#009900"
+          color="#1A4D2E"
           ammo-body="type: static"
           ammo-shape="type: box"
         ></a-box>
@@ -283,6 +292,11 @@ const quitGame = () => {
             ammo-shape="type: hull;"
             position="0 -1 0"
             scale="1.1 1.1 1.1"
+          ></a-entity>
+          <a-entity
+            light="type: spot; color: #fffbd6; intensity: 12; distance: 10; angle: 45; penumbra: 0.5"
+            position="0 1 0.5"
+            rotation="-10 180 0"
           ></a-entity>
         </a-entity>
 
