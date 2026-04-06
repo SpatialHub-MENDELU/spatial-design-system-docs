@@ -46,6 +46,13 @@ const handleGameWon = () => {
   }
 };
 
+const handlePlayerDied = () => {
+  if (gameState.value === 'playing') {
+    stopTimer();
+    gameState.value = 'gameover';
+  }
+};
+
 const generateZombies = () => {
   const scale = '0.5 0.5 0.5';
   const offset = '0 1 0.5';
@@ -57,7 +64,7 @@ const generateZombies = () => {
       rotation: '0 90 0',
       scale,
       offset,
-      animation: '*Armature|Bite_ground*',
+      animation: '*Armature|Scream*',
     },
     {
       id: 3,
@@ -66,7 +73,7 @@ const generateZombies = () => {
       rotation: '0 90 0',
       scale,
       offset,
-      animation: '*Armature|Bite_ground*',
+      animation: '*Armature|Scream*',
     },
     {
       id: 4,
@@ -75,7 +82,7 @@ const generateZombies = () => {
       rotation: '0 -90 0',
       scale,
       offset,
-      animation: '*Armature|Bite_ground*',
+      animation: '*Armature|Scream*',
     },
     {
       id: 5,
@@ -84,7 +91,7 @@ const generateZombies = () => {
       rotation: '0 0 0',
       scale,
       offset,
-      animation: '*Armature|Bite_ground*',
+      animation: '*Armature|Scream*',
     },
     {
       id: 6,
@@ -93,7 +100,7 @@ const generateZombies = () => {
       rotation: '0 90 0',
       scale,
       offset,
-      animation: '*Armature|Bite_ground*',
+      animation: '*Armature|Scream*',
     },
     {
       id: 7,
@@ -102,7 +109,7 @@ const generateZombies = () => {
       rotation: '0 90 0',
       scale,
       offset,
-      animation: '*Armature|Bite_ground*',
+      animation: '*Armature|Scream*',
     },
     {
       id: 8,
@@ -111,7 +118,7 @@ const generateZombies = () => {
       rotation: '0 0 0',
       scale,
       offset,
-      animation: '*Armature|Bite_ground*',
+      animation: '*Armature|Scream*',
     },
     {
       id: 9,
@@ -120,7 +127,7 @@ const generateZombies = () => {
       rotation: '0 90 0',
       scale,
       offset,
-      animation: '*Armature|Bite_ground*',
+      animation: '*Armature|Scream*',
     },
     {
       id: 10,
@@ -129,7 +136,7 @@ const generateZombies = () => {
       rotation: '0 90 0',
       scale,
       offset,
-      animation: '*Armature|Bite_ground*',
+      animation: '*Armature|Scream*',
     },
   ];
 };
@@ -137,8 +144,35 @@ const generateZombies = () => {
 onMounted(() => {
   document.addEventListener('fullscreenchange', handleFullscreenChange);
   window.addEventListener('game-won', handleGameWon);
+  window.addEventListener('player-died', handlePlayerDied);
 
   if (window.AFRAME) {
+    window.AFRAME.registerComponent('zombie-collider', {
+      init: function () {
+        this.isDead = false;
+      },
+      tick: function () {
+        if (this.isDead) return;
+
+        const playerPos = this.el.object3D.position;
+        const zombies = document.querySelectorAll('[id^="zombie-"]');
+
+        for (let i = 0; i < zombies.length; i++) {
+          const zombiePos = zombies[i].object3D.position;
+
+          const dx = playerPos.x - zombiePos.x;
+          const dz = playerPos.z - zombiePos.z;
+          const distance = Math.sqrt(dx * dx + dz * dz);
+
+          if (distance < 4.5) {
+            this.isDead = true;
+            window.dispatchEvent(new Event('player-died'));
+            break;
+          }
+        }
+      },
+    });
+
     window.AFRAME.registerComponent('finish-trigger', {
       init: function () {
         this.won = false;
@@ -259,6 +293,7 @@ onMounted(async () => {
 onUnmounted(() => {
   document.removeEventListener('fullscreenchange', handleFullscreenChange);
   window.removeEventListener('game-won', handleGameWon);
+  window.removeEventListener('player-died', handlePlayerDied);
   stopTimer();
 });
 
@@ -343,7 +378,7 @@ const quitGame = () => {
           type="hemisphere"
           color="#fff"
           groundColor="#000"
-          intensity="0.1"
+          intensity="0.01"
         ></a-light>
 
         <a-box
@@ -372,6 +407,7 @@ const quitGame = () => {
 
         <a-entity
           id="adventurer"
+          zombie-collider
           ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation"
           position="0 15.8 0"
           walk="sprint: true; speed: 4; sprintSpeed: 6; idleClipName: CharacterArmature|Idle_Neutral; walkClipName: CharacterArmature|Run; sprintClipName: CharacterArmature|Run; rotationSpeed: 180;"
@@ -383,7 +419,7 @@ const quitGame = () => {
             scale="1.1 1.1 1.1"
           ></a-entity>
           <a-entity
-            light="type: spot; color: #fffbd6; intensity: 25; distance: 10; angle: 45; penumbra: 0.5"
+            light="type: spot; color: #fffbd6; intensity: 15; distance: 6; angle: 45; penumbra: 0.5"
             position="0 1 0.2"
             rotation="-10 180 0"
           ></a-entity>
