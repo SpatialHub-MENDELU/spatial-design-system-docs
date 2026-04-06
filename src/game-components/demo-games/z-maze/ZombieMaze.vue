@@ -41,39 +41,88 @@ const startTimer = () => {
 
 const generateZombies = () => {
   const scale = '0.5 0.5 0.5';
-  const offset = '0 0 0';
+  const offset = '0 1 0.5';
   return [
     {
       id: 1,
       src: ZombieModelSrc,
-      position: '25 0 5',
-      rotation: '0 0 0',
+      position: '25 0.3 5',
+      rotation: '0 90 0',
       scale,
       offset,
-    },
-    {
-      id: 2,
-      src: ZombieModelSrc,
-      position: '65 0 15',
-      rotation: '0 -90 0',
-      scale,
-      offset,
+      animation: '*Armature|Bite_ground*',
     },
     {
       id: 3,
       src: ZombieModelSrc,
-      position: '25 0 35',
+      position: '25 0.3 35',
       rotation: '0 90 0',
       scale,
       offset,
+      animation: '*Armature|Bite_ground*',
     },
     {
       id: 4,
       src: ZombieModelSrc,
-      position: '60 0 45',
-      rotation: '0 180 0',
+      position: '60 0.3 45',
+      rotation: '0 -90 0',
       scale,
       offset,
+      animation: '*Armature|Bite_ground*',
+    },
+    {
+      id: 5,
+      src: ZombieModelSrc,
+      position: '35 0.3 15',
+      rotation: '0 0 0',
+      scale,
+      offset,
+      animation: '*Armature|Bite_ground*',
+    },
+    {
+      id: 6,
+      src: ZombieModelSrc,
+      position: '40 0.3 25',
+      rotation: '0 90 0',
+      scale,
+      offset,
+      animation: '*Armature|Bite_ground*',
+    },
+    {
+      id: 7,
+      src: ZombieModelSrc,
+      position: '40 0.3 35',
+      rotation: '0 90 0',
+      scale,
+      offset,
+      animation: '*Armature|Bite_ground*',
+    },
+    {
+      id: 8,
+      src: ZombieModelSrc,
+      position: '15 0.3 45',
+      rotation: '0 0 0',
+      scale,
+      offset,
+      animation: '*Armature|Bite_ground*',
+    },
+    {
+      id: 9,
+      src: ZombieModelSrc,
+      position: '35 0.3 55',
+      rotation: '0 90 0',
+      scale,
+      offset,
+      animation: '*Armature|Bite_ground*',
+    },
+    {
+      id: 10,
+      src: ZombieModelSrc,
+      position: '50 0.3 45',
+      rotation: '0 90 0',
+      scale,
+      offset,
+      animation: '*Armature|Bite_ground*',
     },
   ];
 };
@@ -166,6 +215,7 @@ onMounted(async () => {
   try {
     await import('spatial-design-system/components/game/walk');
     await import('spatial-design-system/components/game/gameview');
+    await import('spatial-design-system/components/game/npcWalk');
   } catch (e) {
     console.error(e);
   }
@@ -240,23 +290,9 @@ const quitGame = () => {
       <a-scene physics="driver: ammo; debug: false;" maze-generator>
         <a-light
           type="hemisphere"
-          color="#111"
+          color="#fff"
           groundColor="#000"
-          intensity="0.2"
-        >
-        </a-light>
-        <a-light
-          type="hemisphere"
-          color="#111111"
-          groundColor="#ff1111"
-          intensity="0.2"
-        ></a-light>
-        <a-light
-          type="point"
-          position="35 -5 35"
-          color="#ff0000"
-          intensity="0.2"
-          distance="100"
+          intensity="0.1"
         ></a-light>
 
         <a-box
@@ -273,13 +309,15 @@ const quitGame = () => {
           v-for="model in zombiesList"
           :key="'zombie-' + model.id"
           :id="'zombie-' + model.id"
-          :gltf-model="model.src"
           :position="model.position"
           :rotation="model.rotation"
+          ammo-body="type: static;"
+          :ammo-shape="`type: box; offset: ${model.offset};`"
+          :gltf-model="model.src"
           :scale="model.scale"
-          ammo-body="type: static; gravity: 0 0 0;"
-          :ammo-shape="`type: hull; offset: ${model.offset};`"
-        ></a-entity>
+          :animation-mixer="`clip: ${model.animation}; loop: repeat;`"
+        >
+        </a-entity>
 
         <a-entity
           id="adventurer"
@@ -294,8 +332,8 @@ const quitGame = () => {
             scale="1.1 1.1 1.1"
           ></a-entity>
           <a-entity
-            light="type: spot; color: #fffbd6; intensity: 12; distance: 10; angle: 45; penumbra: 0.5"
-            position="0 1 0.5"
+            light="type: spot; color: #fffbd6; intensity: 25; distance: 10; angle: 45; penumbra: 0.5"
+            position="0 1 0.2"
             rotation="-10 180 0"
           ></a-entity>
         </a-entity>
@@ -308,7 +346,7 @@ const quitGame = () => {
         <!--        <a-entity-->
         <!--          camera-->
         <!--          rotation="-45 0 0"-->
-        <!--          position="35 30 70"-->
+        <!--          position="35 10 70"-->
         <!--          look-controls-->
         <!--          wasd-controls-->
         <!--        ></a-entity>-->
