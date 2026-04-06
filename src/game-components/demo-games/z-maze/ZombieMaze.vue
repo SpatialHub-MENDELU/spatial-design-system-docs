@@ -3,17 +3,39 @@ import { ref, onMounted, onUnmounted, nextTick } from 'vue';
 import 'aframe';
 import { AdventurerModelSrc, ZombieModelSrc } from '../constants';
 
-type GameState = 'menu' | 'playing';
+type GameState = 'menu' | 'playing' | 'gameover';
 
 const gameState = ref<GameState>('menu');
 const gameWrapperRef = ref<HTMLElement | null>(null);
+const timeLeft = ref(30);
+let timerInterval: number | null = null;
 
 const zombiesList = ref([]);
 
 const handleFullscreenChange = () => {
   if (!document.fullscreenElement && gameState.value === 'playing') {
+    stopTimer();
     gameState.value = 'menu';
   }
+};
+
+const stopTimer = () => {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+};
+
+const startTimer = () => {
+  timeLeft.value = 30;
+  stopTimer();
+  timerInterval = window.setInterval(() => {
+    timeLeft.value--;
+    if (timeLeft.value <= 0) {
+      stopTimer();
+      gameState.value = 'gameover';
+    }
+  }, 1000);
 };
 
 const generateZombies = () => {
@@ -95,7 +117,6 @@ onMounted(() => {
               wall.setAttribute('width', blockSize);
               wall.setAttribute('height', wallHeight);
               wall.setAttribute('depth', blockSize);
-              // wall.setAttribute('src', '#bushTexture');
               wall.setAttribute('color', 'green');
               wall.setAttribute('repeat', `${blockSize} ${wallHeight}`);
               wall.setAttribute('roughness', 0.9);
@@ -150,12 +171,13 @@ onMounted(async () => {
 
 onUnmounted(() => {
   document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  stopTimer();
 });
 
 const startGame = async () => {
   gameState.value = 'playing';
-
   zombiesList.value = generateZombies();
+  startTimer();
 
   nextTick(async () => {
     if (gameWrapperRef.value && !document.fullscreenElement) {
@@ -167,39 +189,66 @@ const startGame = async () => {
     }
   });
 };
+
+const quitGame = () => {
+  stopTimer();
+  gameState.value = 'menu';
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+  }
+};
 </script>
 
 <template>
   <div class="game-wrapper" ref="gameWrapperRef">
-    <div v-if="gameState === 'menu'" class="screen screen--menu">
+    <div v-if="gameState !== 'playing'" class="overlay-container">
       <div class="overlay vignette"></div>
       <div class="overlay scanlines"></div>
+    </div>
 
+    <div v-if="gameState === 'menu'" class="screen screen--menu">
       <div class="menu-content">
         <h1 class="game-title">Z-MAZE</h1>
         <p class="game-subtitle">NO ONE ESCAPES THE LABYRINTH</p>
-        <button class="start-btn" @click="startGame">SURVIVE</button>
+        <button class="btn btn--primary" @click="startGame">SURVIVE</button>
+      </div>
+    </div>
+
+    <div v-else-if="gameState === 'gameover'" class="screen screen--gameover">
+      <div class="menu-content">
+        <h1 class="game-title title--dead">YOU DIED</h1>
+        <p class="game-subtitle">THE ZOMBIES FOUND THEIR PREY</p>
+        <div class="button-group">
+          <button class="btn btn--primary" @click="startGame">RETRY</button>
+          <button class="btn btn--secondary" @click="quitGame">
+            QUIT GAME
+          </button>
+        </div>
       </div>
     </div>
 
     <div v-else-if="gameState === 'playing'" class="screen screen--game">
+      <div class="game-hud">
+        <div class="timer-container" :class="{ 'timer-low': timeLeft <= 10 }">
+          <span class="timer-label">TIME LEFT:</span>
+          <span class="timer-value">{{ timeLeft }}s</span>
+        </div>
+      </div>
+
       <a-scene physics="driver: ammo; debug: false;" maze-generator>
         <a-light
           type="hemisphere"
           color="#111111"
           groundColor="#ff1111"
           intensity="2"
-        >
-        </a-light>
-
+        ></a-light>
         <a-light
           type="point"
           position="35 -5 35"
           color="#ff0000"
           intensity="3"
           distance="100"
-        >
-        </a-light>
+        ></a-light>
 
         <a-box
           position="20 -0.5 20"
@@ -221,8 +270,7 @@ const startGame = async () => {
           :scale="model.scale"
           ammo-body="type: static; gravity: 0 0 0;"
           :ammo-shape="`type: hull; offset: ${model.offset};`"
-        >
-        </a-entity>
+        ></a-entity>
 
         <a-entity
           walk="sprint: true; speed: 4; sprintSpeed: 6; idleClipName: CharacterArmature|Idle_Neutral; walkClipName: CharacterArmature|Run; sprintClipName: CharacterArmature|Run; rotationSpeed: 180;"
@@ -269,39 +317,51 @@ const startGame = async () => {
   height: 100vh;
 }
 
+/* Overlays */
+.overlay-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  pointer-events: none;
+}
+
 .overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  pointer-events: none;
-  z-index: 2;
 }
 
 .vignette {
-  background: radial-gradient(circle, transparent 20%, rgba(0, 0, 0, 0.8) 100%);
+  background: radial-gradient(circle, transparent 20%, rgba(0, 0, 0, 0.9) 100%);
 }
 
 .scanlines {
   background: linear-gradient(
     to bottom,
     rgba(18, 16, 16, 0) 50%,
-    rgba(0, 0, 0, 0.25) 50%
+    rgba(0, 0, 0, 0.3) 50%
   );
   background-size: 100% 4px;
 }
 
+/* Screen Basics */
 .screen {
   width: 100%;
   height: 100%;
-}
-
-.screen--menu {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  text-align: center;
+}
+
+.screen--menu,
+.screen--gameover {
   background: radial-gradient(circle, #2a0808 0%, #000000 100%);
   color: white;
 }
@@ -309,9 +369,9 @@ const startGame = async () => {
 .menu-content {
   position: relative;
   z-index: 10;
-  text-align: center;
 }
 
+/* Titles */
 .game-title {
   font-size: 6rem;
   color: #eee;
@@ -322,34 +382,95 @@ const startGame = async () => {
   animation: flicker 3s infinite;
 }
 
+.title--dead {
+  color: #ff0000;
+  text-shadow: 0 0 20px rgba(139, 0, 0, 0.9);
+}
+
 .game-subtitle {
   font-size: 1.2rem;
   letter-spacing: 5px;
   color: #666;
-  margin-top: 20px; /* Oprava: Přidána mezera, aby nedocházelo k překryvu */
+  margin-top: 20px;
   margin-bottom: 50px;
   text-transform: uppercase;
 }
 
-.start-btn {
+/* Buttons */
+.button-group {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.btn {
   font-family: 'Courier New', Courier, monospace;
-  font-size: 2.5rem;
+  font-size: 1.8rem;
   font-weight: bold;
-  padding: 15px 80px;
-  background-color: transparent;
-  color: #ff3333;
-  border: 3px solid #ff3333;
-  border-radius: 5px;
+  padding: 15px 50px;
   cursor: pointer;
   text-transform: uppercase;
   transition: all 0.3s ease;
+  border-radius: 5px;
 }
 
-.start-btn:hover {
+.btn--primary {
+  background-color: transparent;
+  color: #ff3333;
+  border: 3px solid #ff3333;
+}
+
+.btn--primary:hover {
   background-color: #ff3333;
   color: #000;
   box-shadow: 0 0 30px #ff3333;
-  transform: scale(1.05);
+}
+
+.btn--secondary {
+  background-color: transparent;
+  color: #666;
+  border: 3px solid #444;
+}
+
+.btn--secondary:hover {
+  border-color: #fff;
+  color: #fff;
+}
+
+/* HUD */
+.game-hud {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.timer-container {
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid #ff3333;
+  padding: 10px 20px;
+  color: #ff3333;
+}
+
+.timer-value {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.timer-low {
+  animation: pulse-red 0.5s infinite alternate;
+  background: rgba(139, 0, 0, 0.9);
+  color: #fff;
+}
+
+@keyframes pulse-red {
+  from {
+    box-shadow: 0 0 5px #ff0000;
+  }
+  to {
+    box-shadow: 0 0 25px #ff0000;
+  }
 }
 
 @keyframes flicker {
@@ -379,14 +500,9 @@ const startGame = async () => {
   position: absolute;
   top: 0;
   left: 0;
-  display: block;
 }
 
 .screen--game a-scene {
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
 }
