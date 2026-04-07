@@ -5,7 +5,8 @@ title: game-view
 <script setup lang="ts">
   import { ref, onMounted } from "vue";
   import ComponentExample from "../vue/ComponentExample.vue";
-
+  import VixensInstinct from "./demo-games/vixens-instinct/VixensInstinct.vue";
+    
   const renderScene = ref(false);
 
   onMounted(async () => {
@@ -20,6 +21,7 @@ title: game-view
 </script>
 
 # {{ $frontmatter.title }}
+<VixensInstinct/>
 The `game-view` component is used to control the camera in an A-Frame scene. It allows you to choose different camera modes, from a fixed static view to third-person or first-person style views that follow a character. The component also supports zoom and controlled rotation.
 
 ::: warning ⚠️ PHYSICS ENGINE
