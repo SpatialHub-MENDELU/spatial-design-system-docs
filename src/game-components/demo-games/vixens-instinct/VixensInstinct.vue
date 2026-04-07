@@ -2,20 +2,22 @@
 import { nextTick, onMounted, onUnmounted, ref } from 'vue';
 import 'aframe';
 import {
-  GrassImageSrc,
-  FoxModelSrc,
-  CaveModelSrc,
-  MountainModelSrc,
-  PondModelSrc,
-  FrogModelSrc,
-  StagModelSrc,
-  JeepModelSrc,
-  PosedModelSrc,
-  RabbitModelSrc,
-  TreeModelSrc,
-  Tree2ModelSrc,
-  PineTreeModelSrc,
-  PineconeModelSrc,
+    GrassImageSrc,
+    FoxModelSrc,
+    CaveModelSrc,
+    MountainModelSrc,
+    PondModelSrc,
+    FrogModelSrc,
+    StagModelSrc,
+    JeepModelSrc,
+    PosedModelSrc,
+    RabbitModelSrc,
+    TreeModelSrc,
+    Tree2ModelSrc,
+    PineTreeModelSrc,
+    PineconeModelSrc,
+    BushModelSrc,
+    RockModelSrcWalk, RocksModelSrc,
 } from '../constants';
 
 import {
@@ -233,6 +235,7 @@ function addComponent(isClass, elementName, qualifiedName, value) {
           rotation="0 -45 0"
           position="-5 0.2 -8.7"
         ></a-entity>
+
         <!-- trees -->
         <a-entity
           v-for="tree in trees"
@@ -267,6 +270,35 @@ function addComponent(isClass, elementName, qualifiedName, value) {
           :rotation="tree.rotation"
           :scale="tree.scale"
         ></a-entity>
+
+        <!-- rocks -->
+        <a-entity
+          v-for="rock in rocks"
+          :gltf-model="RocksModelSrc"
+          :scale="rock.scale"
+          :position="rock.position"
+          :rotation="rock.rotation"
+        >
+        </a-entity>
+
+        <a-entity
+          v-for="rock in singleRocks"
+          :gltf-model="RockModelSrcWalk"
+          :scale="rock.scale"
+          :position="rock.position"
+          :rotation="rock.rotation"
+        >
+        </a-entity>
+
+        <!-- bushes -->
+        <a-entity
+          v-for="bush in bushes"
+          :gltf-model="BushModelSrc"
+          :scale="bush.scale"
+          :position="bush.position"
+          :rotation="bush.rotation"
+        >
+        </a-entity>
       </a-scene>
     </div>
   </div>
