@@ -12,9 +12,21 @@ import {
   JeepModelSrc,
   PosedModelSrc,
   RabbitModelSrc,
+  TreeModelSrc,
+  Tree2ModelSrc,
+  PineTreeModelSrc,
+  PineconeModelSrc,
 } from '../constants';
 
-import {trees, pineTrees, pineCones, rocks, trees2, singleRocks, bushes} from './StaticModels.js';
+import {
+  trees,
+  pineTrees,
+  pineCones,
+  rocks,
+  trees2,
+  singleRocks,
+  bushes,
+} from './StaticModels.js';
 
 const GameStep = {
   Start: 'Start',
@@ -220,6 +232,40 @@ function addComponent(isClass, elementName, qualifiedName, value) {
           scale="0.01 0.01 0.01"
           rotation="0 -45 0"
           position="-5 0.2 -8.7"
+        ></a-entity>
+        <!-- trees -->
+        <a-entity
+          v-for="tree in trees"
+          :gltf-model="TreeModelSrc"
+          :position="tree.position"
+          :rotation="tree.rotation"
+          :scale="tree.scale"
+        >
+        </a-entity>
+
+        <a-entity
+          v-for="tree in trees2"
+          :gltf-model="Tree2ModelSrc"
+          :position="tree.position"
+          :rotation="tree.rotation"
+          :scale="tree.scale"
+        >
+        </a-entity>
+
+        <a-entity
+          v-for="tree in pineTrees"
+          :gltf-model="PineTreeModelSrc"
+          :position="tree.position"
+          :rotation="tree.rotation"
+          :scale="tree.scale"
+        ></a-entity>
+
+        <a-entity
+          v-for="tree in pineCones"
+          :gltf-model="PineconeModelSrc"
+          :position="tree.position"
+          :rotation="tree.rotation"
+          :scale="tree.scale"
         ></a-entity>
       </a-scene>
     </div>
