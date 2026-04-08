@@ -1,23 +1,31 @@
 <script setup>
 import { nextTick, onMounted, onUnmounted, ref } from 'vue';
 import 'aframe';
+
+import './babies-counter.js';
+import './health-bar.js';
+import './stamina-bar.js';
+import './time-counter.js';
+
 import {
-    GrassImageSrc,
-    FoxModelSrc,
-    CaveModelSrc,
-    MountainModelSrc,
-    PondModelSrc,
-    FrogModelSrc,
-    StagModelSrc,
-    JeepModelSrc,
-    PosedModelSrc,
-    RabbitModelSrc,
-    TreeModelSrc,
-    Tree2ModelSrc,
-    PineTreeModelSrc,
-    PineconeModelSrc,
-    BushModelSrc,
-    RockModelSrcWalk, RocksModelSrc,
+  GrassImageSrc,
+  FoxModelSrc,
+  CaveModelSrc,
+  MountainModelSrc,
+  PondModelSrc,
+  FrogModelSrc,
+  StagModelSrc,
+  JeepModelSrc,
+  PosedModelSrc,
+  RabbitModelSrc,
+  TreeModelSrc,
+  Tree2ModelSrc,
+  PineTreeModelSrc,
+  PineconeModelSrc,
+  BushModelSrc,
+  RockModelSrcWalk,
+  RocksModelSrc,
+  babyFoxImageSrc,
 } from '../constants';
 
 import {
@@ -155,6 +163,38 @@ function addComponent(isClass, elementName, qualifiedName, value) {
 
         <!--          sky-->
         <a-sky color="#D9F6FF"></a-sky>
+
+        <!-- health bar -->
+        <a-entity
+          id="hp"
+          ref="healthBar"
+          :health-bar="'max: ' + FoxCharacter.health"
+          position="0 7.18 0"
+        ></a-entity>
+
+        <!-- stamina bar -->
+        <a-entity
+          id="stamina-bar"
+          :stamina-bar="'max: ' + FoxCharacter.stamina"
+          position="-3.4 7.18 0"
+        >
+        </a-entity>
+
+        <!-- babies counter -->
+        <a-entity
+          id="babies-counter"
+          :babies-counter="'image: ' + babyFoxImageSrc"
+          position="3.4 7 0"
+        ></a-entity>
+
+        <!-- time counter -->
+        <a-entity
+          id="time-counter"
+          :time-counter="`initialTime:${LevelSettings.time};criticalTime:${LevelSettings.criticalTime}`"
+          position="7 7 0"
+        ></a-entity>
+
+        <!--          STATIC MODELS -->
 
         <!--          ground-->
         <a-box
