@@ -68,6 +68,7 @@ export default defineConfig({
           { text: 'row, column', link: '/ar-vr-primitives/rowcolumn' },
           { text: 'switch', link: '/ar-vr-primitives/switch' },
           { text: 'table', link: '/ar-vr-primitives/table' },
+          { text: 'tabs', link: '/ar-vr-primitives/tabs' },
           { text: 'textbox', link: '/ar-vr-primitives/textbox' },
         ],
       },
