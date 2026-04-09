@@ -428,6 +428,10 @@ const handleEnemyHit = (enemyId: number) => {
               <span class="label">Fly Spaceship</span>
             </div>
             <div class="control-item">
+              <span class="key key--shift">SHIFT</span>
+              <span class="label">Speed Boost</span>
+            </div>
+            <div class="control-item">
               <span class="key key--space">SPACE</span>
               <span class="label">Fire Lasers</span>
             </div>
@@ -832,6 +836,10 @@ const handleEnemyHit = (enemyId: number) => {
 
 .key--space {
   min-width: 120px;
+}
+
+.key--shift {
+  min-width: 80px;
 }
 
 .label {
