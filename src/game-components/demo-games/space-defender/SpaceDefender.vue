@@ -390,7 +390,25 @@ const handleEnemyHit = (enemyId: number) => {
 
     <div v-if="gameState === GameStep.Game" class="screen screen--game">
       <div v-if="isLoading" class="loading-screen">
-        <h2>Loading... 🚀</h2>
+        <div class="loading-content">
+          <div class="loading-spinner">🚀</div>
+          <h2>PREPARING MISSION...</h2>
+
+          <div class="mission-objective">
+            <h3>OBJECTIVE: DESTROY ALL ENEMIES</h3>
+          </div>
+
+          <div class="controls-guide">
+            <div class="control-item">
+              <span class="key">↑↓←→</span>
+              <span class="label">Fly Spaceship</span>
+            </div>
+            <div class="control-item">
+              <span class="key key--space">SPACE</span>
+              <span class="label">Fire Lasers</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div v-if="!isLoading" class="game-hud">
@@ -727,12 +745,94 @@ const handleEnemyHit = (enemyId: number) => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: #1a1a1a;
-  color: white;
+  background-color: #111424;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 9999;
+}
+
+.loading-content {
+  text-align: center;
+  max-width: 500px;
+  padding: 40px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid #00ffcc;
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(0, 255, 204, 0.2);
+}
+
+.loading-spinner {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  animation: rocket-pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes rocket-pulse {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.1);
+  }
+}
+
+.loading-content h2 {
+  font-family: 'Courier New', Courier, monospace;
+  color: #00ffcc;
+  letter-spacing: 4px;
+  margin-bottom: 30px;
+}
+
+.mission-objective {
+  margin-bottom: 40px;
+  padding: 15px;
+  background: rgba(255, 51, 51, 0.1);
+  border: 1px dashed #ff3333;
+}
+
+.mission-objective h3 {
+  color: #ff3333;
+  margin: 0;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.controls-guide {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+}
+
+.control-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.key {
+  background: #333;
+  color: #fff;
+  padding: 5px 15px;
+  border-radius: 5px;
+  border-bottom: 4px solid #000;
+  font-family: monospace;
+  font-weight: bold;
+  min-width: 60px;
+  display: inline-block;
+}
+
+.key--space {
+  min-width: 120px;
+}
+
+.label {
+  color: #fff;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1.1rem;
 }
 
 .game-hud {
