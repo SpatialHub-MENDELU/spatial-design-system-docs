@@ -32,20 +32,48 @@ const renderScene = ref(false);
 interface EnemyTarget {
   id: number;
   position: string;
-  points: string;
-  // xMin: number;
-  // xMax: number;
-  // zMin: number;
-  // zMax: number;
-  // yMin: number;
-  // yMax: number;
+  xMin: number;
+  xMax: number;
+  zMin: number;
+  zMax: number;
+  yMin: number;
+  yMax: number;
 }
 
-const enemiesList = ref<EnemyTarget[]>([
-  { id: 1, position: '0 10 5', points: '0 10 5, 10 10 5' },
-  { id: 2, position: '0 10 -10', points: '0 10 -10, 10 10 -10' },
-  { id: 3, position: '0 10 -25', points: '0 10 -25, 10 10 -25' },
-]);
+const initialEnemiesData: EnemyTarget[] = [
+  {
+    id: 1,
+    position: '0 10 5',
+    xMin: -40,
+    xMax: 40,
+    yMin: 15,
+    yMax: 40,
+    zMin: -10,
+    zMax: 50,
+  },
+  {
+    id: 2,
+    position: '20 25 -90',
+    xMin: -50,
+    xMax: 50,
+    yMin: 20,
+    yMax: 45,
+    zMin: -120,
+    zMax: -60,
+  },
+  {
+    id: 3,
+    position: '-20 30 -180',
+    xMin: -50,
+    xMax: 50,
+    yMin: 20,
+    yMax: 50,
+    zMin: -220,
+    zMax: -150,
+  },
+];
+
+const enemiesList = ref<EnemyTarget[]>([...initialEnemiesData]);
 const initialTotalEnemies = 3;
 const totalEnemiesGoal = ref(initialTotalEnemies);
 const killedEnemies = ref(0);
@@ -109,11 +137,7 @@ onUnmounted(() => {
 const resetGameValues = () => {
   killedEnemies.value = 0;
   totalEnemiesGoal.value = initialTotalEnemies;
-  enemiesList.value = [
-    { id: 1, position: '0 10 5', points: '0 10 5, 10 10 5' },
-    { id: 2, position: '0 10 -10', points: '0 10 -10, 10 10 -10' },
-    { id: 3, position: '0 10 -25', points: '0 10 -25, 10 10 -25' },
-  ];
+  enemiesList.value = [...initialEnemiesData];
 };
 
 const startGame = async () => {
@@ -154,7 +178,7 @@ const addAllComponents = () => {
     false,
     'spaceship',
     'fly',
-    'speed: 7; maxPitchDeg: 40; type: autoForward; keyUp: arrowup; keyDown: arrowdown; keyLeft: arrowleft; keyRight: arrowright;'
+    'speed: 12; sprint: true; sprintSpeed: 20; maxPitchDeg: 40; maxRollDeg: 40; type: autoForward; keyUp: arrowup; keyDown: arrowdown; keyLeft: arrowleft; keyRight: arrowright;'
   );
 
   addComponent(
@@ -166,7 +190,7 @@ const addAllComponents = () => {
   enemiesList.value.forEach((enemy) => {
     addComponent(false, `enemy-model-${enemy.id}`, 'ammo-shape', 'type: hull;');
 
-    const npcWalkValue = `points: ${enemy.points}; speed: 3; walkClipName: CharacterArmature|Walk; idleClipName: CharacterArmature|Idle; altitude: true;`;
+    const npcWalkValue = `xMin: ${enemy.xMin}; xMax: ${enemy.xMax}; yMin: ${enemy.yMin}; yMax: ${enemy.yMax}; zMin: ${enemy.zMin}; zMax: ${enemy.zMax}; speed: 10; rotationSpeed: 400; allowRotation: true; type: randomMoving; walkClipName: CharacterArmature|Walk; idleClipName: CharacterArmature|Idle; altitude: true;`;
     addComponent(false, `enemy-${enemy.id}`, 'npc-walk', npcWalkValue);
   });
 
@@ -425,7 +449,6 @@ const handleEnemyHit = (enemyId: number) => {
         inspector="true"
         v-if="isMounted"
         embedded
-        xr-mode-ui="enabled: false"
       >
         <a-sky color="#111424"></a-sky>
 
@@ -450,30 +473,12 @@ const handleEnemyHit = (enemyId: number) => {
           :position="enemy.position"
         >
           <a-entity
-            :gltf-model="astronautModel"
+            :gltf-model="SpaceshipEnemyModelSrc"
             :id="'enemy-model-' + enemy.id"
-            position="0 -3 0"
-            scale="3 3 3"
+            position="0 -1.3 -1.5"
+            scale="1.5 1.5 1.5"
           ></a-entity>
         </a-entity>
-
-        <!--                ENEMIES-->
-        <!--        <a-entity-->
-        <!--          npc-walk="-->
-        <!--                type: points;-->
-        <!--                points: 0 0 5, 5 0 5;-->
-        <!--                speed: 3;-->
-        <!--            "-->
-        <!--          ammo-body="type: dynamic; activationState: disableDeactivation"-->
-        <!--          position="0 0 5"-->
-        <!--        >-->
-        <!--          <a-entity-->
-        <!--            :gltf-model="SpaceshipEnemyModelSrc"-->
-        <!--            ammo-shape="type: hull;"-->
-        <!--            position="0 -0.3 -0.8"-->
-        <!--            scale="0.5 0.5 0.5"-->
-        <!--          />-->
-        <!--        </a-entity>-->
 
         <!--        CAMERA-->
         <a-entity id="camera" camera></a-entity>
