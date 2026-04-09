@@ -16,12 +16,17 @@ import {
   VenusModelSrc,
 } from '../constants';
 
-type GameState = 'menu' | 'playing' | 'victory' | 'defeat';
+const GameStep = {
+  Start: 'Start',
+  Game: 'Game',
+  Victory: 'Victory',
+  Defeat: 'Defeat',
+};
 
-const gameState = ref<GameState>('menu');
+const gameState = ref(GameStep.Start);
 const isMounted = ref(false);
 const gameWrapperRef = ref<HTMLElement | null>(null);
-const isLoading = ref(true);
+const isLoading = ref(false);
 const renderScene = ref(false);
 
 interface EnemyTarget {
@@ -36,7 +41,11 @@ interface EnemyTarget {
   // yMax: number;
 }
 
-const enemiesList = ref<EnemyTarget[]>([]);
+const enemiesList = ref<EnemyTarget[]>([
+  { id: 1, position: '0 10 5', points: '0 10 5, 10 10 5' },
+  { id: 2, position: '0 10 -10', points: '0 10 -10, 10 10 -10' },
+  { id: 3, position: '0 10 -25', points: '0 10 -25, 10 10 -25' },
+]);
 const initialTotalEnemies = 3;
 const totalEnemiesGoal = ref(initialTotalEnemies);
 const killedEnemies = ref(0);
@@ -44,13 +53,28 @@ const killedEnemies = ref(0);
 const timeLeft = ref(180);
 let timerInterval: number | null = null;
 
+function addComponent(
+  isClass: boolean,
+  elementName: string,
+  qualifiedName: string,
+  value: string
+) {
+  if (isClass) {
+    const elements = document.querySelectorAll(elementName);
+    elements.forEach((el) => {
+      el.setAttribute(qualifiedName, value);
+    });
+  } else {
+    const element = document.getElementById(elementName);
+    if (element) {
+      element.setAttribute(qualifiedName, value);
+    }
+  }
+}
+
 const handleFullscreenChange = () => {
-  if (
-    !document.fullscreenElement &&
-    gameState.value !== 'victory' &&
-    gameState.value !== 'defeat'
-  ) {
-    gameState.value = 'menu';
+  if (!document.fullscreenElement && gameState.value !== GameStep.Start) {
+    gameState.value = GameStep.Start;
     if (timerInterval) {
       clearInterval(timerInterval);
       timerInterval = null;
@@ -82,41 +106,82 @@ onUnmounted(() => {
   if (timerInterval) clearInterval(timerInterval);
 });
 
-const startGame = async () => {
-  gameState.value = 'playing';
-  isLoading.value = true;
+const resetGameValues = () => {
   killedEnemies.value = 0;
   totalEnemiesGoal.value = initialTotalEnemies;
-
   enemiesList.value = [
     { id: 1, position: '0 10 5', points: '0 10 5, 10 10 5' },
     { id: 2, position: '0 10 -10', points: '0 10 -10, 10 10 -10' },
     { id: 3, position: '0 10 -25', points: '0 10 -25, 10 10 -25' },
   ];
+};
 
-  setTimeout(() => {
-    isLoading.value = false;
-    nextTick(() => {
-      window.dispatchEvent(new Event('resize'));
-    });
-    startTimer();
-  }, 50);
+const startGame = async () => {
+  isLoading.value = true;
+  resetGameValues();
 
-  if (
-    gameWrapperRef.value &&
-    gameWrapperRef.value.requestFullscreen &&
-    !document.fullscreenElement
-  ) {
+  await nextTick();
+
+  if (gameWrapperRef.value && !document.fullscreenElement) {
     try {
       await gameWrapperRef.value.requestFullscreen();
     } catch (err) {
-      console.warn('Failed to start full screen mode:', err);
+      console.warn('Unable to enter full-screen mode:', err);
     }
   }
+
+  gameState.value = GameStep.Game;
+
+  setTimeout(() => {
+    setTimeout(() => {
+      addAllComponents();
+
+      isLoading.value = false;
+      startTimer();
+    }, 3000);
+  }, 3000);
+};
+
+const addAllComponents = () => {
+  addComponent(
+    false,
+    'spaceship',
+    'ammo-body',
+    'type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation'
+  );
+  addComponent(false, 'spaceship-model', 'ammo-shape', 'type: hull;');
+  addComponent(
+    false,
+    'spaceship',
+    'fly',
+    'speed: 7; maxPitchDeg: 40; type: autoForward; keyUp: arrowup; keyDown: arrowdown; keyLeft: arrowleft; keyRight: arrowright;'
+  );
+
+  addComponent(
+    true,
+    '.enemy',
+    'ammo-body',
+    'type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation; emitCollisionEvents: true;'
+  );
+  enemiesList.value.forEach((enemy) => {
+    addComponent(false, `enemy-model-${enemy.id}`, 'ammo-shape', 'type: hull;');
+
+    const npcWalkValue = `points: ${enemy.points}; speed: 3; walkClipName: CharacterArmature|Walk; idleClipName: CharacterArmature|Idle; altitude: true;`;
+    addComponent(false, `enemy-${enemy.id}`, 'npc-walk', npcWalkValue);
+  });
+
+  addComponent(true, '.enemy', 'enemy-target', '');
+
+  addComponent(
+    false,
+    'camera',
+    'game-view',
+    'target: #spaceship; type: thirdPersonFollow; distance: 40; height: 25; tilt: -27;'
+  );
 };
 
 const quitGame = () => {
-  gameState.value = 'menu';
+  gameState.value = GameStep.Start;
   stopTimer();
   if (document.fullscreenElement) {
     document.exitFullscreen().catch((err) => console.warn(err));
@@ -148,7 +213,7 @@ const startTimer = () => {
     } else {
       clearInterval(timerInterval!);
       timerInterval = null;
-      gameState.value = 'defeat';
+      gameState.value = GameStep.Defeat;
     }
   }, 1000);
 };
@@ -216,7 +281,7 @@ const registerAframeComponents = () => {
 };
 
 const shootLaser = () => {
-  if (gameState.value !== 'playing') return;
+  if (gameState.value !== GameStep.Game) return;
 
   const spaceship = document.querySelector('#spaceship');
   const scene = document.querySelector('a-scene');
@@ -274,7 +339,7 @@ const handleKeyDown = (e: KeyboardEvent) => {
 // COLLISION
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const handleEnemyHit = (enemyId: number) => {
-  if (gameState.value !== 'playing') return;
+  if (gameState.value !== GameStep.Game) return;
 
   const index = enemiesList.value.findIndex((a) => a.id === enemyId);
   if (index !== -1) {
@@ -284,7 +349,7 @@ const handleEnemyHit = (enemyId: number) => {
     if (enemiesList.value.length === 0) {
       stopTimer();
       setTimeout(() => {
-        gameState.value = 'victory';
+        gameState.value = GameStep.Victory;
       }, 500);
     }
   }
@@ -294,14 +359,14 @@ const handleEnemyHit = (enemyId: number) => {
 
 <template>
   <div class="game-wrapper" ref="gameWrapperRef" v-if="renderScene">
-    <div v-if="gameState === 'menu'" class="screen screen--menu">
+    <div v-if="gameState === GameStep.Start" class="screen screen--menu">
       <div class="menu-content">
         <h1>🚀 SPACE DEFENDER 🚀</h1>
         <button class="start-btn" @click="startGame">▶ Start the game</button>
       </div>
     </div>
 
-    <div v-else-if="gameState === 'victory'" class="screen screen--victory">
+    <div v-if="gameState === GameStep.Victory" class="screen screen--victory">
       <div class="victory-content">
         <h1>🏆 VICTORY! 🏆</h1>
         <p>All enemies destroyed in {{ 180 - timeLeft }} seconds!</p>
@@ -312,7 +377,7 @@ const handleEnemyHit = (enemyId: number) => {
       </div>
     </div>
 
-    <div v-else-if="gameState === 'defeat'" class="screen screen--defeat">
+    <div v-if="gameState === GameStep.Defeat" class="screen screen--defeat">
       <div class="defeat-content">
         <h1>💀 GAME OVER 💀</h1>
         <p>Time is up! You failed to destroy all enemies.</p>
@@ -323,7 +388,7 @@ const handleEnemyHit = (enemyId: number) => {
       </div>
     </div>
 
-    <div v-else-if="gameState === 'playing'" class="screen screen--game">
+    <div v-if="gameState === GameStep.Game" class="screen screen--game">
       <div v-if="isLoading" class="loading-screen">
         <h2>Loading... 🚀</h2>
       </div>
@@ -338,7 +403,7 @@ const handleEnemyHit = (enemyId: number) => {
       </div>
 
       <a-scene
-        physics=" driver: ammo; debug: true; debugDrawMode: 1;"
+        physics=" driver: ammo;"
         inspector="true"
         v-if="isMounted"
         embedded
@@ -347,16 +412,10 @@ const handleEnemyHit = (enemyId: number) => {
         <a-sky color="#111424"></a-sky>
 
         <!--          SPACESHIP-->
-        <a-entity
-          id="spaceship"
-          ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation"
-          position="80 10 -1"
-          rotation="0 -90 0"
-          fly="speed: 7; maxPitchDeg: 40; type: autoForward; keyUp: arrowup; keyDown: arrowdown; keyLeft: arrowleft; keyRight: arrowright;"
-        >
+        <a-entity id="spaceship" position="80 10 -1" rotation="0 -90 0">
           <a-entity
+            id="spaceship-model"
             :gltf-model="SpaceshipModelSrc"
-            ammo-shape="type: hull;"
             position="0 0 -1.5"
             scale="0.02 0.02 0.02"
             rotation="0 0 0"
@@ -366,17 +425,15 @@ const handleEnemyHit = (enemyId: number) => {
         <!--          ENEMIES-->
 
         <a-entity
+          class="enemy"
           v-for="enemy in enemiesList"
           :key="enemy.id"
           :id="'enemy-' + enemy.id"
-          ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation; emitCollisionEvents: true;"
           :position="enemy.position"
-          :npc-walk="`points: ${enemy.points}; speed: 3; walkClipName: CharacterArmature|Walk; idleClipName: CharacterArmature|Idle; altitude: true;`"
-          enemy-target=""
         >
           <a-entity
             :gltf-model="astronautModel"
-            ammo-shape="type: hull;"
+            :id="'enemy-model-' + enemy.id"
             position="0 -3 0"
             scale="3 3 3"
           ></a-entity>
@@ -400,13 +457,8 @@ const handleEnemyHit = (enemyId: number) => {
         <!--          />-->
         <!--        </a-entity>-->
 
-
         <!--        CAMERA-->
-        <a-entity
-          camera
-          game-view="target: #spaceship; type: thirdPersonFollow; distance: 40; height: 25; tilt: -27;"
-        >
-        </a-entity>
+        <a-entity id="camera" camera></a-entity>
 
         <!--        <a-entity position="0 20 50" rotation="0 0 0">-->
         <!--          <a-camera position="0 0 0"></a-camera>-->
