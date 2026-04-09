@@ -42,3 +42,35 @@ export const bushes = [
     { position: '7.6 0.2 -3', scale: '9 9 9', rotation: '0 0 0' },
     { position: '6 0.2 -3', scale: '8 8 8', rotation: '0 150 0' },
 ]
+
+export const obstacles = {
+    bushes: [
+        {position: "-6 0 3.5", scale: "9 9 9", rotation: "0 10 0"},
+        {position: "-6.5 5", scale: "8 8 8", rotation: "0 90 0"},
+        {position: "-6 0 6.5", scale: "9 9 9", rotation: "0 45 0"},
+        {position: "-5.5 0 8", scale: "8 8 8", rotation: "0 125 0"},
+
+        {position: "7 0 0", scale: "9 9 9", rotation: "0 10 0"},
+        {position: "7.5 0 2", scale: "8 8 8", rotation: "0 90 0"},
+        {position: "7 0 3.5", scale: "9 9 9", rotation: "0 45 0"},
+        {position: "7.5 0 5.5", scale: "8 8 8", rotation: "0 125 0"},
+    ],
+        dogs: [
+        {position: "-1 0.6 5", scale: "0.5 0.5 0.5", rotation: "0 180 0"},
+        {position: "1 0.6 7", scale: "0.5 0.5 0.5", rotation: "0 90 0"},
+    ],
+        shooters: [
+        {position: "-2 0.6 -2", scale: "0.1 0.1 0.1", rotation: "0 -90 0"},
+        {position: "1 0.6 -2", scale: "0.1 0.1 0.1", rotation: "0 -90 0"},
+        {position: "6 0.6 -2", scale: "0.1 0.1 0.1", rotation: "0 -90 0"},
+        {position: "-4 0.6 -2", scale: "0.1 0.1 0.1", rotation: "0 -90 0"},
+    ],
+
+        traps: [
+        {position: "-4 -0.1 -0.5", scale: "1 1 1", rotation: "0 -90 0"},
+        {position: "0 -0.1 6", scale: "1 1 1", rotation: "0 -90 0"},
+        {position: "4 -0.1 1", scale: "1 1 1", rotation: "0 -90 0"},
+        {position: "6 -0.1 5", scale: "1 1 1", rotation: "0 -90 0"},
+    ],
+
+}
