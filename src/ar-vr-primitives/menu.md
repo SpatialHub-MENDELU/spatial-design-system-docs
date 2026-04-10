@@ -72,7 +72,7 @@ import "spatial-design-system/primitives/ar-menu.js";
 </br>
 
 ### Circle Layout
-This example demonstrates the menu in a [circlular layout](/ar-vr-components/circle), which is well-suited for immersive AR/VR interactions where radial navigation feels more natural and intuitive.
+This example demonstrates the menu in a [circular layout](/ar-vr-components/circle), which is well-suited for immersive AR/VR interactions where radial navigation feels more natural and intuitive.
 
 A central `logoicon` is displayed to provide visual context or branding. When the logo is clicked, the component emits a `logo` event, allowing user to handle custom actions such as navigation, closing a main menu, or triggering other application logic.
 
