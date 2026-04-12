@@ -9,8 +9,9 @@ const allowedOrigins = [
 ];
 
 export default defineConfig({
-    base: "/",  
+    base: "/",
     plugins: [],
+    assetsInclude: ['**/*.glb'],
     css: {
       postcss: {
         plugins: [tailwindcss, autoprefixer],
@@ -32,7 +33,7 @@ export default defineConfig({
               callback(new Error("Not allowed by CORS"));
           }
       },
-        methods: ['GET', 'POST'], 
+        methods: ['GET', 'POST'],
       },
     },
     preview: {
@@ -44,7 +45,7 @@ export default defineConfig({
     },
     vue: {
         compilerOptions: {
-          isCustomElement: (tag) => tag.startsWith('a-') 
+          isCustomElement: (tag) => tag.startsWith('a-')
         }
       },
       build: {
