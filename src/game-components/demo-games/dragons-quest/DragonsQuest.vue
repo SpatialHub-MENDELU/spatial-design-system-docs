@@ -12,11 +12,17 @@ import {
   DragonModelSrc,
 } from '../constants';
 
-type GameState = 'menu' | 'intro' | 'playing' | 'end';
+const GameStep = {
+  Menu: 'Menu',
+  Intro: 'Intro',
+  Playing: 'Playing',
+  End: 'End',
+};
 
-const gameState = ref<GameState>('menu');
+const gameState = ref(GameStep.Menu);
 const gameWrapperRef = ref<HTMLElement | null>(null);
 const renderScene = ref(false);
+const isLoading = ref(false);
 
 const currentQuestStep = ref(0);
 const showInteractPrompt = ref(false);
@@ -45,77 +51,79 @@ const questSteps = [
   },
 ];
 
-if (typeof AFRAME !== 'undefined' && !AFRAME.components['minimap-updater']) {
-  AFRAME.registerComponent('minimap-updater', {
-    tick: function () {
-      const player = document.querySelector('#dragon-character');
-      if (!player) return;
+const registerAframeComponents = () => {
+  if (
+    typeof AFRAME !== 'undefined' &&
+    !AFRAME.components['minimap-updater' || AFRAME.components['game-logic']]
+  ) {
+    AFRAME.registerComponent('minimap-updater', {
+      tick: function () {
+        const player = document.querySelector('#dragon-character');
+        if (!player) return;
 
-      const pPos = player.object3D.position;
-      const pRotY = player.object3D.rotation.y;
+        const pPos = player.object3D.position;
+        const pRotY = player.object3D.rotation.y;
 
-      const playerIcon = document.getElementById('minimap-player-icon');
-      if (playerIcon) {
-        playerIcon.style.transform = `rotate(${-pRotY + Math.PI}rad)`;
-      }
+        const playerIcon = document.getElementById('minimap-player-icon');
+        if (playerIcon) {
+          playerIcon.style.transform = `rotate(${-pRotY + Math.PI}rad)`;
+        }
 
-      const scale = 0.5;
+        const scale = 0.5;
 
-      const updateMarkers = (selector: string) => {
-        const markers = document.querySelectorAll(selector);
-        markers.forEach((marker) => {
-          const m = marker as HTMLElement;
-          const targetId = m.getAttribute('data-target');
-          if (!targetId) return;
+        const updateMarkers = (selector: string) => {
+          const markers = document.querySelectorAll(selector);
+          markers.forEach((marker) => {
+            const m = marker as HTMLElement;
+            const targetId = m.getAttribute('data-target');
+            if (!targetId) return;
 
-          const targetEl = document.querySelector(targetId);
-          if (targetEl) {
-            const tPos = targetEl.object3D.position;
-            const dx = (tPos.x - pPos.x) * scale;
-            const dz = (tPos.z - pPos.z) * scale;
+            const targetEl = document.querySelector(targetId);
+            if (targetEl) {
+              const tPos = targetEl.object3D.position;
+              const dx = (tPos.x - pPos.x) * scale;
+              const dz = (tPos.z - pPos.z) * scale;
 
-            m.style.left = `calc(50% + ${dx}px)`;
-            m.style.top = `calc(50% + ${dz}px)`;
-          }
-        });
-      };
+              m.style.left = `calc(50% + ${dx}px)`;
+              m.style.top = `calc(50% + ${dz}px)`;
+            }
+          });
+        };
 
-      updateMarkers('.minimap-marker-island');
-      updateMarkers('.minimap-marker-npc');
-    },
-  });
-}
+        updateMarkers('.minimap-marker-island');
+        updateMarkers('.minimap-marker-npc');
+      },
+    });
+    AFRAME.registerComponent('game-logic', {
+      tick: function () {
+        const player = document.querySelector('#dragon-character');
+        const currentStep = questSteps[currentQuestStep.value];
 
-if (typeof AFRAME !== 'undefined' && !AFRAME.components['game-logic']) {
-  AFRAME.registerComponent('game-logic', {
-    tick: function () {
-      const player = document.querySelector('#dragon-character');
-      const currentStep = questSteps[currentQuestStep.value];
+        if (!player || !currentStep || gameState.value !== GameStep.Playing) {
+          showInteractPrompt.value = false;
+          return;
+        }
 
-      if (!player || !currentStep || gameState.value !== 'playing') {
-        showInteractPrompt.value = false;
-        return;
-      }
+        const targetNpc = document.querySelector(`#${currentStep.npcId}`);
+        if (!targetNpc) return;
 
-      const targetNpc = document.querySelector(`#${currentStep.npcId}`);
-      if (!targetNpc) return;
+        const pPos = player.object3D.position;
+        const tPos = targetNpc.object3D.position;
 
-      const pPos = player.object3D.position;
-      const tPos = targetNpc.object3D.position;
+        const dist = pPos.distanceTo(tPos);
+        distToTarget.value = dist;
+        showInteractPrompt.value = dist < 12;
 
-      const dist = pPos.distanceTo(tPos);
-      distToTarget.value = dist;
-      showInteractPrompt.value = dist < 12;
-
-      const dx = tPos.x - pPos.x;
-      const dz = tPos.z - pPos.z;
-      const angleToTarget = Math.atan2(dx, dz);
-      const playerRotation = player.object3D.rotation.y;
-      arrowRotation.value =
-        (angleToTarget - playerRotation) * (180 / Math.PI) + 180;
-    },
-  });
-}
+        const dx = tPos.x - pPos.x;
+        const dz = tPos.z - pPos.z;
+        const angleToTarget = Math.atan2(dx, dz);
+        const playerRotation = player.object3D.rotation.y;
+        arrowRotation.value =
+          (angleToTarget - playerRotation) * (180 / Math.PI) + 180;
+      },
+    });
+  }
+};
 
 interface StaticModel {
   id: number;
@@ -153,9 +161,28 @@ const cloudsList = ref<
   }[]
 >([]);
 
+function addComponent(
+  isClass: boolean,
+  elementName: string,
+  qualifiedName: string,
+  value: string
+) {
+  if (isClass) {
+    const elements = document.querySelectorAll(elementName);
+    elements.forEach((el) => {
+      el.setAttribute(qualifiedName, value);
+    });
+  } else {
+    const element = document.getElementById(elementName);
+    if (element) {
+      element.setAttribute(qualifiedName, value);
+    }
+  }
+}
+
 const handleFullscreenChange = () => {
-  if (!document.fullscreenElement && gameState.value !== 'menu') {
-    gameState.value = 'menu';
+  if (!document.fullscreenElement && gameState.value !== GameStep.Menu) {
+    gameState.value = GameStep.Menu;
   }
 };
 
@@ -167,15 +194,19 @@ const handleInteraction = () => {
     if (currentQuestStep.value < questSteps.length - 1) {
       currentQuestStep.value++;
     } else {
-      gameState.value = 'end';
+      gameState.value = GameStep.End;
     }
   }
 };
 
 const handleKeydown = (e: KeyboardEvent) => {
-  if (gameState.value === 'intro' && e.key === 'Enter') {
-    gameState.value = 'playing';
-  } else if (gameState.value === 'playing' && e.key === 'Enter') {
+  if (
+    gameState.value === GameStep.Intro &&
+    !isLoading.value &&
+    e.key === 'Enter'
+  ) {
+    gameState.value = GameStep.Playing;
+  } else if (gameState.value === GameStep.Playing && e.key === 'Enter') {
     handleInteraction();
   }
 };
@@ -183,7 +214,17 @@ const handleKeydown = (e: KeyboardEvent) => {
 onMounted(() => {
   document.addEventListener('fullscreenchange', handleFullscreenChange);
   window.addEventListener('keydown', handleKeydown);
-  renderScene.value = true;
+});
+
+onMounted(async () => {
+  try {
+    await import('spatial-design-system/components/game/fly');
+    await import('spatial-design-system/components/game/gameview');
+    registerAframeComponents();
+    renderScene.value = true;
+  } catch (e) {
+    console.error(e);
+  }
 });
 
 onUnmounted(() => {
@@ -192,9 +233,7 @@ onUnmounted(() => {
 });
 
 const restartGame = () => {
-  currentQuestStep.value = 0;
-  activeDialogText.value = null;
-  gameState.value = 'playing';
+  startGame();
 };
 
 const quitGame = async () => {
@@ -205,7 +244,7 @@ const quitGame = async () => {
       console.warn(err);
     }
   }
-  gameState.value = 'menu';
+  gameState.value = GameStep.Menu;
   currentQuestStep.value = 0;
   activeDialogText.value = null;
 };
@@ -249,8 +288,9 @@ const generateClouds = () => {
   return clouds;
 };
 
-const startGame = async () => {
-  gameState.value = 'intro';
+const setInitialValues = () => {
+  currentQuestStep.value = 0;
+  activeDialogText.value = null;
 
   staticModelsList.value = [
     {
@@ -347,31 +387,100 @@ const startGame = async () => {
   ];
 
   cloudsList.value = generateClouds();
+};
 
-  nextTick(() => {
-    window.dispatchEvent(new Event('resize'));
-  });
+const startGame = async () => {
+  isLoading.value = true;
+  setInitialValues();
+  gameState.value = GameStep.Intro;
+
+  await nextTick();
 
   if (gameWrapperRef.value && !document.fullscreenElement) {
     try {
       await gameWrapperRef.value.requestFullscreen();
     } catch (err) {
-      console.warn(err);
+      console.warn('Unable to enter full-screen mode:', err);
     }
   }
+  setTimeout(() => {
+    setTimeout(() => {
+      addAllComponents();
+      isLoading.value = false;
+    }, 3000);
+  }, 3000);
+};
+
+const addAllComponents = () => {
+    addComponent(
+        false,
+        'dragon-character',
+        'ammo-body',
+        'type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation'
+    );
+    addComponent(false, 'dragon-model', 'ammo-shape', 'type: hull;');
+
+    addComponent(
+        false,
+        'camera',
+        'game-view',
+        'target: #dragon-character; type: thirdPersonFollow; distance: 5; height: 5; zoom: true;'
+    );
+
+    staticModelsList.value.forEach((model) => {
+        addComponent(false, `static-${model.id}`, 'ammo-body', 'type: static;');
+        addComponent(false, `static-${model.id}`, 'ammo-shape', `type: hull; offset: ${model.offset};`);
+    });
+
+    npcModelsList.value.forEach((model) => {
+        addComponent(false, `npc-${model.id}`, 'ammo-body', 'type: dynamic; angularFactor: 0 0 0; mass: 500; activationState: disableDeactivation;');
+        addComponent(false, `npc-model-${model.id}`, 'ammo-shape', `type: hull; offset: ${model.offset};`);
+        addComponent(false, `npc-model-${model.id}`, 'animation-mixer', `clip: ${model.idleClipName}; loop: repeat; crossFadeDuration: 0.3;`);
+    });
+
+    addComponent(false, 'game-scene', 'minimap-updater', '');
+    addComponent(false, 'game-scene', 'game-logic', '');
+
+    const dragonModelEl = document.querySelector('#dragon-model');
+
+    if (dragonModelEl) {
+        const initFlyComponent = () => {
+            setTimeout(() => {
+                addComponent(
+                    false,
+                    'dragon-model',
+                    'animation-mixer',
+                    'clip: *Dragon_Flying*; loop: repeat; crossFadeDuration: 0.3;'
+                );
+
+                addComponent(
+                    false,
+                    'dragon-character',
+                    'fly',
+                    'type: freeDirectionalFlight; flyClipName: *Dragon_Flying*; idleClipName: *Dragon_Flying*; sprintClipName: *Dragon_Flying*; forwardOffsetAngle: 0; maxPitchDeg: 20; pitchSpeed: 120; maxRollDeg: 15; rollSpeed: 60; rotationSpeed: 60; sprint: true;'
+                );
+            }, 50);
+        };
+
+        if ((dragonModelEl as any).getObject3D('mesh')) {
+            initFlyComponent();
+        } else {
+            dragonModelEl.addEventListener('model-loaded', initFlyComponent, { once: true });
+        }
+    }
 };
 </script>
 
 <template>
   <div class="game-wrapper" ref="gameWrapperRef" v-if="renderScene">
-    <div v-if="gameState === 'menu'" class="screen screen--menu">
+    <div v-if="gameState === GameStep.Menu" class="screen screen--menu">
       <div class="fantasy-dialog">
         <h1>DRAGONS' QUEST</h1>
         <button class="fantasy-btn" @click="startGame">START ADVENTURE</button>
       </div>
     </div>
 
-    <div v-else-if="gameState === 'intro'" class="screen screen--intro">
+    <div v-if="gameState === GameStep.Intro" class="screen screen--intro">
       <div class="fantasy-dialog story-dialog">
         <h2>The Lost Fire</h2>
         <p>
@@ -382,29 +491,18 @@ const startGame = async () => {
           Go find the <strong>Yeti</strong> in the snowy mountains. He might
           know what to do!
         </p>
-        <div class="press-enter">Press [ENTER] to start your quest</div>
-      </div>
-    </div>
 
-    <div v-else-if="gameState === 'end'" class="screen screen--end">
-      <div class="fantasy-dialog">
-        <h1>QUEST COMPLETE</h1>
-        <p style="color: #fdf5e6; font-size: 1.2rem; margin-bottom: 30px">
-          You have found the Fireproof Leaf and cured your dragon cold!<br />
-          The skies are yours to burn again.
-        </p>
-        <div class="end-actions">
-          <button class="fantasy-btn" @click="restartGame">
-            RESTART QUEST
-          </button>
-          <button class="fantasy-btn fantasy-btn--secondary" @click="quitGame">
-            QUIT TO MENU
-          </button>
+        <div v-if="isLoading" class="loading-status">
+          Loading magical realm...
         </div>
+        <div v-else class="press-enter">Press [ENTER] to start your quest</div>
       </div>
     </div>
 
-    <div v-else-if="gameState === 'playing'" class="screen screen--game">
+    <div
+      v-if="gameState === GameStep.Playing || gameState === GameStep.Intro"
+      class="screen screen--game"
+    >
       <div
         class="quest-arrow-container"
         v-if="questSteps[currentQuestStep]?.npcId"
@@ -467,7 +565,7 @@ const startGame = async () => {
         </div>
       </div>
 
-      <a-scene physics="driver: ammo; debug: false;" minimap-updater game-logic>
+      <a-scene id="game-scene" physics="driver: ammo; debug: false;">
         <a-sky color="#AEE2FF"></a-sky>
 
         <a-entity id="clouds-container">
@@ -513,6 +611,7 @@ const startGame = async () => {
             </a-entity>
           </a-entity>
         </a-entity>
+
         <a-entity>
           <a-ocean
             position="0 -10 0"
@@ -528,26 +627,16 @@ const startGame = async () => {
           </a-ocean>
         </a-entity>
 
-        <a-entity
-          fly="type: freeDirectionalFlight; flyClipName: *Dragon_Flying*; idleClipName: *Dragon_Flying*; sprintClipName:  *Dragon_Flying*; forwardOffsetAngle: 0; maxPitchDeg: 20; pitchSpeed: 120; maxRollDeg: 15; rollSpeed: 60; rotationSpeed: 60; sprint: true;"
-          id="dragon-character"
-          ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation"
-          position="0 0 100"
-          rotation="0 180 0"
-        >
+        <a-entity id="dragon-character" position="0 0.5 100" rotation="0 180 0">
           <a-entity
+            id="dragon-model"
             :gltf-model="`${DragonModelSrc}`"
-            ammo-shape="type: hull;"
             position="0 -2.1 0"
             scale="1 1 1"
           ></a-entity>
         </a-entity>
 
-        <a-entity
-          camera
-          game-view="target: #dragon-character; type: thirdPersonFollow; distance: 5; height: 5; zoom: true;"
-          rotation="-30 0 0"
-        ></a-entity>
+        <a-entity id="camera" camera rotation="-30 0 0"></a-entity>
 
         <a-entity
           v-for="model in staticModelsList"
@@ -557,8 +646,6 @@ const startGame = async () => {
           :position="model.position"
           :rotation="model.rotation"
           :scale="model.scale"
-          ammo-body="type: static;"
-          :ammo-shape="`type: hull; offset: ${model.offset};`"
         ></a-entity>
 
         <a-entity
@@ -567,7 +654,6 @@ const startGame = async () => {
           :id="'npc-' + model.id"
           :position="model.position"
           :rotation="model.rotation"
-          ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 500; activationState: disableDeactivation;"
         >
           <a-entity
             v-if="questSteps[currentQuestStep]?.npcId === 'npc-' + model.id"
@@ -590,10 +676,9 @@ const startGame = async () => {
             </a-entity>
           </a-entity>
           <a-entity
+            :id="'npc-model-' + model.id"
             :gltf-model="model.src"
-            :ammo-shape="`type: hull; offset: ${model.offset};`"
             :scale="model.scale"
-            :animation-mixer="`clip: ${model.idleClipName}; loop: repeat; crossFadeDuration: 0.3;`"
           ></a-entity>
         </a-entity>
       </a-scene>
@@ -651,6 +736,24 @@ const startGame = async () => {
             </span>
             <span>Zoom In/Out</span>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-else-if="gameState === GameStep.End" class="screen screen--end">
+      <div class="fantasy-dialog">
+        <h1>QUEST COMPLETE</h1>
+        <p style="color: #fdf5e6; font-size: 1.2rem; margin-bottom: 30px">
+          You have found the Fireproof Leaf and cured your dragon cold!<br />
+          The skies are yours to burn again.
+        </p>
+        <div class="end-actions">
+          <button class="fantasy-btn" @click="restartGame">
+            RESTART QUEST
+          </button>
+          <button class="fantasy-btn fantasy-btn--secondary" @click="quitGame">
+            QUIT TO MENU
+          </button>
         </div>
       </div>
     </div>
@@ -723,6 +826,23 @@ const startGame = async () => {
   margin-top: 30px;
   color: #ffd700;
   font-size: 1rem;
+  font-style: italic;
+  animation: blink 1.5s infinite;
+}
+
+.screen--intro {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+}
+
+.loading-status {
+  margin-top: 30px;
+  color: #ffd700;
+  font-size: 1.2rem;
   font-style: italic;
   animation: blink 1.5s infinite;
 }
@@ -907,35 +1027,42 @@ const startGame = async () => {
 }
 
 .key {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 26px;
-    height: 24px;
-    background: #2a0505;
-    border: 1px solid #ffd700;
-    border-radius: 4px;
-    color: #ffd700;
-    margin-right: 12px;
-    font-weight: bold;
-    font-size: 0.7rem;
-    box-shadow:
-        inset 0 0 5px rgba(0, 0, 0, 0.5),
-        0 2px 0 rgba(0, 0, 0, 0.3);
-    padding: 0 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 24px;
+  background: #2a0505;
+  border: 1px solid #ffd700;
+  border-radius: 4px;
+  color: #ffd700;
+  margin-right: 12px;
+  font-weight: bold;
+  font-size: 0.7rem;
+  box-shadow:
+    inset 0 0 5px rgba(0, 0, 0, 0.5),
+    0 2px 0 rgba(0, 0, 0, 0.3);
+  padding: 0 4px;
 }
 
 .key--icon {
-    padding: 0 6px;
+  padding: 0 6px;
 }
 
 .key--icon svg path {
-    animation: scroll-hint 2s infinite;
+  animation: scroll-hint 2s infinite;
 }
 
 @keyframes scroll-hint {
-    0%, 100% { opacity: 1; transform: translateY(0); }
-    50% { opacity: 0.3; transform: translateY(2px); }
+  0%,
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 0.3;
+    transform: translateY(2px);
+  }
 }
 
 .controls-divider {
