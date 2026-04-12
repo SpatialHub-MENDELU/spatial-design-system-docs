@@ -6,6 +6,7 @@ import './babies-counter.js';
 import './health-bar.js';
 import './stamina-bar.js';
 import './time-counter.js';
+import { obstacles } from './StaticModels.js';
 
 import {
   GrassImageSrc,
@@ -66,6 +67,8 @@ const LevelSettings = {
 
 const gameState = ref(GameStep.Start);
 const isLoading = ref(false);
+const isMounted = ref(false);
+const renderScene = ref(false);
 const gameWrapperRef = ref(null);
 
 const hasBaby = ref(false);
@@ -75,6 +78,17 @@ const handleFullScreenChange = () => {
     gameState.value = GameStep.Start;
   }
 };
+
+onMounted(async () => {
+  isMounted.value = true;
+  document.addEventListener('fullscreenchange', handleFullScreenChange);
+
+  try {
+    renderScene.value = true;
+  } catch (e) {
+    console.error(e);
+  }
+});
 
 onMounted(() => {
   document.addEventListener('fullscreenchange', handleFullScreenChange);
@@ -100,11 +114,21 @@ const startGame = async () => {
 
   setTimeout(() => {
     setTimeout(() => {
-      // addComponent
+      addAllComponents();
       isLoading.value = false;
     }, 3000);
   }, 3000);
 };
+
+function addAllComponents() {
+  addComponent(
+    false,
+    'ground',
+    'ammo-body',
+    'type: static; friction: 1; opacity: 0;'
+  );
+  addComponent(false, 'ground', 'ammo-shape', 'type: box;');
+}
 
 function addComponent(isClass, elementName, qualifiedName, value) {
   if (isClass) {
@@ -120,7 +144,7 @@ function addComponent(isClass, elementName, qualifiedName, value) {
 </script>
 
 <template>
-  <div class="game-wrapper" ref="gameWrapperRef">
+  <div class="game-wrapper" ref="gameWrapperRef" v-if="isMounted">
     <div v-if="gameState === GameStep.Start" class="screen screen--menu">
       <h1>Vixen's Instinct</h1>
       <button @click="startGame">START GAME</button>
@@ -131,13 +155,49 @@ function addComponent(isClass, elementName, qualifiedName, value) {
     </div>
 
     <div v-if="gameState === GameStep.Game" class="screen screen--game">
-      <a-scene physics="driver: ammo; debug: true;">
-        <!--          camera-->
+      <a-scene v-if="renderScene" physics="driver: ammo;">
+        <!--          shooters-->
         <a-entity
-          camera="fov: 40"
-          position="0 11 18"
-          rotation="-30 0 0"
-        ></a-entity>
+          v-for="(shooter, index) in obstacles.shooters"
+          :key="'shooter-' + index"
+          :gltf-model="ShooterModelSrc"
+          :position="shooter.position"
+          :rotation="shooter.rotation"
+          :scale="shooter.scale"
+          animation-mixer="clip: *Idle*"
+          visible="true"
+          class="shooter"
+        >
+          <a-entity
+            :gltf-model="BulletModelSrc"
+            position="11 2 1.5"
+            scale="0.6 0.6 0.6"
+            rotation="0 90 0"
+            visible="true"
+          >
+          </a-entity>
+        </a-entity>
+
+        <!-- dogs hunters -->
+        <a-entity
+          v-for="(dog, index) in obstacles.dogs"
+          :key="'dog-' + index"
+          :position="dog.position"
+          :gltf-model="DogModelSrc"
+          :rotation="dog.rotation"
+          :scale="dog.scale"
+        >
+        </a-entity>
+
+        <!-- traps -->
+        <a-entity
+          v-for="(trap, index) in obstacles.traps"
+          :key="'trap-' + index"
+          :gltf-model="TrapModelSrc"
+          :position="trap.position"
+          :scale="trap.scale"
+        >
+        </a-entity>
 
         <!--          cave-->
         <a-entity
@@ -145,7 +205,6 @@ function addComponent(isClass, elementName, qualifiedName, value) {
           position="15 0.4 -5"
           rotation="0 140 0"
           scale="2 2 2"
-          static-body
         >
           <a-entity>
             <a-entity
