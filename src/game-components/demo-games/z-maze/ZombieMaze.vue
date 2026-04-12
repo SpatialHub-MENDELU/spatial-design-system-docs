@@ -60,7 +60,16 @@ const generateZombies = () => {
       id: 1,
       src: ZombieModelSrc,
       position: '25 0.3 5',
-      rotation: '0 90 0',
+      rotation: '0 0 0',
+      scale,
+      offset,
+      animation: '*Armature|Scream*',
+    },
+    {
+      id: 2,
+      src: ZombieModelSrc,
+      position: '65 0.3 15',
+      rotation: '0 180 0',
       scale,
       offset,
       animation: '*Armature|Scream*',
@@ -69,7 +78,7 @@ const generateZombies = () => {
       id: 3,
       src: ZombieModelSrc,
       position: '25 0.3 35',
-      rotation: '0 90 0',
+      rotation: '0 -90 0',
       scale,
       offset,
       animation: '*Armature|Scream*',
@@ -377,7 +386,7 @@ const quitGame = () => {
           type="hemisphere"
           color="#fff"
           groundColor="#000"
-          intensity="10"
+          intensity="0.002"
         ></a-light>
 
         <a-box
