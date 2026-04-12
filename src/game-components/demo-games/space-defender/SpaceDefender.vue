@@ -78,7 +78,7 @@ const initialTotalEnemies = 3;
 const totalEnemiesGoal = ref(initialTotalEnemies);
 const killedEnemies = ref(0);
 
-const timeLeft = ref(180);
+const timeLeft = ref(60);
 let timerInterval: number | null = null;
 
 function addComponent(
@@ -228,7 +228,7 @@ const stopTimer = () => {
 };
 
 const startTimer = () => {
-  timeLeft.value = 180;
+  timeLeft.value = 60;
   if (timerInterval) clearInterval(timerInterval);
 
   timerInterval = window.setInterval(() => {
@@ -393,7 +393,7 @@ const handleEnemyHit = (enemyId: number) => {
     <div v-if="gameState === GameStep.Victory" class="screen screen--victory">
       <div class="victory-content">
         <h1>🏆 VICTORY! 🏆</h1>
-        <p>All enemies destroyed in {{ 180 - timeLeft }} seconds!</p>
+        <p>All enemies destroyed in {{ 60 - timeLeft }} seconds!</p>
         <div class="btn-group">
           <button class="action-btn" @click="startGame">🔄 Retry</button>
           <button class="action-btn" @click="quitGame">❌ Quit</button>
@@ -443,7 +443,7 @@ const handleEnemyHit = (enemyId: number) => {
         <div class="hud-item">
           🎯 Goal: {{ killedEnemies }} / {{ totalEnemiesGoal }}
         </div>
-        <div class="hud-item" :class="{ 'time-warning': timeLeft <= 30 }">
+        <div class="hud-item" :class="{ 'time-warning': timeLeft <= 10 }">
           ⏱️ Time: {{ formattedTime }}
         </div>
       </div>
@@ -455,6 +455,55 @@ const handleEnemyHit = (enemyId: number) => {
         embedded
       >
         <a-sky color="#111424"></a-sky>
+
+        <!--          LIGHTS -->
+        <a-light type="ambient" color="#1a1c2e" intensity="2"></a-light>
+
+        <a-light
+          type="hemisphere"
+          color="#4B0082"
+          groundColor="#000000"
+          intensity="2"
+        ></a-light>
+
+        <!--        <a-light-->
+        <!--          type="point"-->
+        <!--          color="#FFF1E0"-->
+        <!--          intensity="500"-->
+        <!--          distance="10000"-->
+        <!--          position="0 -30 -270"-->
+        <!--        ></a-light>-->
+
+        <!--        <a-light-->
+        <!--          type="point"-->
+        <!--          color="#FFF1E0"-->
+        <!--          intensity="500"-->
+        <!--          distance="10000"-->
+        <!--          position="0 30 -400"-->
+        <!--        ></a-light>-->
+
+        <!--          <a-light-->
+        <!--              type="point"-->
+        <!--              color="#FFF1E0"-->
+        <!--              intensity="500"-->
+        <!--              distance="10000"-->
+        <!--              position="0 -90 -400"-->
+        <!--          ></a-light>-->
+
+        <!--        <a-light-->
+        <!--          type="point"-->
+        <!--          color="#FFF1E0"-->
+        <!--          intensity="500"-->
+        <!--          distance="10000"-->
+        <!--          position="-60 -30 -400"-->
+        <!--        ></a-light>-->
+        <!--        <a-light-->
+        <!--          type="point"-->
+        <!--          color="#FFF1E0"-->
+        <!--          intensity="500"-->
+        <!--          distance="10000"-->
+        <!--          position="60 30 -400"-->
+        <!--        ></a-light>-->
 
         <!--          SPACESHIP-->
         <a-entity id="spaceship" position="80 10 -1" rotation="0 -90 0">
@@ -497,8 +546,58 @@ const handleEnemyHit = (enemyId: number) => {
           ammo-body="type: static;"
           ammo-shape="type: hull;"
           position="0 -30 -450"
-          scale="300 300 300"
-        ></a-entity>
+          scale="70 70 70"
+        >
+          <a-light
+            type="point"
+            color="#FFF1E0"
+            intensity="400"
+            distance="10000"
+            position="0 0 0"
+          >
+          </a-light>
+
+          <a-light
+            type="point"
+            color="#FFF1E0"
+            intensity="400"
+            distance="10000"
+            position="0 0 2"
+          >
+          </a-light>
+          <a-light
+            type="point"
+            color="#FFF1E0"
+            intensity="400"
+            distance="10000"
+            position="0 2 0"
+          >
+          </a-light>
+          <a-light
+            type="point"
+            color="#FFF1E0"
+            intensity="400"
+            distance="10000"
+            position="0 -2 0"
+          >
+          </a-light>
+          <a-light
+            type="point"
+            color="#FFF1E0"
+            intensity="400"
+            distance="10000"
+            position="2 0 0"
+          >
+          </a-light>
+          <a-light
+            type="point"
+            color="#FFF1E0"
+            intensity="400"
+            distance="10000"
+            position="-2 0 0"
+          >
+          </a-light>
+        </a-entity>
 
         <a-entity
           :gltf-model="MercuryModelSrc"
