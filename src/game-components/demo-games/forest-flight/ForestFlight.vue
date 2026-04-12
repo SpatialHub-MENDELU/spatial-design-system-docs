@@ -39,9 +39,29 @@ const npcModelsList = ref<NpcModel[]>([]);
 
 const gameState = ref<GameState>('menu');
 const gameWrapperRef = ref<HTMLElement | null>(null);
+const isLoading = ref(false);
 
 const showHint = ref(false);
 let hintTimeout: ReturnType<typeof setTimeout>;
+
+function addComponent(
+  isClass: boolean,
+  elementName: string,
+  qualifiedName: string,
+  value: string
+) {
+  if (isClass) {
+    const elements = document.querySelectorAll(elementName);
+    elements.forEach((el) => {
+      el.setAttribute(qualifiedName, value);
+    });
+  } else {
+    const element = document.getElementById(elementName);
+    if (element) {
+      element.setAttribute(qualifiedName, value);
+    }
+  }
+}
 
 if (typeof AFRAME !== 'undefined' && !AFRAME.components['fox-collider']) {
   AFRAME.registerComponent('fox-collider', {
@@ -632,7 +652,86 @@ const generateNpcModels = () => {
   ];
 };
 
+const addAllComponents = () => {
+  addComponent(false, 'plane', 'fox-collider', '');
+  addComponent(false, 'plane', 'victory-checker', '');
+  addComponent(
+    false,
+    'plane',
+    'ammo-body',
+    'type: dynamic; emitCollisionEvents: true; gravity: 0 0 0; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation'
+  );
+
+  addComponent(
+    false,
+    'camera',
+    'game-view',
+    'target: #plane; type: thirdPersonFixed; distance: 9; height: 7; tilt: -10;'
+  );
+
+  staticModelsList.value.forEach((model) => {
+    addComponent(
+      false,
+      `static-${model.id}`,
+      'ammo-body',
+      'type: static; emitCollisionEvents: true;'
+    );
+    addComponent(
+      false,
+      `static-${model.id}`,
+      'ammo-shape',
+      `type: hull; offset: ${model.offset};`
+    );
+  });
+
+  npcModelsList.value.forEach((model) => {
+    addComponent(
+      false,
+      `npc-${model.id}`,
+      'ammo-body',
+      'type: dynamic; emitCollisionEvents: true; angularFactor: 0 0 0; mass: 5000; activationState: disableDeactivation;'
+    );
+    addComponent(
+      false,
+      `npc-${model.id}`,
+      'npc-walk',
+      `points: ${model.points}; speed: ${model.speed}; walkClipName: ${model.walkClipName}; idleClipName: ${model.idleClipName};`
+    );
+    addComponent(
+      false,
+      `npc-model-${model.id}`,
+      'ammo-shape',
+      `type: hull; offset: ${model.offset};`
+    );
+  });
+
+  const planeModelEl = document.querySelector('#plane-model');
+
+  if (planeModelEl) {
+    const initFlyComponent = () => {
+      setTimeout(() => {
+        addComponent(false, 'plane-model', 'ammo-shape', 'type: hull;');
+        addComponent(
+          false,
+          'plane',
+          'fly',
+          'speed: 10; forwardOffsetAngle: 180; rollSpeed: 150; maxRollDeg: 15; type: autoForwardFixedDirection; canMoveVertically: false; keyLeft: arrowleft; keyRight: arrowright;'
+        );
+      }, 50);
+    };
+
+    if ((planeModelEl as any).getObject3D('mesh')) {
+      initFlyComponent();
+    } else {
+      planeModelEl.addEventListener('model-loaded', initFlyComponent, {
+        once: true,
+      });
+    }
+  }
+};
+
 const startGame = async () => {
+  isLoading.value = true;
   gameState.value = 'playing';
 
   showHint.value = true;
@@ -644,15 +743,22 @@ const startGame = async () => {
   staticModelsList.value = generateStaticModels();
   npcModelsList.value = generateNpcModels();
 
-  nextTick(async () => {
-    if (gameWrapperRef.value && !document.fullscreenElement) {
-      try {
-        await gameWrapperRef.value.requestFullscreen();
-      } catch (err) {
-        console.warn(err);
-      }
+  await nextTick();
+
+  if (gameWrapperRef.value && !document.fullscreenElement) {
+    try {
+      await gameWrapperRef.value.requestFullscreen();
+    } catch (err) {
+      console.warn(err);
     }
-  });
+  }
+
+  setTimeout(() => {
+    setTimeout(() => {
+      addAllComponents();
+      isLoading.value = false;
+    }, 3000);
+  }, 3000);
 };
 
 const quitGame = async () => {
@@ -699,7 +805,13 @@ const quitGame = async () => {
     </div>
 
     <div v-else-if="gameState === 'playing'" class="screen screen--game">
-      <div v-if="showHint" class="game-hint">
+      <div v-if="isLoading" class="loading-screen">
+        <div class="loading-content">
+          <h2>LOADING FOREST...</h2>
+        </div>
+      </div>
+
+      <div v-if="showHint && !isLoading" class="game-hint">
         <div class="hint-line">USE <span class="arrows">⬅ ➡</span></div>
         <div class="hint-line">ARROWS TO MOVE</div>
       </div>
@@ -716,34 +828,22 @@ const quitGame = async () => {
           segments-height="16"
         ></a-sphere>
 
-        <a-entity
-          id="plane"
-          fox-collider
-          victory-checker
-          ammo-body="type: dynamic; emitCollisionEvents: true; gravity: 0 0 0; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation"
-          position="0 2 200"
-          rotation="0 180 0"
-          fly="speed: 10; forwardOffsetAngle: 180; rollSpeed: 150; maxRollDeg: 15;  type: autoForwardFixedDirection; canMoveVertically: false; keyLeft: arrowleft; keyRight: arrowright;"
-        >
+        <a-entity id="plane" position="0 2 200" rotation="0 180 0">
           <a-entity
+            id="plane-model"
             :gltf-model="`${PaperAirplaneModelSrc}`"
-            ammo-shape="type: hull;"
             position="0 0 0"
             scale="0.01 0.01 0.01"
             rotation="0 0 0"
           ></a-entity>
         </a-entity>
 
-        <a-entity
-          camera
-          game-view="target: #plane; type: thirdPersonFixed; distance: 9; height: 7; tilt: -10;"
-        >
-        </a-entity>
+        <a-entity id="camera" camera></a-entity>
 
         <a-ocean
           position="0 -1 0"
           width="25"
-          depth="400"
+          depth="450"
           density="100"
           speed="2"
           color="#006994"
@@ -761,8 +861,6 @@ const quitGame = async () => {
           :position="model.position"
           :rotation="model.rotation"
           :scale="model.scale"
-          ammo-body="type: static; emitCollisionEvents: true;"
-          :ammo-shape="`type: hull; offset: ${model.offset};`"
         ></a-entity>
 
         <a-entity
@@ -771,12 +869,10 @@ const quitGame = async () => {
           :id="'npc-' + model.id"
           :position="model.position"
           :rotation="model.rotation"
-          ammo-body="type: dynamic; emitCollisionEvents: true; angularFactor: 0 0 0; mass: 5000; activationState: disableDeactivation;"
-          :npc-walk="`points: ${model.points}; speed: ${model.speed}; walkClipName: ${model.walkClipName}; idleClipName: ${model.idleClipName};`"
         >
           <a-entity
+            :id="'npc-model-' + model.id"
             :gltf-model="model.src"
-            :ammo-shape="`type: hull; offset: ${model.offset};`"
             :scale="model.scale"
           ></a-entity>
         </a-entity>
@@ -940,6 +1036,8 @@ const quitGame = async () => {
   top: 0;
   left: 0;
   display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .screen--game a-scene {
@@ -949,6 +1047,27 @@ const quitGame = async () => {
   left: 0;
   width: 100%;
   height: 100%;
+}
+
+.loading-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(34, 64, 86, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loading-content {
+  text-align: center;
+  color: #ff8c00;
+  font-size: 2.5rem;
+  text-shadow: 2px 2px 0 #000;
+  animation: floatTitle 2s ease-in-out infinite;
 }
 
 .game-hint {
