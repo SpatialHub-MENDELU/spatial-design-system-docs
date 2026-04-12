@@ -7,7 +7,7 @@ type GameState = 'menu' | 'playing' | 'gameover' | 'win';
 
 const gameState = ref<GameState>('menu');
 const gameWrapperRef = ref<HTMLElement | null>(null);
-const timeLeft = ref(30);
+const timeLeft = ref(60);
 let timerInterval: number | null = null;
 
 const zombiesList = ref([]);
@@ -27,7 +27,7 @@ const stopTimer = () => {
 };
 
 const startTimer = () => {
-  timeLeft.value = 30;
+  timeLeft.value = 60;
   stopTimer();
   timerInterval = window.setInterval(() => {
     timeLeft.value--;
@@ -366,7 +366,7 @@ const quitGame = () => {
 
     <div v-else-if="gameState === 'playing'" class="screen screen--game">
       <div class="game-hud">
-        <div class="timer-container" :class="{ 'timer-low': timeLeft <= 10 }">
+        <div class="timer-container" :class="{ 'timer-low': timeLeft <= 20 }">
           <span class="timer-label">TIME LEFT:</span>
           <span class="timer-value">{{ timeLeft }}s</span>
         </div>
@@ -377,7 +377,7 @@ const quitGame = () => {
           type="hemisphere"
           color="#fff"
           groundColor="#000"
-          intensity="0.01"
+          intensity="10"
         ></a-light>
 
         <a-box
@@ -419,23 +419,23 @@ const quitGame = () => {
           ></a-entity>
           <a-entity
             light="type: spot; color: #fffbd6; intensity: 15; distance: 6; angle: 45; penumbra: 0.5"
-            position="0 1 0.2"
+            position="0 0.7 0.2"
             rotation="-10 180 0"
           ></a-entity>
         </a-entity>
 
-        <a-entity
-          camera
-          game-view="type: thirdPersonFollow; target: #adventurer; distance: 2; height: 2; "
-        ></a-entity>
+<!--        <a-entity-->
+<!--          camera-->
+<!--          game-view="type: thirdPersonFollow; target: #adventurer; distance: 2; height: 2; "-->
+<!--        ></a-entity>-->
 
-        <!--        <a-entity-->
-        <!--          camera-->
-        <!--          rotation="-45 0 0"-->
-        <!--          position="35 10 70"-->
-        <!--          look-controls-->
-        <!--          wasd-controls-->
-        <!--        ></a-entity>-->
+                <a-entity
+                  camera
+                  rotation="-45 0 0"
+                  position="35 30 70"
+                  look-controls
+                  wasd-controls
+                ></a-entity>
       </a-scene>
     </div>
   </div>
