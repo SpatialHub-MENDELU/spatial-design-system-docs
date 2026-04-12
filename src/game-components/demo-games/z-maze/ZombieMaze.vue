@@ -172,7 +172,7 @@ onMounted(() => {
           const dz = playerPos.z - zombiePos.z;
           const distance = Math.sqrt(dx * dx + dz * dz);
 
-          if (distance < 4.5) {
+          if (distance < 4.0) {
             this.isDead = true;
             window.dispatchEvent(new Event('player-died'));
             break;
@@ -427,24 +427,24 @@ const quitGame = () => {
             scale="1.1 1.1 1.1"
           ></a-entity>
           <a-entity
-            light="type: spot; color: #fffbd6; intensity: 15; distance: 6; angle: 45; penumbra: 0.5"
+            light="type: spot; color: #fffbd6; intensity: 12; distance: 5; angle: 45; penumbra: 0.5"
             position="0 0.7 0.2"
             rotation="-10 180 0"
           ></a-entity>
         </a-entity>
 
-<!--        <a-entity-->
-<!--          camera-->
-<!--          game-view="type: thirdPersonFollow; target: #adventurer; distance: 2; height: 2; "-->
-<!--        ></a-entity>-->
+        <a-entity
+          camera
+          game-view="type: thirdPersonFollow; target: #adventurer; distance: 2; height: 2; "
+        ></a-entity>
 
-                <a-entity
-                  camera
-                  rotation="-45 0 0"
-                  position="35 30 70"
-                  look-controls
-                  wasd-controls
-                ></a-entity>
+        <!--                <a-entity-->
+        <!--                  camera-->
+        <!--                  rotation="-45 0 0"-->
+        <!--                  position="35 30 70"-->
+        <!--                  look-controls-->
+        <!--                  wasd-controls-->
+        <!--                ></a-entity>-->
       </a-scene>
     </div>
   </div>
