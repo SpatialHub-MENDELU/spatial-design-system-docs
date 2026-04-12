@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick } from 'vue';
 import 'aframe';
-import 'aframe-star-system-component';
 import { AdventurerModelSrc, ZombieModelSrc } from '../constants';
 
 type GameState = 'menu' | 'playing' | 'gameover' | 'win';
