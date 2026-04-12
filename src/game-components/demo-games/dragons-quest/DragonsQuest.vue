@@ -412,62 +412,84 @@ const startGame = async () => {
 };
 
 const addAllComponents = () => {
+  addComponent(
+    false,
+    'dragon-character',
+    'ammo-body',
+    'type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation'
+  );
+  addComponent(false, 'dragon-model', 'ammo-shape', 'type: hull;');
+
+  addComponent(
+    false,
+    'camera',
+    'game-view',
+    'target: #dragon-character; type: thirdPersonFollow; distance: 5; height: 5; zoom: true;'
+  );
+
+  staticModelsList.value.forEach((model) => {
+    addComponent(false, `static-${model.id}`, 'ammo-body', 'type: static;');
     addComponent(
-        false,
-        'dragon-character',
-        'ammo-body',
-        'type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation'
+      false,
+      `static-${model.id}`,
+      'ammo-shape',
+      `type: hull; offset: ${model.offset};`
     );
-    addComponent(false, 'dragon-model', 'ammo-shape', 'type: hull;');
+  });
 
+  npcModelsList.value.forEach((model) => {
     addComponent(
-        false,
-        'camera',
-        'game-view',
-        'target: #dragon-character; type: thirdPersonFollow; distance: 5; height: 5; zoom: true;'
+      false,
+      `npc-${model.id}`,
+      'ammo-body',
+      'type: dynamic; angularFactor: 0 0 0; mass: 500; activationState: disableDeactivation;'
     );
+    addComponent(
+      false,
+      `npc-model-${model.id}`,
+      'ammo-shape',
+      `type: hull; offset: ${model.offset};`
+    );
+    addComponent(
+      false,
+      `npc-model-${model.id}`,
+      'animation-mixer',
+      `clip: ${model.idleClipName}; loop: repeat; crossFadeDuration: 0.3;`
+    );
+  });
 
-    staticModelsList.value.forEach((model) => {
-        addComponent(false, `static-${model.id}`, 'ammo-body', 'type: static;');
-        addComponent(false, `static-${model.id}`, 'ammo-shape', `type: hull; offset: ${model.offset};`);
-    });
+  addComponent(false, 'game-scene', 'minimap-updater', '');
+  addComponent(false, 'game-scene', 'game-logic', '');
 
-    npcModelsList.value.forEach((model) => {
-        addComponent(false, `npc-${model.id}`, 'ammo-body', 'type: dynamic; angularFactor: 0 0 0; mass: 500; activationState: disableDeactivation;');
-        addComponent(false, `npc-model-${model.id}`, 'ammo-shape', `type: hull; offset: ${model.offset};`);
-        addComponent(false, `npc-model-${model.id}`, 'animation-mixer', `clip: ${model.idleClipName}; loop: repeat; crossFadeDuration: 0.3;`);
-    });
+  const dragonModelEl = document.querySelector('#dragon-model');
 
-    addComponent(false, 'game-scene', 'minimap-updater', '');
-    addComponent(false, 'game-scene', 'game-logic', '');
+  if (dragonModelEl) {
+    const initFlyComponent = () => {
+      setTimeout(() => {
+        addComponent(
+          false,
+          'dragon-model',
+          'animation-mixer',
+          'clip: *Dragon_Flying*; loop: repeat; crossFadeDuration: 0.3;'
+        );
 
-    const dragonModelEl = document.querySelector('#dragon-model');
+        addComponent(
+          false,
+          'dragon-character',
+          'fly',
+          'type: freeDirectionalFlight; flyClipName: *Dragon_Flying*; idleClipName: *Dragon_Flying*; sprintClipName: *Dragon_Flying*; forwardOffsetAngle: 0; maxPitchDeg: 20; pitchSpeed: 120; maxRollDeg: 15; rollSpeed: 60; rotationSpeed: 60; sprint: true;'
+        );
+      }, 50);
+    };
 
-    if (dragonModelEl) {
-        const initFlyComponent = () => {
-            setTimeout(() => {
-                addComponent(
-                    false,
-                    'dragon-model',
-                    'animation-mixer',
-                    'clip: *Dragon_Flying*; loop: repeat; crossFadeDuration: 0.3;'
-                );
-
-                addComponent(
-                    false,
-                    'dragon-character',
-                    'fly',
-                    'type: freeDirectionalFlight; flyClipName: *Dragon_Flying*; idleClipName: *Dragon_Flying*; sprintClipName: *Dragon_Flying*; forwardOffsetAngle: 0; maxPitchDeg: 20; pitchSpeed: 120; maxRollDeg: 15; rollSpeed: 60; rotationSpeed: 60; sprint: true;'
-                );
-            }, 50);
-        };
-
-        if ((dragonModelEl as any).getObject3D('mesh')) {
-            initFlyComponent();
-        } else {
-            dragonModelEl.addEventListener('model-loaded', initFlyComponent, { once: true });
-        }
+    if ((dragonModelEl as any).getObject3D('mesh')) {
+      initFlyComponent();
+    } else {
+      dragonModelEl.addEventListener('model-loaded', initFlyComponent, {
+        once: true,
+      });
     }
+  }
 };
 </script>
 
