@@ -734,12 +734,6 @@ const startGame = async () => {
   isLoading.value = true;
   gameState.value = 'playing';
 
-  showHint.value = true;
-  if (hintTimeout) clearTimeout(hintTimeout);
-  hintTimeout = setTimeout(() => {
-    showHint.value = false;
-  }, 5000);
-
   staticModelsList.value = generateStaticModels();
   npcModelsList.value = generateNpcModels();
 
@@ -757,6 +751,12 @@ const startGame = async () => {
     setTimeout(() => {
       addAllComponents();
       isLoading.value = false;
+
+      showHint.value = true;
+      if (hintTimeout) clearTimeout(hintTimeout);
+      hintTimeout = setTimeout(() => {
+        showHint.value = false;
+      }, 5000);
     }, 3000);
   }, 3000);
 };
@@ -843,7 +843,7 @@ const quitGame = async () => {
         <a-ocean
           position="0 -1 0"
           width="25"
-          depth="450"
+          depth="400"
           density="100"
           speed="2"
           color="#006994"
