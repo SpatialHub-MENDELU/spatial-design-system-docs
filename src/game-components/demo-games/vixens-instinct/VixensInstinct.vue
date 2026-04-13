@@ -114,6 +114,7 @@ const startGame = async () => {
 
   gameState.value = GameStep.Game;
 
+  // Celková doba načítání je 6 sekund (odpovídá tvým timeoutům)
   setTimeout(() => {
     setTimeout(() => {
       addAllComponents();
@@ -247,7 +248,12 @@ function addComponent(isClass, elementName, qualifiedName, value) {
     </div>
 
     <div v-if="isLoading" class="screen screen--loading">
-      <h2>Loading</h2>
+      <div class="forest-loading">
+        <div class="animal-fox"></div>
+        <div class="animal-fox"></div>
+        <div class="animal-fox"></div>
+        <div class="loading-text">Loading..</div>
+      </div>
     </div>
 
     <div v-if="gameState === GameStep.Game" class="screen screen--game">
@@ -471,14 +477,79 @@ function addComponent(isClass, elementName, qualifiedName, value) {
   background-color: #2e7d32;
 }
 
+/* STYL PRO LOADING SCREEN */
 .screen--loading {
-  background-color: #111;
+  background-color: #d9f6ff;
   z-index: 500;
   position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
 }
 
+.forest-loading {
+  position: relative;
+  width: 300px; /* Zvětšeno pro lepší viditelnost */
+  height: 150px;
+}
+
+.animal-fox {
+  position: absolute;
+  bottom: 40px;
+  width: 80px;
+  height: 60px;
+  background-image: url('/game_images/babyFox.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  animation: runAcross 3s linear infinite;
+  opacity: 0;
+}
+
+.animal-fox:nth-child(1) { animation-delay: 0s; }
+.animal-fox:nth-child(2) { animation-delay: 1s; }
+.animal-fox:nth-child(3) { animation-delay: 2s; }
+
+@keyframes runAcross {
+  0% {
+    left: -100px;
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+.loading-text {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  color: #2e7d32; /* Tmavší zelená ladí s lesem */
+  font-size: 1.5em;
+  font-weight: bold;
+  letter-spacing: 2px;
+  animation: blink 2s infinite;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+/* ZBYTEK STYLŮ */
 .screen--game {
   display: block;
 }
