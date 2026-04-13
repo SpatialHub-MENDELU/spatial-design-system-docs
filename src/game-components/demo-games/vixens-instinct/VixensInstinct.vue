@@ -75,6 +75,7 @@ const renderScene = ref(false);
 const gameWrapperRef = ref(null);
 
 const hasBaby = ref(false);
+const putBaby = ref(false);
 
 const handleFullScreenChange = () => {
   if (!document.fullscreenElement && gameState.value !== GameStep.Start) {
@@ -274,6 +275,7 @@ function addComponent(isClass, elementName, qualifiedName, value) {
         >
           <a-entity
             id="baby"
+            :visible="!hasBaby"
             :gltf-model="FoxModelSrc"
             position="0 0.2 -3"
             rotation="0 160 0"
@@ -292,6 +294,7 @@ function addComponent(isClass, elementName, qualifiedName, value) {
 
         <a-entity
           :gltf-model="FoxModelSrc"
+          :visible="putBaby"
           position="-10 0 4.2"
           scale="0.25 0.25 0.25"
           animation-mixer="clip: Idle_2_HeadLow"
@@ -299,6 +302,7 @@ function addComponent(isClass, elementName, qualifiedName, value) {
 
         <a-entity
           id="getBabySpot_1"
+          :visible="!hasBaby"
           :gltf-model="DirectionArrowModelSrc"
           position="10.6 2.8 0"
           rotation="0 -110 -90"
@@ -307,6 +311,7 @@ function addComponent(isClass, elementName, qualifiedName, value) {
         ></a-entity>
         <a-entity
           id="getBabySpot_2"
+          :visible="hasBaby"
           :gltf-model="DirectionArrowModelSrc"
           position="-10 2.4 3.2"
           rotation="0 -80 -90"
