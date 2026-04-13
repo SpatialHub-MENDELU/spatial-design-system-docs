@@ -114,7 +114,6 @@ const startGame = async () => {
 
   gameState.value = GameStep.Game;
 
-  // Celková doba načítání je 6 sekund (odpovídá tvým timeoutům)
   setTimeout(() => {
     setTimeout(() => {
       addAllComponents();
@@ -477,7 +476,6 @@ function addComponent(isClass, elementName, qualifiedName, value) {
   background-color: #2e7d32;
 }
 
-/* STYL PRO LOADING SCREEN */
 .screen--loading {
   background-color: #d9f6ff;
   z-index: 500;
@@ -490,7 +488,7 @@ function addComponent(isClass, elementName, qualifiedName, value) {
 
 .forest-loading {
   position: relative;
-  width: 300px; /* Zvětšeno pro lepší viditelnost */
+  width: 300px;
   height: 150px;
 }
 
@@ -532,7 +530,7 @@ function addComponent(isClass, elementName, qualifiedName, value) {
   bottom: 0;
   width: 100%;
   text-align: center;
-  color: #2e7d32; /* Tmavší zelená ladí s lesem */
+  color: #2e7d32;
   font-size: 1.5em;
   font-weight: bold;
   letter-spacing: 2px;
@@ -549,7 +547,6 @@ function addComponent(isClass, elementName, qualifiedName, value) {
   }
 }
 
-/* ZBYTEK STYLŮ */
 .screen--game {
   display: block;
 }
