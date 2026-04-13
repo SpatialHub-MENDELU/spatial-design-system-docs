@@ -27,6 +27,9 @@ import {
   RockModelSrcWalk,
   RocksModelSrc,
   babyFoxImageSrc,
+  DirectionArrowModelSrc,
+  TrapModelSrc,
+  DogModelSrc,
 } from '../constants';
 
 import {
@@ -81,6 +84,9 @@ const handleFullScreenChange = () => {
 
 onMounted(async () => {
   isMounted.value = true;
+  await import('spatial-design-system/components/game/walk');
+  await import('spatial-design-system/components/game/gameview');
+  await import('spatial-design-system/components/game/npcWalk');
   document.addEventListener('fullscreenchange', handleFullScreenChange);
 
   try {
@@ -88,10 +94,6 @@ onMounted(async () => {
   } catch (e) {
     console.error(e);
   }
-});
-
-onMounted(() => {
-  document.addEventListener('fullscreenchange', handleFullScreenChange);
 });
 
 onUnmounted(() => {
@@ -120,15 +122,107 @@ const startGame = async () => {
   }, 3000);
 };
 
-function addAllComponents() {
-  addComponent(
-    false,
-    'ground',
-    'ammo-body',
-    'type: static; friction: 1; opacity: 0;'
-  );
+const addAllComponents = () => {
+  addComponent(false, 'ground', 'ammo-body', 'type: static;');
   addComponent(false, 'ground', 'ammo-shape', 'type: box;');
-}
+
+  addComponent(true, '.trap-entity', 'ammo-body', 'type: static');
+  addComponent(true, '.trap-entity', 'ammo-shape', 'type: box');
+
+  addComponent(true, '.static-collidable', 'ammo-body', 'type: static');
+  addComponent(true, '.static-collidable', 'ammo-shape', 'type: box');
+
+  const caveEl = document.querySelector('#cave-entity');
+  if (caveEl) {
+    const initCave = () => {
+      addComponent(false, 'cave-entity', 'ammo-body', 'type: static');
+      addComponent(
+        false,
+        'cave-entity',
+        'ammo-shape',
+        'type: hull; offset: 0 0.5 -1;'
+      );
+    };
+    if (caveEl.getObject3D('mesh')) initCave();
+    else caveEl.addEventListener('model-loaded', initCave, { once: true });
+  }
+
+  const foxModelEl = document.querySelector('#main-character-model');
+  if (foxModelEl) {
+    const initFox = () => {
+      addComponent(
+        false,
+        'main-character',
+        'ammo-body',
+        'type: dynamic; angularFactor: 0 0 0; mass: 100; activationState: disableDeactivation'
+      );
+      addComponent(
+        false,
+        'main-character-model',
+        'ammo-shape',
+        'type: hull; offset: 0 0.6 0;'
+      );
+      setTimeout(() => {
+        addComponent(
+          false,
+          'main-character',
+          'walk',
+          `speed: ${FoxCharacter.speed}; sprintSpeed: ${FoxCharacter.sprintSpeed}; turnType: stepTurnDiagonal; rotationSpeed: 650; walkClipName: Walk; sprintClipName: Gallop; idleClipName: Idle;`
+        );
+      }, 50);
+    };
+
+    if (foxModelEl.getObject3D('mesh')) {
+      initFox();
+    } else {
+      foxModelEl.addEventListener('model-loaded', initFox, { once: true });
+    }
+  }
+
+  obstacles.dogs.forEach((dog) => {
+    const dogContainerId = `dog-${dog.id}`;
+    const dogContainerEl = document.querySelector(`#${dogContainerId}`);
+
+    const dogModelEl = dogContainerEl
+      ? dogContainerEl.querySelector('a-entity')
+      : null;
+
+    if (dogModelEl) {
+      const initDog = () => {
+        addComponent(
+          false,
+          dogContainerId,
+          'ammo-body',
+          'type: dynamic; angularFactor: 0 0 0; mass: 500; activationState: disableDeactivation'
+        );
+        dogModelEl.setAttribute('ammo-shape', 'type: hull; offset: 0 0.8 0.3');
+
+        setTimeout(() => {
+          addComponent(
+            false,
+            dogContainerId,
+            'npc-walk',
+            `points: ${dog.points}; speed: 4; pauseAtPoints: 1; slowDownRadius: 0.5;`
+          );
+        }, 50);
+      };
+
+      if (dogModelEl.getObject3D('mesh')) {
+        initDog();
+      } else {
+        dogModelEl.addEventListener('model-loaded', initDog, { once: true });
+      }
+    }
+  });
+
+  addComponent(true, '.bush-obs-entity', 'ammo-body', 'type: static');
+  addComponent(
+    true,
+    '.bush-obs-entity',
+    'ammo-shape',
+    'type: hull; offset: 0 0 0'
+  );
+};
 
 function addComponent(isClass, elementName, qualifiedName, value) {
   if (isClass) {
@@ -138,7 +232,9 @@ function addComponent(isClass, elementName, qualifiedName, value) {
     });
   } else {
     const element = document.getElementById(elementName);
-    element.setAttribute(qualifiedName, value);
+    if (element) {
+      element.setAttribute(qualifiedName, value);
+    }
   }
 }
 </script>
@@ -156,109 +252,98 @@ function addComponent(isClass, elementName, qualifiedName, value) {
 
     <div v-if="gameState === GameStep.Game" class="screen screen--game">
       <a-scene v-if="renderScene" physics="driver: ammo;">
-        <!--          shooters-->
         <a-entity
-          v-for="(shooter, index) in obstacles.shooters"
-          :key="'shooter-' + index"
-          :gltf-model="ShooterModelSrc"
-          :position="shooter.position"
-          :rotation="shooter.rotation"
-          :scale="shooter.scale"
-          animation-mixer="clip: *Idle*"
-          visible="true"
-          class="shooter"
-        >
-          <a-entity
-            :gltf-model="BulletModelSrc"
-            position="11 2 1.5"
-            scale="0.6 0.6 0.6"
-            rotation="0 90 0"
-            visible="true"
-          >
-          </a-entity>
-        </a-entity>
+          camera="fov: 40"
+          position="0 11 18"
+          rotation="-35 0 0"
+        ></a-entity>
 
-        <!-- dogs hunters -->
-        <a-entity
-          v-for="(dog, index) in obstacles.dogs"
-          :key="'dog-' + index"
-          :position="dog.position"
-          :gltf-model="DogModelSrc"
-          :rotation="dog.rotation"
-          :scale="dog.scale"
-        >
-        </a-entity>
+        <a-sky color="#D9F6FF"></a-sky>
 
-        <!-- traps -->
         <a-entity
-          v-for="(trap, index) in obstacles.traps"
-          :key="'trap-' + index"
-          :gltf-model="TrapModelSrc"
-          :position="trap.position"
-          :scale="trap.scale"
-        >
-        </a-entity>
-
-        <!--          cave-->
-        <a-entity
+          id="cave-entity"
           :gltf-model="CaveModelSrc"
           position="15 0.4 -5"
           rotation="0 140 0"
           scale="2 2 2"
         >
-          <a-entity>
-            <a-entity
-              id="baby"
-              :visible="!hasBaby"
-              :gltf-model="FoxModelSrc"
-              position="0 0.2 -3"
-              rotation="0 160 0"
-              scale="0.15 0.15 0.15"
-              animation-mixer="clip: Idle"
-            >
-            </a-entity>
-          </a-entity>
+          <a-entity
+            id="baby"
+            :gltf-model="FoxModelSrc"
+            position="0 0.2 -3"
+            rotation="0 160 0"
+            scale="0.15 0.15 0.15"
+            animation-mixer="clip: Idle"
+          ></a-entity>
         </a-entity>
 
-        <!--          sky-->
-        <a-sky color="#D9F6FF"></a-sky>
+        <a-entity id="main-character" position="-8 0.4 2" rotation="0 90 0">
+          <a-entity
+            id="main-character-model"
+            :gltf-model="FoxModelSrc"
+            scale="0.5 0.5 0.5"
+          ></a-entity>
+        </a-entity>
 
-        <!-- health bar -->
         <a-entity
-          id="hp"
-          ref="healthBar"
-          :health-bar="'max: ' + FoxCharacter.health"
-          position="0 7.18 0"
+          :gltf-model="FoxModelSrc"
+          position="-10 0 4.2"
+          scale="0.25 0.25 0.25"
+          animation-mixer="clip: Idle_2_HeadLow"
         ></a-entity>
 
-        <!-- stamina bar -->
         <a-entity
-          id="stamina-bar"
-          :stamina-bar="'max: ' + FoxCharacter.stamina"
-          position="-3.4 7.18 0"
+          id="getBabySpot_1"
+          :gltf-model="DirectionArrowModelSrc"
+          position="10.6 2.8 0"
+          rotation="0 -110 -90"
+          scale="0.5 0.5 0.5"
+          animation="property: position; dir: alternate; dur: 400; easing: easeInOutSine; loop: true; to: 10.6 3.1 0"
+        ></a-entity>
+        <a-entity
+          id="getBabySpot_2"
+          :gltf-model="DirectionArrowModelSrc"
+          position="-10 2.4 3.2"
+          rotation="0 -80 -90"
+          animation="property: position; dir: alternate; dur: 400; easing: easeInOutSine; loop: true; to: -10 2.7 3.2"
+        ></a-entity>
+
+        <a-entity
+          v-for="(trap, index) in obstacles.traps"
+          :key="'trap-' + index"
+          class="trap-entity"
+          :gltf-model="TrapModelSrc"
+          :position="trap.position"
+          :scale="trap.scale"
+        ></a-entity>
+
+        <a-entity
+          v-for="(dog, index) in obstacles.dogs"
+          :key="'dog-' + dog.id"
+          :id="'dog-' + dog.id"
+          class="dog-entity"
+          :position="dog.position"
+          :rotation="dog.rotation"
         >
+          <a-entity
+            class="dog-model"
+            :gltf-model="DogModelSrc"
+            :scale="dog.scale"
+          ></a-entity>
         </a-entity>
 
-        <!-- babies counter -->
         <a-entity
-          id="babies-counter"
-          :babies-counter="'image: ' + babyFoxImageSrc"
-          position="3.4 7 0"
+          v-for="(bush, index) in obstacles.bushes"
+          :key="'bush-obs-' + index"
+          class="bush-obs-entity"
+          :gltf-model="BushModelSrc"
+          :position="bush.position"
+          :rotation="bush.rotation"
+          :scale="bush.scale"
         ></a-entity>
 
-        <!-- time counter -->
-        <a-entity
-          id="time-counter"
-          :time-counter="`initialTime:${LevelSettings.time};criticalTime:${LevelSettings.criticalTime}`"
-          position="7 7 0"
-        ></a-entity>
-
-        <!--          STATIC MODELS -->
-
-        <!--          ground-->
         <a-box
-          ammo-body="type: static"
-          ammo-shape="type: box;"
+          id="ground"
           position="0 -0.2 -15"
           width="90"
           height="0.2"
@@ -266,14 +351,12 @@ function addComponent(isClass, elementName, qualifiedName, value) {
           :material="`src:${GrassImageSrc}; repeat: 45 35 `"
         ></a-box>
 
-        <!-- mountain -->
         <a-entity
           :gltf-model="MountainModelSrc"
           scale="30 30 30"
           rotation="0 45 0"
           position="14 0.4 -20"
         ></a-entity>
-
         <a-entity
           :gltf-model="MountainModelSrc"
           scale="30 30 30"
@@ -281,11 +364,9 @@ function addComponent(isClass, elementName, qualifiedName, value) {
           position="-14 0.4 -20"
         ></a-entity>
 
-        <!-- pond -->
         <a-entity
           :gltf-model="PondModelSrc"
           scale="0.04 0.04 0.04"
-          rotation="0 0 0"
           position="-14 -0.33 -4"
         >
           <a-entity
@@ -296,38 +377,19 @@ function addComponent(isClass, elementName, qualifiedName, value) {
           ></a-entity>
         </a-entity>
 
-        <!-- stag -->
         <a-entity
           :gltf-model="StagModelSrc"
           scale="0.4 0.4 0.4"
           rotation="0 45 0"
-          animation-mixer="clip: *Eating*"
           position="10 1 -10.8"
-        ></a-entity>
-        <a-entity
-          :gltf-model="StagModelSrc"
-          scale="0.25 0.25 0.25"
-          rotation="0 -45 0"
           animation-mixer="clip: *Eating*"
-          position="12.8 0.2 -12"
         ></a-entity>
-
-        <!-- jeep -->
         <a-entity
           :gltf-model="JeepModelSrc"
           scale="0.8 0.8 0.8"
           rotation="0 45 0"
           position="-4.5 1 -12"
         ></a-entity>
-
-        <!-- posed -->
-        <a-entity
-          :gltf-model="PosedModelSrc"
-          scale="1.5 1.5 1.5"
-          position="-5 0.4 -7.8"
-        ></a-entity>
-
-        <!-- rabbits -->
         <a-entity
           :gltf-model="RabbitModelSrc"
           scale="0.01 0.01 0.01"
@@ -335,69 +397,47 @@ function addComponent(isClass, elementName, qualifiedName, value) {
           position="-5 0.2 -8.7"
         ></a-entity>
 
-        <!-- trees -->
         <a-entity
           v-for="tree in trees"
+          :key="tree.position"
           :gltf-model="TreeModelSrc"
           :position="tree.position"
           :rotation="tree.rotation"
           :scale="tree.scale"
-        >
-        </a-entity>
-
+        ></a-entity>
         <a-entity
           v-for="tree in trees2"
+          :key="tree.position"
           :gltf-model="Tree2ModelSrc"
           :position="tree.position"
           :rotation="tree.rotation"
           :scale="tree.scale"
-        >
-        </a-entity>
-
+        ></a-entity>
         <a-entity
           v-for="tree in pineTrees"
+          :key="tree.position"
           :gltf-model="PineTreeModelSrc"
           :position="tree.position"
           :rotation="tree.rotation"
           :scale="tree.scale"
         ></a-entity>
-
-        <a-entity
-          v-for="tree in pineCones"
-          :gltf-model="PineconeModelSrc"
-          :position="tree.position"
-          :rotation="tree.rotation"
-          :scale="tree.scale"
-        ></a-entity>
-
-        <!-- rocks -->
         <a-entity
           v-for="rock in rocks"
+          :key="rock.position"
           :gltf-model="RocksModelSrc"
           :scale="rock.scale"
           :position="rock.position"
           :rotation="rock.rotation"
-        >
-        </a-entity>
-
-        <a-entity
-          v-for="rock in singleRocks"
-          :gltf-model="RockModelSrcWalk"
-          :scale="rock.scale"
-          :position="rock.position"
-          :rotation="rock.rotation"
-        >
-        </a-entity>
-
-        <!-- bushes -->
+        ></a-entity>
         <a-entity
           v-for="bush in bushes"
+          :key="bush.position"
+          class="static-collidable"
           :gltf-model="BushModelSrc"
           :scale="bush.scale"
           :position="bush.position"
           :rotation="bush.rotation"
-        >
-        </a-entity>
+        ></a-entity>
       </a-scene>
     </div>
   </div>

@@ -67,3 +67,5 @@ export const DogModelSrc = '/glb_models/game_components/walk/Dog.glb';
 export const ShooterModelSrc = '/glb_models/game_components/walk/Shooter.glb';
 export const TrapModelSrc = '/glb_models/game_components/walk/Trap.glb';
 export const BulletModelSrc = '/glb_models/game_components/walk/Bullet.glb';
+export const DirectionArrowModelSrc =
+  '/glb_models/game_components/walk/DirectionArrow.glb';

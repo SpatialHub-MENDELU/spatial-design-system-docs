@@ -41,32 +41,44 @@ export const bushes = [
     { position: '1.8 0.2 -3.8', scale: '10 10 10', rotation: '0 150 0' },
     { position: '7.6 0.2 -3', scale: '9 9 9', rotation: '0 0 0' },
     { position: '6 0.2 -3', scale: '8 8 8', rotation: '0 150 0' },
+
+    { position: '-5 0.4 10', scale: '9 9 9', rotation: '0 0 0' },
+    { position: '-3.5 0.4 10', scale: '6 6 6', rotation: '0 25 0' },
+    { position: '4.5 0.4 10', scale: '8 8 8', rotation: '0 30 0' },
+    { position: '0 0.4 10', scale: '8 8 8', rotation: '0 30 0' },
+    { position: '-6.8 0.4 10', scale: '8 8 8', rotation: '0 230 0' },
+    { position: '-2 0.4 10', scale: '8 8 8', rotation: '0 230 0' },
+    { position: '3 0.2 10', scale: '7 7 7', rotation: '0 0 0' },
+    { position: '1.8 0.2 10', scale: '10 10 10', rotation: '0 150 0' },
+    { position: '7.6 0.2 10', scale: '9 9 9', rotation: '0 0 0' },
+    { position: '6 0.2 10', scale: '8 8 8', rotation: '0 150 0' },
 ]
 
 export const obstacles = {
     bushes: [
-        {position: "-6 0 3.5", scale: "9 9 9", rotation: "0 10 0"},
-        {position: "-6.5 5", scale: "8 8 8", rotation: "0 90 0"},
-        {position: "-6 0 6.5", scale: "9 9 9", rotation: "0 45 0"},
-        {position: "-5.5 0 8", scale: "8 8 8", rotation: "0 125 0"},
+        {position: "-6 0.4 3.5", scale: "9 9 9", rotation: "0 10 0"},
+        {position: "-6 0.4 5", scale: "8 8 8", rotation: "0 90 0"},
+        {position: "-6 0.4 6.5", scale: "9 9 9", rotation: "0 45 0"},
+        {position: "-5.5 0.4 8", scale: "8 8 8", rotation: "0 125 0"},
 
-        {position: "7 0 0", scale: "9 9 9", rotation: "0 10 0"},
-        {position: "7.5 0 2", scale: "8 8 8", rotation: "0 90 0"},
-        {position: "7 0 3.5", scale: "9 9 9", rotation: "0 45 0"},
-        {position: "7.5 0 5.5", scale: "8 8 8", rotation: "0 125 0"},
+        {position: "7 0.4 0", scale: "9 9 9", rotation: "0 10 0"},
+        {position: "7.5 0.4 2", scale: "8 8 8", rotation: "0 90 0"},
+        {position: "7 0.4 3.5", scale: "9 9 9", rotation: "0 45 0"},
+        {position: "7.5 0.4 5.5", scale: "8 8 8", rotation: "0 125 0"},
+
     ],
-        dogs: [
-        {position: "-1 0.6 5", scale: "0.5 0.5 0.5", rotation: "0 180 0"},
-        {position: "1 0.6 7", scale: "0.5 0.5 0.5", rotation: "0 90 0"},
+    dogs: [
+        {id: 1, position: "-1 0.4 5", scale: "0.5 0.5 0.5", rotation: "0 180 0", points: "-1 0.4 7, -1 0.4 0"},
+        {id: 2, position: "1 0.4 8", scale: "0.5 0.5 0.5", rotation: "0 90 0", points: "1 0.4 8, 5.5 0.4 8"},
     ],
-        shooters: [
+    shooters: [
         {position: "-2 0.6 -2", scale: "0.1 0.1 0.1", rotation: "0 -90 0"},
         {position: "1 0.6 -2", scale: "0.1 0.1 0.1", rotation: "0 -90 0"},
         {position: "6 0.6 -2", scale: "0.1 0.1 0.1", rotation: "0 -90 0"},
         {position: "-4 0.6 -2", scale: "0.1 0.1 0.1", rotation: "0 -90 0"},
     ],
 
-        traps: [
+    traps: [
         {position: "-4 -0.1 -0.5", scale: "1 1 1", rotation: "0 -90 0"},
         {position: "0 -0.1 6", scale: "1 1 1", rotation: "0 -90 0"},
         {position: "4 -0.1 1", scale: "1 1 1", rotation: "0 -90 0"},
