@@ -4,13 +4,18 @@ title: fly
 
 <script setup lang="ts">
   import { ref, onMounted } from "vue";
+  import SpaceDefender from './demo-games/space-defender/SpaceDefender.vue';
+import DragonsQuest from './demo-games/dragons-quest/DragonsQuest.vue';
+import ForestFlight from './demo-games/forest-flight/ForestFlight.vue';
 
   const renderScene = ref(false);
 
   onMounted(async () => {
     try {
       // Here import Spatial Design System components that you need
-      await import("spatial-design-system/components/position.js");
+      // await import("spatial-design-system/components/game/fly.js");
+      // await import("spatial-design-system/components/game/gameview.js");
+      // await import("spatial-design-system/components/game/npcWalk.js");
       renderScene.value = true;
     } catch (e) {
       console.error(e);
@@ -19,6 +24,15 @@ title: fly
 </script>
 
 # {{ $frontmatter.title }}
+
+<ForestFlight />
+
+<SpaceDefender />
+
+<DragonsQuest />
+
+
+
 The `fly` component defines the flying behavior of a character in a game. It allows customization of flying styles, including key bindings, speed settings, and flight types. The component also supports realistic flight dynamics through pitch and roll adjustments.
 
 ::: warning ⚠️ PHYSICS ENGINE

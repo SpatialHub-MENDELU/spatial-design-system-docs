@@ -1,0 +1,1085 @@
+<script setup>
+import { nextTick, onMounted, onUnmounted, ref } from 'vue';
+import 'aframe';
+
+import './babies-counter.js';
+import './health-bar.js';
+import './stamina-bar.js';
+import './time-counter.js';
+import { obstacles } from './StaticModels.js';
+
+import {
+  GrassImageSrc,
+  FoxModelSrc,
+  CaveModelSrc,
+  MountainModelSrc,
+  PondModelSrc,
+  FrogModelSrc,
+  StagModelSrc,
+  JeepModelSrc,
+  PosedModelSrc,
+  RabbitModelSrc,
+  TreeModelSrc,
+  Tree2ModelSrc,
+  PineTreeModelSrc,
+  PineconeModelSrc,
+  BushModelSrc,
+  RockModelSrcWalk,
+  RocksModelSrc,
+  babyFoxImageSrc,
+  DirectionArrowModelSrc,
+  TrapModelSrc,
+  DogModelSrc,
+} from '../constants';
+
+import {
+  trees,
+  pineTrees,
+  pineCones,
+  rocks,
+  trees2,
+  singleRocks,
+  bushes,
+} from './StaticModels.js';
+
+const GameStep = {
+  Start: 'Start',
+  Game: 'Game',
+  Win: 'Win',
+  Lose: 'Lose',
+};
+
+const FoxCharacter = {
+  health: 100,
+  stamina: 120,
+  speed: 5,
+  sprintSpeed: 10,
+  gltfModel: './models/Fox.glb',
+  babiesCounterImage: '/images/babyFox.png',
+  gameOverImage: '/images/foxGameOver.png',
+  winImage: '/images/foxWin.png',
+  gltfModelBaby: './models/DeadFoxik.glb',
+  babyPosition: '0.021 1.368 2.48',
+  babyScale: '0.35 0.35 0.35',
+};
+
+const LevelSettings = {
+  time: 30,
+  criticalTime: 10,
+};
+
+const timeLeft = ref(LevelSettings.time);
+let timerInterval = null;
+
+const startTimer = () => {
+  stopTimer();
+  timeLeft.value = LevelSettings.time;
+
+  timerInterval = setInterval(() => {
+    timeLeft.value--;
+
+    if (timeLeft.value <= 0) {
+      stopTimer();
+      gameState.value = GameStep.Lose;
+    }
+  }, 1000);
+};
+
+const stopTimer = () => {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+};
+
+const gameState = ref(GameStep.Start);
+const isLoading = ref(false);
+const isMounted = ref(false);
+const renderScene = ref(false);
+const gameWrapperRef = ref(null);
+
+const hasBaby = ref(false);
+const putBaby = ref(false);
+
+const handleFullScreenChange = () => {
+  if (!document.fullscreenElement && gameState.value !== GameStep.Start) {
+    gameState.value = GameStep.Start;
+  }
+};
+
+onMounted(async () => {
+  isMounted.value = true;
+  await import('spatial-design-system/components/game/walk');
+  await import('spatial-design-system/components/game/gameview');
+  await import('spatial-design-system/components/game/npcWalk');
+  registerAframeComponents();
+  document.addEventListener('fullscreenchange', handleFullScreenChange);
+
+  try {
+    renderScene.value = true;
+  } catch (e) {
+    console.error(e);
+  }
+});
+
+onUnmounted(() => {
+  document.removeEventListener('fullscreenchange', handleFullScreenChange);
+});
+
+const startGame = async () => {
+  isLoading.value = true;
+  await nextTick();
+
+  if (gameWrapperRef.value && !document.fullscreenElement) {
+    try {
+      await gameWrapperRef.value.requestFullscreen();
+    } catch (err) {
+      console.warn('Unable to enter full-screen mode:', err);
+    }
+  }
+
+  gameState.value = GameStep.Game;
+
+  setTimeout(() => {
+    setTimeout(() => {
+      addAllComponents();
+      isLoading.value = false;
+      startTimer();
+    }, 3000);
+  }, 3000);
+};
+
+const restartGame = () => {
+  hasBaby.value = false;
+  putBaby.value = false;
+  gameState.value = GameStep.Start;
+  renderScene.value = false;
+
+  nextTick(() => {
+    renderScene.value = true;
+    startGame();
+  });
+};
+
+const quitGame = () => {
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+  }
+  gameState.value = GameStep.Start;
+  renderScene.value = false;
+  hasBaby.value = false;
+  putBaby.value = false;
+  stopTimer();
+};
+
+const handleFoxDeath = () => {
+  const foxEl = document.getElementById('main-character');
+  const foxModelEl = document.querySelector('#main-character-model');
+
+  if (foxEl && foxModelEl) {
+    foxEl.addEventListener('fox-death', () => {
+      foxEl.removeAttribute('walk');
+      foxEl.setAttribute('ammo-body', 'type: static');
+      foxModelEl.setAttribute(
+        'animation-mixer',
+        'clip: Death; loop: once; clampWhenFinished: true'
+      );
+
+      setTimeout(() => {
+        gameState.value = GameStep.Lose;
+        stopTimer();
+      }, 2500);
+    });
+  }
+};
+
+const addAllComponents = () => {
+  addComponent(false, 'ground', 'ammo-body', 'type: static;');
+  addComponent(false, 'ground', 'ammo-shape', 'type: box;');
+
+  addComponent(true, '.static-collidable', 'ammo-body', 'type: static');
+  addComponent(true, '.static-collidable', 'ammo-shape', 'type: box');
+
+  const caveEl = document.querySelector('#cave-entity');
+  if (caveEl) {
+    const initCave = () => {
+      addComponent(false, 'cave-entity', 'ammo-body', 'type: static');
+      addComponent(
+        false,
+        'cave-entity',
+        'ammo-shape',
+        'type: hull; offset: 0 0.5 -1;'
+      );
+    };
+    if (caveEl.getObject3D('mesh')) initCave();
+    else caveEl.addEventListener('model-loaded', initCave, { once: true });
+  }
+
+  const foxModelEl = document.querySelector('#main-character-model');
+  if (foxModelEl) {
+    const initFox = () => {
+      handleFoxDeath();
+
+      addComponent(
+        false,
+        'main-character',
+        'ammo-body',
+        'type: dynamic; angularFactor: 0 0 0; mass: 100; activationState: disableDeactivation; linearFactor: 1 0 1;'
+      );
+      addComponent(
+        false,
+        'main-character-model',
+        'ammo-shape',
+        'type: hull; offset: 0 0.6 0;'
+      );
+
+      addComponent(
+        false,
+        'main-character',
+        'proximity-trigger',
+        'target: #baby; radius: 2.5; event: baby-found'
+      );
+      addComponent(false, 'main-character', 'trap-manager', '');
+      addComponent(false, 'main-character', 'dog-manager', '');
+      addComponent(false, 'main-character', 'finish-manager', '');
+
+      const foxEl = document.getElementById('main-character');
+      if (foxEl) {
+        foxEl.addEventListener(
+          'baby-found',
+          () => {
+            hasBaby.value = true;
+          },
+          { once: true }
+        );
+      }
+      setTimeout(() => {
+        addComponent(
+          false,
+          'main-character',
+          'walk',
+          `speed: ${FoxCharacter.speed}; sprintSpeed: ${FoxCharacter.sprintSpeed}; turnType: stepTurnDiagonal; rotationSpeed: 650; walkClipName: Walk; sprintClipName: Gallop; idleClipName: Idle;`
+        );
+      }, 50);
+    };
+
+    if (foxModelEl.getObject3D('mesh')) {
+      initFox();
+    } else {
+      foxModelEl.addEventListener('model-loaded', initFox, { once: true });
+    }
+  }
+
+  obstacles.dogs.forEach((dog) => {
+    const dogContainerId = `dog-${dog.id}`;
+    const dogContainerEl = document.querySelector(`#${dogContainerId}`);
+
+    const dogModelEl = dogContainerEl
+      ? dogContainerEl.querySelector('a-entity')
+      : null;
+
+    if (dogModelEl) {
+      const initDog = () => {
+        addComponent(
+          false,
+          dogContainerId,
+          'ammo-body',
+          'type: dynamic; angularFactor: 0 0 0; mass: 500; activationState: disableDeactivation'
+        );
+        dogModelEl.setAttribute('ammo-shape', 'type: hull; offset: 0 0.8 0.3');
+
+        setTimeout(() => {
+          addComponent(
+            false,
+            dogContainerId,
+            'npc-walk',
+            `points: ${dog.points}; speed: 4; pauseAtPoints: 1; slowDownRadius: 0.5;`
+          );
+        }, 50);
+      };
+
+      if (dogModelEl.getObject3D('mesh')) {
+        initDog();
+      } else {
+        dogModelEl.addEventListener('model-loaded', initDog, { once: true });
+      }
+    }
+  });
+
+  addComponent(true, '.bush-obs-entity', 'ammo-body', 'type: static');
+  addComponent(
+    true,
+    '.bush-obs-entity',
+    'ammo-shape',
+    'type: box; offset: 0 0 0'
+  );
+};
+
+function addComponent(isClass, elementName, qualifiedName, value) {
+  if (isClass) {
+    const elements = document.querySelectorAll(elementName);
+    elements.forEach((el) => {
+      el.setAttribute(qualifiedName, value);
+    });
+  } else {
+    const element = document.getElementById(elementName);
+    if (element) {
+      element.setAttribute(qualifiedName, value);
+    }
+  }
+}
+
+function registerAframeComponents() {
+  if (
+    typeof AFRAME !== 'undefined' &&
+    !AFRAME.components['proximity-trigger']
+  ) {
+    AFRAME.registerComponent('proximity-trigger', {
+      schema: {
+        target: { type: 'selector' },
+        radius: { type: 'number', default: 1.5 },
+        event: { type: 'string', default: 'reached' },
+      },
+      init: function () {
+        this.targetWorldPos = new THREE.Vector3();
+        this.entityWorldPos = new THREE.Vector3();
+      },
+      tick: function () {
+        if (!this.data.target) return;
+
+        this.data.target.object3D.getWorldPosition(this.targetWorldPos);
+        this.el.object3D.getWorldPosition(this.entityWorldPos);
+
+        const distance = this.entityWorldPos.distanceTo(this.targetWorldPos);
+
+        if (distance < this.data.radius) {
+          this.el.emit(this.data.event);
+          this.el.removeAttribute('proximity-trigger');
+        }
+      },
+    });
+  }
+
+  if (typeof AFRAME !== 'undefined' && !AFRAME.components['trap-manager']) {
+    AFRAME.registerComponent('trap-manager', {
+      init: function () {
+        this.traps = document.querySelectorAll('.trap-entity');
+        this.foxPos = new THREE.Vector3();
+        this.trapPos = new THREE.Vector3();
+        this.triggerDistance = 1.0;
+        this.isDead = false;
+      },
+      tick: function () {
+        if (this.isDead || !this.traps.length) return;
+        this.el.object3D.getWorldPosition(this.foxPos);
+
+        for (let i = 0; i < this.traps.length; i++) {
+          let trap = this.traps[i];
+          trap.object3D.getWorldPosition(this.trapPos);
+
+          let dx = this.foxPos.x - this.trapPos.x;
+          let dz = this.foxPos.z - this.trapPos.z;
+          let distance = Math.sqrt(dx * dx + dz * dz);
+
+          if (distance < this.triggerDistance) {
+            this.isDead = true;
+            console.log('Fox stepped on a trap!');
+            this.el.emit('fox-death');
+            break;
+          }
+        }
+      },
+    });
+  }
+
+  if (typeof AFRAME !== 'undefined' && !AFRAME.components['dog-manager']) {
+    AFRAME.registerComponent('dog-manager', {
+      init: function () {
+        this.dogs = document.querySelectorAll('.dog-entity');
+        this.foxPos = new THREE.Vector3();
+        this.dogPos = new THREE.Vector3();
+        this.triggerDistance = 1.8;
+        this.isDead = false;
+      },
+      tick: function () {
+        if (this.isDead || !this.dogs.length) return;
+        this.el.object3D.getWorldPosition(this.foxPos);
+
+        for (let i = 0; i < this.dogs.length; i++) {
+          let dog = this.dogs[i];
+          dog.object3D.getWorldPosition(this.dogPos);
+
+          let dx = this.foxPos.x - this.dogPos.x;
+          let dz = this.foxPos.z - this.dogPos.z;
+          let distance = Math.sqrt(dx * dx + dz * dz);
+
+          if (distance < this.triggerDistance) {
+            this.isDead = true;
+            console.log('Fox was caught by a dog!');
+
+            dog.removeAttribute('npc-walk');
+            dog.setAttribute('ammo-body', 'type: static');
+
+            const dogModel = dog.querySelector('.dog-model');
+            if (dogModel) {
+              dogModel.setAttribute(
+                'animation-mixer',
+                'clip: Attack; loop: once; clampWhenFinished: true'
+              );
+            }
+
+            this.el.emit('fox-death');
+            break;
+          }
+        }
+      },
+    });
+  }
+
+  if (typeof AFRAME !== 'undefined' && !AFRAME.components['finish-manager']) {
+    AFRAME.registerComponent('finish-manager', {
+      init: function () {
+        this.foxPos = new THREE.Vector3();
+        this.targetPos = new THREE.Vector3(-10, 0, 3.2);
+        this.triggerDistance = 2.0;
+        this.finished = false;
+      },
+      tick: function () {
+        if (this.finished || !hasBaby.value) return;
+
+        this.el.object3D.getWorldPosition(this.foxPos);
+
+        let dx = this.foxPos.x - this.targetPos.x;
+        let dz = this.foxPos.z - this.targetPos.z;
+        let distance = Math.sqrt(dx * dx + dz * dz);
+
+        if (distance < this.triggerDistance) {
+          this.finished = true;
+          stopTimer();
+
+          putBaby.value = true;
+
+          setTimeout(() => {
+            gameState.value = GameStep.Win;
+          }, 3000);
+        }
+      },
+    });
+  }
+}
+</script>
+
+<template>
+  <div class="game-wrapper" ref="gameWrapperRef" v-if="isMounted">
+    <div v-if="gameState === GameStep.Start" class="screen screen--menu">
+      <div class="menu-content">
+        <div class="menu-logo"></div>
+        <h1 class="game-title">Vixen's Instinct</h1>
+        <p class="game-subtitle">Rescue your cub from the hunter's dogs</p>
+        <button @click="startGame" class="btn-start">START GAME</button>
+      </div>
+    </div>
+
+    <div v-if="isLoading" class="screen screen--loading">
+      <div class="loading-container">
+        <div class="fox-row">
+          <div class="animal-fox"></div>
+          <div class="animal-fox"></div>
+          <div class="animal-fox"></div>
+        </div>
+
+        <div class="loading-text">Loading..</div>
+
+        <div class="movement-instructions">
+          <div class="key-row">
+            <div class="key">W</div>
+          </div>
+          <div class="key-row">
+            <div class="key">A</div>
+            <div class="key">S</div>
+            <div class="key">D</div>
+          </div>
+          <div class="instruction-text">USE WASD TO MOVE</div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="gameState === GameStep.Win" class="screen screen--win">
+      <div class="win-content">
+        <h1>Mission Accomplished!</h1>
+        <p>The baby is safe in the den.</p>
+        <div class="button-group">
+          <button @click="restartGame">PLAY AGAIN</button>
+          <button @click="quitGame" class="btn-secondary">QUIT</button>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="gameState === GameStep.Lose" class="screen screen--lose">
+      <div class="lose-content">
+        <h1>Game Over</h1>
+        <p>The hunter's dogs caught you.</p>
+        <div class="button-group">
+          <button @click="restartGame">TRY AGAIN</button>
+          <button @click="quitGame" class="btn-secondary">QUIT</button>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="gameState === GameStep.Game" class="screen screen--game">
+      <div class="game-hud">
+        <div class="timer-display" :class="{ 'timer-low': timeLeft <= 10 }">
+          TIME: {{ timeLeft }}s
+        </div>
+      </div>
+      <a-scene v-if="renderScene" physics="driver: ammo;">
+        <a-entity
+          camera="fov: 40"
+          position="0 11 18"
+          rotation="-35 0 0"
+        ></a-entity>
+
+        <a-sky color="#D9F6FF"></a-sky>
+
+        <a-entity
+          id="cave-entity"
+          :gltf-model="CaveModelSrc"
+          position="15 0.4 -5"
+          rotation="0 140 0"
+          scale="2 2 2"
+        >
+          <a-entity
+            id="baby"
+            :visible="!hasBaby"
+            :gltf-model="FoxModelSrc"
+            position="0 0.2 -3"
+            rotation="0 160 0"
+            scale="0.15 0.15 0.15"
+            animation-mixer="clip: Idle"
+          ></a-entity>
+        </a-entity>
+
+        <a-entity id="main-character" position="-8 0.4 2" rotation="0 90 0">
+          <a-entity
+            id="main-character-model"
+            :gltf-model="FoxModelSrc"
+            scale="0.5 0.5 0.5"
+          ></a-entity>
+        </a-entity>
+
+        <a-entity
+          :gltf-model="FoxModelSrc"
+          :visible="putBaby"
+          position="-8.5 0 5.2"
+          scale="0.25 0.25 0.25"
+          animation-mixer="clip: Idle_2_HeadLow"
+        ></a-entity>
+
+        <a-entity
+          id="getBabySpot_1"
+          :visible="!hasBaby"
+          :gltf-model="DirectionArrowModelSrc"
+          position="10.6 2.8 0"
+          rotation="0 -110 -90"
+          scale="0.5 0.5 0.5"
+          animation="property: position; dir: alternate; dur: 400; easing: easeInOutSine; loop: true; to: 10.6 3.1 0"
+        ></a-entity>
+
+        <a-entity
+          id="getBabySpot_2"
+          :visible="hasBaby"
+          :gltf-model="DirectionArrowModelSrc"
+          position="-8.5 3 4.2"
+          rotation="0 -80 -90"
+          animation="property: position; dir: alternate; dur: 400; easing: easeInOutSine; loop: true; to: -8.5 3.4 4.2"
+        ></a-entity>
+
+        <a-entity
+          v-for="(trap, index) in obstacles.traps"
+          :key="'trap-' + index"
+          class="trap-entity"
+          :gltf-model="TrapModelSrc"
+          :position="trap.position"
+          :scale="trap.scale"
+        ></a-entity>
+
+        <a-entity
+          v-for="(dog, index) in obstacles.dogs"
+          :key="'dog-' + dog.id"
+          :id="'dog-' + dog.id"
+          class="dog-entity"
+          :position="dog.position"
+          :rotation="dog.rotation"
+        >
+          <a-entity
+            class="dog-model"
+            :gltf-model="DogModelSrc"
+            :scale="dog.scale"
+          ></a-entity>
+        </a-entity>
+
+        <a-entity
+          v-for="(bush, index) in obstacles.bushes"
+          :key="'bush-obs-' + index"
+          class="bush-obs-entity"
+          :gltf-model="BushModelSrc"
+          :position="bush.position"
+          :rotation="bush.rotation"
+          :scale="bush.scale"
+        ></a-entity>
+
+        <a-box
+          id="ground"
+          position="0 -0.2 -15"
+          width="90"
+          height="0.2"
+          depth="70"
+          :material="`src:${GrassImageSrc}; repeat: 45 35 `"
+        ></a-box>
+
+        <a-entity
+          :gltf-model="MountainModelSrc"
+          scale="30 30 30"
+          rotation="0 45 0"
+          position="14 0.4 -20"
+        ></a-entity>
+        <a-entity
+          :gltf-model="MountainModelSrc"
+          scale="30 30 30"
+          rotation="0 -45 0"
+          position="-14 0.4 -20"
+        ></a-entity>
+
+        <a-entity
+          :gltf-model="PondModelSrc"
+          scale="0.04 0.04 0.04"
+          position="-14 -0.33 -4"
+        >
+          <a-entity
+            :gltf-model="FrogModelSrc"
+            scale="0.4 0.4 0.4"
+            rotation="0 45 0"
+            position="90 19 0"
+          ></a-entity>
+        </a-entity>
+
+        <a-entity
+          :gltf-model="StagModelSrc"
+          scale="0.4 0.4 0.4"
+          rotation="0 45 0"
+          position="10 1 -10.8"
+          animation-mixer="clip: *Eating*"
+        ></a-entity>
+        <a-entity
+          :gltf-model="JeepModelSrc"
+          scale="0.8 0.8 0.8"
+          rotation="0 45 0"
+          position="-4.5 1 -12"
+        ></a-entity>
+        <a-entity
+          :gltf-model="RabbitModelSrc"
+          scale="0.01 0.01 0.01"
+          rotation="0 -45 0"
+          position="-5 0.2 -8.7"
+        ></a-entity>
+
+        <a-entity
+          v-for="tree in trees"
+          :key="tree.position"
+          :gltf-model="TreeModelSrc"
+          :position="tree.position"
+          :rotation="tree.rotation"
+          :scale="tree.scale"
+        ></a-entity>
+        <a-entity
+          v-for="tree in trees2"
+          :key="tree.position"
+          :gltf-model="Tree2ModelSrc"
+          :position="tree.position"
+          :rotation="tree.rotation"
+          :scale="tree.scale"
+        ></a-entity>
+        <a-entity
+          v-for="tree in pineTrees"
+          :key="tree.position"
+          :gltf-model="PineTreeModelSrc"
+          :position="tree.position"
+          :rotation="tree.rotation"
+          :scale="tree.scale"
+        ></a-entity>
+        <a-entity
+          v-for="rock in rocks"
+          :key="rock.position"
+          :gltf-model="RocksModelSrc"
+          :scale="rock.scale"
+          :position="rock.position"
+          :rotation="rock.rotation"
+        ></a-entity>
+        <a-entity
+          v-for="bush in bushes"
+          :key="bush.position"
+          class="static-collidable"
+          :gltf-model="BushModelSrc"
+          :scale="bush.scale"
+          :position="bush.position"
+          :rotation="bush.rotation"
+        ></a-entity>
+      </a-scene>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.game-wrapper {
+  width: 100%;
+  height: 500px;
+  background-color: #222;
+  position: relative;
+  overflow: hidden;
+  font-family: sans-serif;
+}
+
+.game-wrapper:fullscreen {
+  height: 100vh;
+}
+
+.screen {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
+.screen--game {
+  z-index: 1;
+}
+
+.screen--game a-scene {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.screen--menu {
+  background: radial-gradient(circle, #4caf50 0%, #2e7d32 60%, #174019 100%);
+  z-index: 200;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.menu-logo {
+  width: 120px;
+  height: 100px;
+  background-image: url('/game_images/babyFox.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-bottom: 15px;
+  animation: floatFox 4s ease-in-out infinite;
+}
+
+@keyframes floatFox {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+.game-title {
+  color: white;
+  font-size: 4em;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.game-subtitle {
+  color: white;
+  font-size: 1em;
+  font-weight: bold;
+  margin: 0 0 30px 0;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.btn-start {
+  padding: 20px 50px;
+  font-size: 1.8rem;
+  background-color: #ff8c00;
+  color: white;
+  border: 4px solid white;
+  border-radius: 15px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-weight: bold;
+  box-shadow: 0 8px 0 #cc7000;
+  transform: translateY(0);
+  transition: all 0.1s ease;
+}
+
+.btn-start:hover {
+  background-color: #ffa726;
+}
+
+.btn-start:active {
+  box-shadow: 0 2px 0 #cc7000;
+  transform: translateY(6px);
+}
+
+.screen--loading {
+  background: radial-gradient(circle, #4caf50 0%, #2e7d32 60%, #174019 100%);
+  z-index: 500;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+
+.fox-row {
+  position: relative;
+  width: 300px;
+  height: 80px;
+}
+
+.animal-fox {
+  position: absolute;
+  bottom: 0;
+  width: 80px;
+  height: 60px;
+  background-image: url('/game_images/babyFox.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  animation: runAcross 3s linear infinite;
+  opacity: 0;
+}
+
+.animal-fox:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.animal-fox:nth-child(2) {
+  animation-delay: 1s;
+}
+
+.animal-fox:nth-child(3) {
+  animation-delay: 2s;
+}
+
+@keyframes runAcross {
+  0% {
+    left: -100px;
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+.loading-text {
+  color: white;
+  font-size: 1.8em;
+  font-weight: bold;
+  letter-spacing: 2px;
+  animation: blink 2s infinite;
+  margin: 0;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.movement-instructions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  color: white;
+}
+
+.key-row {
+  display: flex;
+  gap: 15px;
+}
+
+.key {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  background-color: white;
+  color: #2e7d32;
+  border: 4px solid white;
+  border-radius: 12px;
+  font-size: 2em;
+  font-weight: bold;
+  box-shadow: 0 6px 0 #174019;
+}
+
+.instruction-text {
+  margin-top: 5px;
+  font-size: 1.2em;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+}
+
+.game-hud {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  pointer-events: none;
+}
+
+.timer-display {
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 10px 25px;
+  border-radius: 30px;
+  font-size: 2rem;
+  font-weight: bold;
+  border: 3px solid white;
+  min-width: 150px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.timer-low {
+  background: rgba(255, 0, 0, 0.7);
+  border-color: #ff3333;
+  animation: blink 1s infinite;
+  transform: scale(1.1);
+}
+
+/* --- WIN & LOSE --- */
+.screen--win,
+.screen--lose {
+  background: radial-gradient(circle, #4caf50 0%, #2e7d32 60%, #174019 100%);
+  z-index: 300;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.win-content,
+.lose-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  text-align: center;
+}
+
+.win-content h1,
+.lose-content h1 {
+  color: white;
+  font-size: 4em;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.win-content p,
+.lose-content p {
+  color: white;
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 0 0 30px 0;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.button-group {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.button-group button {
+  padding: 15px 35px;
+  font-size: 1.5rem;
+  background-color: #ff8c00;
+  color: white;
+  border: 4px solid white;
+  border-radius: 12px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-weight: bold;
+  box-shadow: 0 6px 0 #cc7000;
+  transform: translateY(0);
+  transition: all 0.1s ease;
+}
+
+.button-group button:hover {
+  background-color: #ffa726;
+}
+
+.button-group button:active {
+  box-shadow: 0 2px 0 #cc7000;
+  transform: translateY(4px);
+}
+
+.button-group .btn-secondary {
+  background-color: #757575;
+  box-shadow: 0 6px 0 #424242;
+}
+
+.button-group .btn-secondary:hover {
+  background-color: #9e9e9e;
+}
+
+.button-group .btn-secondary:active {
+  box-shadow: 0 2px 0 #424242;
+}
+</style>
