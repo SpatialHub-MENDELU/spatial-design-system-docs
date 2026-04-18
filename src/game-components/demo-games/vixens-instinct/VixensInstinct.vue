@@ -88,6 +88,7 @@ onMounted(async () => {
   await import('spatial-design-system/components/game/walk');
   await import('spatial-design-system/components/game/gameview');
   await import('spatial-design-system/components/game/npcWalk');
+  registerAframeComponents();
   document.addEventListener('fullscreenchange', handleFullScreenChange);
 
   try {
@@ -163,6 +164,23 @@ const addAllComponents = () => {
         'ammo-shape',
         'type: hull; offset: 0 0.6 0;'
       );
+
+      addComponent(
+        false,
+        'main-character',
+        'proximity-trigger',
+        'target: #baby; radius: 2.5; event: baby-found'
+      );
+      const foxEl = document.getElementById('main-character');
+      if (foxEl) {
+        foxEl.addEventListener(
+          'baby-found',
+          () => {
+            hasBaby.value = true;
+          },
+          { once: true }
+        );
+      }
       setTimeout(() => {
         addComponent(
           false,
@@ -179,7 +197,6 @@ const addAllComponents = () => {
       foxModelEl.addEventListener('model-loaded', initFox, { once: true });
     }
   }
-
   obstacles.dogs.forEach((dog) => {
     const dogContainerId = `dog-${dog.id}`;
     const dogContainerEl = document.querySelector(`#${dogContainerId}`);
@@ -224,7 +241,6 @@ const addAllComponents = () => {
     'type: hull; offset: 0 0 0'
   );
 };
-
 function addComponent(isClass, elementName, qualifiedName, value) {
   if (isClass) {
     const elements = document.querySelectorAll(elementName);
@@ -238,6 +254,44 @@ function addComponent(isClass, elementName, qualifiedName, value) {
     }
   }
 }
+
+function registerAframeComponents() {
+  if (
+    typeof AFRAME !== 'undefined' &&
+    !AFRAME.components['proximity-trigger']
+  ) {
+    AFRAME.registerComponent('proximity-trigger', {
+      schema: {
+        target: { type: 'selector' },
+        radius: { type: 'number', default: 1.5 },
+        event: { type: 'string', default: 'reached' },
+      },
+      init: function () {
+        this.targetWorldPos = new THREE.Vector3();
+        this.entityWorldPos = new THREE.Vector3();
+      },
+      tick: function () {
+        if (!this.data.target) return;
+
+        this.data.target.object3D.getWorldPosition(this.targetWorldPos);
+        this.el.object3D.getWorldPosition(this.entityWorldPos);
+
+        const distance = this.entityWorldPos.distanceTo(this.targetWorldPos);
+
+        if (distance < this.data.radius) {
+          this.el.emit(this.data.event);
+          this.el.removeAttribute('proximity-trigger');
+        }
+      },
+    });
+  }
+}
+
+const handleBabyReached = () => {
+  if (!hasBaby.value) {
+    hasBaby.value = true;
+  }
+};
 </script>
 
 <template>
@@ -509,9 +563,17 @@ function addComponent(isClass, elementName, qualifiedName, value) {
   opacity: 0;
 }
 
-.animal-fox:nth-child(1) { animation-delay: 0s; }
-.animal-fox:nth-child(2) { animation-delay: 1s; }
-.animal-fox:nth-child(3) { animation-delay: 2s; }
+.animal-fox:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.animal-fox:nth-child(2) {
+  animation-delay: 1s;
+}
+
+.animal-fox:nth-child(3) {
+  animation-delay: 2s;
+}
 
 @keyframes runAcross {
   0% {
