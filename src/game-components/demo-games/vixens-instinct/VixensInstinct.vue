@@ -224,7 +224,7 @@ const addAllComponents = () => {
         false,
         'main-character',
         'ammo-body',
-        'type: dynamic; angularFactor: 0 0 0; mass: 100; activationState: disableDeactivation'
+        'type: dynamic; angularFactor: 0 0 0; mass: 100; activationState: disableDeactivation; linearFactor: 1 0 1;'
       );
       addComponent(
         false,
@@ -311,7 +311,7 @@ const addAllComponents = () => {
     true,
     '.bush-obs-entity',
     'ammo-shape',
-    'type: hull; offset: 0 0 0'
+    'type: box; offset: 0 0 0'
   );
 };
 
