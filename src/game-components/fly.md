@@ -4,13 +4,16 @@ title: fly
 
 <script setup lang="ts">
   import { ref, onMounted } from "vue";
+  import SpaceDefender from './demo-games/space-defender/SpaceDefender.vue';
 
   const renderScene = ref(false);
 
   onMounted(async () => {
     try {
       // Here import Spatial Design System components that you need
-      await import("spatial-design-system/components/position.js");
+      // await import("spatial-design-system/components/game/fly.js");
+      // await import("spatial-design-system/components/game/gameview.js");
+      // await import("spatial-design-system/components/game/npcWalk.js");
       renderScene.value = true;
     } catch (e) {
       console.error(e);
@@ -19,6 +22,9 @@ title: fly
 </script>
 
 # {{ $frontmatter.title }}
+
+<SpaceDefender />
+
 The `fly` component defines the flying behavior of a character in a game. It allows customization of flying styles, including key bindings, speed settings, and flight types. The component also supports realistic flight dynamics through pitch and roll adjustments.
 
 ::: warning ⚠️ PHYSICS ENGINE
@@ -394,3 +400,23 @@ To fix this, set the `forwardOffsetAngle` to 90 (or -270) degrees to align the l
 >
 </a-entity>
 ```
+
+## Credits & 3D Models Attribution
+
+The project utilizes 3D assets from [Poly.pizza](https://poly.pizza/). Below is the attribution for each model used in the games.
+
+### Creative Commons Attribution (CC BY)
+*The following models require attribution to the original creator as per the [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) license.*
+
+| Model Name | Author |
+| :--- | :--- |
+| [**Earth**](https://poly.pizza/m/1I5ip-3VOfv), [**Venus**](https://poly.pizza/m/6V99ow0chMd), [**Moon**](https://poly.pizza/m/9OPocAqXM0u), [**Mars**](https://poly.pizza/m/5_IXgyZ8cz_) | Poly by Google |
+| [**Spaceship**](https://poly.pizza/m/5nWeu4IQXVX) | Liz Reddington |
+| [**Sun**](https://poly.pizza/m/7diieNtphvD) | Zoe XR |
+
+### Public Domain (CC0)
+*The following models are provided under the [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) license (Public Domain).*
+
+| Model Name                                            | Author  |
+|:------------------------------------------------------| :--- | 
+| [**Spaceship**](https://poly.pizza/m/uCeLfsdmNP), [**Planet**](https://poly.pizza/m/9g1aIbfR9Y), [**Planet**](https://poly.pizza/m/IVnmauIgWX)         | Quaternius |
