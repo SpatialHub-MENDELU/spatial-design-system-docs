@@ -128,9 +128,6 @@ const addAllComponents = () => {
   addComponent(false, 'ground', 'ammo-body', 'type: static;');
   addComponent(false, 'ground', 'ammo-shape', 'type: box;');
 
-  addComponent(true, '.trap-entity', 'ammo-body', 'type: static');
-  addComponent(true, '.trap-entity', 'ammo-shape', 'type: box');
-
   addComponent(true, '.static-collidable', 'ammo-body', 'type: static');
   addComponent(true, '.static-collidable', 'ammo-shape', 'type: box');
 
@@ -152,6 +149,7 @@ const addAllComponents = () => {
   const foxModelEl = document.querySelector('#main-character-model');
   if (foxModelEl) {
     const initFox = () => {
+      handleFoxDeath();
       addComponent(
         false,
         'main-character',
@@ -171,6 +169,7 @@ const addAllComponents = () => {
         'proximity-trigger',
         'target: #baby; radius: 2.5; event: baby-found'
       );
+      addComponent(false, 'main-character', 'trap-manager', '');
       const foxEl = document.getElementById('main-character');
       if (foxEl) {
         foxEl.addEventListener(
@@ -241,6 +240,7 @@ const addAllComponents = () => {
     'type: hull; offset: 0 0 0'
   );
 };
+
 function addComponent(isClass, elementName, qualifiedName, value) {
   if (isClass) {
     const elements = document.querySelectorAll(elementName);
@@ -285,11 +285,62 @@ function registerAframeComponents() {
       },
     });
   }
+
+  if (typeof AFRAME !== 'undefined' && !AFRAME.components['trap-manager']) {
+    AFRAME.registerComponent('trap-manager', {
+      init: function () {
+        this.traps = document.querySelectorAll('.trap-entity');
+        this.foxPos = new THREE.Vector3();
+        this.trapPos = new THREE.Vector3();
+
+        this.triggerDistance = 0.8;
+
+        this.isDead = false;
+      },
+
+      tick: function () {
+        if (this.isDead || !this.traps.length) return;
+
+        this.el.object3D.getWorldPosition(this.foxPos);
+
+        for (let i = 0; i < this.traps.length; i++) {
+          let trap = this.traps[i];
+          trap.object3D.getWorldPosition(this.trapPos);
+
+          let dx = this.foxPos.x - this.trapPos.x;
+          let dz = this.foxPos.z - this.trapPos.z;
+          let distance = Math.sqrt(dx * dx + dz * dz);
+
+          if (distance < this.triggerDistance) {
+            this.isDead = true;
+            this.el.emit('fox-death');
+            break;
+          }
+        }
+      },
+    });
+  }
 }
 
 const handleBabyReached = () => {
   if (!hasBaby.value) {
     hasBaby.value = true;
+  }
+};
+
+const handleFoxDeath = () => {
+  const foxEl = document.getElementById('main-character');
+  const foxModelEl = document.querySelector('#main-character-model');
+
+  if (foxEl && foxModelEl) {
+    foxEl.addEventListener('fox-death', () => {
+      foxEl.removeAttribute('walk');
+      foxEl.setAttribute('ammo-body', 'type: static');
+      foxModelEl.setAttribute(
+        'animation-mixer',
+        'clip: Death; loop: once; clampWhenFinished: true'
+      );
+    });
   }
 };
 </script>
