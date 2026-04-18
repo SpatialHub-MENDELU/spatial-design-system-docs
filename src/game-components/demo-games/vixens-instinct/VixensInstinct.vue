@@ -124,6 +124,48 @@ const startGame = async () => {
   }, 3000);
 };
 
+const restartGame = () => {
+  hasBaby.value = false;
+  putBaby.value = false;
+  gameState.value = GameStep.Start;
+  renderScene.value = false;
+
+  nextTick(() => {
+    renderScene.value = true;
+    startGame();
+  });
+};
+
+const quitGame = () => {
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+  }
+  gameState.value = GameStep.Start;
+  renderScene.value = false;
+  hasBaby.value = false;
+  putBaby.value = false;
+};
+
+const handleFoxDeath = () => {
+  const foxEl = document.getElementById('main-character');
+  const foxModelEl = document.querySelector('#main-character-model');
+
+  if (foxEl && foxModelEl) {
+    foxEl.addEventListener('fox-death', () => {
+      foxEl.removeAttribute('walk');
+      foxEl.setAttribute('ammo-body', 'type: static');
+      foxModelEl.setAttribute(
+        'animation-mixer',
+        'clip: Death; loop: once; clampWhenFinished: true'
+      );
+
+      setTimeout(() => {
+        gameState.value = GameStep.Lose;
+      }, 2500);
+    });
+  }
+};
+
 const addAllComponents = () => {
   addComponent(false, 'ground', 'ammo-body', 'type: static;');
   addComponent(false, 'ground', 'ammo-shape', 'type: box;');
@@ -150,6 +192,7 @@ const addAllComponents = () => {
   if (foxModelEl) {
     const initFox = () => {
       handleFoxDeath();
+
       addComponent(
         false,
         'main-character',
@@ -171,6 +214,8 @@ const addAllComponents = () => {
       );
       addComponent(false, 'main-character', 'trap-manager', '');
       addComponent(false, 'main-character', 'dog-manager', '');
+      addComponent(false, 'main-character', 'finish-manager', '');
+
       const foxEl = document.getElementById('main-character');
       if (foxEl) {
         foxEl.addEventListener(
@@ -197,6 +242,7 @@ const addAllComponents = () => {
       foxModelEl.addEventListener('model-loaded', initFox, { once: true });
     }
   }
+
   obstacles.dogs.forEach((dog) => {
     const dogContainerId = `dog-${dog.id}`;
     const dogContainerEl = document.querySelector(`#${dogContainerId}`);
@@ -293,15 +339,11 @@ function registerAframeComponents() {
         this.traps = document.querySelectorAll('.trap-entity');
         this.foxPos = new THREE.Vector3();
         this.trapPos = new THREE.Vector3();
-
-        this.triggerDistance = 0.8;
-
+        this.triggerDistance = 1.0;
         this.isDead = false;
       },
-
       tick: function () {
         if (this.isDead || !this.traps.length) return;
-
         this.el.object3D.getWorldPosition(this.foxPos);
 
         for (let i = 0; i < this.traps.length; i++) {
@@ -314,6 +356,7 @@ function registerAframeComponents() {
 
           if (distance < this.triggerDistance) {
             this.isDead = true;
+            console.log('Fox stepped on a trap!');
             this.el.emit('fox-death');
             break;
           }
@@ -321,69 +364,82 @@ function registerAframeComponents() {
       },
     });
   }
-    if (typeof AFRAME !== 'undefined' && !AFRAME.components['dog-manager']) {
-        AFRAME.registerComponent('dog-manager', {
-            init: function () {
-                this.dogs = document.querySelectorAll('.dog-entity');
-                this.foxPos = new THREE.Vector3();
-                this.dogPos = new THREE.Vector3();
-                this.triggerDistance = 1.8;
-                this.isDead = false;
-            },
 
-            tick: function () {
-                if (this.isDead || !this.dogs.length) return;
+  if (typeof AFRAME !== 'undefined' && !AFRAME.components['dog-manager']) {
+    AFRAME.registerComponent('dog-manager', {
+      init: function () {
+        this.dogs = document.querySelectorAll('.dog-entity');
+        this.foxPos = new THREE.Vector3();
+        this.dogPos = new THREE.Vector3();
+        this.triggerDistance = 1.8;
+        this.isDead = false;
+      },
+      tick: function () {
+        if (this.isDead || !this.dogs.length) return;
+        this.el.object3D.getWorldPosition(this.foxPos);
 
-                this.el.object3D.getWorldPosition(this.foxPos);
+        for (let i = 0; i < this.dogs.length; i++) {
+          let dog = this.dogs[i];
+          dog.object3D.getWorldPosition(this.dogPos);
 
-                for (let i = 0; i < this.dogs.length; i++) {
-                    let dog = this.dogs[i];
-                    dog.object3D.getWorldPosition(this.dogPos);
+          let dx = this.foxPos.x - this.dogPos.x;
+          let dz = this.foxPos.z - this.dogPos.z;
+          let distance = Math.sqrt(dx * dx + dz * dz);
 
-                    let dx = this.foxPos.x - this.dogPos.x;
-                    let dz = this.foxPos.z - this.dogPos.z;
-                    let distance = Math.sqrt(dx * dx + dz * dz);
+          if (distance < this.triggerDistance) {
+            this.isDead = true;
+            console.log('Fox was caught by a dog!');
 
-                    if (distance < this.triggerDistance) {
-                        this.isDead = true;
+            dog.removeAttribute('npc-walk');
+            dog.setAttribute('ammo-body', 'type: static');
 
-                        dog.removeAttribute('npc-walk');
+            const dogModel = dog.querySelector('.dog-model');
+            if (dogModel) {
+              dogModel.setAttribute(
+                'animation-mixer',
+                'clip: Attack; loop: once; clampWhenFinished: true'
+              );
+            }
 
-                        const dogModel = dog.querySelector('.dog-model');
-                        if (dogModel) {
-                            dogModel.setAttribute('animation-mixer', 'clip: Attack; loop: once; clampWhenFinished: true');
-                        }
-
-                        this.el.emit('fox-death');
-                        break;
-                    }
-                }
-            },
-        });
-    }
-}
-
-const handleBabyReached = () => {
-  if (!hasBaby.value) {
-    hasBaby.value = true;
-  }
-};
-
-const handleFoxDeath = () => {
-  const foxEl = document.getElementById('main-character');
-  const foxModelEl = document.querySelector('#main-character-model');
-
-  if (foxEl && foxModelEl) {
-    foxEl.addEventListener('fox-death', () => {
-      foxEl.removeAttribute('walk');
-      foxEl.setAttribute('ammo-body', 'type: static');
-      foxModelEl.setAttribute(
-        'animation-mixer',
-        'clip: Death; loop: once; clampWhenFinished: true'
-      );
+            this.el.emit('fox-death');
+            break;
+          }
+        }
+      },
     });
   }
-};
+
+  if (typeof AFRAME !== 'undefined' && !AFRAME.components['finish-manager']) {
+    AFRAME.registerComponent('finish-manager', {
+      init: function () {
+        this.foxPos = new THREE.Vector3();
+        this.targetPos = new THREE.Vector3(-10, 0, 3.2);
+        this.triggerDistance = 2.0;
+        this.finished = false;
+      },
+      tick: function () {
+        if (this.finished || !hasBaby.value) return;
+
+        this.el.object3D.getWorldPosition(this.foxPos);
+
+        let dx = this.foxPos.x - this.targetPos.x;
+        let dz = this.foxPos.z - this.targetPos.z;
+        let distance = Math.sqrt(dx * dx + dz * dz);
+
+        if (distance < this.triggerDistance) {
+          this.finished = true;
+
+          putBaby.value = true;
+          console.log('Baby is safely returned!');
+
+          setTimeout(() => {
+            gameState.value = GameStep.Win;
+          }, 3000);
+        }
+      },
+    });
+  }
+}
 </script>
 
 <template>
@@ -399,6 +455,28 @@ const handleFoxDeath = () => {
         <div class="animal-fox"></div>
         <div class="animal-fox"></div>
         <div class="loading-text">Loading..</div>
+      </div>
+    </div>
+
+    <div v-if="gameState === GameStep.Win" class="screen screen--win">
+      <div class="win-content">
+        <h1>Mission Accomplished!</h1>
+        <p>The baby is safe in the den.</p>
+        <div class="button-group">
+          <button @click="restartGame">PLAY AGAIN</button>
+          <button @click="quitGame" class="btn-secondary">QUIT</button>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="gameState === GameStep.Lose" class="screen screen--lose">
+      <div class="lose-content">
+        <h1>Game Over</h1>
+        <p>The wilderness can be unforgiving.</p>
+        <div class="button-group">
+          <button @click="restartGame">TRY AGAIN</button>
+          <button @click="quitGame" class="btn-secondary">QUIT</button>
+        </div>
       </div>
     </div>
 
@@ -441,7 +519,7 @@ const handleFoxDeath = () => {
         <a-entity
           :gltf-model="FoxModelSrc"
           :visible="putBaby"
-          position="-10 0 4.2"
+          position="-8.5 0 5.2"
           scale="0.25 0.25 0.25"
           animation-mixer="clip: Idle_2_HeadLow"
         ></a-entity>
@@ -455,13 +533,14 @@ const handleFoxDeath = () => {
           scale="0.5 0.5 0.5"
           animation="property: position; dir: alternate; dur: 400; easing: easeInOutSine; loop: true; to: 10.6 3.1 0"
         ></a-entity>
+
         <a-entity
           id="getBabySpot_2"
           :visible="hasBaby"
           :gltf-model="DirectionArrowModelSrc"
-          position="-10 2.4 3.2"
+          position="-8.5 3 4.2"
           rotation="0 -80 -90"
-          animation="property: position; dir: alternate; dur: 400; easing: easeInOutSine; loop: true; to: -10 2.7 3.2"
+          animation="property: position; dir: alternate; dur: 400; easing: easeInOutSine; loop: true; to: -8.5 3.4 4.2"
         ></a-entity>
 
         <a-entity
@@ -621,20 +700,54 @@ const handleFoxDeath = () => {
   justify-content: center;
   align-items: center;
   color: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
 }
 
 .screen--menu {
   background-color: #2e7d32;
+  z-index: 200;
 }
 
 .screen--loading {
   background-color: #d9f6ff;
   z-index: 500;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+}
+
+.screen--game {
+  z-index: 1;
+}
+
+.screen--win {
+  background-color: rgba(46, 125, 50, 0.9);
+  z-index: 300;
+}
+
+.screen--lose {
+  background-color: rgba(180, 40, 40, 0.9);
+  z-index: 300;
+}
+
+.win-content,
+.lose-content {
+  text-align: center;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 40px;
+  border-radius: 20px;
+  border: 4px solid #ff8c00;
+}
+
+.lose-content {
+  border-color: #ff3333;
+}
+
+.button-group {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 .forest-loading {
@@ -706,33 +819,28 @@ const handleFoxDeath = () => {
   }
 }
 
-.screen--game {
-  display: block;
-}
-
-.screen--game a-scene {
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
 button {
   padding: 15px 30px;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   background-color: #ff8c00;
   color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  margin-top: 20px;
   text-transform: uppercase;
   font-weight: bold;
+  transition: background-color 0.2s;
 }
 
 button:hover {
   background-color: #ffa726;
+}
+
+.btn-secondary {
+  background-color: #555;
+}
+
+.btn-secondary:hover {
+  background-color: #777;
 }
 </style>
