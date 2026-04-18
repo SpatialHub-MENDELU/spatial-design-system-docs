@@ -7,12 +7,9 @@ import {
   JupiterModelSrc,
   MarsModelSrc,
   MercuryModelSrc,
-  astronautModel,
-  NeptuneModelSrc,
   SaturnModelSrc,
   SpaceshipModelSrc,
   SunModelSrc,
-  UranusModelSrc,
   VenusModelSrc,
 } from '../constants';
 
