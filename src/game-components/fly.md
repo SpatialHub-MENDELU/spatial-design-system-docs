@@ -403,18 +403,20 @@ To fix this, set the `forwardOffsetAngle` to 90 (or -270) degrees to align the l
 
 ## Credits & 3D Models Attribution
 
-The games use various 3D models downloaded from [Poly.pizza](https://poly.pizza/). We would like to thank the creators for making their work available.
+The project utilizes 3D assets from [Poly.pizza](https://poly.pizza/). Below is the attribution for each model used in the games.
 
 ### Creative Commons Attribution (CC BY)
+*The following models require attribution to the original creator as per the [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) license.*
 
-| Model | Author | License |
-| :--- | :--- | :--- |
-| **Earth, Mercury, Mars, Venus** | Poly By Google | [CC BY](https://creativecommons.org/licenses/by/3.0/) |
-| **Spaceship** | Liz Reddington | [CC BY](https://creativecommons.org/licenses/by/3.0/) |
-| **Sun** | Zoe XR | [CC BY](https://creativecommons.org/licenses/by/3.0/) |
+| Model Name | Author |
+| :--- | :--- |
+| [**Earth**](https://poly.pizza/m/1I5ip-3VOfv), [**Venus**](https://poly.pizza/m/6V99ow0chMd), [**Moon**](https://poly.pizza/m/9OPocAqXM0u), [**Mars**](https://poly.pizza/m/5_IXgyZ8cz_) | Poly by Google |
+| [**Spaceship**](https://poly.pizza/m/5nWeu4IQXVX) | Liz Reddington |
+| [**Sun**](https://poly.pizza/m/7diieNtphvD) | Zoe XR |
 
 ### Public Domain (CC0)
+*The following models are provided under the [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) license (Public Domain).*
 
-| Model | Author | License |
-| :--- | :--- | :--- |
-| **Spaceship Enemy, Saturn, Jupiter** | Quaternius | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) |
+| Model Name                                            | Author  |
+|:------------------------------------------------------| :--- | 
+| [**Spaceship**](https://poly.pizza/m/uCeLfsdmNP), [**Planet**](https://poly.pizza/m/9g1aIbfR9Y), [**Planet**](https://poly.pizza/m/IVnmauIgWX)         | Quaternius |
