@@ -448,7 +448,7 @@ function registerAframeComponents() {
       <div class="menu-content">
         <div class="menu-logo"></div>
         <h1 class="game-title">Vixen's Instinct</h1>
-        <p class="game-subtitle">Rescue the cub</p>
+        <p class="game-subtitle">Rescue your cub from the hunter's dogs</p>
         <button @click="startGame" class="btn-start">START GAME</button>
       </div>
     </div>
@@ -491,7 +491,7 @@ function registerAframeComponents() {
     <div v-if="gameState === GameStep.Lose" class="screen screen--lose">
       <div class="lose-content">
         <h1>Game Over</h1>
-        <p>The wilderness can be unforgiving.</p>
+        <p>The hunter's dogs caught you.</p>
         <div class="button-group">
           <button @click="restartGame">TRY AGAIN</button>
           <button @click="quitGame" class="btn-secondary">QUIT</button>
@@ -787,7 +787,7 @@ function registerAframeComponents() {
 
 .game-subtitle {
   color: white;
-  font-size: 1.5em;
+  font-size: 1em;
   font-weight: bold;
   margin: 0 0 30px 0;
   letter-spacing: 2px;
@@ -937,5 +937,88 @@ function registerAframeComponents() {
   font-size: 1.2em;
   font-weight: bold;
   letter-spacing: 1.5px;
+}
+
+/* --- WIN & LOSE --- */
+.screen--win,
+.screen--lose {
+  background: radial-gradient(circle, #4caf50 0%, #2e7d32 60%, #174019 100%);
+  z-index: 300;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.win-content,
+.lose-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  text-align: center;
+}
+
+.win-content h1,
+.lose-content h1 {
+  color: white;
+  font-size: 4em;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.win-content p,
+.lose-content p {
+  color: white;
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 0 0 30px 0;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.button-group {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.button-group button {
+  padding: 15px 35px;
+  font-size: 1.5rem;
+  background-color: #ff8c00;
+  color: white;
+  border: 4px solid white;
+  border-radius: 12px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-weight: bold;
+  box-shadow: 0 6px 0 #cc7000;
+  transform: translateY(0);
+  transition: all 0.1s ease;
+}
+
+.button-group button:hover {
+  background-color: #ffa726;
+}
+
+.button-group button:active {
+  box-shadow: 0 2px 0 #cc7000;
+  transform: translateY(4px);
+}
+
+.button-group .btn-secondary {
+  background-color: #757575;
+  box-shadow: 0 6px 0 #424242;
+}
+
+.button-group .btn-secondary:hover {
+  background-color: #9e9e9e;
+}
+
+.button-group .btn-secondary:active {
+  box-shadow: 0 2px 0 #424242;
 }
 </style>
