@@ -1,3 +1,16 @@
+/**
+ * ============================================================================
+ * 3D MODELS LICENSING
+ * ============================================================================
+ * * [CC BY - Creative Commons Attribution]
+ * - Earth, Mercury, Mars, Venus - by Poly By Google
+ * - Spaceship                     - by Liz Reddington
+ * - Sun                           - by Zoe XR
+ * * [CC0 - Public Domain]
+ * - Spaceship Enemy, Saturn, Jupiter - by Quaternius
+ * ============================================================================
+ */
+
 export const SpaceshipModelSrc =
     '../../public/glb_models/game_components/fly/spaceship.glb';
 export const SpaceshipEnemyModelSrc =
