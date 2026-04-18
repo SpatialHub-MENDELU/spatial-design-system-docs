@@ -450,11 +450,26 @@ function registerAframeComponents() {
     </div>
 
     <div v-if="isLoading" class="screen screen--loading">
-      <div class="forest-loading">
-        <div class="animal-fox"></div>
-        <div class="animal-fox"></div>
-        <div class="animal-fox"></div>
+      <div class="loading-container">
+        <div class="fox-row">
+          <div class="animal-fox"></div>
+          <div class="animal-fox"></div>
+          <div class="animal-fox"></div>
+        </div>
+
         <div class="loading-text">Loading..</div>
+
+        <div class="movement-instructions">
+          <div class="key-row">
+            <div class="key">W</div>
+          </div>
+          <div class="key-row">
+            <div class="key">A</div>
+            <div class="key">S</div>
+            <div class="key">D</div>
+          </div>
+          <div class="instruction-text">USE WASD TO MOVE</div>
+        </div>
       </div>
     </div>
 
@@ -714,6 +729,14 @@ function registerAframeComponents() {
 .screen--loading {
   background-color: #d9f6ff;
   z-index: 500;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .screen--game {
@@ -750,15 +773,22 @@ function registerAframeComponents() {
   margin-top: 20px;
 }
 
-.forest-loading {
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+
+.fox-row {
   position: relative;
   width: 300px;
-  height: 150px;
+  height: 80px;
 }
 
 .animal-fox {
   position: absolute;
-  bottom: 40px;
+  bottom: 0;
   width: 80px;
   height: 60px;
   background-image: url('/game_images/babyFox.png');
@@ -798,12 +828,8 @@ function registerAframeComponents() {
 }
 
 .loading-text {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  text-align: center;
   color: #2e7d32;
-  font-size: 1.5em;
+  font-size: 1.8em;
   font-weight: bold;
   letter-spacing: 2px;
   animation: blink 2s infinite;
@@ -817,6 +843,41 @@ function registerAframeComponents() {
   50% {
     opacity: 0.4;
   }
+}
+
+.movement-instructions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  color: #2e7d32;
+}
+
+.key-row {
+  display: flex;
+  gap: 15px;
+}
+
+.key {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  background-color: white;
+  border: 4px solid #2e7d32;
+  border-radius: 12px;
+  font-size: 2em;
+  font-weight: bold;
+  box-shadow: 0 6px 0 #1a5321;
+}
+
+.instruction-text {
+  margin-top: 5px;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 button {
