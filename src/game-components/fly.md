@@ -400,3 +400,21 @@ To fix this, set the `forwardOffsetAngle` to 90 (or -270) degrees to align the l
 >
 </a-entity>
 ```
+
+## Credits & 3D Models Attribution
+
+The games use various 3D models downloaded from [Poly.pizza](https://poly.pizza/). We would like to thank the creators for making their work available.
+
+### Creative Commons Attribution (CC BY)
+
+| Model | Author | License |
+| :--- | :--- | :--- |
+| **Earth, Mercury, Mars, Venus** | Poly By Google | [CC BY](https://creativecommons.org/licenses/by/3.0/) |
+| **Spaceship** | Liz Reddington | [CC BY](https://creativecommons.org/licenses/by/3.0/) |
+| **Sun** | Zoe XR | [CC BY](https://creativecommons.org/licenses/by/3.0/) |
+
+### Public Domain (CC0)
+
+| Model | Author | License |
+| :--- | :--- | :--- |
+| **Spaceship Enemy, Saturn, Jupiter** | Quaternius | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) |
