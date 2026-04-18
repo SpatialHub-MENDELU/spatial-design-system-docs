@@ -170,6 +170,7 @@ const addAllComponents = () => {
         'target: #baby; radius: 2.5; event: baby-found'
       );
       addComponent(false, 'main-character', 'trap-manager', '');
+      addComponent(false, 'main-character', 'dog-manager', '');
       const foxEl = document.getElementById('main-character');
       if (foxEl) {
         foxEl.addEventListener(
@@ -320,6 +321,46 @@ function registerAframeComponents() {
       },
     });
   }
+    if (typeof AFRAME !== 'undefined' && !AFRAME.components['dog-manager']) {
+        AFRAME.registerComponent('dog-manager', {
+            init: function () {
+                this.dogs = document.querySelectorAll('.dog-entity');
+                this.foxPos = new THREE.Vector3();
+                this.dogPos = new THREE.Vector3();
+                this.triggerDistance = 1.8;
+                this.isDead = false;
+            },
+
+            tick: function () {
+                if (this.isDead || !this.dogs.length) return;
+
+                this.el.object3D.getWorldPosition(this.foxPos);
+
+                for (let i = 0; i < this.dogs.length; i++) {
+                    let dog = this.dogs[i];
+                    dog.object3D.getWorldPosition(this.dogPos);
+
+                    let dx = this.foxPos.x - this.dogPos.x;
+                    let dz = this.foxPos.z - this.dogPos.z;
+                    let distance = Math.sqrt(dx * dx + dz * dz);
+
+                    if (distance < this.triggerDistance) {
+                        this.isDead = true;
+
+                        dog.removeAttribute('npc-walk');
+
+                        const dogModel = dog.querySelector('.dog-model');
+                        if (dogModel) {
+                            dogModel.setAttribute('animation-mixer', 'clip: Attack; loop: once; clampWhenFinished: true');
+                        }
+
+                        this.el.emit('fox-death');
+                        break;
+                    }
+                }
+            },
+        });
+    }
 }
 
 const handleBabyReached = () => {
