@@ -64,8 +64,32 @@ const FoxCharacter = {
 };
 
 const LevelSettings = {
-  time: 75,
+  time: 30,
   criticalTime: 10,
+};
+
+const timeLeft = ref(LevelSettings.time);
+let timerInterval = null;
+
+const startTimer = () => {
+  stopTimer();
+  timeLeft.value = LevelSettings.time;
+
+  timerInterval = setInterval(() => {
+    timeLeft.value--;
+
+    if (timeLeft.value <= 0) {
+      stopTimer();
+      gameState.value = GameStep.Lose;
+    }
+  }, 1000);
+};
+
+const stopTimer = () => {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
 };
 
 const gameState = ref(GameStep.Start);
@@ -120,6 +144,7 @@ const startGame = async () => {
     setTimeout(() => {
       addAllComponents();
       isLoading.value = false;
+      startTimer();
     }, 3000);
   }, 3000);
 };
@@ -144,6 +169,7 @@ const quitGame = () => {
   renderScene.value = false;
   hasBaby.value = false;
   putBaby.value = false;
+  stopTimer();
 };
 
 const handleFoxDeath = () => {
@@ -161,6 +187,7 @@ const handleFoxDeath = () => {
 
       setTimeout(() => {
         gameState.value = GameStep.Lose;
+        stopTimer();
       }, 2500);
     });
   }
@@ -428,9 +455,9 @@ function registerAframeComponents() {
 
         if (distance < this.triggerDistance) {
           this.finished = true;
+          stopTimer();
 
           putBaby.value = true;
-          console.log('Baby is safely returned!');
 
           setTimeout(() => {
             gameState.value = GameStep.Win;
@@ -500,6 +527,11 @@ function registerAframeComponents() {
     </div>
 
     <div v-if="gameState === GameStep.Game" class="screen screen--game">
+      <div class="game-hud">
+        <div class="timer-display" :class="{ 'timer-low': timeLeft <= 10 }">
+          TIME: {{ timeLeft }}s
+        </div>
+      </div>
       <a-scene v-if="renderScene" physics="driver: ammo;">
         <a-entity
           camera="fov: 40"
@@ -937,6 +969,35 @@ function registerAframeComponents() {
   font-size: 1.2em;
   font-weight: bold;
   letter-spacing: 1.5px;
+}
+
+.game-hud {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  pointer-events: none;
+}
+
+.timer-display {
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 10px 25px;
+  border-radius: 30px;
+  font-size: 2rem;
+  font-weight: bold;
+  border: 3px solid white;
+  min-width: 150px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.timer-low {
+  background: rgba(255, 0, 0, 0.7);
+  border-color: #ff3333;
+  animation: blink 1s infinite;
+  transform: scale(1.1);
 }
 
 /* --- WIN & LOSE --- */
