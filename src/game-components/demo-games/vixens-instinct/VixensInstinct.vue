@@ -445,8 +445,12 @@ function registerAframeComponents() {
 <template>
   <div class="game-wrapper" ref="gameWrapperRef" v-if="isMounted">
     <div v-if="gameState === GameStep.Start" class="screen screen--menu">
-      <h1>Vixen's Instinct</h1>
-      <button @click="startGame">START GAME</button>
+      <div class="menu-content">
+        <div class="menu-logo"></div>
+        <h1 class="game-title">Vixen's Instinct</h1>
+        <p class="game-subtitle">Rescue the cub</p>
+        <button @click="startGame" class="btn-start">START GAME</button>
+      </div>
     </div>
 
     <div v-if="isLoading" class="screen screen--loading">
@@ -721,13 +725,101 @@ function registerAframeComponents() {
   z-index: 10;
 }
 
+.screen--game {
+  z-index: 1;
+}
+
+.screen--game a-scene {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
 .screen--menu {
-  background-color: #2e7d32;
+  background: radial-gradient(circle, #4caf50 0%, #2e7d32 60%, #174019 100%);
   z-index: 200;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.menu-logo {
+  width: 120px;
+  height: 100px;
+  background-image: url('/game_images/babyFox.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-bottom: 15px;
+  animation: floatFox 4s ease-in-out infinite;
+}
+
+@keyframes floatFox {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+.game-title {
+  color: white;
+  font-size: 4em;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.game-subtitle {
+  color: white;
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 0 0 30px 0;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.btn-start {
+  padding: 20px 50px;
+  font-size: 1.8rem;
+  background-color: #ff8c00;
+  color: white;
+  border: 4px solid white;
+  border-radius: 15px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-weight: bold;
+  box-shadow: 0 8px 0 #cc7000;
+  transform: translateY(0);
+  transition: all 0.1s ease;
+}
+
+.btn-start:hover {
+  background-color: #ffa726;
+}
+
+.btn-start:active {
+  box-shadow: 0 2px 0 #cc7000;
+  transform: translateY(6px);
 }
 
 .screen--loading {
-  background-color: #d9f6ff;
+  background: radial-gradient(circle, #4caf50 0%, #2e7d32 60%, #174019 100%);
   z-index: 500;
   position: absolute;
   top: 0;
@@ -737,40 +829,6 @@ function registerAframeComponents() {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.screen--game {
-  z-index: 1;
-}
-
-.screen--win {
-  background-color: rgba(46, 125, 50, 0.9);
-  z-index: 300;
-}
-
-.screen--lose {
-  background-color: rgba(180, 40, 40, 0.9);
-  z-index: 300;
-}
-
-.win-content,
-.lose-content {
-  text-align: center;
-  background: rgba(0, 0, 0, 0.6);
-  padding: 40px;
-  border-radius: 20px;
-  border: 4px solid #ff8c00;
-}
-
-.lose-content {
-  border-color: #ff3333;
-}
-
-.button-group {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  margin-top: 20px;
 }
 
 .loading-container {
@@ -828,11 +886,12 @@ function registerAframeComponents() {
 }
 
 .loading-text {
-  color: #2e7d32;
+  color: white;
   font-size: 1.8em;
   font-weight: bold;
   letter-spacing: 2px;
   animation: blink 2s infinite;
+  margin: 0;
 }
 
 @keyframes blink {
@@ -850,7 +909,7 @@ function registerAframeComponents() {
   flex-direction: column;
   align-items: center;
   gap: 15px;
-  color: #2e7d32;
+  color: white;
 }
 
 .key-row {
@@ -865,43 +924,18 @@ function registerAframeComponents() {
   width: 60px;
   height: 60px;
   background-color: white;
-  border: 4px solid #2e7d32;
+  color: #2e7d32;
+  border: 4px solid white;
   border-radius: 12px;
   font-size: 2em;
   font-weight: bold;
-  box-shadow: 0 6px 0 #1a5321;
+  box-shadow: 0 6px 0 #174019;
 }
 
 .instruction-text {
   margin-top: 5px;
   font-size: 1.2em;
   font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-button {
-  padding: 15px 30px;
-  font-size: 1.2rem;
-  background-color: #ff8c00;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  text-transform: uppercase;
-  font-weight: bold;
-  transition: background-color 0.2s;
-}
-
-button:hover {
-  background-color: #ffa726;
-}
-
-.btn-secondary {
-  background-color: #555;
-}
-
-.btn-secondary:hover {
-  background-color: #777;
+  letter-spacing: 1.5px;
 }
 </style>
