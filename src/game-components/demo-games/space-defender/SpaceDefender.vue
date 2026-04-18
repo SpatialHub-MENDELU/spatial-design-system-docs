@@ -643,22 +643,6 @@ const handleEnemyHit = (enemyId: number) => {
           position="0 -30 350"
           scale="40 40 40"
         ></a-entity>
-
-        <!--          <a-entity-->
-        <!--              :gltf-model="UranusModelSrc"-->
-        <!--              ammo-body="type: static;"-->
-        <!--              ammo-shape="type: hull;"-->
-        <!--              position="0 30 500"-->
-        <!--              scale="80 80 80"-->
-        <!--          ></a-entity>-->
-
-        <!--          <a-entity-->
-        <!--              :gltf-model="NeptuneModelSrc"-->
-        <!--              ammo-body="type: static;"-->
-        <!--              ammo-shape="type: hull;"-->
-        <!--              position="0 30 -1250"-->
-        <!--              scale="1.9 1.9 1.9"-->
-        <!--          ></a-entity>-->
       </a-scene>
     </div>
   </div>
