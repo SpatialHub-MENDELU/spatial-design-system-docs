@@ -135,9 +135,7 @@ const startGame = async () => {
   setTimeout(() => {
     setTimeout(() => {
       addAllComponents();
-      isLoading.value = false;
-      startTimer();
-    }, 3000);
+    }, 1000);
   }, 3000);
 };
 
@@ -209,21 +207,21 @@ const addAllComponents = () => {
 
   const foxModelEl = document.querySelector('#main-character-model');
   if (foxModelEl) {
+    addComponent(
+      false,
+      'main-character',
+      'ammo-body',
+      'type: dynamic; angularFactor: 0 0 0; mass: 100; activationState: disableDeactivation; linearFactor: 1 0 1;'
+    );
+    addComponent(
+      false,
+      'main-character-model',
+      'ammo-shape',
+      'type: hull; offset: 0 0.6 0;'
+    );
+
     const initFox = () => {
       handleFoxDeath();
-
-      addComponent(
-        false,
-        'main-character',
-        'ammo-body',
-        'type: dynamic; angularFactor: 0 0 0; mass: 100; activationState: disableDeactivation; linearFactor: 1 0 1;'
-      );
-      addComponent(
-        false,
-        'main-character-model',
-        'ammo-shape',
-        'type: hull; offset: 0 0.6 0;'
-      );
 
       addComponent(
         false,
@@ -252,7 +250,7 @@ const addAllComponents = () => {
           'walk',
           `speed: ${FoxCharacter.speed}; sprintSpeed: ${FoxCharacter.sprintSpeed}; turnType: stepTurnDiagonal; rotationSpeed: 650; walkClipName: Walk; sprintClipName: Gallop; idleClipName: Idle;`
         );
-      }, 50);
+      }, 2000);
     };
 
     if (foxModelEl.getObject3D('mesh')) {
@@ -270,16 +268,25 @@ const addAllComponents = () => {
       ? dogContainerEl.querySelector('a-entity')
       : null;
 
+    addComponent(
+      false,
+      dogContainerId,
+      'ammo-body',
+      'type: dynamic; angularFactor: 0 0 0; mass: 500; activationState: disableDeactivation'
+    );
+    dogModelEl.setAttribute('ammo-shape', 'type: hull; offset: 0 0.8 0.3');
+  })
+
+  obstacles.dogs.forEach((dog) => {
+    const dogContainerId = `dog-${dog.id}`;
+    const dogContainerEl = document.querySelector(`#${dogContainerId}`);
+
+    const dogModelEl = dogContainerEl
+      ? dogContainerEl.querySelector('a-entity')
+      : null;
+
     if (dogModelEl) {
       const initDog = () => {
-        addComponent(
-          false,
-          dogContainerId,
-          'ammo-body',
-          'type: dynamic; angularFactor: 0 0 0; mass: 500; activationState: disableDeactivation'
-        );
-        dogModelEl.setAttribute('ammo-shape', 'type: hull; offset: 0 0.8 0.3');
-
         setTimeout(() => {
           addComponent(
             false,
@@ -287,7 +294,9 @@ const addAllComponents = () => {
             'npc-walk',
             `points: ${dog.points}; speed: 4; pauseAtPoints: 1; slowDownRadius: 0.5;`
           );
-        }, 50);
+          isLoading.value = false;
+          startTimer();
+        }, 2000);
       };
 
       if (dogModelEl.getObject3D('mesh')) {
@@ -303,7 +312,7 @@ const addAllComponents = () => {
     true,
     '.bush-obs-entity',
     'ammo-shape',
-    'type: box; offset: 0 0 0'
+    'type: box; offset: 0 0 0;'
   );
 };
 
