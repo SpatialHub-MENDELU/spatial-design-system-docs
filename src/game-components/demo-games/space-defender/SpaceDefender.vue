@@ -156,10 +156,7 @@ const startGame = async () => {
   setTimeout(() => {
     setTimeout(() => {
       addAllComponents();
-
-      isLoading.value = false;
-      startTimer();
-    }, 3000);
+    }, 1000);
   }, 3000);
 };
 
@@ -171,12 +168,6 @@ const addAllComponents = () => {
     'type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation'
   );
   addComponent(false, 'spaceship-model', 'ammo-shape', 'type: hull;');
-  addComponent(
-    false,
-    'spaceship',
-    'fly',
-    'speed: 12; sprint: true; sprintSpeed: 20; maxPitchDeg: 40; maxRollDeg: 40; type: autoForward; keyUp: arrowup; keyDown: arrowdown; keyLeft: arrowleft; keyRight: arrowright;'
-  );
 
   addComponent(
     true,
@@ -186,9 +177,6 @@ const addAllComponents = () => {
   );
   enemiesList.value.forEach((enemy) => {
     addComponent(false, `enemy-model-${enemy.id}`, 'ammo-shape', 'type: hull;');
-
-    const npcWalkValue = `xMin: ${enemy.xMin}; xMax: ${enemy.xMax}; yMin: ${enemy.yMin}; yMax: ${enemy.yMax}; zMin: ${enemy.zMin}; zMax: ${enemy.zMax}; speed: 10; rotationSpeed: 400; allowRotation: true; type: randomMoving; walkClipName: CharacterArmature|Walk; idleClipName: CharacterArmature|Idle; altitude: true;`;
-    addComponent(false, `enemy-${enemy.id}`, 'npc-walk', npcWalkValue);
   });
 
   addComponent(true, '.enemy', 'enemy-target', '');
@@ -199,6 +187,23 @@ const addAllComponents = () => {
     'game-view',
     'target: #spaceship; type: thirdPersonFollow; distance: 40; height: 25; tilt: -27;'
   );
+
+  setTimeout(() => {
+      addComponent(
+          false,
+          'spaceship',
+          'fly',
+          'speed: 12; sprint: true; sprintSpeed: 20; maxPitchDeg: 40; maxRollDeg: 40; type: autoForward; keyUp: arrowup; keyDown: arrowdown; keyLeft: arrowleft; keyRight: arrowright;'
+      );
+
+      enemiesList.value.forEach((enemy) => {
+          const npcWalkValue = `xMin: ${enemy.xMin}; xMax: ${enemy.xMax}; yMin: ${enemy.yMin}; yMax: ${enemy.yMax}; zMin: ${enemy.zMin}; zMax: ${enemy.zMax}; speed: 10; rotationSpeed: 400; allowRotation: true; type: randomMoving; walkClipName: CharacterArmature|Walk; idleClipName: CharacterArmature|Idle; altitude: true;`;
+          addComponent(false, `enemy-${enemy.id}`, 'npc-walk', npcWalkValue);
+      });
+
+      isLoading.value = false;
+      startTimer();
+  }, 2000)
 };
 
 const quitGame = () => {
@@ -463,45 +468,6 @@ const handleEnemyHit = (enemyId: number) => {
           intensity="2"
         ></a-light>
 
-        <!--        <a-light-->
-        <!--          type="point"-->
-        <!--          color="#FFF1E0"-->
-        <!--          intensity="500"-->
-        <!--          distance="10000"-->
-        <!--          position="0 -30 -270"-->
-        <!--        ></a-light>-->
-
-        <!--        <a-light-->
-        <!--          type="point"-->
-        <!--          color="#FFF1E0"-->
-        <!--          intensity="500"-->
-        <!--          distance="10000"-->
-        <!--          position="0 30 -400"-->
-        <!--        ></a-light>-->
-
-        <!--          <a-light-->
-        <!--              type="point"-->
-        <!--              color="#FFF1E0"-->
-        <!--              intensity="500"-->
-        <!--              distance="10000"-->
-        <!--              position="0 -90 -400"-->
-        <!--          ></a-light>-->
-
-        <!--        <a-light-->
-        <!--          type="point"-->
-        <!--          color="#FFF1E0"-->
-        <!--          intensity="500"-->
-        <!--          distance="10000"-->
-        <!--          position="-60 -30 -400"-->
-        <!--        ></a-light>-->
-        <!--        <a-light-->
-        <!--          type="point"-->
-        <!--          color="#FFF1E0"-->
-        <!--          intensity="500"-->
-        <!--          distance="10000"-->
-        <!--          position="60 30 -400"-->
-        <!--        ></a-light>-->
-
         <!--          SPACESHIP-->
         <a-entity id="spaceship" position="80 10 -1" rotation="0 -90 0">
           <a-entity
@@ -532,10 +498,6 @@ const handleEnemyHit = (enemyId: number) => {
 
         <!--        CAMERA-->
         <a-entity id="camera" camera></a-entity>
-
-        <!--        <a-entity position="0 20 50" rotation="0 0 0">-->
-        <!--          <a-camera position="0 0 0"></a-camera>-->
-        <!--        </a-entity>-->
 
         <!--          PLANETS-->
         <a-entity
