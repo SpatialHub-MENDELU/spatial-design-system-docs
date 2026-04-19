@@ -527,7 +527,6 @@ function registerAframeComponents() {
       <a-scene v-if="renderScene" physics="driver: ammo;">
         <a-entity
           camera="fov: 40"
-          look-controls
           position="0 11 18"
           rotation="-35 0 0"
         ></a-entity>
