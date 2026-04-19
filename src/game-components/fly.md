@@ -408,3 +408,24 @@ To fix this, set the `forwardOffsetAngle` to 90 (or -270) degrees to align the l
 >
 </a-entity>
 ```
+
+## Credits & 3D Models Attribution
+
+The project utilizes 3D assets from [Poly.pizza](https://poly.pizza/). Below is the attribution for each model used in the games.
+
+### Creative Commons Attribution (CC BY)
+*The following models require attribution to the original creator as per the [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) license.*
+
+| Model Name | Author |
+| :--- | :--- |
+| [**Earth**](https://poly.pizza/m/1I5ip-3VOfv), [**Venus**](https://poly.pizza/m/6V99ow0chMd), [**Moon**](https://poly.pizza/m/9OPocAqXM0u), [**Mars**](https://poly.pizza/m/5_IXgyZ8cz_), [**Island**](https://poly.pizza/m/bzLVwG4AzvA), [**Volcano**](https://poly.pizza/m/dwSigTeSMCo) | Poly by Google |
+| [**Spaceship**](https://poly.pizza/m/5nWeu4IQXVX) | Liz Reddington |
+| [**Sun**](https://poly.pizza/m/7diieNtphvD) | Zoe XR |
+| [**Island**](https://poly.pizza/m/C03O8OQq6O) | J-Toastie |
+| [**Mountain**](https://poly.pizza/m/6qp53W5djC5) | Servin Nissen |
+### Public Domain (CC0)
+*The following models are provided under the [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) license (Public Domain).*
+
+| Model Name                                            | Author  |
+|:------------------------------------------------------| :--- | 
+| [**Spaceship**](https://poly.pizza/m/uCeLfsdmNP), [**Planet**](https://poly.pizza/m/9g1aIbfR9Y), [**Planet**](https://poly.pizza/m/IVnmauIgWX), [**Demon**](https://poly.pizza/m/Mo2ky6vkf8), [**Tribal**](https://poly.pizza/m/t91lDHaqRW), [**Yeti**](https://poly.pizza/m/xtMYEVzyw0), [**Dragon**](https://poly.pizza/m/VBvzjFIYws) | Quaternius |
