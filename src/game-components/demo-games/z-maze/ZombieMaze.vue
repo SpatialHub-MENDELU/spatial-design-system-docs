@@ -327,14 +327,32 @@ const addAllComponents = () => {
     'ammo-body',
     'type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation'
   );
-  addComponent(
-    false,
-    'adventurer',
-    'walk',
-    'sprint: true; speed: 6; sprintSpeed: 8; idleClipName: CharacterArmature|Idle_Neutral; walkClipName: CharacterArmature|Run; sprintClipName: CharacterArmature|Run; rotationSpeed: 180;'
-  );
-  addComponent(false, 'adventurer', 'zombie-collider', '');
   addComponent(false, 'adventurer-model', 'ammo-shape', 'type: hull;');
+
+  const adventurerEl = document.querySelector('#adventurer-model');
+  if (adventurerEl) {
+    const initWalkComponent = () => {
+      setTimeout(() => {
+        addComponent(
+          false,
+          'adventurer',
+          'walk',
+          'sprint: true; speed: 6; sprintSpeed: 8; idleClipName: CharacterArmature|Idle_Neutral; walkClipName: CharacterArmature|Run; sprintClipName: CharacterArmature|Run; rotationSpeed: 180;'
+        );
+        addComponent(false, 'adventurer', 'zombie-collider', '');
+
+        isLoading.value = false;
+        startTimer();
+      }, 2000);
+    };
+    if ((adventurerEl as any).getObject3D('mesh')) {
+      initWalkComponent();
+    } else {
+      adventurerEl.addEventListener('model-loaded', initWalkComponent, {
+        once: true,
+      });
+    }
+  }
 
   // 3. Camera
   addComponent(
@@ -387,10 +405,8 @@ const startGame = async () => {
   setTimeout(() => {
     setTimeout(() => {
       addAllComponents();
-      isLoading.value = false;
-      startTimer();
-    }, 2000);
-  }, 1000);
+    }, 1000);
+  }, 3000);
 };
 
 const quitGame = () => {
@@ -718,49 +734,49 @@ const quitGame = () => {
 
 /* Controls Hint UI */
 .controls-hint {
-    position: absolute;
-    bottom: 30px;
-    left: 30px;
-    z-index: 100;
-    pointer-events: none;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    font-family: 'Courier New', Courier, monospace;
+  position: absolute;
+  bottom: 30px;
+  left: 30px;
+  z-index: 100;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-family: 'Courier New', Courier, monospace;
 }
 
 .hint-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    background: rgba(0, 0, 0, 0.7);
-    padding: 10px 18px;
-    border-left: 5px solid #ff3333;
-    border-radius: 0 4px 4px 0;
-    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 10px 18px;
+  border-left: 5px solid #ff3333;
+  border-radius: 0 4px 4px 0;
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
 }
 
 .hint-key {
-    color: #ff3333;
-    font-weight: bold;
-    border: 2px solid #ff3333;
-    padding: 4px 10px;
-    font-size: 1.2rem;
-    min-width: 60px;
-    text-align: center;
-    background: rgba(255, 51, 51, 0.1);
+  color: #ff3333;
+  font-weight: bold;
+  border: 2px solid #ff3333;
+  padding: 4px 10px;
+  font-size: 1.2rem;
+  min-width: 60px;
+  text-align: center;
+  background: rgba(255, 51, 51, 0.1);
 }
 
 .hint-key--shift {
-    min-width: 90px;
+  min-width: 90px;
 }
 
 .hint-label {
-    color: #eee;
-    font-size: 1.1rem;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    font-weight: bold;
+  color: #eee;
+  font-size: 1.1rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: bold;
 }
 
 .loading-screen {
