@@ -251,3 +251,21 @@ direction.
   ">
 </a-entity>
 ```
+
+## Credits & 3D Models Attribution
+
+The project utilizes 3D assets from [Poly.pizza](https://poly.pizza/). Below is the attribution for each model used in the games.
+
+### Creative Commons Attribution (CC BY)
+*The following model requires attribution to the original creator as per the [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) license.*
+
+| Model Name | Author |
+| :--- | :--- |
+| [**Zombie**](https://poly.pizza/m/xqEzosAVYX) | bachosoftdesign |
+
+### Public Domain (CC0)
+*The following model is provided under the [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) license (Public Domain).*
+
+| Model Name | Author |
+| :--- | :--- |
+| [**Adventurer**](https://poly.pizza/m/5EGWBMpuXq) | Quaternius |

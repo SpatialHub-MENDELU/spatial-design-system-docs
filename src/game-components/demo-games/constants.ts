@@ -72,5 +72,15 @@ export const FoxModelSrc = '../../public/glb_models/game_components/fly/Fox.glb'
 export const RockModelSrc = '../../public/glb_models/game_components/fly/Rock.glb';
 
 // Z-MAZE
+/**
+ * ============================================================================
+ * 3D MODELS ATTRIBUTION & LICENSING
+ * ============================================================================
+ * * [CC BY - Creative Commons Attribution]
+ * - Zombie - by bachosoftdesign
+ * * * [CC0 - Public Domain]
+ * - Adventurer - by Quaternius
+ * ============================================================================
+ */
 export const ZombieModelSrc = '../../public/glb_models/game_components/walk/Zombie.glb';
 export const AdventurerModelSrc = '../../public/glb_models/game_components/walk/Adventurer.glb';
