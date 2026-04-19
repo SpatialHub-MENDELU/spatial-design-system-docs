@@ -81,6 +81,23 @@ export const AdventurerModelSrc =
   '/glb_models/game_components/walk/Adventurer.glb';
 
 // VIXENS INSTINCT
+/**
+ * ============================================================================
+ * 3D MODELS ATTRIBUTION & LICENSING (ENVIRONMENT & PROPS)
+ * ============================================================================
+ * * [CC BY - Creative Commons Attribution]
+ * - Tree, Tree-2         - by Marc Solà
+ * - Cave Scene           - by Brandon Jones (Toji)
+ * - Mountain             - by Servin Nissen
+ * - Pond                 - by jeremy
+ * - Jeep                 - by Zsky
+ * - Rabbit               - by Sherkiz
+ * - Bush                 - by Jarlan Perez
+ * - Pine Tree            - by Danni Bittman
+ * * * [CC0 - Public Domain]
+ * - Frog, Stag, Rocks, Shiba Inu, Bear Trap - by Quaternius
+ * ============================================================================
+ */
 export const GrassImageSrc = '/game_images/grass.jpg';
 export const CaveModelSrc = '/glb_models/game_components/walk/Cave.glb';
 export const MountainModelSrc = '/glb_models/game_components/walk/Mountain.glb';
@@ -88,25 +105,13 @@ export const PondModelSrc = '/glb_models/game_components/walk/Pond.glb';
 export const FrogModelSrc = '/glb_models/game_components/walk/Frog.glb';
 export const StagModelSrc = '/glb_models/game_components/walk/Stag.glb';
 export const JeepModelSrc = '/glb_models/game_components/walk/Jeep.glb';
-export const PosedModelSrc = '/glb_models/game_components/walk/Posed.glb';
 export const RabbitModelSrc = '/glb_models/game_components/walk/Rabbit.glb';
 export const BushModelSrc = '/glb_models/game_components/walk/Bush.glb';
-export const GrassModelSrc = '/glb_models/game_components/walk/Grass.glb';
-export const PineconeModelSrc = '/glb_models/game_components/walk/Pinecone.glb';
 export const PineTreeModelSrc = '/glb_models/game_components/walk/PineTree.glb';
-export const PineTreesModelSrc =
-  '/glb_models/game_components/walk/PineTrees.glb';
-export const RockModelSrcWalk = '/glb_models/game_components/walk/Rock.glb';
 export const RocksModelSrc = '/glb_models/game_components/walk/Rocks.glb';
 export const TreeModelSrc = '/glb_models/game_components/walk/Tree.glb';
 export const Tree2ModelSrc = '/glb_models/game_components/walk/Tree-2.glb';
-export const babyFoxImageSrc = '/game_images/babyFox.png';
-export const healthImageSrc = '/game_images/health.png';
-export const staminaImageSrc = '/game_images/stamina.png';
-export const timeImageSrc = '/game_images/time.png';
 export const DogModelSrc = '/glb_models/game_components/walk/Dog.glb';
-export const ShooterModelSrc = '/glb_models/game_components/walk/Shooter.glb';
 export const TrapModelSrc = '/glb_models/game_components/walk/Trap.glb';
-export const BulletModelSrc = '/glb_models/game_components/walk/Bullet.glb';
 export const DirectionArrowModelSrc =
   '/glb_models/game_components/walk/DirectionArrow.glb';

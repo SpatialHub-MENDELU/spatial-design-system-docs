@@ -262,10 +262,18 @@ The project utilizes 3D assets from [Poly.pizza](https://poly.pizza/). Below is 
 | Model Name | Author |
 | :--- | :--- |
 | [**Zombie**](https://poly.pizza/m/xqEzosAVYX) | bachosoftdesign |
+| [**Tree**](https://poly.pizza/m/6Yjt8nIwLsD), [**Tree-2**](https://poly.pizza/m/cRipmFHCEVU) | Marc Solà |
+| [**Cave Scene**](https://poly.pizza/m/0nFBQD9-gfu) | Brandon Jones (Toji) |
+| [**Mountain**](https://poly.pizza/m/6qp53W5djC5) | Servin Nissen |
+| [**Pond**](https://poly.pizza/m/cYUMQWc-BOV) | jeremy |
+| [**Jeep**](https://poly.pizza/m/AcSdGGrgYP) | Zsky |
+| [**Rabbit**](https://poly.pizza/m/Km89u3twcR) | Sherkiz |
+| [**Bush**](https://poly.pizza/m/d6STyhH76Qe) | Jarlan Perez |
+| [**Pine Tree**](https://poly.pizza/m/2Qo-fmVKuSG) | Danni Bittman |
 
 ### Public Domain (CC0)
 *The following model is provided under the [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) license (Public Domain).*
 
 | Model Name | Author |
 | :--- | :--- |
-| [**Adventurer**](https://poly.pizza/m/5EGWBMpuXq) | Quaternius |
+| [**Adventurer**](https://poly.pizza/m/5EGWBMpuXq), [**Frog**](https://poly.pizza/m/9Z2V8fpazF), [**Stag**](https://poly.pizza/m/tQdzbZ1Cmw), [**Rocks**](https://poly.pizza/m/OQvi8PIZ40), [**Shiba Inu**](https://poly.pizza/m/y4wdQpg767), [**Bear Trap**](https://poly.pizza/m/UTau9hyAnm) | Quaternius |

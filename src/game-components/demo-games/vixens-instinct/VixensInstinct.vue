@@ -2,10 +2,6 @@
 import { nextTick, onMounted, onUnmounted, ref } from 'vue';
 import 'aframe';
 
-import './babies-counter.js';
-import './health-bar.js';
-import './stamina-bar.js';
-import './time-counter.js';
 import { obstacles } from './StaticModels.js';
 
 import {
@@ -17,16 +13,12 @@ import {
   FrogModelSrc,
   StagModelSrc,
   JeepModelSrc,
-  PosedModelSrc,
   RabbitModelSrc,
   TreeModelSrc,
   Tree2ModelSrc,
   PineTreeModelSrc,
-  PineconeModelSrc,
   BushModelSrc,
-  RockModelSrcWalk,
   RocksModelSrc,
-  babyFoxImageSrc,
   DirectionArrowModelSrc,
   TrapModelSrc,
   DogModelSrc,
@@ -535,6 +527,7 @@ function registerAframeComponents() {
       <a-scene v-if="renderScene" physics="driver: ammo;">
         <a-entity
           camera="fov: 40"
+          look-controls
           position="0 11 18"
           rotation="-35 0 0"
         ></a-entity>
