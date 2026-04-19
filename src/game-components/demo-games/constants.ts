@@ -54,6 +54,17 @@ export const YetiModelSrc = '../../public/glb_models/game_components/fly/Yeti.gl
 export const DragonModelSrc = '../../public/glb_models/game_components/fly/Dragon.glb';
 
 // FOREST FLIGHT
+/**
+ * ============================================================================
+ * 3D MODELS ATTRIBUTION & LICENSING
+ * ============================================================================
+ * * [CC BY - Creative Commons Attribution]
+ * - Paper airplane - by Poly by Google
+ * - Tree Assets    - by Ben Desai
+ * * * [CC0 - Public Domain]
+ * - Dock, Fox, Rock - by Quaternius
+ * ============================================================================
+ */
 export const PaperAirplaneModelSrc = '../../public/glb_models/game_components/fly/paper_airplane.glb';
 export const ForestModelSrc = '../../public/glb_models/game_components/fly/Forest.glb';
 export const DockModelSrc = '../../public/glb_models/game_components/fly/Dock.glb';
