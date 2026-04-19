@@ -32,6 +32,18 @@ export const SunModelSrc =
     '../../public/glb_models/game_components/fly/Sun.glb';
 
 // DRAGONS QUEST
+/**
+ * ============================================================================
+ * 3D MODELS ATTRIBUTION & LICENSING
+ * ============================================================================
+ * * [CC BY - Creative Commons Attribution]
+ * - Island, Volcano     - by Poly by Google
+ * - Island              - by J-Toastie
+ * - Mountain            - by Servin Nissen
+ * * * [CC0 - Public Domain]
+ * - Demon, Tribal, Yeti, Dragon - by Quaternius
+ * ============================================================================
+ */
 export const IslandModelSrc = '../../public/glb_models/game_components/fly/Island.glb';
 export const VolcanoModelSrc = '../../public/glb_models/game_components/fly/Volcano.glb';
 export const PalmIslandModelSrc = '../../public/glb_models/game_components/fly/Palm_Island.glb';
