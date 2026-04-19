@@ -1,17 +1,39 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, nextTick } from 'vue';
+import { ref, onMounted, onUnmounted, nextTick, computed } from 'vue';
 import 'aframe';
-import 'aframe-star-system-component';
 import { AdventurerModelSrc, ZombieModelSrc } from '../constants';
 
 type GameState = 'menu' | 'playing' | 'gameover' | 'win';
 
 const gameState = ref<GameState>('menu');
+const isMounted = ref(false);
 const gameWrapperRef = ref<HTMLElement | null>(null);
-const timeLeft = ref(30);
+const isLoading = ref(false);
+const renderScene = ref(false);
+
+const timeLeft = ref(60);
 let timerInterval: number | null = null;
 
 const zombiesList = ref([]);
+
+function addComponent(
+  isClass: boolean,
+  elementName: string,
+  qualifiedName: string,
+  value: string
+) {
+  if (isClass) {
+    const elements = document.querySelectorAll(elementName);
+    elements.forEach((el) => {
+      el.setAttribute(qualifiedName, value);
+    });
+  } else {
+    const element = document.getElementById(elementName);
+    if (element) {
+      element.setAttribute(qualifiedName, value);
+    }
+  }
+}
 
 const handleFullscreenChange = () => {
   if (!document.fullscreenElement && gameState.value === 'playing') {
@@ -28,7 +50,7 @@ const stopTimer = () => {
 };
 
 const startTimer = () => {
-  timeLeft.value = 30;
+  timeLeft.value = 60;
   stopTimer();
   timerInterval = window.setInterval(() => {
     timeLeft.value--;
@@ -61,7 +83,16 @@ const generateZombies = () => {
       id: 1,
       src: ZombieModelSrc,
       position: '25 0.3 5',
-      rotation: '0 90 0',
+      rotation: '0 0 0',
+      scale,
+      offset,
+      animation: '*Armature|Scream*',
+    },
+    {
+      id: 2,
+      src: ZombieModelSrc,
+      position: '65 0.3 15',
+      rotation: '0 180 0',
       scale,
       offset,
       animation: '*Armature|Scream*',
@@ -70,7 +101,7 @@ const generateZombies = () => {
       id: 3,
       src: ZombieModelSrc,
       position: '25 0.3 35',
-      rotation: '0 90 0',
+      rotation: '0 -90 0',
       scale,
       offset,
       animation: '*Armature|Scream*',
@@ -141,30 +172,24 @@ const generateZombies = () => {
   ];
 };
 
-onMounted(() => {
-  document.addEventListener('fullscreenchange', handleFullscreenChange);
-  window.addEventListener('game-won', handleGameWon);
-  window.addEventListener('player-died', handlePlayerDied);
+const registerAframeComponents = () => {
+  if (typeof AFRAME === 'undefined') return;
 
-  if (window.AFRAME) {
-    window.AFRAME.registerComponent('zombie-collider', {
+  if (!AFRAME.components['zombie-collider']) {
+    AFRAME.registerComponent('zombie-collider', {
       init: function () {
         this.isDead = false;
       },
       tick: function () {
         if (this.isDead) return;
-
         const playerPos = this.el.object3D.position;
-        const zombies = document.querySelectorAll('[id^="zombie-"]');
-
+        const zombies = document.querySelectorAll('.zombie-unit');
         for (let i = 0; i < zombies.length; i++) {
-          const zombiePos = zombies[i].object3D.position;
-
+          const zombiePos = (zombies[i] as any).object3D.position;
           const dx = playerPos.x - zombiePos.x;
           const dz = playerPos.z - zombiePos.z;
           const distance = Math.sqrt(dx * dx + dz * dz);
-
-          if (distance < 4.5) {
+          if (distance < 4.0) {
             this.isDead = true;
             window.dispatchEvent(new Event('player-died'));
             break;
@@ -172,32 +197,32 @@ onMounted(() => {
         }
       },
     });
+  }
 
-    window.AFRAME.registerComponent('finish-trigger', {
+  if (!AFRAME.components['finish-trigger']) {
+    AFRAME.registerComponent('finish-trigger', {
       init: function () {
         this.won = false;
       },
       tick: function () {
         if (this.won) return;
-
         const playerEl = document.querySelector('#adventurer');
         if (!playerEl) return;
-
-        const playerPos = playerEl.object3D.position;
+        const playerPos = (playerEl as any).object3D.position;
         const finishPos = this.el.object3D.position;
-
         const dx = playerPos.x - finishPos.x;
         const dz = playerPos.z - finishPos.z;
         const distance = Math.sqrt(dx * dx + dz * dz);
-
         if (distance < 3) {
           this.won = true;
           window.dispatchEvent(new Event('game-won'));
         }
       },
     });
+  }
 
-    window.AFRAME.registerComponent('maze-generator', {
+  if (!AFRAME.components['maze-generator']) {
+    AFRAME.registerComponent('maze-generator', {
       init: function () {
         // 1 = bush, 0 = road, 2 = Start, 3 = Finish
         const mazeMap = [
@@ -231,12 +256,10 @@ onMounted(() => {
               let wall = document.createElement('a-box');
               let posY = wallHeight / 2;
               wall.setAttribute('position', `${posX} ${posY} ${posZ}`);
-              wall.setAttribute('width', blockSize);
-              wall.setAttribute('height', wallHeight);
-              wall.setAttribute('depth', blockSize);
-              wall.setAttribute('color', 'green');
-              wall.setAttribute('repeat', `${blockSize} ${wallHeight}`);
-              wall.setAttribute('roughness', 0.9);
+              wall.setAttribute('width', blockSize.toString());
+              wall.setAttribute('height', wallHeight.toString());
+              wall.setAttribute('depth', blockSize.toString());
+              wall.setAttribute('roughness', '0.9');
               wall.setAttribute('color', '#013220');
               wall.setAttribute('ammo-body', 'type: static');
               wall.setAttribute('ammo-shape', 'type: box');
@@ -244,9 +267,9 @@ onMounted(() => {
             } else if (type === 2) {
               let startPad = document.createElement('a-box');
               startPad.setAttribute('position', `${posX} 0.05 ${posZ}`);
-              startPad.setAttribute('width', blockSize);
-              startPad.setAttribute('height', 0.1);
-              startPad.setAttribute('depth', blockSize);
+              startPad.setAttribute('width', blockSize.toString());
+              startPad.setAttribute('height', '0.1');
+              startPad.setAttribute('depth', blockSize.toString());
               startPad.setAttribute('color', '#8b0000');
               sceneEl.appendChild(startPad);
 
@@ -256,11 +279,10 @@ onMounted(() => {
             } else if (type === 3) {
               let endPad = document.createElement('a-box');
               endPad.setAttribute('position', `${posX} 0.05 ${posZ}`);
-              endPad.setAttribute('width', blockSize);
-              endPad.setAttribute('height', 0.1);
-              endPad.setAttribute('depth', blockSize);
+              endPad.setAttribute('width', blockSize.toString());
+              endPad.setAttribute('height', '0.1');
+              endPad.setAttribute('depth', blockSize.toString());
               endPad.setAttribute('color', '#006400');
-
               endPad.setAttribute('finish-trigger', '');
 
               let endLight = document.createElement('a-light');
@@ -278,13 +300,63 @@ onMounted(() => {
       },
     });
   }
-});
+};
+
+const addAllComponents = () => {
+  // 1. Zombies
+  zombiesList.value.forEach((zombie: any) => {
+    addComponent(false, `zombie-${zombie.id}`, 'ammo-body', 'type: static;');
+    addComponent(
+      false,
+      `zombie-${zombie.id}`,
+      'ammo-shape',
+      `type: box; offset: ${zombie.offset};`
+    );
+    addComponent(
+      false,
+      `zombie-${zombie.id}`,
+      'animation-mixer',
+      `clip: ${zombie.animation}; loop: repeat;`
+    );
+  });
+
+  // 2. Adventurer
+  addComponent(
+    false,
+    'adventurer',
+    'ammo-body',
+    'type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation'
+  );
+  addComponent(
+    false,
+    'adventurer',
+    'walk',
+    'sprint: true; speed: 6; sprintSpeed: 8; idleClipName: CharacterArmature|Idle_Neutral; walkClipName: CharacterArmature|Run; sprintClipName: CharacterArmature|Run; rotationSpeed: 180;'
+  );
+  addComponent(false, 'adventurer', 'zombie-collider', '');
+  addComponent(false, 'adventurer-model', 'ammo-shape', 'type: hull;');
+
+  // 3. Camera
+  addComponent(
+    false,
+    'camera-entity',
+    'game-view',
+    'type: thirdPersonFollow; target: #adventurer; distance: 2; height: 2;'
+  );
+};
 
 onMounted(async () => {
+  isMounted.value = true;
+  document.addEventListener('fullscreenchange', handleFullscreenChange);
+  window.addEventListener('game-won', handleGameWon);
+  window.addEventListener('player-died', handlePlayerDied);
+
   try {
     await import('spatial-design-system/components/game/walk');
     await import('spatial-design-system/components/game/gameview');
     await import('spatial-design-system/components/game/npcWalk');
+    registerAframeComponents();
+    renderScene.value = true;
   } catch (e) {
     console.error(e);
   }
@@ -298,32 +370,40 @@ onUnmounted(() => {
 });
 
 const startGame = async () => {
+  isLoading.value = true;
   gameState.value = 'playing';
   zombiesList.value = generateZombies();
-  startTimer();
 
-  nextTick(async () => {
-    if (gameWrapperRef.value && !document.fullscreenElement) {
-      try {
-        await gameWrapperRef.value.requestFullscreen();
-      } catch (err) {
-        console.warn(err);
-      }
+  await nextTick();
+
+  if (gameWrapperRef.value && !document.fullscreenElement) {
+    try {
+      await gameWrapperRef.value.requestFullscreen();
+    } catch (err) {
+      console.warn(err);
     }
-  });
+  }
+
+  setTimeout(() => {
+    setTimeout(() => {
+      addAllComponents();
+      isLoading.value = false;
+      startTimer();
+    }, 2000);
+  }, 1000);
 };
 
 const quitGame = () => {
   stopTimer();
   gameState.value = 'menu';
   if (document.fullscreenElement) {
-    document.exitFullscreen();
+    document.exitFullscreen().catch((err) => console.warn(err));
   }
 };
 </script>
 
 <template>
-  <div class="game-wrapper" ref="gameWrapperRef">
+  <div class="game-wrapper" ref="gameWrapperRef" v-if="renderScene">
     <div v-if="gameState !== 'playing'" class="overlay-container">
       <div class="overlay vignette"></div>
       <div class="overlay scanlines"></div>
@@ -366,19 +446,49 @@ const quitGame = () => {
     </div>
 
     <div v-else-if="gameState === 'playing'" class="screen screen--game">
-      <div class="game-hud">
-        <div class="timer-container" :class="{ 'timer-low': timeLeft <= 10 }">
+      <div v-if="isLoading" class="loading-screen">
+        <div class="loading-content">
+          <div class="loading-spinner">⚠️</div>
+          <h2 class="loading-title">INITIALIZING SYSTEM</h2>
+          <div class="loading-bar-container">
+            <div class="loading-bar"></div>
+          </div>
+          <p class="loading-text">SCANNING LABYRINTH GEOMETRY...</p>
+          <div class="mission-objective-mini">
+            <h3>OBJECTIVE: FIND THE GREEN EXIT</h3>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="!isLoading" class="game-hud">
+        <div class="timer-container" :class="{ 'timer-low': timeLeft <= 20 }">
           <span class="timer-label">TIME LEFT:</span>
           <span class="timer-value">{{ timeLeft }}s</span>
         </div>
       </div>
 
-      <a-scene physics="driver: ammo; debug: false;" maze-generator>
+      <div v-if="!isLoading" class="controls-hint">
+        <div class="hint-item">
+          <span class="hint-key">W,A,S,D</span>
+          <span class="hint-label">MOVE</span>
+        </div>
+        <div class="hint-item">
+          <span class="hint-key hint-key--shift">SHIFT</span>
+          <span class="hint-label">SPRINT</span>
+        </div>
+      </div>
+
+      <a-scene
+        physics="driver: ammo; debug: false;"
+        maze-generator
+        v-if="isMounted"
+        embedded
+      >
         <a-light
           type="hemisphere"
           color="#fff"
           groundColor="#000"
-          intensity="0.01"
+          intensity="0.002"
         ></a-light>
 
         <a-box
@@ -395,48 +505,29 @@ const quitGame = () => {
           v-for="model in zombiesList"
           :key="'zombie-' + model.id"
           :id="'zombie-' + model.id"
+          class="zombie-unit"
           :position="model.position"
           :rotation="model.rotation"
-          ammo-body="type: static;"
-          :ammo-shape="`type: box; offset: ${model.offset};`"
           :gltf-model="model.src"
           :scale="model.scale"
-          :animation-mixer="`clip: ${model.animation}; loop: repeat;`"
         >
         </a-entity>
 
-        <a-entity
-          id="adventurer"
-          zombie-collider
-          ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation"
-          position="0 15.8 0"
-          walk="sprint: true; speed: 4; sprintSpeed: 6; idleClipName: CharacterArmature|Idle_Neutral; walkClipName: CharacterArmature|Run; sprintClipName: CharacterArmature|Run; rotationSpeed: 180;"
-        >
+        <a-entity id="adventurer" position="0 15.8 0">
           <a-entity
+            id="adventurer-model"
             :gltf-model="AdventurerModelSrc"
-            ammo-shape="type: hull;"
             position="0 -1 0"
             scale="1.1 1.1 1.1"
           ></a-entity>
           <a-entity
-            light="type: spot; color: #fffbd6; intensity: 15; distance: 6; angle: 45; penumbra: 0.5"
-            position="0 1 0.2"
+            light="type: spot; color: #fffbd6; intensity: 12; distance: 5; angle: 45; penumbra: 0.5"
+            position="0 0.7 0.2"
             rotation="-10 180 0"
           ></a-entity>
         </a-entity>
 
-        <a-entity
-          camera
-          game-view="type: thirdPersonFollow; target: #adventurer; distance: 2; height: 2; "
-        ></a-entity>
-
-        <!--        <a-entity-->
-        <!--          camera-->
-        <!--          rotation="-45 0 0"-->
-        <!--          position="35 10 70"-->
-        <!--          look-controls-->
-        <!--          wasd-controls-->
-        <!--        ></a-entity>-->
+        <a-entity id="camera-entity" camera></a-entity>
       </a-scene>
     </div>
   </div>
@@ -623,6 +714,141 @@ const quitGame = () => {
   animation: pulse-red 0.5s infinite alternate;
   background: rgba(139, 0, 0, 0.9);
   color: #fff;
+}
+
+/* Controls Hint UI */
+.controls-hint {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    z-index: 100;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.hint-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px 18px;
+    border-left: 5px solid #ff3333;
+    border-radius: 0 4px 4px 0;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.hint-key {
+    color: #ff3333;
+    font-weight: bold;
+    border: 2px solid #ff3333;
+    padding: 4px 10px;
+    font-size: 1.2rem;
+    min-width: 60px;
+    text-align: center;
+    background: rgba(255, 51, 51, 0.1);
+}
+
+.hint-key--shift {
+    min-width: 90px;
+}
+
+.hint-label {
+    color: #eee;
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.loading-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loading-content {
+  text-align: center;
+  max-width: 600px;
+  padding: 40px;
+  border: 1px solid #ff3333;
+  background: radial-gradient(circle, #1a0404 0%, #000000 100%);
+  box-shadow: 0 0 40px rgba(255, 51, 51, 0.2);
+}
+
+.loading-spinner {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  color: #ff3333;
+  animation: blink 0.8s infinite;
+}
+
+.loading-title {
+  color: #ff3333;
+  letter-spacing: 8px;
+  margin-bottom: 20px;
+  text-shadow: 0 0 10px #ff3333;
+}
+
+.loading-bar-container {
+  width: 100%;
+  height: 4px;
+  background: #330000;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.loading-bar {
+  width: 40%;
+  height: 100%;
+  background: #ff3333;
+  animation: slide 2s infinite ease-in-out;
+}
+
+.loading-text {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 30px;
+}
+
+.mission-objective-mini {
+  padding: 15px;
+  border: 1px dashed #00ff00;
+  background: rgba(0, 255, 0, 0.05);
+}
+
+.mission-objective-mini h3 {
+  color: #00ff00;
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
 }
 
 @keyframes pulse-red {

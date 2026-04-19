@@ -1,13 +1,22 @@
+/**
+ * ============================================================================
+ * 3D MODELS LICENSING
+ * ============================================================================
+ * * [CC BY - Creative Commons Attribution]
+ * - Earth, Mercury, Mars, Venus - by Poly By Google
+ * - Spaceship                     - by Liz Reddington
+ * - Sun                           - by Zoe XR
+ * * [CC0 - Public Domain]
+ * - Spaceship Enemy, Saturn, Jupiter - by Quaternius
+ * ============================================================================
+ */
+
 export const SpaceshipModelSrc =
   '/glb_models/game_components/fly/spaceship.glb';
 export const SpaceshipEnemyModelSrc =
   '/glb_models/game_components/fly/spaceship_enemy.glb';
-export const astronautModel = '/glb_models/game_components/fly/astronaut.glb';
-
 export const JupiterModelSrc = '/glb_models/game_components/fly/Jupiter.glb';
 export const SaturnModelSrc = '/glb_models/game_components/fly/Saturn.glb';
-export const UranusModelSrc = '/glb_models/game_components/fly/Uranus.glb';
-export const NeptuneModelSrc = '/glb_models/game_components/fly/Neptune.glb';
 export const MarsModelSrc = '/glb_models/game_components/fly/Mars.glb';
 export const VenusModelSrc = '/glb_models/game_components/fly/Venus.glb';
 export const MercuryModelSrc = '/glb_models/game_components/fly/Mercury.glb';
@@ -15,6 +24,18 @@ export const EarthModelSrc = '/glb_models/game_components/fly/Earth.glb';
 export const SunModelSrc = '/glb_models/game_components/fly/Sun.glb';
 
 // DRAGONS QUEST
+/**
+ * ============================================================================
+ * 3D MODELS ATTRIBUTION & LICENSING
+ * ============================================================================
+ * * [CC BY - Creative Commons Attribution]
+ * - Island, Volcano     - by Poly by Google
+ * - Island              - by J-Toastie
+ * - Mountain            - by Servin Nissen
+ * * * [CC0 - Public Domain]
+ * - Demon, Tribal, Yeti, Dragon - by Quaternius
+ * ============================================================================
+ */
 export const IslandModelSrc = '/glb_models/game_components/fly/Island.glb';
 export const VolcanoModelSrc = '/glb_models/game_components/fly/Volcano.glb';
 export const PalmIslandModelSrc =
@@ -27,14 +48,34 @@ export const YetiModelSrc = '/glb_models/game_components/fly/Yeti.glb';
 export const DragonModelSrc = '/glb_models/game_components/fly/Dragon.glb';
 
 // FOREST FLIGHT
-export const PaperAirplaneModelSrc =
-  '/glb_models/game_components/fly/paper_airplane.glb';
-export const ForestModelSrc = '/glb_models/game_components/fly/Forest.glb';
-export const DockModelSrc = '/glb_models/game_components/fly/Dock.glb';
-export const FoxModelSrc = '/glb_models/game_components/fly/Fox.glb';
-export const RockModelSrc = '/glb_models/game_components/fly/Rock.glb';
+/**
+ * ============================================================================
+ * 3D MODELS ATTRIBUTION & LICENSING
+ * ============================================================================
+ * * [CC BY - Creative Commons Attribution]
+ * - Paper airplane - by Poly by Google
+ * - Tree Assets    - by Ben Desai
+ * * * [CC0 - Public Domain]
+ * - Dock, Fox, Rock - by Quaternius
+ * ============================================================================
+ */
+export const PaperAirplaneModelSrc = '../../public/glb_models/game_components/fly/paper_airplane.glb';
+export const ForestModelSrc = '../../public/glb_models/game_components/fly/Forest.glb';
+export const DockModelSrc = '../../public/glb_models/game_components/fly/Dock.glb';
+export const FoxModelSrc = '../../public/glb_models/game_components/fly/Fox.glb';
+export const RockModelSrc = '../../public/glb_models/game_components/fly/Rock.glb';
 
 // Z-MAZE
+/**
+ * ============================================================================
+ * 3D MODELS ATTRIBUTION & LICENSING
+ * ============================================================================
+ * * [CC BY - Creative Commons Attribution]
+ * - Zombie - by bachosoftdesign
+ * * * [CC0 - Public Domain]
+ * - Adventurer - by Quaternius
+ * ============================================================================
+ */
 export const ZombieModelSrc = '/glb_models/game_components/walk/Zombie.glb';
 export const AdventurerModelSrc =
   '/glb_models/game_components/walk/Adventurer.glb';
