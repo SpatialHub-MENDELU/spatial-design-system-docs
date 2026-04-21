@@ -406,8 +406,7 @@ const startGame = async () => {
   setTimeout(() => {
     setTimeout(() => {
       addAllComponents();
-      isLoading.value = false;
-    }, 3000);
+    }, 1000);
   }, 3000);
 };
 
@@ -479,7 +478,8 @@ const addAllComponents = () => {
           'fly',
           'type: freeDirectionalFlight; flyClipName: *Dragon_Flying*; idleClipName: *Dragon_Flying*; sprintClipName: *Dragon_Flying*; forwardOffsetAngle: 0; maxPitchDeg: 20; pitchSpeed: 120; maxRollDeg: 15; rollSpeed: 60; rotationSpeed: 60; sprint: true;'
         );
-      }, 50);
+        isLoading.value = false;
+      }, 2000);
     };
 
     if ((dragonModelEl as any).getObject3D('mesh')) {
