@@ -106,10 +106,10 @@ export default defineConfig({
       {
         text: "Game components",
         items: [
+          {text: 'walk', link: '/game-components/walk'},
           {text: 'fly', link: '/game-components/fly'},
           {text: 'game-view', link: '/game-components/game-view'},
           {text: 'npc-walk', link: '/game-components/npc-walk'},
-          {text: 'walk', link: '/game-components/walk'},
         ]
       },
       {
