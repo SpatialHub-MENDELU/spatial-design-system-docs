@@ -46,6 +46,8 @@ The character rotates smoothly while moving.
   ">
 </a-entity>
 ```
+- See [Quick Start](#quick-start-how-it-works) section for all movement customization options.
+- See [Scene setup](#scene-setup) section for how to set up the scene and entities.
 
 ## Example: `stepTurnDiagonal` turn type 
 The character rotates to 8 directions (↑, ↗, →, ↘, ↓, ↙, ←, ↖) before moving.
@@ -63,6 +65,8 @@ The character rotates to 8 directions (↑, ↗, →, ↘, ↓, ↙, ←, ↖) b
   ">
 </a-entity>
 ```
+- See [Quick Start](#quick-start-how-it-works) section for all movement customization options.
+- See [Scene setup](#scene-setup) section for how to set up the scene and entities.
 
 ## Quick start (How it works)
 
