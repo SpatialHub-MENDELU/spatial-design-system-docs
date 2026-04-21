@@ -25,43 +25,91 @@ import ForestFlight from './demo-games/forest-flight/ForestFlight.vue';
 
 # {{ $frontmatter.title }}
 
-<ForestFlight />
-
-<SpaceDefender />
-
-<DragonsQuest />
-
-
-
-The `fly` component defines the flying behavior of a character in a game. It allows customization of flying styles, including key bindings, speed settings, and flight types. The component also supports realistic flight dynamics through pitch and roll adjustments.
+The `fly` component controls flying movement and animations.  
+It supports different flight styles, speed control, and realistic pitch/roll behavior.
 
 ::: warning ⚠️ PHYSICS ENGINE
 The _fly_ component relies on the Ammo.js physics engine. Ensure that Ammo.js is installed in your project for proper functionality.
 :::
 
-## How it works
-1. **Animations:** Set the `flyClipName` and `idleClipName` properties. If you enable sprint, define `sprintClipName`.
-2. **Flight Mode:** Choose a `type` that fits your needs: [freeDirectionalFlight](#freedirectionalflight), [autoForward](#autoforward), or [autoForwardFixedDirection](#autoforwardfixeddirection).
-3. **Movement Speed**: Control the movement speed and rotation with `speed` and `rotationSpeed`.
-4. **Controls:** Customize movement keys `keyUp`, `keyDown`, `keyLeft`, and `keyRight`. For `freeDirectionalFlight`, use `keyAscend` and `keyDescend` to control altitude.
-5. **Dynamics:** For more realistic flight, tweak the pitch and roll properties: `maxPitchDeg`, `pitchSpeed`, `maxRollDeg` and `rollSpeed`. When using the `autoForward` type, you can disable `autoLevelPitch` and `autoLevelRoll`.
-6. **Sprinting:** Enable `sprint` to allow the character to boost speed using the `keySprint`. Set the sprint speed with `sprintSpeed`.
-7. **Gravity**: To let gravity affect the character when not flying, set `allowGravity` to `true`. This works only with the `freeDirectionalFlight` type.
-8. **Orientation:** If the model’s visual forward direction doesn’t match its logical forward axis, fix it using [forwardOffsetAngle](#forwardoffsetangle).
-9. **Restrict Movement**: In `autoForwardFixedDirection` type, you can restrict vertical or horizontal movement by setting `canMoveVertically` or `canMoveHorizontally` properties to `false`.
+## Example: freeDirectionalFlight type 
+Fly in any direction. 
 
-## Setting up the scene 
-To ensure stable flight and proper physics interaction, we recommend using a parent-child entity structure. This separates the physics "hitbox" from the visual model and its rotations.
+<DragonsQuest/>
 
-**Parent Entity (The Logic)**:
-- Holds the `fly` component and the `ammo-body`.
-- Set `angularFactor: 0 0 0` to prevent the physics engine from causing the character to tumble or roll upon collision.
-- Use `activationState: disableDeactivation` to ensure the character remains responsive even when hovering in place.
-- - **Camera usage**: Assign a unique id (e.g., `id="fox-character"`). This ID is required for the camera to identify and follow the player. For more details on setting up the follow behavior of the camera, please refer to the [game-view](game-view.md) documentation.
+```html
+<a-entity
+   fly="
+      type: freeDirectionalFlight;
+   >
+</a-entity>
+```
+- See [Quick Start](#quick-start-how-it-works) section for all movement customization options.
+- See [Scene setup](#scene-setup) section for how to set up the scene and entities.
 
-**Child Entity (The Visual)**:
-- Contains the `gltf-model` and the `ammo-shape`.
-- Adjust the child's position to ensure the model is centered correctly within the parent's physics body.
+## Example: autoForward type
+Automatically flies forward, player steers. 
+
+<SpaceDefender/>
+
+```html
+<a-entity
+  fly="
+     type: autoForward;
+  ">
+</a-entity>
+```
+- See [Quick Start](#quick-start-how-it-works) section for all movement customization options.
+- See [Scene setup](#scene-setup) section for how to set up the scene and entities.
+
+
+## Example: autoForwardFixedDirection type
+Automatically moves forward in fixed direction. 
+
+<ForestFlight/>
+
+```html
+<a-entity
+  fly="
+     type: autoForwardFixedDirection;
+  ">
+</a-entity>
+```
+- See [Quick Start](#quick-start-how-it-works) section for all movement customization options.
+- See [Scene setup](#scene-setup) section for how to set up the scene and entities.
+
+
+## Quick start (How it works)
+1. **Flight Type (`type`):**
+   - [freeDirectionalFlight](#freedirectionalflight) -> free movement in all directions
+   - [autoForward](#autoforward) -> automatic forward movement
+   - [autoForwardFixedDirection](#autoforwardfixeddirection) -> automatic forward movement in fixed direction
+2. **Movement**:
+   - `speed` and `rotationSpeed`
+   - keys: `keyUp`, `keyDown`, `keyLeft`, and `keyRight`
+   - for `freeDirectionalFlight`: `keyAscend` and `keyDescend` for vertical movement
+   
+### Optional features
+
+1. **Animations:**
+    - `flyClipName` and `idleClipName`
+    - `sprintClipName` (`sprint` must be enabled)
+2. **Flight dynamics:**
+    - `allowPitch`for up/down tilt -> adjust with `maxPitchDeg` and `pitchSpeed`
+    - `allowRoll` for side tilt -> adjust with `maxRollDeg` and `rollSpeed`
+    - auto-leveling -> `autoLevelPitch` and `autoLevelRoll` are allowed for all types, but only `autoForward` type can have the false value 
+3. **Sprinting:**
+    - enable `sprint`
+    - set `keySprint`, `sprintSpeed` and `sprintClipName`
+4. **Gravity**:
+    - for `freeDirectionalFlight`: `allowGravity` (gravity affect the character when not flying)
+5. **Restrict Movement**:
+    - for `autoForwardFixedDirection`: restrict vertical or horizontal movement by `canMoveVertically` or `canMoveHorizontally`
+6. **Orientation:** 
+   - if your model faces the wrong way, fix it using [forwardOffsetAngle](#forwardoffsetangle).
+
+## Scene setup
+Use parent (logic) + child (visual). Read more about the [parent-child structure](#parent-child-structure-).
 
 ```js
 import "spatial-design-system/components/game/fly.js";
@@ -71,12 +119,14 @@ import "spatial-design-system/components/game/fly.js";
 <a-scene>
    <a-entity
       id="dragon-character"
+      
       fly="
          type: freeDirectionalFlight;
          rotationSpeed: 60;
          flyClipName: Flying;
          idleClipName: Flying_Idle;   
       "
+      
       position="0 0.2 0"
       rotation="0 180 0"
       ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation">
@@ -89,38 +139,7 @@ import "spatial-design-system/components/game/fly.js";
    </a-entity>
 </a-scene>
 ```
-
-# Props
-
-| Property | Type                                                                 | Default | Description                                                                                                                                                                                                                                                                                                                                   | Flying type                        |
-| :--- |:---------------------------------------------------------------------| :--- |:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------------------------------|
-| _idleClipName_ | string                                                               | Flying_Idle | Name of the animation clip used when the character is idle.                                                                                                                                                                                                                                                                                   | All types                          |
-| _flyClipName_ | string                                                               | Flying | Name of the animation clip used when the character is flying.                                                                                                                                                                                                                                                                                 | All types                          |
-| _sprintClipName_ | string                                                               | Fast_Flying | Name of the animation clip used when the character is sprinting.                                                                                                                                                                                                                                                                              | All types                          |
-| _keyUp_ | string                                                               | w | Key used to move the character forward/up.                                                                                                                                                                                                                                                                                                    | All types                          |
-| _keyDown_ | string                                                               | s | Key used to move the character backward/down.                                                                                                                                                                                                                                                                                                 | All types                          |
-| _keyLeft_ | string                                                               | a | Key used to move the character left.                                                                                                                                                                                                                                                                                                          | All types                          |
-| _keyRight_ | string                                                               | d | Key used to move the character right.                                                                                                                                                                                                                                                                                                         | All types                          |
-| _keyAscend_ | string                                                               | Space | Key used to move the character upward while flying.                                                                                                                                                                                                                                                                                           | freeDirectionalFlight              |
-| _keyDescend_ | string                                                               | c | Key used to move the character downward while flying.                                                                                                                                                                                                                                                                                         | freeDirectionalFlight              |
-| _allowGravity_ | boolean                                                              | false | If true, gravity affects the character when not flying.                                                                                                                                                                                                                                                                                       | freeDirectionalFlight              |
-| _speed_ | number                                                               | 4 | Defines the player's base flying speed.                                                                                                                                                                                                                                                                                                       | All types                          |
-| _rotationSpeed_ | number                                                               | 40 | Defines the turning speed.                                                                                                                                                                                                                                                                                                                    | freeDirectionalFlight, autoForward |
-| _sprint_ | boolean                                                              | false | If true, the player can sprint when holding the sprintKey, increasing their speed to sprintSpeed.                                                                                                                                                                                                                                             |  All types              |
-| _keySprint_ | string                                                               | shift | Key used to sprint with the character.                                                                                                                                                                                                                                                                                                        |  All types              |
-| _sprintSpeed_ | number                                                               | 10 | Defines the sprinting speed when the sprint mode is active.                                                                                                                                                                                                                                                                                   |  All types              |
-| _type_ | enum (freeDirectionalFlight, autoForward, autoForwardFixedDirection) | freeDirectionalFlight | freeDirectionalFlight, autoForward, autoForwardFixedDirection. Defines the flying mode and how the player turns the character.                                                                                                                                                                                                                | All types                          |
-| _allowPitch_ | boolean                                                              | true | If true, the player can tilt the model up and down (change pitch).                                                                                                                                                                                                                                                                            | All types                          |
-| _autoLevelPitch_ | boolean                                                              | true | Determines whether the model automatically returns its pitch to a neutral (level) position after being tilted up or down. Only autoForward flight type can have the false value.                                                                                                                                                              | autoForward                        |
-| _maxPitchDeg_ | number                                                               | 20 | Maximum pitch angle in degrees the character can tilt up or down.                                                                                                                                                                                                                                                                             | All types                          |
-| _pitchSpeed_ | number                                                               | 60 | How fast the pitch angle changes when the player tilts up or down.                                                                                                                                                                                                                                                                            | All types                          |
-| _allowRoll_ | boolean                                                              | true | If true, the player can roll the model left or right (bank sideways).                                                                                                                                                                                                                                                                         | All types                          |
-| _autoLevelRoll_ | boolean                                                              | true | Determines whether the model automatically returns its roll (bank angle) to a neutral, level position after being tilted left or right. Only autoForward flight type can have the false value.                                                                                                                                                | autoForward                        |
-| _maxRollDeg_ | number                                                               | 20 | Maximum roll angle in degrees the character can tilt left or right.                                                                                                                                                                                                                                                                           | All types                          |
-| _rollSpeed_ | number                                                               | 60 | How fast the roll angle changes when the player banks left or right.                                                                                                                                                                                                                                                                          | All types                          |
-| _forwardOffsetAngle_ | number                                                               | 0 | The angular offset (in degrees) that defines how much the model’s logical forward direction differs from its visual or model-space forward axis. In other words, it specifies how far the character’s or object’s “forward” (as understood by the user or game logic) is rotated relative to the model’s default orientation in the 3D scene. | All types                          |
-| _canMoveVertically_ | boolean                                                              | true | When using AutoForwardFixedDirection movement, this property allows the character to move up and down                                                                                                                                                                                                                                         | autoForwardFixedDirection          |
-| _canMoveHorizontally_ | boolean                                                              | true | When using AutoForwardFixedDirection movement, this property allows the character to move left and right.                                                                                                                                                                                                                                     | autoForwardFixedDirection          |
+Tip: Use id for camera targeting ([game-view](game-view.md)).
 
 ## freeDirectionalFlight
 The `freeDirectionalFlight` mode is designed to simulate freely flying creatures, such as birds or dragons, by allowing movement in all directions. Horizontal navigation is defined by the `keyUp`, `keyDown`, `keyLeft`, and `keyRight` properties.
@@ -211,7 +230,6 @@ The `autoForward` mode simulates aircraft-style flight where the character moves
 
 ```html
 <a-entity
-  id="dragon-character"
   fly="
      type: autoForward;
   ">
@@ -408,6 +426,76 @@ To fix this, set the `forwardOffsetAngle` to 90 (or -270) degrees to align the l
 >
 </a-entity>
 ```
+
+## Parent-child structure 
+To ensure stable flight and proper physics interaction, we recommend using a parent-child entity structure. This separates the physics "hitbox" from the visual model and its rotations.
+
+**Parent Entity (The Logic)**:
+- Holds the `fly` component and the `ammo-body`.
+- Set `angularFactor: 0 0 0` to prevent the physics engine from causing the character to tumble or roll upon collision.
+- Use `activationState: disableDeactivation` to ensure the character remains responsive even when hovering in place.
+- - **Camera usage**: Assign a unique id (e.g., `id="fox-character"`). This ID is required for the camera to identify and follow the player. For more details on setting up the follow behavior of the camera, please refer to the [game-view](game-view.md) documentation.
+
+**Child Entity (The Visual)**:
+- Contains the `gltf-model` and the `ammo-shape`.
+- Adjust the child's position to ensure the model is centered correctly within the parent's physics body.
+
+
+```html
+<a-scene>
+   <a-entity
+      id="dragon-character"
+      fly="
+         type: freeDirectionalFlight;
+         rotationSpeed: 60;
+         flyClipName: Flying;
+         idleClipName: Flying_Idle;   
+      "
+      position="0 0.2 0"
+      rotation="0 180 0"
+      ammo-body="type: dynamic; angularFactor: 0 0 0; mass: 20; activationState: disableDeactivation">
+      <a-entity
+              gltf-model="#dragon"
+              ammo-shape="type: hull;"
+              position="0 -1.7 0"
+              scale="1 1 1">
+      </a-entity>
+   </a-entity>
+</a-scene>
+```
+
+## Props
+
+| Property | Type                                                                 | Default | Description                                                                                                                                                                                                                                                                                                                                   | Flying type                        |
+| :--- |:---------------------------------------------------------------------| :--- |:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------------------------------|
+| _idleClipName_ | string                                                               | Flying_Idle | Name of the animation clip used when the character is idle.                                                                                                                                                                                                                                                                                   | All types                          |
+| _flyClipName_ | string                                                               | Flying | Name of the animation clip used when the character is flying.                                                                                                                                                                                                                                                                                 | All types                          |
+| _sprintClipName_ | string                                                               | Fast_Flying | Name of the animation clip used when the character is sprinting.                                                                                                                                                                                                                                                                              | All types                          |
+| _keyUp_ | string                                                               | w | Key used to move the character forward/up.                                                                                                                                                                                                                                                                                                    | All types                          |
+| _keyDown_ | string                                                               | s | Key used to move the character backward/down.                                                                                                                                                                                                                                                                                                 | All types                          |
+| _keyLeft_ | string                                                               | a | Key used to move the character left.                                                                                                                                                                                                                                                                                                          | All types                          |
+| _keyRight_ | string                                                               | d | Key used to move the character right.                                                                                                                                                                                                                                                                                                         | All types                          |
+| _keyAscend_ | string                                                               | Space | Key used to move the character upward while flying.                                                                                                                                                                                                                                                                                           | freeDirectionalFlight              |
+| _keyDescend_ | string                                                               | c | Key used to move the character downward while flying.                                                                                                                                                                                                                                                                                         | freeDirectionalFlight              |
+| _allowGravity_ | boolean                                                              | false | If true, gravity affects the character when not flying.                                                                                                                                                                                                                                                                                       | freeDirectionalFlight              |
+| _speed_ | number                                                               | 4 | Defines the player's base flying speed.                                                                                                                                                                                                                                                                                                       | All types                          |
+| _rotationSpeed_ | number                                                               | 40 | Defines the turning speed.                                                                                                                                                                                                                                                                                                                    | freeDirectionalFlight, autoForward |
+| _sprint_ | boolean                                                              | false | If true, the player can sprint when holding the sprintKey, increasing their speed to sprintSpeed.                                                                                                                                                                                                                                             |  All types              |
+| _keySprint_ | string                                                               | shift | Key used to sprint with the character.                                                                                                                                                                                                                                                                                                        |  All types              |
+| _sprintSpeed_ | number                                                               | 10 | Defines the sprinting speed when the sprint mode is active.                                                                                                                                                                                                                                                                                   |  All types              |
+| _type_ | enum (freeDirectionalFlight, autoForward, autoForwardFixedDirection) | freeDirectionalFlight | freeDirectionalFlight, autoForward, autoForwardFixedDirection. Defines the flying mode and how the player turns the character.                                                                                                                                                                                                                | All types                          |
+| _allowPitch_ | boolean                                                              | true | If true, the player can tilt the model up and down (change pitch).                                                                                                                                                                                                                                                                            | All types                          |
+| _autoLevelPitch_ | boolean                                                              | true | Determines whether the model automatically returns its pitch to a neutral (level) position after being tilted up or down. Only autoForward flight type can have the false value.                                                                                                                                                              | autoForward                        |
+| _maxPitchDeg_ | number                                                               | 20 | Maximum pitch angle in degrees the character can tilt up or down.                                                                                                                                                                                                                                                                             | All types                          |
+| _pitchSpeed_ | number                                                               | 60 | How fast the pitch angle changes when the player tilts up or down.                                                                                                                                                                                                                                                                            | All types                          |
+| _allowRoll_ | boolean                                                              | true | If true, the player can roll the model left or right (bank sideways).                                                                                                                                                                                                                                                                         | All types                          |
+| _autoLevelRoll_ | boolean                                                              | true | Determines whether the model automatically returns its roll (bank angle) to a neutral, level position after being tilted left or right. Only autoForward flight type can have the false value.                                                                                                                                                | autoForward                        |
+| _maxRollDeg_ | number                                                               | 20 | Maximum roll angle in degrees the character can tilt left or right.                                                                                                                                                                                                                                                                           | All types                          |
+| _rollSpeed_ | number                                                               | 60 | How fast the roll angle changes when the player banks left or right.                                                                                                                                                                                                                                                                          | All types                          |
+| _forwardOffsetAngle_ | number                                                               | 0 | The angular offset (in degrees) that defines how much the model’s logical forward direction differs from its visual or model-space forward axis. In other words, it specifies how far the character’s or object’s “forward” (as understood by the user or game logic) is rotated relative to the model’s default orientation in the 3D scene. | All types                          |
+| _canMoveVertically_ | boolean                                                              | true | When using AutoForwardFixedDirection movement, this property allows the character to move up and down                                                                                                                                                                                                                                         | autoForwardFixedDirection          |
+| _canMoveHorizontally_ | boolean                                                              | true | When using AutoForwardFixedDirection movement, this property allows the character to move left and right.                                                                                                                                                                                                                                     | autoForwardFixedDirection          |
+
 
 ## Credits & 3D Models Attribution
 
