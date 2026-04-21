@@ -29,7 +29,10 @@ The _game-view_ component relies on the Ammo.js physics engine. Ensure that Ammo
 :::
 
 ## Example: thirdPersonFollow type
-Camera follows the player and rotates with it. The `target` must be set. 
+Camera follows the player and rotates with it. The `target` must be set.
+
+<DragonsQuest/>
+
 ```html
 <a-entity camera game-view="
     target: #fox-character; 
@@ -37,18 +40,17 @@ Camera follows the player and rotates with it. The `target` must be set.
 "></a-entity>
 ```
 
-<DragonsQuest/>
-
 ## Example: thirdPersonFixed type 
 Camera follows the player but keeps the same world direction. The `target` must be set.
+
+<ForestFlight/>
+
 ```html
 <a-entity camera game-view="
     target: #fox-character; 
     type: thirdPersonFollow; 
 "></a-entity>
 ```
-
-<ForestFlight/>
 
 ## Quick start (How it works)
 1. Choose camera type using `type`:
