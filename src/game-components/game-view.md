@@ -34,10 +34,12 @@ Camera follows the player and rotates with it. The `target` must be set.
 <DragonsQuest/>
 
 ```html
-<a-entity camera game-view="
+<a-entity camera 
+  game-view="
     target: #fox-character; 
     type: thirdPersonFixed; 
-"></a-entity>
+  "
+></a-entity>
 ```
 
 ## Example: thirdPersonFixed type 
@@ -46,10 +48,12 @@ Camera follows the player but keeps the same world direction. The `target` must 
 <ForestFlight/>
 
 ```html
-<a-entity camera game-view="
+<a-entity camera 
+  game-view="
     target: #fox-character; 
     type: thirdPersonFollow; 
-"></a-entity>
+  "
+></a-entity>
 ```
 
 ## Quick start (How it works)
@@ -61,18 +65,22 @@ Camera follows the player but keeps the same world direction. The `target` must 
   - `fixed`: Static camera at a set position and rotation.
     - For this type, jump to the [fixed](#fixed) section below for specific settings.
 ```html
-<a-entity camera game-view="
+<a-entity camera 
+  game-view="
     type: thirdPersonFollow;
-"></a-entity>
+  "
+></a-entity>
 ```
 
 ### **Target:**
 - `target`: CSS selector for the entity the camera should follow (default value: `null`).
     - NOTE: Required for `thirdPersonFixed`, `thirdPersonFollow`, and `quarterTurn`.
 ```html
-<a-entity camera game-view="
+<a-entity camera 
+  game-view="
     target: #fox-character; 
-"></a-entity>
+  "
+></a-entity>
 ```
 
 ### **Camera Positioning:**
@@ -80,33 +88,40 @@ Camera follows the player but keeps the same world direction. The `target` must 
 - `height`: Vertical height above the target (default value: `5`).
 - `tilt`: Vertical camera angle/tilt in degrees (default value: `-20`).
 ```html
-<a-entity camera game-view="
+<a-entity camera 
+  game-view="
     distance: 5; 
     height: 5; 
     tilt: -20;
-"></a-entity>
+  "
+></a-entity>
 ```
 
 ### **Zoom:**
 - `zoom`: Enables zooming with the mouse wheel for target-following cameras (default value: `false`).
 ```html
-<a-entity camera game-view="
+<a-entity camera 
+  game-view="
     zoom: true; 
-"></a-entity>
+  "
+></a-entity>
 ```
 - `zoomSpeed`: Speed of the zoom effect (default value: `0.3`).
 ```html
-<a-entity camera game-view="
+<a-entity camera 
+  game-view="
     zoom: true; 
     zoomSpeed: 0.3;
-"></a-entity>
+  "
+></a-entity>
 ```
 - `minDistance`: Minimum zoom distance from the target (default value: `2`).
 - `maxDistance`: Maximum zoom distance from the target (default value: `15`).
 - `minHeight`: Minimum camera height when zooming (default value: `2`).
 - `maxHeight`: Maximum camera height when zooming (default value: `15`).
 ```html
-<a-entity camera game-view="
+<a-entity camera 
+  game-view="
     zoom: true; 
     
     minDistance: 2;
@@ -114,26 +129,31 @@ Camera follows the player but keeps the same world direction. The `target` must 
     
     minHeight: 2;
     maxHeight: 15;
-"></a-entity>
+  "
+></a-entity>
 ```
 
 ### **Quarter-Turn Rotation:**
 - NOTE: Only applies to the `quarterTurn` type.
 - `rotationSpeed`: Speed of the 90-degree rotation step (default value: `5`).
 ```html
-<a-entity camera game-view="
+<a-entity camera 
+  game-view="
     type: quarterTurn; 
     rotationSpeed: 5;
-"></a-entity>
+  "
+></a-entity>
 ```
 - `keyTurnLeft`: Key to rotate the camera left (default value: `q`).
 - `keyTurnRight`: Key to rotate the camera right (default value: `e`).
 ```html
-<a-entity camera game-view="
+<a-entity camera 
+  game-view="
     type: quarterTurn; 
     keyTurnLeft: q;
     keyTurnRight: e;
-"></a-entity>
+  "
+></a-entity>
 ```
 
 ### **Fixed Camera Settings:**
@@ -141,43 +161,51 @@ Camera follows the player but keeps the same world direction. The `target` must 
 - `position`: Static 3D coordinates for the camera (default value: `0 10 0`).
 - `rotation`: Static rotation angle for the camera (default value: `-20 0 0`).
 ```html
-<a-entity camera game-view="
+<a-entity camera 
+  game-view="
     type: fixed; 
     position: 0 10 0;
     rotation: -20 0 0;
-"></a-entity>
+  "
+></a-entity>
 ```
 ### **Camera Offset Angle:**
 - `cameraOffsetAngle`: Adjusts the rotational offset of the camera relative to the target (default value: `auto`).
     - `auto`: Automatically syncs with the target's `forwardOffsetAngle` (from `walk` or `fly` components) to stay aligned behind the character.
     - Can be overridden with a specific number (e.g., `90`) to manually offset the view 
 ```html
-<a-entity camera game-view="
+<a-entity camera 
+  game-view="
     cameraOffsetAngle: auto;
-"></a-entity>
+  "
+></a-entity>
 ```
 
 ## fixed
 The camera stays in a fixed position and rotation, defined by the `position` and `rotation` properties. It does not follow any object and stays in the same place.
 ```html
-<a-entity camera game-view="
+<a-entity camera 
+  game-view="
     type: fixed; 
     position: 0 10 0;
     rotation: -20 0 0;
-"></a-entity>
+  "
+></a-entity>
 ```
 
 ## thirdPersonFixed
 The camera follows the `target` at a set `distance` and `height`, but it does not rotate with the target. Its orientation stays the same even if the character turns. Optionally enable `zoom` to allow dynamic distance changes.
 
 ```html
-<a-entity camera game-view="
+<a-entity camera 
+  game-view="
     target: #fox-character; 
     type: thirdPersonFixed; 
     distance: 5; 
     height: 5; 
     tilt: -20;
-"></a-entity>
+  "
+></a-entity>
 ```
 
 ## thirdPersonFollow
@@ -185,13 +213,15 @@ The camera follows the `target` and rotates together with it. It stays behind th
 You can adjust `distance`, `height`, and `tilt` to control the camera position and angle, and you can enable `zoom` to allow the player to move the camera closer or farther away.
 
 ```html
-<a-entity camera game-view="
+<a-entity camera 
+  game-view="
     target: #fox-character; 
     type: thirdPersonFollow; 
     distance: 5; 
     height: 5; 
     tilt: -20;
-"></a-entity>
+  "
+></a-entity>
 ```
 
 Tip: Use very small `distance` + eye-level `height` to simulate first-person.
@@ -201,7 +231,8 @@ The camera follows the `target` but does not rotate automatically with it. Inste
 You can adjust `distance`, `height`, and `tilt` to control the camera position, enable `zoom` if needed, and configure `rotationSpeed`, `keyTurnLeft`, and `keyTurnRight` to control how the camera rotates around the target.
 
 ```html
-<a-entity camera game-view="
+<a-entity camera 
+  game-view="
     target: #fox-character; 
     type: quarterTurn; 
     distance: 5; 
@@ -210,7 +241,8 @@ You can adjust `distance`, `height`, and `tilt` to control the camera position, 
     rotationSpeed: 5;
     keyTurnLeft: q;
     keyTurnRight: e;
-"></a-entity>
+  "
+></a-entity>
 ```
 
 ## zoom
@@ -228,7 +260,8 @@ You can use the zoom in any of the target-following modes (`thirdPersonFixed`, `
 </picture>
 
 ```html
-<a-entity camera game-view="
+<a-entity camera 
+  game-view="
     target: #character; 
     type: thirdPersonFixed; 
     zoom: true;
@@ -242,7 +275,8 @@ You can use the zoom in any of the target-following modes (`thirdPersonFixed`, `
     maxHeight: 20;
     
     tilt: -20;
-"></a-entity>
+  "
+></a-entity>
 ```
 
 ## Props

@@ -40,8 +40,7 @@ NPC follows a path defined by array of points.
     type: points;
     points: 0 1 5, 5 1 5, 5 1 0;
   "
->
-</a-entity>
+></a-entity>
 ```
 
 - See [Quick Start](#quick-start-how-it-works) section for all movement customization options.
@@ -55,45 +54,227 @@ NPC moves randomly within a defined area.
 ```html
 <a-entity
   npc-walk="
-    walkClipName: Walk;
     type: randomMoving;
     xMin: -5;
     xMax: 5;
     zMin: -5;
     zMax: 5;
   "
->
-</a-entity>
+></a-entity>
 ```
 
 - See [Quick Start](#quick-start-how-it-works) section for all movement customization options.
 - See [Scene setup](#scene-setup) section for how to set up the scene and entities.
 
 ## Quick start (How it works)
-1. **Movement type (`type`)**:
-    - `points` → follow path
-    - `randomMoving` → wander in area
-2. **Path Configuration (`points` type):**
-    - `points` array -> list of positions for the NPC to follow
-3. **Area Bounds (`randomMoving` type):**
-    - `xMin`, `xMax`, `zMin`, `zMax` -> define the roaming area
-    - `yMin`, `yMax` -> set vertical roaming limits (only if `altitude` is true)
+### **Movement Type (`type`):**
+- Defines the movement behavior mode (default value: `points`).
+   - `points`: Follows a defined path of coordinates.
+   - `randomMoving`: Wanders randomly within a defined boundary area.
+```html
+<a-entity
+  npc-walk="
+    type: points;
+  "
+></a-entity>
+```
 
-### Optional features
-1. **Animations:** 
-    - `walkClipName` and `idleClipName`
-2. **Movement Behavior:** 
-    - `speed`
-    - `allowRotation` and `rotationSpeed`
-    - `altitude` -> enable vertical movement
-3. **Timing & Delays:** 
-    - [`waitBeforeStart`](#waitbeforestart) -> delay before starting movement
-    - [`pauseAtPoints`](#pauseatpoints) -> rest duration at each point
-4. **Advanced Points Configuration**
-    - `horizontalPointTolerance` and `verticalPointTolerance` -> how close the NPC needs to be to consider it has reached a point
-    - `cyclePath` -> loop through points continuously
-    - `randomizePointsOrder` -> visit points in random order
-    - `stopAtLastPoint` -> stop moving after reaching the last point
+### **Path Configuration (`points` type):**
+- `points`: Comma-separated list of 3D coordinates for the NPC to follow (default value: `0 2 5, 5 5 5, 5 10 0`).
+```html
+<a-entity
+  npc-walk="
+    type: points;
+    points: 0 1 5, 5 1 5, 5 1 0;
+  "
+></a-entity>
+```
+
+### **Path Traversal Rules (`points` type):**
+- `cyclePath`: Loops back to the first point after reaching the last one (default value: `true`).
+  - When set to `false`, the NPC walks back through the points in reverse order.
+```html
+<a-entity
+  npc-walk="
+    type: points;
+    cyclePath: true;
+  "
+></a-entity>
+```
+- `randomizePointsOrder`: Visits defined points in a random sequence (default value: `false`).
+```html
+<a-entity
+  npc-walk="
+    type: points;
+    randomizePointsOrder: true;
+  "
+></a-entity>
+```
+- `stopAtLastPoint`: Stops moving permanently after reaching the final point (default value: `false`).
+```html
+<a-entity
+  npc-walk="
+    type: points;
+    stopAtLastPoint: true;
+  "
+></a-entity>
+```
+
+### **Area Bounds (`randomMoving` type):**
+- `xMin` / `xMax`: Minimum and maximum X-axis boundaries (default values: `-5` / `5`).
+- `zMin` / `zMax`: Minimum and maximum Z-axis boundaries (default values: `-5` / `5`).
+```html
+<a-entity
+  npc-walk="
+    type: randomMoving;
+    
+    xMin: -5;
+    xMax: 5;
+    
+    zMin: -5;
+    zMax: 5;
+  "
+></a-entity> 
+```
+- `yMin` / `yMax`: Minimum and maximum Y-axis vertical boundaries (default values: `0` / `5`).
+  - NOTE: `yMin` and `yMax` are only applied if `altitude` is set to `true` (default value: `false`).
+```html
+<a-entity
+  npc-walk="
+    type: randomMoving;
+    xMin: -5;
+    xMax: 5;
+    yMin: 0;
+    yMax: 5;
+    
+    altitude: true;
+    
+    zMin: -5;
+    zMax: 5;
+  "
+></a-entity>
+```
+
+### **Vertical movement and gravity:**
+- `allowGravity`: Applies gravity to the NPC (default value: `true`). When disabled, the NPC can fly.
+```html
+<a-entity
+  npc-walk="
+    allowGravity: false;
+  "
+></a-entity>
+```
+- `altitude`: Enables vertical movement (default value: `false`).
+  - NOTE: When set to `true`, `allowGravity` is automatically disabled. 
+```html
+<a-entity
+  npc-walk="
+    altitude: true;
+  "
+></a-entity>
+```
+### **Speed and rotation:**
+- `speed`: Movement speed (default value: `4`).
+```html
+<a-entity
+  npc-walk="
+    speed: 4;
+  "
+></a-entity>
+```
+- `rotationSpeed`: Speed at which the NPC rotates (default value: `500`).
+```html
+<a-entity
+  npc-walk="
+    rotationSpeed: 500;
+  "
+></a-entity>
+```
+- `allowRotation`: Enables smooth rotation toward the target point (default value: `true`).
+```html
+<a-entity
+  npc-walk="
+    allowRotation: false;
+  "
+></a-entity>
+```
+### **Animations:**
+- `walkClipName`: Animation name for walking (default value: `Walk`).
+```html
+<a-entity
+  npc-walk="
+    walkClipName: Walk;
+  "
+></a-entity>
+```
+- `idleClipName`: Animation name for idle/waiting (default value: `Idle`).
+```html
+<a-entity
+  npc-walk="
+    idleClipName: Idle;
+  "
+></a-entity>
+```
+- `crossFadeDuration`: Duration of the animation crossfade in seconds (default value: `0.2`).
+```html
+<a-entity
+  npc-walk="
+    crossFadeDuration: 0.5;
+  "
+></a-entity>
+```
+### **Timing & Delays:**
+- `waitBeforeStart`: Delay in seconds before the NPC begins moving (default value: `0`).
+```html
+<a-entity
+  npc-walk="
+    waitBeforeStart: 1;
+  "
+></a-entity>
+```
+- `pauseAtPoints`: Rest duration in seconds the NPC waits after reaching each point (default value: `0`).
+```html
+<a-entity
+  npc-walk="
+    pauseAtPoints: 1;
+  "
+></a-entity>
+```
+
+### **Target Tolerance:**
+- `horizontalPointTolerance`: Horizontal distance to consider the target position reached (default value: `0.1`).
+```html
+<a-entity
+  npc-walk="
+    horizontalPointTolerance: 0.1;
+  "
+></a-entity>
+```
+- `verticalPointTolerance`: Vertical distance to consider the target position reached (default value: `0.1`).
+```html
+<a-entity
+  npc-walk="
+    verticalPointTolerance: 0.1;
+  "
+></a-entity>
+```
+### **Movement Smoothing:**
+- `slowDownRadius`: Distance from the target at which the NPC starts to slow down (default value: `1.5`).
+```html
+<a-entity
+  npc-walk="
+    slowDownRadius: 1.5;
+  "
+></a-entity>
+```
+- `minSlowdownSpeed`: Minimum speed when slowing down (default value: `0.5`).
+```html
+<a-entity
+  npc-walk="
+    minSlowdownSpeed: 0.5;
+  "
+></a-entity>
+```
 
 ## Scene setup 
 Use parent (logic) and child (visual) structure. Read more about the [parent-child structure](#parent-child-structure-).
@@ -129,8 +310,7 @@ The `points` mode makes the NPC follow predefined positions such as `0 1 5, 5 1 
     type: points;
     points: 0 1 5, 5 1 5, 5 1 0;
   "
->
-</a-entity>
+></a-entity>
 ```
 
 ### Options
@@ -161,8 +341,7 @@ In `randomMoving` mode, the NPC wanders randomly within a defined area. You can 
     zMin: -5;
     zMax: 5;
   "
->
-</a-entity>
+></a-entity>
 ```
 The `yMin` and `yMax` properties are only applied if the `altitude` property is set to `true`. If `altitude` is `false`, the NPC simply maintains its current height.
 ```html
@@ -177,8 +356,7 @@ The `yMin` and `yMax` properties are only applied if the `altitude` property is 
     zMin: -5;
     zMax: 5;
   "
->
-</a-entity>
+></a-entity>
 ```
 
 ## Features 

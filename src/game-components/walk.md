@@ -41,8 +41,8 @@ The character rotates smoothly while moving.
 <a-entity
   walk="
     turnType: smoothTurn;
-  ">
-</a-entity>
+  "
+></a-entity>
 ```
 - See [Quick Start](#quick-start-how-it-works) section for all movement customization options.
 - See [Scene setup](#scene-setup) section for how to set up the scene and entities.
@@ -57,8 +57,8 @@ The character rotates to 8 directions (↑, ↗, →, ↘, ↓, ↙, ←, ↖) b
 <a-entity
   walk="
     turnType: stepTurnDiagonal;
-  ">
-</a-entity>
+  "
+></a-entity>
 ```
 - See [Quick Start](#quick-start-how-it-works) section for all movement customization options.
 - See [Scene setup](#scene-setup) section for how to set up the scene and entities.
@@ -73,8 +73,8 @@ The character rotates to 8 directions (↑, ↗, →, ↘, ↓, ↙, ←, ↖) b
 <a-entity
   walk="
     turnType: smoothTurn;
-  ">
-</a-entity>
+  "
+></a-entity>
 ```
 
 ### **Point-and-click movement:**
@@ -83,8 +83,8 @@ The character rotates to 8 directions (↑, ↗, →, ↘, ↓, ↙, ←, ↖) b
 <a-entity
   walk="
     targetWalk: true;
-  ">
-</a-entity>
+  "
+></a-entity>
 ```
 ### **Auto-walk:**
 - `autoWalk`: Automatically starts walking forward without input (default value: `false`).
@@ -93,8 +93,8 @@ The character rotates to 8 directions (↑, ↗, →, ↘, ↓, ↙, ←, ↖) b
 <a-entity
   walk="
     autoWalk: true;
-  ">
-</a-entity>
+  "
+></a-entity>
 ```
 
 ### **Sprint:**
@@ -107,7 +107,8 @@ The character rotates to 8 directions (↑, ↗, →, ↘, ↓, ↙, ←, ↖) b
     sprint: true;
     sprintSpeed: 6;
     keySprint: shift;
-  ">
+  "
+></a-entity>
 ```
 
 ### **Animations:**
@@ -118,8 +119,8 @@ The character rotates to 8 directions (↑, ↗, →, ↘, ↓, ↙, ←, ↖) b
   walk="
     walkClipName: Walk;
     idleClipName: Idle;
-  ">
-</a-entity>
+  "
+></a-entity>
 ```
 - `sprintClipName`: Animation name for sprinting (default value: `Gallop`)
   - NOTE: you need to enable `sprint` (default value is `false`)
@@ -128,8 +129,8 @@ The character rotates to 8 directions (↑, ↗, →, ↘, ↓, ↙, ←, ↖) b
   walk="
     sprintClipName: Gallop;
     sprint: true;
-  ">
-</a-entity>
+  "
+></a-entity>
 ```
 ### **Speed:**
 - `speed`: Movement (default value: `3`)
@@ -142,8 +143,8 @@ The character rotates to 8 directions (↑, ↗, →, ↘, ↓, ↙, ←, ↖) b
   walk="
     speed: 3;
     rotationSpeed: 90;
-  ">
-</a-entity>
+  "
+></a-entity>
 ```
 
 ### **Controls:** 
@@ -158,8 +159,8 @@ The character rotates to 8 directions (↑, ↗, →, ↘, ↓, ↙, ←, ↖) b
     keyDown: s;
     keyLeft: a;
     keyRight: d;
-  ">
-</a-entity>
+  "
+></a-entity>
 ```
 ### **Fix Orientation:**
 - [forwardOffsetAngle](#forwardoffsetangle): Applies an angle correction to fix the model's forward orientation (default value: `0`).
@@ -168,8 +169,8 @@ The character rotates to 8 directions (↑, ↗, →, ↘, ↓, ↙, ←, ↖) b
 <a-entity
   walk="
     forwardOffsetAngle: 90;
-  ">
-</a-entity>
+  "
+></a-entity>
 ```
 
 ## Scene setup
@@ -224,8 +225,8 @@ direction.
 <a-entity
   walk="
     forwardOffsetAngle: 90;
-  ">
-</a-entity>
+  "
+></a-entity>
 ```
 
 ## Props

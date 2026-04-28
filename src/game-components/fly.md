@@ -41,8 +41,8 @@ Fly in any direction.
 <a-entity
    fly="
       type: freeDirectionalFlight;
-   >
-</a-entity>
+   "
+></a-entity>
 ```
 - See [Quick Start](#quick-start-how-it-works) section for all movement customization options.
 - See [Scene setup](#scene-setup) section for how to set up the scene and entities.
@@ -56,8 +56,8 @@ Automatically flies forward, player steers.
 <a-entity
   fly="
      type: autoForward;
-  ">
-</a-entity>
+  "
+></a-entity>
 ```
 - See [Quick Start](#quick-start-how-it-works) section for all movement customization options.
 - See [Scene setup](#scene-setup) section for how to set up the scene and entities.
@@ -72,8 +72,8 @@ Automatically moves forward in fixed direction.
 <a-entity
   fly="
      type: autoForwardFixedDirection;
-  ">
-</a-entity>
+  "
+></a-entity>
 ```
 - See [Quick Start](#quick-start-how-it-works) section for all movement customization options.
 - See [Scene setup](#scene-setup) section for how to set up the scene and entities.
@@ -89,8 +89,8 @@ Automatically moves forward in fixed direction.
 <a-entity
    fly="
       type: freeDirectionalFlight;
-   >
-</a-entity>
+   "
+></a-entity>
 ```
 ### **Speed:**
 - `speed`: Base flying speed (default value: `4`).
@@ -100,8 +100,8 @@ Automatically moves forward in fixed direction.
   fly="
     speed: 4; 
     rotationSpeed: 40;
- ">
-</a-entity>
+  "
+></a-entity>
 ```
 
 ### **Controls:**
@@ -116,8 +116,8 @@ Automatically moves forward in fixed direction.
     keyDown: s;
     keyLeft: a;
     keyRight: d;
- ">
-</a-entity>
+ "
+></a-entity>
 ```
 Only for `freeDirectionalFlight` type:
 - `keyAscend`: Key for moving upward while flying (default value: ` `).
@@ -127,7 +127,8 @@ Only for `freeDirectionalFlight` type:
   fly="
     keyAscend: space;
     keyDescend: c;
- ">
+ "
+></a-entity>
 ```
 
 ### **Sprint:**
@@ -140,8 +141,8 @@ Only for `freeDirectionalFlight` type:
     sprint: true;
     keySprint: shift;
     sprintSpeed: 10;
- ">
-</a-entity>
+ "
+></a-entity>
 ```
 
 ### **Animations:**
@@ -152,8 +153,8 @@ Only for `freeDirectionalFlight` type:
   fly="
     flyClipName: Flying;
     idleClipName: Flying_Idle;   
- ">
-</a-entity>
+ "
+></a-entity>
 ```
 - `sprintClipName`: Animation name for sprinting (default value: `*Fast_Flying*`).
    - NOTE: You need to enable `sprint` (default value is `false`).
@@ -162,8 +163,8 @@ Only for `freeDirectionalFlight` type:
   fly="
     sprint: true;
     sprintClipName: Fast_Flying;
- ">
-</a-entity>
+ "
+></a-entity>
 ```
 ### **Flight Dynamics (Pitch & Roll):**
 #### Pitch
@@ -172,8 +173,8 @@ Only for `freeDirectionalFlight` type:
 <a-entity
   fly="
     allowPitch: true;
- ">
-</a-entity>
+ "
+></a-entity>
 ```
 - `maxPitchDeg`: Maximum pitch angle in degrees (default value: `20`).
 - `pitchSpeed`: How fast the pitch angle changes (default value: `60`).
@@ -182,7 +183,8 @@ Only for `freeDirectionalFlight` type:
   fly="
     maxPitchDeg: 20;
     pitchSpeed: 60;
- ">
+ "
+></a-entity>
 ```
 - `autoLevelPitch`: Automatically returns pitch to a neutral position (default value: `true`).
   - NOTE: Only `autoForward` flight type can have the false value for `autoLevelPitch`. For other flight types, the auto-leveling is always enabled.
@@ -191,7 +193,8 @@ Only for `freeDirectionalFlight` type:
   fly="
     type: autoForward;
     autoLevelPitch: false; 
- "> 
+ "
+></a-entity>
 ```
 #### Roll
 - `allowRoll`: Enables banking left/right (default value: `true`).
@@ -199,8 +202,8 @@ Only for `freeDirectionalFlight` type:
 <a-entity
   fly="
     allowRoll: true;
- ">
-</a-entity>
+ "
+></a-entity>
 ```
 - `maxRollDeg`: Maximum roll angle in degrees (default value: `20`).
 - `rollSpeed`: How fast the roll angle changes (default value: `60`).
@@ -209,8 +212,8 @@ Only for `freeDirectionalFlight` type:
   fly="
     maxRollDeg: 25;
     rollSpeed: 80;
- ">
-</a-entity>
+ "
+></a-entity>
 ```
 - `autoLevelRoll`: Automatically returns roll to a neutral position (default value: `true`).
   - NOTE: Only `autoForward` flight type can have the false value for `autoLevelRoll`. For other flight types, the auto-leveling is always enabled.
@@ -219,8 +222,8 @@ Only for `freeDirectionalFlight` type:
   fly="
     type: autoForward;
     autoLevelRoll: false;
- ">
-</a-entity>
+ "
+></a-entity>
 ```
 ### **Gravity:**
 - `allowGravity`: Applies gravity when the character is not actively flying (default value: `false`).
@@ -230,8 +233,8 @@ Only for `freeDirectionalFlight` type:
   fly="
     type: freeDirectionalFlight;
     allowGravity: true;
- ">
-</a-entity>
+ "
+></a-entity>
 ```
 
 ### **Restrict Movement:**
@@ -242,8 +245,8 @@ Only for `freeDirectionalFlight` type:
   fly="
     type: autoForwardFixedDirection;
     canMoveVertically: false; 
- ">
-</a-entity>
+ "
+></a-entity>
 ```
 - `canMoveHorizontally`: Allows the character to move left and right (default value: `true`).
    - NOTE: Only applies when using the `autoForwardFixedDirection` type.
@@ -252,8 +255,8 @@ Only for `freeDirectionalFlight` type:
   fly="
     type: autoForwardFixedDirection;
     canMoveHorizontally: false; 
- ">
-</a-entity>
+ "
+></a-entity>
 ```
 
 ### **Fix Orientation:**
@@ -262,8 +265,8 @@ Only for `freeDirectionalFlight` type:
 <a-entity
   fly="
     forwardOffsetAngle: 90;
- ">
-</a-entity>
+ "
+></a-entity>
 ```
 
 ## Scene setup
@@ -309,8 +312,8 @@ By setting the `allowGravity` property to `true`, the character will be affected
 <a-entity
    fly="
       type: freeDirectionalFlight;
-   >
-</a-entity>
+   "
+></a-entity>
 ```
 
 You can customize the movement controls using the `keyUp`, `keyDown`, `keyLeft`, `keyRight`, `keyAscend`, and `keyDescend` properties. The default values are `w`, `s`, `a`, `d`, `space`, and `c`, respectively.
@@ -325,8 +328,7 @@ You can customize the movement controls using the `keyUp`, `keyDown`, `keyLeft`,
     keyAscend: space;
     keyDescend: shift;
  "
->
-</a-entity>
+></a-entity>
 ```
 
 The base flying speed is defined by the `speed` property, while the turning speed can be adjusted using `rotationSpeed`.
@@ -337,8 +339,7 @@ The base flying speed is defined by the `speed` property, while the turning spee
     speed: 5; 
     rotationSpeed: 60;
  "
->
-</a-entity>
+></a-entity>
 ```
 
 Sprinting can be enabled by setting `sprint` to true, allowing the character to move faster while holding the sprint key (`keySprint`). The sprint speed is controlled by the `sprintSpeed` property.
@@ -350,8 +351,7 @@ Sprinting can be enabled by setting `sprint` to true, allowing the character to 
     keySprint: shift;
     sprintSpeed: 10;
  "
->
-</a-entity>
+></a-entity>
 ```
 
 This mode also supports optional gravity. When `allowGravity` is set to true, the character will be affected by gravity while not flying. Gravity is disabled by default.
@@ -361,8 +361,7 @@ This mode also supports optional gravity. When `allowGravity` is set to true, th
     type: freeDirectionalFlight;
     allowGravity: true;
  "
->
-</a-entity>
+></a-entity>
 ```
 
 For more realistic flight behavior, **pitch** and **roll** are enabled by default. You can adjust their limits and speed using the `maxPitchDeg`, `pitchSpeed`, `maxRollDeg`, and `rollSpeed` properties.
@@ -378,8 +377,7 @@ The pitch and roll are in this flying mode automatically leveled back to neutral
     maxRollDeg: 25;
     rollSpeed: 80;
  "
->
-</a-entity>
+></a-entity>
 ```
 
 ## autoForward
@@ -390,8 +388,8 @@ The `autoForward` mode simulates aircraft-style flight where the character moves
 <a-entity
   fly="
      type: autoForward;
-  ">
-</a-entity>
+  "
+></a-entity>
 ```
 
 You can customize the control keys using the `keyUp`, `keyDown`, `keyLeft` and `keyRight` properties.
@@ -404,8 +402,7 @@ You can customize the control keys using the `keyUp`, `keyDown`, `keyLeft` and `
     keyLeft: arrowleft;
     keyRight: arrowright;
  "
->
-</a-entity>
+></a-entity>
 ```
 
 The forward flight speed is set with the `speed` property, and the turning speed can be adjusted using `rotationSpeed`.
@@ -416,8 +413,7 @@ The forward flight speed is set with the `speed` property, and the turning speed
     speed: 5; 
     rotationSpeed: 500;
  "
->
-</a-entity>
+></a-entity>
 ```
 
 Pitch and roll behavior is enabled by default to make flight feel more realistic. You can fine-tune it using the `maxPitchDeg`, `pitchSpeed`, `maxRollDeg`, and `rollSpeed` properties. If needed, you can disable pitch and/or roll entirely by setting `allowPitch` and `allowRoll` to `false`.
@@ -432,8 +428,7 @@ Pitch and roll behavior is enabled by default to make flight feel more realistic
     maxRollDeg: 25;
     rollSpeed: 80;
  "
->
-</a-entity>
+></a-entity>
 ```
 
 By default, the character automatically levels back to a neutral pitch and roll over time. This auto-leveling can be disabled using the `autoLevelPitch` and `autoLevelRoll` properties. If the auto-leveling is disabled, the character will maintain its pitch and roll angle until the player changes it again.
@@ -450,8 +445,7 @@ By default, the character automatically levels back to a neutral pitch and roll 
     autoLevelPitch: false; 
     autoLevelRoll: false;
  "
->
-</a-entity>
+></a-entity>
 ```
 
 ## autoForwardFixedDirection
@@ -465,9 +459,8 @@ The `autoForwardFixedDirection` mode is similar to autoForward, but the characte
      maxRollDeg: 15;
      rollSpeed: 60;
      canMoveVertically: false;
-"
->
-</a-entity>
+  "
+></a-entity>
 ```
 
 You can customize the control keys using the `keyUp`, `keyDown`, `keyLeft` and `keyRight` properties.
@@ -480,8 +473,7 @@ You can customize the control keys using the `keyUp`, `keyDown`, `keyLeft` and `
     keyLeft: arrowleft;
     keyRight: arrowright;
  "
->
-</a-entity>
+></a-entity>
 ```
 
 The forward speed is set with the `speed` property.
@@ -491,8 +483,7 @@ The forward speed is set with the `speed` property.
     type: autoForwardFixedDirection;
     speed: 5; 
  "
->
-</a-entity>
+></a-entity>
 ```
 
 Pitch and roll are enabled by default for a more dynamic feel, and can be configured using `maxPitchDeg`, `pitchSpeed`, `maxRollDeg`, and `rollSpeed`. When the player releases the movement keys, the pitch and roll automatically return to a neutral position. If you don’t want pitch or roll to be applied, you can disable them using the `allowPitch` and `allowRoll` properties.
@@ -505,8 +496,7 @@ Pitch and roll are enabled by default for a more dynamic feel, and can be config
     maxRollDeg: 25;
     rollSpeed: 80;
  "
->
-</a-entity>
+></a-entity>
 ```
 
 You can also restrict movement entirely on one axis:
@@ -518,8 +508,7 @@ You can also restrict movement entirely on one axis:
     type: autoForwardFixedDirection;
     canMoveVertically: false; 
  "
->
-</a-entity>
+></a-entity>
 ```
 
 ## allowPitch and allowRoll
@@ -534,8 +523,7 @@ Use the `maxPitchDeg` property to define the maximum pitch angle, and `pitchSpee
     maxPitchDeg: 30;
     pitchSpeed: 120;
  "
->
-</a-entity>
+></a-entity>
 ```
 
 **Roll** controls the left-and-right banking motion. 
@@ -547,8 +535,7 @@ Use the `maxRollDeg` property to set the maximum roll angle, and `rollSpeed` to 
     maxRollDeg: 25;
     rollSpeed: 80;
  "
->
-</a-entity>
+></a-entity>
 ```
 
 By default, when the player releases the movement keys, both pitch and roll automatically return to a neutral position. 
@@ -560,8 +547,7 @@ When auto-leveling is disabled, the character will keep its current pitch and ro
     autoLevelPitch: false; 
     autoLevelRoll: false;
  "
->
-</a-entity>
+></a-entity>
 ```
 
 ## forwardOffsetAngle
@@ -581,8 +567,7 @@ To fix this, set the `forwardOffsetAngle` to 90 (or -270) degrees to align the l
   fly="
     forwardOffsetAngle: 90;
  "
->
-</a-entity>
+></a-entity>
 ```
 
 ## Parent-child structure 
