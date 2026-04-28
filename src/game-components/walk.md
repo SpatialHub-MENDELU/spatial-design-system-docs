@@ -41,8 +41,6 @@ The character rotates smoothly while moving.
 <a-entity
   walk="
     turnType: smoothTurn;
-    walkClipName: Run;
-    idleClipName: Idle;
   ">
 </a-entity>
 ```
@@ -59,9 +57,6 @@ The character rotates to 8 directions (↑, ↗, →, ↘, ↓, ↙, ←, ↖) b
 <a-entity
   walk="
     turnType: stepTurnDiagonal;
-    rotationSpeed: 650;
-    walkClipName: Run;
-    idleClipName: Idle;
   ">
 </a-entity>
 ```
@@ -69,31 +64,119 @@ The character rotates to 8 directions (↑, ↗, →, ↘, ↓, ↙, ←, ↖) b
 - See [Scene setup](#scene-setup) section for how to set up the scene and entities.
 
 ## Quick start (How it works)
-
-1. **Animations:** 
-   - `walkClipName`, `idleClipName` properties
-   - optional: `sprintClipName` (you need to enable `sprint`)
-2. **Movement Type (`turnType`):** 
+### **Movement Type (`turnType`):**
    - [smoothTurn](#smoothturn): Smooth rotation while moving.
-   - [stepTurnCardinal](#stepturncardinal): Rotation to 4 directions (↑, →, ↓, ←) 
-   - [stepTurnDiagonal](#stepturndiagonal): Rotation to 8 directions (↑, ↗, →, ↘, ↓, ↙, ←, ↖) 
-3. **Controls:**
-   - Customize key bindings using `keyUp`, `keyDown`, `keyLeft`, and `keyRight`.
-4. **Speed:**
-   - `speed` (movement )
-   - `rotationSpeed` (turning)
-5. **Optional features:**
-   - Enable [sprint](#sprint)
-   - Enable [targetWalk](#targetwalk) for point-and-click movement.
-   - Enable [autoWalk](#autowalk) for continuous forward movement.
-6. **Fix Orientation:**
-   - If your model faces the wrong way, fix it using [forwardOffsetAngle](#forwardoffsetangle).
+   - [stepTurnCardinal](#stepturncardinal): Rotation to 4 directions (↑, →, ↓, ←)
+   - [stepTurnDiagonal](#stepturndiagonal): Rotation to 8 directions (↑, ↗, →, ↘, ↓, ↙, ←, ↖)
+   - default value: `smoothTurn`
+```html
+<a-entity
+  walk="
+    turnType: smoothTurn;
+  ">
+</a-entity>
+```
+
+### **Point-and-click movement:**
+- `targetWalk`: Moves the character to the clicked location (default value: `false`).
+```html
+<a-entity
+  walk="
+    targetWalk: true;
+  ">
+</a-entity>
+```
+### **Auto-walk:**
+- `autoWalk`: Automatically starts walking forward without input (default value: `false`).
+  - It can be combined with any movement types.
+```html
+<a-entity
+  walk="
+    autoWalk: true;
+  ">
+</a-entity>
+```
+
+### **Sprint:**
+- `sprint`: Enables sprinting (default value: `false`).
+- `sprintSpeed`: Speed while sprinting (default value: `6`).
+- `keySprint`: Key for sprinting (default value: `shift`).
+```html
+<a-entity
+  walk="
+    sprint: true;
+    sprintSpeed: 6;
+    keySprint: shift;
+  ">
+```
+
+### **Animations:**
+   - `walkClipName`: Animation name for walking (default value: `Walk`)
+   - `idleClipName`: Animation name for idle (default value: `Idle`)
+```html
+<a-entity
+  walk="
+    walkClipName: Walk;
+    idleClipName: Idle;
+  ">
+</a-entity>
+```
+- `sprintClipName`: Animation name for sprinting (default value: `Gallop`)
+  - NOTE: you need to enable `sprint` (default value is `false`)
+```html
+<a-entity
+  walk="
+    sprintClipName: Gallop;
+    sprint: true;
+  ">
+</a-entity>
+```
+### **Speed:**
+- `speed`: Movement (default value: `3`)
+- `rotationSpeed`: Turning speed
+  - default value: `90` (optimal for `smoothTurn`)
+  - recommended value: `450` (optimal for `targetWalk`)
+  - recommended value: `600` (optimal for `stepTurnCardinal` and `stepTurnDiagonal`)
+```html
+<a-entity
+  walk="
+    speed: 3;
+    rotationSpeed: 90;
+  ">
+</a-entity>
+```
+
+### **Controls:** 
+- `keyUp`: Key for moving forward (default value: `w`)
+- `keyDown`: Key for moving backward (default value: `s`)
+- `keyLeft`: Key for moving left (default value: `a`)
+- `keyRight`: Key for moving right (default value: `d`)
+```html
+<a-entity
+  walk="
+    keyUp: w;
+    keyDown: s;
+    keyLeft: a;
+    keyRight: d;
+  ">
+</a-entity>
+```
+### **Fix Orientation:**
+- [forwardOffsetAngle](#forwardoffsetangle): Applies an angle correction to fix the model's forward orientation (default value: `0`).
+```html
+  
+<a-entity
+  walk="
+    forwardOffsetAngle: 90;
+  ">
+</a-entity>
+```
 
 ## Scene setup
 - Use parent (logic) + child (visual) structure.
     - Parent → walk + physics 
     - Child → model + shape
-    - See [Parent + Child Structure](#parent--child-structure) section for more details. 
+    - See [Parent + Child Structure](#parent-and-child-structure) section for more details. 
 - **Camera usage**:
   - Use the `id` for camera targeting (see [game-view](game-view.md) documentation).
 
@@ -115,120 +198,6 @@ import "spatial-design-system/components/game/walk.js";
     <a-entity gltf-model="#fox" ammo-shape="type: hull;" position="0 -1.3 0.2" scale="1 1 1"></a-entity>
   </a-entity>
 </a-scene>
-```
-
-## smoothTurn
-
-This is the standard movement style for most 3D adventure games. The character rotates smoothly while moving. You can
-adjust the responsiveness using `rotationSpeed`.
-
-```html
-
-<a-entity
-  walk="
-    turnType: smoothTurn;
-    speed: 5;
-    rotationSpeed: 90;
-    walkClipName: Run;
-    idleClipName: Idle;
-  ">
-</a-entity>
-```
-
-## stepTurnCardinal
-
-The character rotates to 90° angles (Up, Down, Left, Right) before moving. It prevents diagonal movement and
-enables 4-directional movement.
-
-Use the `startMovingDirection` property to define the character's initial orientation (`up`, `right`, `left`, `down`).
-This ensures the movement logic aligns with the model's visual rotation from the very first keypress.
-
-```html
-
-<a-entity
-  walk="
-    turnType: stepTurnCardinal;
-    speed: 5;
-    rotationSpeed: 600;
-    walkClipName: Run;
-    idleClipName: Idle;
-  ">
-</a-entity>
-```
-
-## stepTurnDiagonal
-
-Works the same way as `stepTurnCardinal`, but also allows movement in diagonal directions (↗, ↘, ↙, ↖) by turning 45°
-before moving. It enables 8-directional movement.
-
-Use the `startMovingDirection` property to define the character's initial orientation (`up`, `right`, `left`, `down`).
-This ensures the movement logic aligns with the model's visual rotation from the very first keypress.
-
-```html
-
-<a-entity
-  walk="
-    turnType: stepTurnDiagonal;
-    speed: 5;
-    rotationSpeed: 600;
-    walkClipName: Run;
-    idleClipName: Idle;
-  ">
-</a-entity>
-```
-
-## sprint
-
-Move faster while holding a key. The default value is `shift`. You must enable it explicitly and provide a sprint animation.
-
-```html
-
-<a-entity
-  walk="
-    sprint: true;
-    sprintSpeed: 10;
-    sprintClipName: Sprint;
-    
-    walkClipName: Run;
-    idleClipName: Idle;
-  ">
-</a-entity>
-```
-
-## autoWalk
-
-If the `autoWalk` property is set to true, the player will automatically start walking forward without input. It works
-with all [turn types](#turntype).
-
-```html
-
-<a-entity
-  walk="
-    autoWalk: true;
-    speed: 6;
-    rotationSpeed: 90;
-    walkClipName: Walk;
-    idleClipName: Idle;
-  ">
-</a-entity>
-```
-
-## targetWalk
-
-If the `targetWalk` property is set to true, it enables point-and-click movement: the character walks toward the
-location where the player clicks. You can adjust the turning speed by `rotationSpeed` property.
-
-```html
-
-<a-entity
-  walk="
-    targetWalk: true;
-    speed: 6;
-    rotationSpeed: 450;
-    walkClipName: Walk;
-    idleClipName: Idle;
-  ">
-</a-entity>
 ```
 
 ## forwardOffsetAngle
@@ -281,7 +250,7 @@ direction.
 | _startMovingDirection_ | enum (up, down, left, right)                         | down       | Defines the initial logical direction for step turns. Important for alignment in grid-based movement.                                                                                                                                                                                                                                         |
 | _forwardOffsetAngle_   | number                                               | 0          | The angular offset (in degrees) that defines how much the model’s logical forward direction differs from its visual or model-space forward axis. In other words, it specifies how far the character’s or object’s “forward” (as understood by the user or game logic) is rotated relative to the model’s default orientation in the 3D scene. |
 
-## Parent + Child Structure
+## Parent and Child Structure
 To create a functional character controller, we recommend using a parent-child structure. This separates the physics
 calculations from the visual representation, allowing for better control over the character's pivot point and grounding.
 
