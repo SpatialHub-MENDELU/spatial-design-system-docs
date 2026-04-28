@@ -80,33 +80,191 @@ Automatically moves forward in fixed direction.
 
 
 ## Quick start (How it works)
-1. **Flight Type (`type`):**
-   - [freeDirectionalFlight](#freedirectionalflight) -> free movement in all directions
-   - [autoForward](#autoforward) -> automatic forward movement
-   - [autoForwardFixedDirection](#autoforwardfixeddirection) -> automatic forward movement in fixed direction
-2. **Movement**:
-   - `speed` and `rotationSpeed`
-   - keys: `keyUp`, `keyDown`, `keyLeft`, and `keyRight`
-   - for `freeDirectionalFlight`: `keyAscend` and `keyDescend` for vertical movement
-   
-### Optional features
+### **Flight Type (`type`):**
+- Defines the flying mode (default value: `freeDirectionalFlight`).
+   - `freeDirectionalFlight`: Free movement in all 3D directions.
+   - `autoForward`: Automatic continuous forward movement.
+   - `autoForwardFixedDirection`: Automatic forward movement in a fixed direction.
+```html
+<a-entity
+   fly="
+      type: freeDirectionalFlight;
+   >
+</a-entity>
+```
+### **Speed:**
+- `speed`: Base flying speed (default value: `4`).
+- `rotationSpeed`: Turning speed (default value: `40`).
+```html
+<a-entity
+  fly="
+    speed: 4; 
+    rotationSpeed: 40;
+ ">
+</a-entity>
+```
 
-1. **Animations:**
-    - `flyClipName` and `idleClipName`
-    - `sprintClipName` (`sprint` must be enabled)
-2. **Flight dynamics:**
-    - `allowPitch`for up/down tilt -> adjust with `maxPitchDeg` and `pitchSpeed`
-    - `allowRoll` for side tilt -> adjust with `maxRollDeg` and `rollSpeed`
-    - auto-leveling -> `autoLevelPitch` and `autoLevelRoll` are allowed for all types, but only `autoForward` type can have the false value 
-3. **Sprinting:**
-    - enable `sprint`
-    - set `keySprint`, `sprintSpeed` and `sprintClipName`
-4. **Gravity**:
-    - for `freeDirectionalFlight`: `allowGravity` (gravity affect the character when not flying)
-5. **Restrict Movement**:
-    - for `autoForwardFixedDirection`: restrict vertical or horizontal movement by `canMoveVertically` or `canMoveHorizontally`
-6. **Orientation:** 
-   - if your model faces the wrong way, fix it using [forwardOffsetAngle](#forwardoffsetangle).
+### **Controls:**
+- `keyUp`: Key for moving forward/up (default value: `w`).
+- `keyDown`: Key for moving backward/down (default value: `s`).
+- `keyLeft`: Key for moving left (default value: `a`).
+- `keyRight`: Key for moving right (default value: `d`).
+```html
+<a-entity
+  fly="
+    keyUp: w;
+    keyDown: s;
+    keyLeft: a;
+    keyRight: d;
+ ">
+</a-entity>
+```
+Only for `freeDirectionalFlight` type:
+- `keyAscend`: Key for moving upward while flying (default value: ` `).
+- `keyDescend`: Key for moving downward while flying (default value: `c`).
+```html
+<a-entity
+  fly="
+    keyAscend: space;
+    keyDescend: c;
+ ">
+```
+
+### **Sprint:**
+- `sprint`: Enables sprinting (default value: `false`).
+- `sprintSpeed`: Speed while sprinting (default value: `10`).
+- `keySprint`: Key for sprinting (default value: `shift`).
+```html
+<a-entity
+  fly="
+    sprint: true;
+    keySprint: shift;
+    sprintSpeed: 10;
+ ">
+</a-entity>
+```
+
+### **Animations:**
+- `flyClipName`: Animation name for flying (default value: `*Flying*`).
+- `idleClipName`: Animation name for idle (default value: `*Flying_Idle*`).
+```html
+<a-entity
+  fly="
+    flyClipName: Flying;
+    idleClipName: Flying_Idle;   
+ ">
+</a-entity>
+```
+- `sprintClipName`: Animation name for sprinting (default value: `*Fast_Flying*`).
+   - NOTE: You need to enable `sprint` (default value is `false`).
+```html
+<a-entity
+  fly="
+    sprint: true;
+    sprintClipName: Fast_Flying;
+ ">
+</a-entity>
+```
+### **Flight Dynamics (Pitch & Roll):**
+#### Pitch
+- `allowPitch`: Enables tilting up/down (default value: `true`).
+```html
+<a-entity
+  fly="
+    allowPitch: true;
+ ">
+</a-entity>
+```
+- `maxPitchDeg`: Maximum pitch angle in degrees (default value: `20`).
+- `pitchSpeed`: How fast the pitch angle changes (default value: `60`).
+```html
+<a-entity
+  fly="
+    maxPitchDeg: 20;
+    pitchSpeed: 60;
+ ">
+```
+- `autoLevelPitch`: Automatically returns pitch to a neutral position (default value: `true`).
+  - NOTE: Only `autoForward` flight type can have the false value for `autoLevelPitch`. For other flight types, the auto-leveling is always enabled.
+```html
+<a-entity
+  fly="
+    type: autoForward;
+    autoLevelPitch: false; 
+ "> 
+```
+#### Roll
+- `allowRoll`: Enables banking left/right (default value: `true`).
+```html
+<a-entity
+  fly="
+    allowRoll: true;
+ ">
+</a-entity>
+```
+- `maxRollDeg`: Maximum roll angle in degrees (default value: `20`).
+- `rollSpeed`: How fast the roll angle changes (default value: `60`).
+```html
+<a-entity
+  fly="
+    maxRollDeg: 25;
+    rollSpeed: 80;
+ ">
+</a-entity>
+```
+- `autoLevelRoll`: Automatically returns roll to a neutral position (default value: `true`).
+  - NOTE: Only `autoForward` flight type can have the false value for `autoLevelRoll`. For other flight types, the auto-leveling is always enabled.
+```html
+<a-entity
+  fly="
+    type: autoForward;
+    autoLevelRoll: false;
+ ">
+</a-entity>
+```
+### **Gravity:**
+- `allowGravity`: Applies gravity when the character is not actively flying (default value: `false`).
+   - NOTE: Specific to `freeDirectionalFlight` type.
+```html
+<a-entity
+  fly="
+    type: freeDirectionalFlight;
+    allowGravity: true;
+ ">
+</a-entity>
+```
+
+### **Restrict Movement:**
+- `canMoveVertically`: Allows the character to move up and down (default value: `true`).
+  - NOTE: Only applies when using the `autoForwardFixedDirection` type.
+```html
+<a-entity
+  fly="
+    type: autoForwardFixedDirection;
+    canMoveVertically: false; 
+ ">
+</a-entity>
+```
+- `canMoveHorizontally`: Allows the character to move left and right (default value: `true`).
+   - NOTE: Only applies when using the `autoForwardFixedDirection` type.
+```html
+<a-entity
+  fly="
+    type: autoForwardFixedDirection;
+    canMoveHorizontally: false; 
+ ">
+</a-entity>
+```
+
+### **Fix Orientation:**
+- `forwardOffsetAngle`: Applies an angle correction to fix the model's forward orientation (default value: `0`).
+```html
+<a-entity
+  fly="
+    forwardOffsetAngle: 90;
+ ">
+</a-entity>
+```
 
 ## Scene setup
 Use parent (logic) + child (visual). Read more about the [parent-child structure](#parent-child-structure-).
