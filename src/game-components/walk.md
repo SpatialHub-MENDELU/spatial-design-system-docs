@@ -65,9 +65,9 @@ The character rotates to 8 directions (↑, ↗, →, ↘, ↓, ↙, ←, ↖) b
 
 ## Quick start (How it works)
 ### **Movement Type (`turnType`):**
-   - [smoothTurn](#smoothturn): Smooth rotation while moving.
-   - [stepTurnCardinal](#stepturncardinal): Rotation to 4 directions (↑, →, ↓, ←)
-   - [stepTurnDiagonal](#stepturndiagonal): Rotation to 8 directions (↑, ↗, →, ↘, ↓, ↙, ←, ↖)
+   - `smoothTurn`: Smooth rotation while moving.
+   - `stepTurnCardinal`: Rotation to 4 directions (↑, →, ↓, ←)
+   - `stepTurnDiagonal`: Rotation to 8 directions (↑, ↗, →, ↘, ↓, ↙, ←, ↖)
    - default value: `smoothTurn`
 ```html
 <a-entity
