@@ -215,6 +215,12 @@ export default defineConfig({
   },
   vite: {
     plugins: [crossOriginIsolation],
+    // Match spatial-design-system's aframe range (~1.5.0). Dedupe guards
+    // against future nested copies if a transitive dep ever requests another
+    // version, so all aframe imports share one registry.
+    resolve: {
+      dedupe: ['aframe'],
+    },
     server: {
       cors: true,
     },
