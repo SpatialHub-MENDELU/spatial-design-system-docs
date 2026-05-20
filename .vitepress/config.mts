@@ -21,6 +21,10 @@ export default defineConfig({
     'AR/VR Design System with detailed guidelines and ready to use components',
   srcDir: './src',
   head: [
+    // Enables cross-origin isolation on static hosts (e.g. GitHub Pages) that
+    // cannot set COOP/COEP response headers. Required by @webcontainer/api in
+    // the Playground. No-op when the server already sends the headers.
+    ['script', { src: '/coi-serviceworker.min.js' }],
     ['script', { type: 'text/javascript' }, handlePlaygroundPageClass],
   ],
   themeConfig: {
