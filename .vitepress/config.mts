@@ -21,6 +21,10 @@ export default defineConfig({
     'AR/VR Design System with detailed guidelines and ready to use components',
   srcDir: './src',
   head: [
+    // Enables cross-origin isolation on static hosts (e.g. GitHub Pages) that
+    // cannot set COOP/COEP response headers. Required by @webcontainer/api in
+    // the Playground. No-op when the server already sends the headers.
+    ['script', { src: '/coi-serviceworker.min.js' }],
     ['script', { type: 'text/javascript' }, handlePlaygroundPageClass],
     ['script', { src: 'https://unpkg.com/aframe-ocean-shader@1.0.0/dist/aframe-ocean-shader.min.js' }],
     ['script', { src: 'https://aframe.io/releases/1.7.0/aframe.min.js' }],
@@ -51,6 +55,7 @@ export default defineConfig({
           { text: 'Quick Start', link: '/getting-started/quick-start' },
           { text: 'Interactivity', link: '/getting-started/interactivity' },
           { text: 'Running on devices', link: '/getting-started/running-on-devices' },
+          { text: 'Testing', link: '/getting-started/testing' },
         ],
       },
       {
@@ -66,10 +71,14 @@ export default defineConfig({
           { text: 'checkbox', link: '/ar-vr-primitives/checkbox' },
           { text: 'divider', link: '/ar-vr-primitives/divider' },
           { text: 'dialog', link: '/ar-vr-primitives/dialog' },
+          { text: 'list', link: '/ar-vr-primitives/list' },
           { text: 'menu', link: '/ar-vr-primitives/menu' },
           { text: 'progress bar', link: '/ar-vr-primitives/progressbar' },
+          { text: 'ratings', link: '/ar-vr-primitives/ratings' },
           { text: 'row, column', link: '/ar-vr-primitives/rowcolumn' },
           { text: 'switch', link: '/ar-vr-primitives/switch' },
+          { text: 'table', link: '/ar-vr-primitives/table' },
+          { text: 'tabs', link: '/ar-vr-primitives/tabs' },
           { text: 'textbox', link: '/ar-vr-primitives/textbox' },
         ],
       },
@@ -211,6 +220,12 @@ export default defineConfig({
   },
   vite: {
     plugins: [crossOriginIsolation],
+    // Match spatial-design-system's aframe range (~1.5.0). Dedupe guards
+    // against future nested copies if a transitive dep ever requests another
+    // version, so all aframe imports share one registry.
+    resolve: {
+      dedupe: ['aframe'],
+    },
     server: {
       cors: true,
     },

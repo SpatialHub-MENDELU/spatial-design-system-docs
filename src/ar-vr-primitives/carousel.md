@@ -166,3 +166,13 @@ import "spatial-design-system/primitives/ar-carousel.js";
 | _custombuttons_ | boolean                 | false   | Enables or disables custom-styled navigation buttons. When set to `true`, the carousel uses the button configuration defined in the `previous` and `next` properties instead of default arrows. |
 | _previous_  | object ({"label": "Previous", "color": "white"}) | { "label": "Previous", "color": “#00BA92”} | Customizes the “Previous” navigation button, including its text label and color.|
 | _next_  | object ({"label": "Next", "color": "black"}) | { "label": "Next", "color": “#00BA92”} | Customizes the “Next” navigation button, including its text label and color. |
+
+## Events
+
+The carousel component emits the following events when interacted with:
+
+| Event         | Parameters                                       | Description                                                      |
+| ------------- | ------------------------------------------------ | ---------------------------------------------------------------- |
+| _change_      | `{ index: number, src: string }` | Emitted whenever the active slide changes. Returns the new `index` and the image `src`. |
+| _previous_    | - | Emitted when the user clicks the "Previous" button or the left arrow. |
+| _next_        | - | Emitted when the user clicks the "Next" button or the right arrow. |
