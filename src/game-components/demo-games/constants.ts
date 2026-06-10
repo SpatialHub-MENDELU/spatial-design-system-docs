@@ -59,11 +59,11 @@ export const DragonModelSrc = '/glb_models/game_components/fly/Dragon.glb';
  * - Dock, Fox, Rock - by Quaternius
  * ============================================================================
  */
-export const PaperAirplaneModelSrc = '../../public/glb_models/game_components/fly/paper_airplane.glb';
-export const ForestModelSrc = '../../public/glb_models/game_components/fly/Forest.glb';
-export const DockModelSrc = '../../public/glb_models/game_components/fly/Dock.glb';
-export const FoxModelSrc = '../../public/glb_models/game_components/fly/Fox.glb';
-export const RockModelSrc = '../../public/glb_models/game_components/fly/Rock.glb';
+export const PaperAirplaneModelSrc = '/glb_models/game_components/fly/paper_airplane.glb';
+export const ForestModelSrc = '/glb_models/game_components/fly/Forest.glb';
+export const DockModelSrc = '/glb_models/game_components/fly/Dock.glb';
+export const FoxModelSrc = '/glb_models/game_components/fly/Fox.glb';
+export const RockModelSrc = '/glb_models/game_components/fly/Rock.glb';
 
 // Z-MAZE
 /**
