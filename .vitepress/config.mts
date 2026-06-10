@@ -1,5 +1,5 @@
 import { defineConfig } from 'vitepress';
-import { fileURLToPath, URL } from 'node:url';
+import * as path from 'node:path';
 import { handlePlaygroundPageClass } from '../src/vue/playground/utils/HandlePlaygroundPageClass';
 
 function crossOriginIsolationMiddleware(_, response, next) {
@@ -227,7 +227,7 @@ export default defineConfig({
     // <a-node> and throw NotSupportedError.
     resolve: {
       alias: {
-        aframe: fileURLToPath(new URL('./aframe-shim.js', import.meta.url)),
+        aframe: path.resolve(__dirname, 'aframe-shim.js'),
       },
       dedupe: ['aframe'],
     },
