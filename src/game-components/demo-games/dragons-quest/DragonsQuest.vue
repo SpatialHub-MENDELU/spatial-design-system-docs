@@ -586,7 +586,7 @@ const addAllComponents = () => {
         </div>
       </div>
 
-      <a-scene id="game-scene" physics="driver: ammo; debug: false;">
+      <a-scene embedded id="game-scene" physics="driver: ammo; debug: false;">
         <a-sky color="#AEE2FF"></a-sky>
 
         <a-entity id="clouds-container">

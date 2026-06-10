@@ -814,7 +814,7 @@ const quitGame = async () => {
         <div class="hint-line">ARROWS TO MOVE</div>
       </div>
 
-      <a-scene physics="driver: ammo; debug: false;">
+      <a-scene embedded physics="driver: ammo; debug: false;">
         <a-sky color="#00BFFF"></a-sky>
 
         <a-sphere

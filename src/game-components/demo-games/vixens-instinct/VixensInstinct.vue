@@ -532,7 +532,7 @@ function registerAframeComponents() {
           TIME: {{ timeLeft }}s
         </div>
       </div>
-      <a-scene v-if="renderScene" physics="driver: ammo;">
+      <a-scene embedded v-if="renderScene" physics="driver: ammo;">
         <a-entity
           camera="fov: 40"
           position="0 11 18"
