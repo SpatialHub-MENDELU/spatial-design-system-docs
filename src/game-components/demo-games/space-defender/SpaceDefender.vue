@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
-import 'aframe';
 import {
   SpaceshipEnemyModelSrc,
   EarthModelSrc,

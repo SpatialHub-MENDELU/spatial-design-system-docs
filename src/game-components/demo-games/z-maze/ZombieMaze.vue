@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick, computed } from 'vue';
-import 'aframe';
 import { AdventurerModelSrc, ZombieModelSrc } from '../constants';
 
 type GameState = 'menu' | 'playing' | 'gameover' | 'win';

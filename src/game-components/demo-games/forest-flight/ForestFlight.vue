@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick } from 'vue';
-import AFRAME from 'aframe';
-import 'aframe';
 import {
   PaperAirplaneModelSrc,
   ForestModelSrc,

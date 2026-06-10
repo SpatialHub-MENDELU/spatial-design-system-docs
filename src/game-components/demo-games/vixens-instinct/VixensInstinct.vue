@@ -1,6 +1,5 @@
 <script setup>
 import { nextTick, onMounted, onUnmounted, ref } from 'vue';
-import 'aframe';
 
 import { obstacles } from './StaticModels.js';
 
