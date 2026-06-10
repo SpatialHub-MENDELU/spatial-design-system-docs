@@ -5,11 +5,6 @@ import PrimeVue from "primevue/config";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import Aura from '@primeuix/themes/aura';
 
-// Eagerly load AFrame in the browser so `window.THREE` is set before any
-// AR/VR page chunk (e.g. aframe-troika-text) evaluates. Previously imported
-// inside onMounted, which races with bundled component chunks on hard reload.
-const aframeReady = typeof window !== "undefined" ? import("aframe") : Promise.resolve();
-
 import { WebContainerService } from "../../src/vue/playground/services/webContainersService";
 import { FileSystemService } from "../../src/vue/playground/services/fileSystemService";
 import { SessionService } from "../../src/vue/playground/services/sessionService";
@@ -22,10 +17,8 @@ import ToastService from 'primevue/toastservice';
 /** @type {import('vitepress').Theme} */
 export default {
     extends: DefaultTheme,
-    async enhanceApp({ app }) {
+    enhanceApp({ app }) {
         if (typeof window !== "undefined") {
-            await aframeReady;
-
             for (const key in window) {
                 if (window[key] && typeof window[key] === "object" && "env" in window[key]) {
                     window[key].env.NODE_ENV = import.meta.env.MODE || "production";

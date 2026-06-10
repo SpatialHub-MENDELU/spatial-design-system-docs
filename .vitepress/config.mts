@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress';
+import { fileURLToPath, URL } from 'node:url';
 import { handlePlaygroundPageClass } from '../src/vue/playground/utils/HandlePlaygroundPageClass';
 
 function crossOriginIsolationMiddleware(_, response, next) {
@@ -26,11 +27,10 @@ export default defineConfig({
     // the Playground. No-op when the server already sends the headers.
     ['script', { src: '/coi-serviceworker.min.js' }],
     ['script', { type: 'text/javascript' }, handlePlaygroundPageClass],
-    ['script', { src: 'https://unpkg.com/aframe-ocean-shader@1.0.0/dist/aframe-ocean-shader.min.js' }],
-    ['script', { src: 'https://aframe.io/releases/1.7.0/aframe.min.js' }],
-    ['script', { src: 'https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.4/dist/aframe-extras.min.js' }],
-    ['script', { src: 'https://cdn.jsdelivr.net/gh/MozillaReality/ammo.js@8bbc0ea/builds/ammo.wasm.js' }],
-    ['script', { src: 'https://cdn.jsdelivr.net/gh/c-frame/aframe-physics-system@v4.2.3/dist/aframe-physics-system.min.js' }]
+    ['script', { src: 'https://aframe.io/releases/1.5.0/aframe.min.js', crossorigin: 'anonymous' }],
+    ['script', { src: 'https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.4/dist/aframe-extras.min.js', crossorigin: 'anonymous' }],
+    ['script', { src: 'https://cdn.jsdelivr.net/gh/MozillaReality/ammo.js@8bbc0ea/builds/ammo.wasm.js', crossorigin: 'anonymous' }],
+    ['script', { src: 'https://cdn.jsdelivr.net/gh/c-frame/aframe-physics-system@v4.2.3/dist/aframe-physics-system.min.js', crossorigin: 'anonymous' }]
   ],
   themeConfig: {
     logo: {
@@ -220,10 +220,15 @@ export default defineConfig({
   },
   vite: {
     plugins: [crossOriginIsolation],
-    // Match spatial-design-system's aframe range (~1.5.0). Dedupe guards
-    // against future nested copies if a transitive dep ever requests another
-    // version, so all aframe imports share one registry.
+    // Route every `import ... from "aframe"` (including those inside
+    // spatial-design-system) to a shim that re-exports the global AFRAME
+    // loaded synchronously via the CDN <script> tag in head. Prevents a
+    // second copy of aframe from being bundled, which would re-register
+    // <a-node> and throw NotSupportedError.
     resolve: {
+      alias: {
+        aframe: fileURLToPath(new URL('./aframe-shim.js', import.meta.url)),
+      },
       dedupe: ['aframe'],
     },
     server: {
