@@ -27,7 +27,7 @@ export default defineConfig({
     // the Playground. No-op when the server already sends the headers.
     ['script', { src: '/coi-serviceworker.min.js' }],
     ['script', { type: 'text/javascript' }, handlePlaygroundPageClass],
-    ['script', { src: 'https://aframe.io/releases/1.5.0/aframe.min.js', crossorigin: 'anonymous' }],
+    ['script', { src: 'https://aframe.io/releases/1.7.0/aframe.min.js', crossorigin: 'anonymous' }],
     ['script', { src: 'https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.4/dist/aframe-extras.min.js', crossorigin: 'anonymous' }],
     ['script', { src: 'https://cdn.jsdelivr.net/gh/MozillaReality/ammo.js@8bbc0ea/builds/ammo.wasm.js', crossorigin: 'anonymous' }],
     ['script', { src: 'https://cdn.jsdelivr.net/gh/c-frame/aframe-physics-system@v4.2.3/dist/aframe-physics-system.min.js', crossorigin: 'anonymous' }]
@@ -217,6 +217,13 @@ export default defineConfig({
     // socialLinks: [
     //   { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
     // ]
+  },
+  vue: {
+    template: {
+      compilerOptions: {
+        hoistStatic: false,
+      },
+    },
   },
   vite: {
     plugins: [crossOriginIsolation],
