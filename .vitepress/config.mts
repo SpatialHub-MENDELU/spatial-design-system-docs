@@ -229,6 +229,7 @@ export default defineConfig({
         text: 'Game components',
         collapsed: true,
         items: [
+          { text: 'Setup project', link: '/game-components/setup' },
           { text: 'walk', link: '/game-components/walk' },
           { text: 'fly', link: '/game-components/fly' },
           { text: 'game-view', link: '/game-components/game-view' },
