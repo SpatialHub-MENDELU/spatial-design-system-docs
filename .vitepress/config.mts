@@ -191,7 +191,7 @@ export default defineConfig({
       },
       {
         text: 'Spatial anchors',
-        collapsed: false,
+        collapsed: true,
         items: [
           {
             text: 'Attaching to physical world',
