@@ -1,5 +1,5 @@
 ---
-title: auto-xr
+title: XR Setup
 ---
 
 <script setup lang="ts">

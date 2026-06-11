@@ -77,6 +77,10 @@ export default defineConfig({
           { text: 'Introduction', link: '/getting-started/introduction' },
           { text: 'Installation', link: '/getting-started/installation' },
           { text: 'Quick Start', link: '/getting-started/quick-start' },
+          {
+            text: 'XR setup',
+            link: '/ar-vr-components/auto-xr.md',
+          },
           { text: 'Interactivity', link: '/getting-started/interactivity' },
           {
             text: 'Running on devices',
@@ -114,15 +118,16 @@ export default defineConfig({
         text: 'Layout',
         collapsed: true,
         items: [
+          { text: 'auto-position', link: '/ar-vr-components/auto-position' },
+          { text: 'auto-scale', link: '/ar-vr-components/auto-scale' },
+          { text: 'billboard', link: '/ar-vr-components/billboard' },
           { text: 'circle', link: '/ar-vr-components/circle' },
+          { text: 'fit-into-fov', link: '/ar-vr-components/fit-into-fov' },
           {
             text: 'Flexbox components',
             link: '/ar-vr-components/flexbox-introduction',
             items: [
-              {
-                text: 'flexbox',
-                link: '/ar-vr-components/flexbox',
-              },
+              { text: 'flexbox', link: '/ar-vr-components/flexbox' },
               { text: 'flex-col', link: '/ar-vr-components/flex-col' },
               { text: 'flex-grow', link: '/ar-vr-components/flex-grow' },
             ],
@@ -131,35 +136,15 @@ export default defineConfig({
         ],
       },
       {
-        text: 'Behavior',
-        collapsed: true,
-        items: [
-          { text: 'auto-position', link: '/ar-vr-components/auto-position' },
-          { text: 'auto-scale', link: '/ar-vr-components/auto-scale' },
-          { text: 'billboard', link: '/ar-vr-components/billboard' },
-          { text: 'fit-into-fov', link: '/ar-vr-components/fit-into-fov' },
-          { text: 'follow-element', link: '/ar-vr-components/follow-element' },
-          { text: 'follow-camera', link: '/ar-vr-components/follow-camera' },
-        ],
-      },
-      {
-        text: 'AR/VR',
+        text: 'Interactivity',
         collapsed: true,
         items: [
           {
-            text: 'Session setup - auto-xr',
-            link: '/ar-vr-components/auto-xr.md',
-          },
-          {
-            text: 'Input — Controllers',
+            text: 'Controllers',
             items: [
               {
                 text: 'Setup controllers',
                 link: '/ar-vr-components/controllers',
-              },
-              {
-                text: 'controller-attach',
-                link: '/ar-vr-components/controller-attach',
               },
               {
                 text: 'controller-teleport',
@@ -172,9 +157,9 @@ export default defineConfig({
             ],
           },
           {
-            text: 'Input — Hands',
+            text: 'Hands',
             items: [
-              { text: 'hands', link: '/ar-vr-components/hands' },
+              { text: 'Setup hands', link: '/ar-vr-components/hands' },
               {
                 text: 'hands-hoverable',
                 link: '/ar-vr-components/hands-hoverable',
@@ -184,7 +169,7 @@ export default defineConfig({
             ],
           },
           {
-            text: 'Input — Shared',
+            text: 'Shared',
             items: [
               {
                 text: 'vr-interactive',
@@ -194,7 +179,7 @@ export default defineConfig({
             ],
           },
           {
-            text: 'Input — Touchscreen',
+            text: 'Touchscreen',
             items: [
               {
                 text: 'touch-raycaster',
@@ -202,13 +187,16 @@ export default defineConfig({
               },
             ],
           },
+        ],
+      },
+      {
+        text: 'Spatial anchors',
+        collapsed: false,
+        items: [
           {
-            text: 'Spatial anchors',
+            text: 'Attaching to physical world',
+            link: '/ar-vr-components/place-object-components',
             items: [
-              {
-                text: 'Attaching 3D objects to physical world',
-                link: '/ar-vr-components/place-object-components',
-              },
               {
                 text: 'place-object',
                 link: '/ar-vr-components/place-object',
@@ -223,13 +211,25 @@ export default defineConfig({
               },
             ],
           },
+          {
+            text: 'Attaching to camera',
+            link: '/ar-vr-components/follow-camera',
+          },
+          {
+            text: 'Attaching to controller',
+            link: '/ar-vr-components/controller-attach',
+          },
+          {
+            text: 'Attaching to element',
+            link: '/ar-vr-components/follow-element',
+          },
         ],
       },
       {
         text: 'Game components',
         collapsed: true,
         items: [
-          { text: 'Setup project', link: '/game-components/setup' },
+          { text: 'Setup game project', link: '/game-components/setup' },
           { text: 'walk', link: '/game-components/walk' },
           { text: 'fly', link: '/game-components/fly' },
           { text: 'game-view', link: '/game-components/game-view' },
