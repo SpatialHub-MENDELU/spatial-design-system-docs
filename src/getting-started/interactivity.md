@@ -93,8 +93,7 @@ In the next section, **Primitives**, you will find more details on using interac
 
 ## Enabling interactivity using controllers (VR headsets)
 
-First, you should enable XR mode using either the general [auto-xr](/ar-vr-components/auto-xr) component 
-or the [auto-vr](/ar-vr-components/auto-vr) component, which is specifically designed for VR applications. 
+First, you should enable XR mode using the [auto-xr](/ar-vr-components/auto-xr) component.
 Also, you should configure the [controllers](/ar-vr-components/controllers) component. 
 
 Then, use [vr-interactive](/ar-vr-components/vr-interactive) component to enable interaction with objects.

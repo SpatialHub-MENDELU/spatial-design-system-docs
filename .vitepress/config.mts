@@ -27,10 +27,34 @@ export default defineConfig({
     // the Playground. No-op when the server already sends the headers.
     ['script', { src: '/coi-serviceworker.min.js' }],
     ['script', { type: 'text/javascript' }, handlePlaygroundPageClass],
-    ['script', { src: 'https://aframe.io/releases/1.7.0/aframe.min.js', crossorigin: 'anonymous' }],
-    ['script', { src: 'https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.4/dist/aframe-extras.min.js', crossorigin: 'anonymous' }],
-    ['script', { src: 'https://cdn.jsdelivr.net/gh/MozillaReality/ammo.js@8bbc0ea/builds/ammo.wasm.js', crossorigin: 'anonymous' }],
-    ['script', { src: 'https://cdn.jsdelivr.net/gh/c-frame/aframe-physics-system@v4.2.3/dist/aframe-physics-system.min.js', crossorigin: 'anonymous' }]
+    [
+      'script',
+      {
+        src: 'https://aframe.io/releases/1.7.0/aframe.min.js',
+        crossorigin: 'anonymous',
+      },
+    ],
+    [
+      'script',
+      {
+        src: 'https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.4/dist/aframe-extras.min.js',
+        crossorigin: 'anonymous',
+      },
+    ],
+    [
+      'script',
+      {
+        src: 'https://cdn.jsdelivr.net/gh/MozillaReality/ammo.js@8bbc0ea/builds/ammo.wasm.js',
+        crossorigin: 'anonymous',
+      },
+    ],
+    [
+      'script',
+      {
+        src: 'https://cdn.jsdelivr.net/gh/c-frame/aframe-physics-system@v4.2.3/dist/aframe-physics-system.min.js',
+        crossorigin: 'anonymous',
+      },
+    ],
   ],
   themeConfig: {
     logo: {
@@ -54,12 +78,16 @@ export default defineConfig({
           { text: 'Installation', link: '/getting-started/installation' },
           { text: 'Quick Start', link: '/getting-started/quick-start' },
           { text: 'Interactivity', link: '/getting-started/interactivity' },
-          { text: 'Running on devices', link: '/getting-started/running-on-devices' },
+          {
+            text: 'Running on devices',
+            link: '/getting-started/running-on-devices',
+          },
           { text: 'Testing', link: '/getting-started/testing' },
         ],
       },
       {
         text: 'UI elements',
+        collapsed: true,
         items: [
           { text: 'alert', link: '/ar-vr-primitives/alert' },
           { text: 'avatar', link: '/ar-vr-primitives/avatar' },
@@ -84,6 +112,7 @@ export default defineConfig({
       },
       {
         text: 'Layout',
+        collapsed: true,
         items: [
           { text: 'circle', link: '/ar-vr-components/circle' },
           {
@@ -103,6 +132,7 @@ export default defineConfig({
       },
       {
         text: 'Behavior',
+        collapsed: true,
         items: [
           { text: 'auto-position', link: '/ar-vr-components/auto-position' },
           { text: 'auto-scale', link: '/ar-vr-components/auto-scale' },
@@ -113,52 +143,72 @@ export default defineConfig({
         ],
       },
       {
-        text: "Game components",
-        items: [
-          {text: 'walk', link: '/game-components/walk'},
-          {text: 'fly', link: '/game-components/fly'},
-          {text: 'game-view', link: '/game-components/game-view'},
-          {text: 'npc-walk', link: '/game-components/npc-walk'},
-        ]
-      },
-      {
         text: 'AR/VR',
+        collapsed: true,
         items: [
-          { text: 'auto-vr', link: '/ar-vr-components/auto-vr' },
-          { text: 'auto-xr', link: '/ar-vr-components/auto-xr' },
-          { text: 'controllers', link: '/ar-vr-components/controllers' },
-          { text: 'hands', link: '/ar-vr-components/hands' },
-          { text: 'vr-interactive', link: '/ar-vr-components/vr-interactive' },
-          { text: 'finger-touch', link: '/ar-vr-components/finger-touch' },
           {
-            text: 'touch-raycaster',
-            link: '/ar-vr-components/touch-raycaster',
-          },
-          { text: 'grabbable', link: '/ar-vr-components/grabbable' },
-          {
-            text: 'hands-hoverable',
-            link: '/ar-vr-components/hands-hoverable',
+            text: 'Session setup - auto-xr',
+            link: '/ar-vr-components/auto-xr.md',
           },
           {
-            text: 'stretchable',
-            link: '/ar-vr-components/stretchable',
-          },
-          {
-            text: 'controller-attach',
-            link: '/ar-vr-components/controller-attach',
-          },
-          {
-            text: 'controller-teleport',
-            link: '/ar-vr-components/controller-teleport',
-          },
-          {
-            text: 'controller-movement',
-            link: '/ar-vr-components/controller-movement',
-          },
-          {
-            text: 'Placing objects in AR',
-            link: '/ar-vr-components/place-object-components',
+            text: 'Input — Controllers',
             items: [
+              {
+                text: 'Setup controllers',
+                link: '/ar-vr-components/controllers',
+              },
+              {
+                text: 'controller-attach',
+                link: '/ar-vr-components/controller-attach',
+              },
+              {
+                text: 'controller-teleport',
+                link: '/ar-vr-components/controller-teleport',
+              },
+              {
+                text: 'controller-movement',
+                link: '/ar-vr-components/controller-movement',
+              },
+            ],
+          },
+          {
+            text: 'Input — Hands',
+            items: [
+              { text: 'hands', link: '/ar-vr-components/hands' },
+              {
+                text: 'hands-hoverable',
+                link: '/ar-vr-components/hands-hoverable',
+              },
+              { text: 'finger-touch', link: '/ar-vr-components/finger-touch' },
+              { text: 'grabbable', link: '/ar-vr-components/grabbable' },
+            ],
+          },
+          {
+            text: 'Input — Shared',
+            items: [
+              {
+                text: 'vr-interactive',
+                link: '/ar-vr-components/vr-interactive',
+              },
+              { text: 'stretchable', link: '/ar-vr-components/stretchable' },
+            ],
+          },
+          {
+            text: 'Input — Touchscreen',
+            items: [
+              {
+                text: 'touch-raycaster',
+                link: '/ar-vr-components/touch-raycaster',
+              },
+            ],
+          },
+          {
+            text: 'Spatial anchors',
+            items: [
+              {
+                text: 'Attaching 3D objects to physical world',
+                link: '/ar-vr-components/place-object-components',
+              },
               {
                 text: 'place-object',
                 link: '/ar-vr-components/place-object',
@@ -176,7 +226,18 @@ export default defineConfig({
         ],
       },
       {
+        text: 'Game components',
+        collapsed: true,
+        items: [
+          { text: 'walk', link: '/game-components/walk' },
+          { text: 'fly', link: '/game-components/fly' },
+          { text: 'game-view', link: '/game-components/game-view' },
+          { text: 'npc-walk', link: '/game-components/npc-walk' },
+        ],
+      },
+      {
         text: 'Guidelines',
+        collapsed: true,
         items: [
           { text: 'Overview', link: '/guidelines/overview' },
           {
