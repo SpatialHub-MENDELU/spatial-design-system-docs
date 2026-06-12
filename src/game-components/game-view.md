@@ -24,9 +24,17 @@ title: game-view
 # {{ $frontmatter.title }}
 The `game-view` component controls the camera in an A-Frame scene. It supports multiple camera modes like fixed, third-person, and rotating views. The component also supports zoom.
 
-::: warning ⚠️ PHYSICS ENGINE
-The _game-view_ component relies on the Ammo.js physics engine. Ensure that Ammo.js is installed in your project for proper functionality.
+::: warning ⚠️ Project setup required
+The `game-view` component relies on A-Frame, ammo.js and the physics system, which must be loaded as UMD globals before use. Follow [Game components — Setup](/game-components/setup) to prepare a fresh project before continuing.
 :::
+
+## Import
+
+Once the [project setup](/game-components/setup) is in place, side-effect import the component so it self-registers on `AFRAME`:
+
+```js
+import "spatial-design-system/components/game/gameview.js";
+```
 
 ## Example: thirdPersonFollow type
 Camera follows the player and rotates with it. The `target` must be set.

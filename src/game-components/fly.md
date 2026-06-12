@@ -28,9 +28,17 @@ import ForestFlight from './demo-games/forest-flight/ForestFlight.vue';
 The `fly` component controls flying movement and animations.  
 It supports different flight styles, speed control, and realistic pitch/roll behavior.
 
-::: warning ⚠️ PHYSICS ENGINE
-The _fly_ component relies on the Ammo.js physics engine. Ensure that Ammo.js is installed in your project for proper functionality.
+::: warning ⚠️ Project setup required
+The `fly` component relies on A-Frame, ammo.js and the physics system, which must be loaded as UMD globals before use. Follow [Game components — Setup](/game-components/setup) to prepare a fresh project before continuing.
 :::
+
+## Import
+
+Once the [project setup](/game-components/setup) is in place, side-effect import the component so it self-registers on `AFRAME`:
+
+```js
+import "spatial-design-system/components/game/fly.js";
+```
 
 ## Example: freeDirectionalFlight type 
 Fly in any direction. 

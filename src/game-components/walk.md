@@ -26,10 +26,17 @@ const renderScene = ref(false);
 The `walk` component controls character movement and animations.  
 It supports walking, sprinting, turning styles, auto-walk, and point-and-click movement.
 
-::: warning ⚠️ PHYSICS ENGINE
-The _walk_ component relies on the Ammo.js physics engine. Ensure that Ammo.js is installed in your project for proper
-functionality.
+::: warning ⚠️ Project setup required
+The `walk` component relies on A-Frame, ammo.js and the physics system, which must be loaded as UMD globals before use. Follow [Game components — Setup](/game-components/setup) to prepare a fresh project before continuing.
 :::
+
+## Import
+
+Once the [project setup](/game-components/setup) is in place, side-effect import the component so it self-registers on `AFRAME`:
+
+```js
+import "spatial-design-system/components/game/walk.js";
+```
 
 ## Example: `smoothTurn` turn type 
 The character rotates smoothly while moving.

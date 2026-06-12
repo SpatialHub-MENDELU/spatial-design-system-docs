@@ -25,9 +25,17 @@ The `npc-walk` component controls the movement and animation of a non-player cha
 It lets you customize how the NPC moves — either by walking randomly within a defined area or by following a set of predefined points. 
 The component also provides properties to fine-tune speed, rotation, and path behavior.
 
-::: warning ⚠️ PHYSICS ENGINE
-The _npc-walk_ component relies on the Ammo.js physics engine. Ensure that Ammo.js is installed in your project for proper functionality.
+::: warning ⚠️ Project setup required
+The `npc-walk` component relies on A-Frame, ammo.js and the physics system, which must be loaded as UMD globals before use. Follow [Game components — Setup](/game-components/setup) to prepare a fresh project before continuing.
 :::
+
+## Import
+
+Once the [project setup](/game-components/setup) is in place, side-effect import the component so it self-registers on `AFRAME`:
+
+```js
+import "spatial-design-system/components/game/npcWalk.js";
+```
 
 ## Example: `points` type
 NPC follows a path defined by array of points. 
