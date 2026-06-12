@@ -2,9 +2,88 @@
 title: follow-element
 ---
 
-# follow-element
+<script setup lang="ts">
+import { ref, onMounted } from "vue";
+import ComponentExample from "../vue/ComponentExample.vue";
+
+const renderScene = ref(false);
+
+onMounted(async () => {
+  try {
+    await import("spatial-design-system/components/follow-element.js");
+    renderScene.value = true;
+  } catch (e) {
+    console.error(e);
+  }
+});
+</script>
+
+# {{ $frontmatter.title }}
 
 The `follow-element` component makes an entity dynamically follow another target entity's position with a configurable offset. This is useful for creating UI elements, labels, or controls that need to stay positioned relative to objects in your scene.
+
+## Example
+
+See how the label stays anchored to the right side of the box.
+
+<ComponentExample>
+
+<template #output v-if="renderScene">
+<a-box
+    id="follow-target"
+    color="#03FCC6"
+    position="0 1.5 -2.5"
+    depth="0.5"
+    height="0.5"
+    width="0.5"
+    animation="property: position; to: -1 2.2 -2.5; from: 0 1.5 -2.5; dir: alternate; loop: true; dur: 2000; easing: easeInOutQuad; delay: 1000;"
+></a-box>
+<a-plane 
+    color="#FFFFFF"
+    width="0.8"
+    height="0.3"
+    text="value: Offset: 0.3m right; align: center; color: black; width: 2;"
+    follow-element="target: #follow-target; place: 1 0 0; offset: 0.3; duration: 0;"
+></a-plane>
+<a-box position="0 0.9 -2.5" width="5" height="0.1" depth="2" src="../grid-light-1850w.png"></a-box>
+</template>
+
+<template #code>
+
+```js
+import "spatial-design-system/components/follow-element.js";
+```
+
+```html
+<a-box
+  id="follow-target"
+  color="#03FCC6"
+  position="0 1.5 -2.5"
+  animation="property: position;
+    from: -1 2.2 -2.5;
+    to: 0 1.5 -2.5;
+    dir: alternate;
+    loop: true;
+    dur: 2000;
+    easing: easeInOutQuad"
+></a-box>
+
+<a-plane
+  color="#FFFFFF"
+  width="0.8"
+  height="0.3"
+  text="value: Offset: 0.3m right; align: center; color: black; width: 2;"
+  follow-element="
+    target: #follow-target;
+    place: 1 0 0;
+    offset: 0.3;
+    duration: 0;"
+></a-plane>
+```
+
+</template>
+
+</ComponentExample>
 
 ## Props
 
