@@ -22,17 +22,17 @@ onMounted(async () => {
 
 # {{ $frontmatter.title }}
 
-The `flexbox` component creates a flexible one-dimensional layout container, similar to [CSS Flexbox](https://developer.mozilla.org/en-US/docs/Web/CSS/flex). It arranges child elements in rows or columns with configurable alignment, spacing, wrapping, and growth behaviour.
+The `flexbox` component arranges children of a 3D primitive in a one-dimensional row or column, similar to [CSS Flexbox](https://developer.mozilla.org/en-US/docs/Web/CSS/flex). It works on any primitive with a defined width and height (`a-plane`, `a-box`, `a-entity` with a geometry) and positions its children inside the container's bounding box.
 
-The Flexbox family consists of three pieces that work together:
+The Flexbox family consists of three components that work together:
 
-- **`flexbox`** – the container component that lays out its children.
-- **`flex-grow`** – marks a child to expand and fill remaining space.
-- **`flex-col`** – gives a child a responsive 12-column width per breakpoint.
+- **`flexbox`** – the container that lays out its children along a main axis.
+- **`flex-grow`** – marks a child as flexible so it expands into the remaining space.
+- **`flex-col`** – gives a child a width expressed as a fraction of a 12-column grid, with values per breakpoint based on the container's size.
 
-## Basic row layout
+## Basic usage
 
-The simplest case: a row of three items distributed evenly with space between them.
+A `flexbox` container distributes its children along the main axis (`direction`) and aligns them along the cross axis (`items`). The example below shows three boxes in a row, evenly spaced and vertically centred inside the container.
 
 <ComponentExample :fixed="true">
 
@@ -42,15 +42,11 @@ position="0 1.6 -3"
 width="2"
 height="0.5"
 material="color: #018A6C"
-flexbox="
-direction: row;
-justify: space-between;
-items: center;
-">
+flexbox="direction: row; justify: between; items: center;">
 
-  <a-box color="white" width="0.3" height="0.3" depth="0.3"></a-box>
-  <a-box color="white" width="0.3" height="0.3" depth="0.3"></a-box>
-  <a-box color="white" width="0.3" height="0.3" depth="0.3"></a-box>
+  <a-plane color="white" width="0.3" height="0.3"></a-plane>
+  <a-plane color="white" width="0.3" height="0.3"></a-plane>
+  <a-plane color="white" width="0.3" height="0.3"></a-plane>
 </a-plane>
 </template>
 
@@ -68,13 +64,13 @@ import "spatial-design-system/components/flexbox/flexbox.js";
   material="color: #018A6C"
   flexbox="
       direction: row;
-      justify: space-between;
+      justify: between;
       items: center;
   "
 >
-  <a-box color="white" width="0.3" height="0.3" depth="0.3"></a-box>
-  <a-box color="white" width="0.3" height="0.3" depth="0.3"></a-box>
-  <a-box color="white" width="0.3" height="0.3" depth="0.3"></a-box>
+  <a-plane color="white" width="0.3" height="0.3"></a-plane>
+  <a-plane color="white" width="0.3" height="0.3"></a-plane>
+  <a-plane color="white" width="0.3" height="0.3"></a-plane>
 </a-plane>
 ```
 
@@ -82,9 +78,64 @@ import "spatial-design-system/components/flexbox/flexbox.js";
 
 </ComponentExample>
 
-## Justify variants
+## Direction
 
-The `justify` property controls how items are distributed along the main axis. Each row below uses the same five boxes; only `justify` differs.
+`direction: row` lays children horizontally (main axis = X). `direction: column` lays them vertically (main axis = Y). The `justify` property always controls the main axis, `items` always controls the cross axis.
+
+<ComponentExample :fixed="true">
+
+<template #output v-if="renderScene">
+<a-entity position="0 1.6 -3">
+<a-plane
+position="-0.7 0 0"
+width="0.8"
+height="1.4"
+material="color: #018A6C"
+flexbox="direction: column; justify: between; items: center;">
+
+  <a-plane color="white" width="0.4" height="0.2"></a-plane>
+  <a-plane color="white" width="0.4" height="0.2"></a-plane>
+  <a-plane color="white" width="0.4" height="0.2"></a-plane>
+</a-plane>
+<a-plane
+position="0.7 0 0"
+width="1.4"
+height="0.5"
+material="color: #018A6C"
+flexbox="direction: row; justify: between; items: center;">
+
+  <a-plane color="white" width="0.2" height="0.3"></a-plane>
+  <a-plane color="white" width="0.2" height="0.3"></a-plane>
+  <a-plane color="white" width="0.2" height="0.3"></a-plane>
+</a-plane>
+</a-entity>
+</template>
+
+<template #code>
+
+```html
+<!-- column -->
+<a-plane flexbox="direction: column; justify: between; items: center;">
+  <a-plane width="0.4" height="0.2"></a-plane>
+  <a-plane width="0.4" height="0.2"></a-plane>
+  <a-plane width="0.4" height="0.2"></a-plane>
+</a-plane>
+
+<!-- row -->
+<a-plane flexbox="direction: row; justify: between; items: center;">
+  <a-plane width="0.2" height="0.3"></a-plane>
+  <a-plane width="0.2" height="0.3"></a-plane>
+  <a-plane width="0.2" height="0.3"></a-plane>
+</a-plane>
+```
+
+</template>
+
+</ComponentExample>
+
+## Main-axis alignment (`justify`)
+
+`justify` controls how items are positioned and spaced along the main axis. The five accepted values mirror their CSS counterparts (note the shorter `between` / `around` spelling).
 
 ### `justify: start`
 
@@ -96,21 +147,19 @@ position="0 1.6 -3"
 width="2"
 height="0.5"
 material="color: #018A6C"
-flexbox="direction: row; justify: start; items: center; gap: 10 0;">
+flexbox="direction: row; justify: start; items: center; gap: 0.05 0;">
 
-  <a-box color="white" width="0.2" height="0.2" depth="0.2"></a-box>
-  <a-box color="white" width="0.2" height="0.2" depth="0.2"></a-box>
-  <a-box color="white" width="0.2" height="0.2" depth="0.2"></a-box>
-  <a-box color="white" width="0.2" height="0.2" depth="0.2"></a-box>
-  <a-box color="white" width="0.2" height="0.2" depth="0.2"></a-box>
+  <a-plane color="white" width="0.2" height="0.2"></a-plane>
+  <a-plane color="white" width="0.2" height="0.2"></a-plane>
+  <a-plane color="white" width="0.2" height="0.2"></a-plane>
 </a-plane>
 </template>
 
 <template #code>
 
 ```html
-<a-plane flexbox="direction: row; justify: start; items: center; gap: 10 0;">
-  <!-- 5 boxes -->
+<a-plane flexbox="direction: row; justify: start; items: center; gap: 0.05 0;">
+  <!-- 3 boxes -->
 </a-plane>
 ```
 
@@ -128,21 +177,19 @@ position="0 1.6 -3"
 width="2"
 height="0.5"
 material="color: #018A6C"
-flexbox="direction: row; justify: center; items: center; gap: 10 0;">
+flexbox="direction: row; justify: center; items: center; gap: 0.05 0;">
 
-  <a-box color="white" width="0.2" height="0.2" depth="0.2"></a-box>
-  <a-box color="white" width="0.2" height="0.2" depth="0.2"></a-box>
-  <a-box color="white" width="0.2" height="0.2" depth="0.2"></a-box>
-  <a-box color="white" width="0.2" height="0.2" depth="0.2"></a-box>
-  <a-box color="white" width="0.2" height="0.2" depth="0.2"></a-box>
+  <a-plane color="white" width="0.2" height="0.2"></a-plane>
+  <a-plane color="white" width="0.2" height="0.2"></a-plane>
+  <a-plane color="white" width="0.2" height="0.2"></a-plane>
 </a-plane>
 </template>
 
 <template #code>
 
 ```html
-<a-plane flexbox="direction: row; justify: center; items: center; gap: 10 0;">
-  <!-- 5 boxes -->
+<a-plane flexbox="direction: row; justify: center; items: center; gap: 0.05 0;">
+  <!-- 3 boxes -->
 </a-plane>
 ```
 
@@ -160,21 +207,19 @@ position="0 1.6 -3"
 width="2"
 height="0.5"
 material="color: #018A6C"
-flexbox="direction: row; justify: end; items: center; gap: 10 0;">
+flexbox="direction: row; justify: end; items: center; gap: 0.05 0;">
 
-  <a-box color="white" width="0.2" height="0.2" depth="0.2"></a-box>
-  <a-box color="white" width="0.2" height="0.2" depth="0.2"></a-box>
-  <a-box color="white" width="0.2" height="0.2" depth="0.2"></a-box>
-  <a-box color="white" width="0.2" height="0.2" depth="0.2"></a-box>
-  <a-box color="white" width="0.2" height="0.2" depth="0.2"></a-box>
+  <a-plane color="white" width="0.2" height="0.2"></a-plane>
+  <a-plane color="white" width="0.2" height="0.2"></a-plane>
+  <a-plane color="white" width="0.2" height="0.2"></a-plane>
 </a-plane>
 </template>
 
 <template #code>
 
 ```html
-<a-plane flexbox="direction: row; justify: end; items: center; gap: 10 0;">
-  <!-- 5 boxes -->
+<a-plane flexbox="direction: row; justify: end; items: center; gap: 0.05 0;">
+  <!-- 3 boxes -->
 </a-plane>
 ```
 
@@ -182,7 +227,9 @@ flexbox="direction: row; justify: end; items: center; gap: 10 0;">
 
 </ComponentExample>
 
-### `justify: space-around`
+### `justify: between`
+
+Items sit flush against the container edges; remaining space is divided equally between them.
 
 <ComponentExample :fixed="true">
 
@@ -192,19 +239,19 @@ position="0 1.6 -3"
 width="2"
 height="0.5"
 material="color: #018A6C"
-flexbox="direction: row; justify: space-around; items: center;">
+flexbox="direction: row; justify: between; items: center;">
 
-  <a-box color="white" width="0.2" height="0.2" depth="0.2"></a-box>
-  <a-box color="white" width="0.2" height="0.2" depth="0.2"></a-box>
-  <a-box color="white" width="0.2" height="0.2" depth="0.2"></a-box>
-  <a-box color="white" width="0.2" height="0.2" depth="0.2"></a-box>
+  <a-plane color="white" width="0.2" height="0.2"></a-plane>
+  <a-plane color="white" width="0.2" height="0.2"></a-plane>
+  <a-plane color="white" width="0.2" height="0.2"></a-plane>
+  <a-plane color="white" width="0.2" height="0.2"></a-plane>
 </a-plane>
 </template>
 
 <template #code>
 
 ```html
-<a-plane flexbox="direction: row; justify: space-around; items: center;">
+<a-plane flexbox="direction: row; justify: between; items: center;">
   <!-- 4 boxes -->
 </a-plane>
 ```
@@ -213,9 +260,42 @@ flexbox="direction: row; justify: space-around; items: center;">
 
 </ComponentExample>
 
-## Cross-axis alignment
+### `justify: around`
 
-The `items` property controls alignment along the cross axis. Below, items of different heights are aligned to the top, centre, and bottom of the container.
+Each item is surrounded by an equal amount of free space, so the gaps at the edges are half the size of the gaps between items.
+
+<ComponentExample :fixed="true">
+
+<template #output v-if="renderScene">
+<a-plane
+position="0 1.6 -3"
+width="2"
+height="0.5"
+material="color: #018A6C"
+flexbox="direction: row; justify: around; items: center;">
+
+  <a-plane color="white" width="0.2" height="0.2"></a-plane>
+  <a-plane color="white" width="0.2" height="0.2"></a-plane>
+  <a-plane color="white" width="0.2" height="0.2"></a-plane>
+  <a-plane color="white" width="0.2" height="0.2"></a-plane>
+</a-plane>
+</template>
+
+<template #code>
+
+```html
+<a-plane flexbox="direction: row; justify: around; items: center;">
+  <!-- 4 boxes -->
+</a-plane>
+```
+
+</template>
+
+</ComponentExample>
+
+## Cross-axis alignment (`items`)
+
+`items` controls where children sit along the cross axis. The example below uses items of varying height so the difference between `start`, `center` and `end` is visible at a glance.
 
 ### `items: start`
 
@@ -227,21 +307,21 @@ position="0 1.6 -3"
 width="2"
 height="0.8"
 material="color: #018A6C"
-flexbox="direction: row; justify: space-around; items: start;">
+flexbox="direction: row; justify: around; items: start;">
 
-  <a-box color="white" width="0.25" height="0.2" depth="0.2"></a-box>
-  <a-box color="white" width="0.25" height="0.4" depth="0.2"></a-box>
-  <a-box color="white" width="0.25" height="0.3" depth="0.2"></a-box>
+  <a-plane color="white" width="0.25" height="0.2"></a-plane>
+  <a-plane color="white" width="0.25" height="0.4"></a-plane>
+  <a-plane color="white" width="0.25" height="0.3"></a-plane>
 </a-plane>
 </template>
 
 <template #code>
 
 ```html
-<a-plane flexbox="direction: row; justify: space-around; items: start;">
-  <a-box color="white" width="0.25" height="0.2"></a-box>
-  <a-box color="white" width="0.25" height="0.4"></a-box>
-  <a-box color="white" width="0.25" height="0.3"></a-box>
+<a-plane flexbox="direction: row; justify: around; items: start;">
+  <a-plane width="0.25" height="0.2"></a-plane>
+  <a-plane width="0.25" height="0.4"></a-plane>
+  <a-plane width="0.25" height="0.3"></a-plane>
 </a-plane>
 ```
 
@@ -259,21 +339,19 @@ position="0 1.6 -3"
 width="2"
 height="0.8"
 material="color: #018A6C"
-flexbox="direction: row; justify: space-around; items: center;">
+flexbox="direction: row; justify: around; items: center;">
 
-  <a-box color="white" width="0.25" height="0.2" depth="0.2"></a-box>
-  <a-box color="white" width="0.25" height="0.4" depth="0.2"></a-box>
-  <a-box color="white" width="0.25" height="0.3" depth="0.2"></a-box>
+  <a-plane color="white" width="0.25" height="0.2"></a-plane>
+  <a-plane color="white" width="0.25" height="0.4"></a-plane>
+  <a-plane color="white" width="0.25" height="0.3"></a-plane>
 </a-plane>
 </template>
 
 <template #code>
 
 ```html
-<a-plane flexbox="direction: row; justify: space-around; items: center;">
-  <a-box color="white" width="0.25" height="0.2"></a-box>
-  <a-box color="white" width="0.25" height="0.4"></a-box>
-  <a-box color="white" width="0.25" height="0.3"></a-box>
+<a-plane flexbox="direction: row; justify: around; items: center;">
+  <!-- items of varying height -->
 </a-plane>
 ```
 
@@ -291,21 +369,19 @@ position="0 1.6 -3"
 width="2"
 height="0.8"
 material="color: #018A6C"
-flexbox="direction: row; justify: space-around; items: end;">
+flexbox="direction: row; justify: around; items: end;">
 
-  <a-box color="white" width="0.25" height="0.2" depth="0.2"></a-box>
-  <a-box color="white" width="0.25" height="0.4" depth="0.2"></a-box>
-  <a-box color="white" width="0.25" height="0.3" depth="0.2"></a-box>
+  <a-plane color="white" width="0.25" height="0.2"></a-plane>
+  <a-plane color="white" width="0.25" height="0.4"></a-plane>
+  <a-plane color="white" width="0.25" height="0.3"></a-plane>
 </a-plane>
 </template>
 
 <template #code>
 
 ```html
-<a-plane flexbox="direction: row; justify: space-around; items: end;">
-  <a-box color="white" width="0.25" height="0.2"></a-box>
-  <a-box color="white" width="0.25" height="0.4"></a-box>
-  <a-box color="white" width="0.25" height="0.3"></a-box>
+<a-plane flexbox="direction: row; justify: around; items: end;">
+  <!-- items of varying height -->
 </a-plane>
 ```
 
@@ -313,47 +389,32 @@ flexbox="direction: row; justify: space-around; items: end;">
 
 </ComponentExample>
 
-## Column direction
+## Spacing (`gap`)
 
-Switching `direction: column` arranges items along the vertical axis. The `justify` property then controls vertical distribution, and `items` controls horizontal alignment.
+`gap` is a `vec2` value. The first number adds spacing between items along the main axis, the second adds spacing between wrapped lines along the cross axis. Both are expressed in metres.
 
 <ComponentExample :fixed="true">
 
 <template #output v-if="renderScene">
 <a-plane
 position="0 1.6 -3"
-width="0.8"
-height="1.5"
+width="2"
+height="0.5"
 material="color: #018A6C"
-flexbox="
-direction: column;
-justify: space-between;
-items: center;
-">
+flexbox="direction: row; justify: center; items: center; gap: 0.1 0;">
 
-  <a-box color="white" width="0.3" height="0.2" depth="0.2"></a-box>
-  <a-box color="white" width="0.3" height="0.2" depth="0.2"></a-box>
-  <a-box color="white" width="0.3" height="0.2" depth="0.2"></a-box>
+  <a-plane color="white" width="0.2" height="0.3"></a-plane>
+  <a-plane color="white" width="0.2" height="0.3"></a-plane>
+  <a-plane color="white" width="0.2" height="0.3"></a-plane>
+  <a-plane color="white" width="0.2" height="0.3"></a-plane>
 </a-plane>
 </template>
 
 <template #code>
 
 ```html
-<a-plane
-  position="0 1.6 -3"
-  width="0.8"
-  height="1.5"
-  material="color: #018A6C"
-  flexbox="
-      direction: column;
-      justify: space-between;
-      items: center;
-  "
->
-  <a-box color="white" width="0.3" height="0.2" depth="0.2"></a-box>
-  <a-box color="white" width="0.3" height="0.2" depth="0.2"></a-box>
-  <a-box color="white" width="0.3" height="0.2" depth="0.2"></a-box>
+<a-plane flexbox="direction: row; justify: center; items: center; gap: 0.1 0;">
+  <!-- gap.x = 0.1 m between items -->
 </a-plane>
 ```
 
@@ -361,9 +422,9 @@ items: center;
 
 </ComponentExample>
 
-## Wrapping with many items
+## Wrapping
 
-When `wrap: true` is set, items that don't fit on one line continue on the next. The `gap` property's second value controls the spacing between wrapped lines.
+With `wrap: true`, items that don't fit on the current main-axis line continue on the next one. Combine with `gap` to control spacing both within and between lines.
 
 <ComponentExample :fixed="true">
 
@@ -373,22 +434,16 @@ position="0 1.6 -3"
 width="1.6"
 height="1.2"
 material="color: #018A6C"
-flexbox="
-direction: row;
-justify: center;
-items: center;
-wrap: true;
-gap: 20 20;
-">
+flexbox="direction: row; justify: start; items: start; wrap: true; gap: 0.05 0.05;">
 
-  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
-  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
-  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
-  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
-  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
-  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
-  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
-  <a-box color="white" width="0.25" height="0.25" depth="0.1"></a-box>
+  <a-plane color="white" width="0.25" height="0.25"></a-plane>
+  <a-plane color="white" width="0.25" height="0.25"></a-plane>
+  <a-plane color="white" width="0.25" height="0.25"></a-plane>
+  <a-plane color="white" width="0.25" height="0.25"></a-plane>
+  <a-plane color="white" width="0.25" height="0.25"></a-plane>
+  <a-plane color="white" width="0.25" height="0.25"></a-plane>
+  <a-plane color="white" width="0.25" height="0.25"></a-plane>
+  <a-plane color="white" width="0.25" height="0.25"></a-plane>
 </a-plane>
 </template>
 
@@ -396,16 +451,14 @@ gap: 20 20;
 
 ```html
 <a-plane
-  position="0 1.6 -3"
   width="1.6"
   height="1.2"
-  material="color: #018A6C"
   flexbox="
       direction: row;
-      justify: center;
-      items: center;
+      justify: start;
+      items: start;
       wrap: true;
-      gap: 20 20;
+      gap: 0.05 0.05;
   "
 >
   <!-- 8 boxes -->
@@ -418,7 +471,7 @@ gap: 20 20;
 
 ## `flex-grow` — expanding items
 
-Attach `flex-grow` to a child to make it expand into any remaining space along the main axis. Here, the middle plane stretches between two fixed-width siblings.
+Add the `flex-grow` attribute to a child to let it expand and consume the remaining main-axis space. Use this to build, for example, a toolbar with a fixed icon on each side and a stretchable centre region.
 
 <ComponentExample :fixed="true">
 
@@ -428,11 +481,7 @@ position="0 1.6 -3"
 width="2"
 height="0.5"
 material="color: #018A6C"
-flexbox="
-direction: row;
-justify: start;
-items: center;
-">
+flexbox="direction: row; justify: start; items: center;">
 
   <a-plane color="white" width="0.3" height="0.4"></a-plane>
   <a-plane color="#03FCC6" height="0.4" flex-grow></a-plane>
@@ -449,7 +498,6 @@ import "spatial-design-system/components/flexbox/Properties/flex-grow.js";
 
 ```html
 <a-plane
-  position="0 1.6 -3"
   width="2"
   height="0.5"
   material="color: #018A6C"
@@ -465,7 +513,7 @@ import "spatial-design-system/components/flexbox/Properties/flex-grow.js";
 
 </ComponentExample>
 
-When multiple items have `flex-grow`, the remaining space is split equally among them.
+When multiple children carry `flex-grow`, the leftover space is divided equally among them.
 
 <ComponentExample :fixed="true">
 
@@ -475,11 +523,7 @@ position="0 1.6 -3"
 width="2"
 height="0.5"
 material="color: #018A6C"
-flexbox="
-direction: row;
-justify: start;
-items: center;
-">
+flexbox="direction: row; justify: start; items: center;">
 
   <a-plane color="white" width="0.3" height="0.4"></a-plane>
   <a-plane color="#03FCC6" height="0.4" flex-grow></a-plane>
@@ -503,29 +547,25 @@ items: center;
 
 </ComponentExample>
 
-## `flex-col` — responsive 12-column grid
+## `flex-col` — 12-column responsive grid
 
-`flex-col` gives a child a width expressed as a fraction of a 12-column grid, with different values per viewport breakpoint. Resize your browser to see the layout adapt.
+`flex-col` gives a child a width expressed as a fraction of a 12-column grid. You can declare a different column count per breakpoint, and the component picks the largest matching one based on the **container's 3D width** (see [Breakpoints](#breakpoints) below).
+
+In the example below the container is 8&nbsp;m wide, which matches the `lg` breakpoint, so each item takes 4 of 12 columns and all three fit on a single row.
 
 <ComponentExample :fixed="true">
 
 <template #output v-if="renderScene">
 <a-plane
-position="0 1.6 -3"
-width="2"
-height="1"
+position="0 1.6 -10"
+width="8"
+height="2"
 material="color: #018A6C"
-flexbox="
-direction: row;
-justify: start;
-items: start;
-wrap: true;
-gap: 10 10;
-">
+flexbox="direction: row; justify: start; items: start; wrap: true; gap: 0;">
 
-  <a-plane color="#03FCC6" height="0.4" flex-col="sm: 12; md: 6; lg: 4"></a-plane>
-  <a-plane color="#03FCC6" height="0.4" flex-col="sm: 12; md: 6; lg: 4"></a-plane>
-  <a-plane color="#03FCC6" height="0.4" flex-col="sm: 12; md: 12; lg: 4"></a-plane>
+  <a-plane color="#03FCC6" height="0.8" flex-col="sm: 12; md: 6; lg: 4"></a-plane>
+  <a-plane color="#03FCC6" height="0.8" flex-col="sm: 12; md: 6; lg: 4"></a-plane>
+  <a-plane color="#03FCC6" height="0.8" flex-col="sm: 12; md: 12; lg: 4"></a-plane>
 </a-plane>
 </template>
 
@@ -538,21 +578,20 @@ import "spatial-design-system/components/flexbox/Properties/flex-col.js";
 
 ```html
 <a-plane
-  position="0 1.6 -3"
-  width="2"
-  height="1"
+  width="8"
+  height="2"
   material="color: #018A6C"
   flexbox="
       direction: row;
       justify: start;
       items: start;
       wrap: true;
-      gap: 10 10;
+      gap: 0.2 0.2;
   "
 >
-  <a-plane color="#03FCC6" height="0.4" flex-col="sm: 12; md: 6; lg: 4"></a-plane>
-  <a-plane color="#03FCC6" height="0.4" flex-col="sm: 12; md: 6; lg: 4"></a-plane>
-  <a-plane color="#03FCC6" height="0.4" flex-col="sm: 12; md: 12; lg: 4"></a-plane>
+  <a-plane color="#03FCC6" height="0.8" flex-col="sm: 12; md: 6; lg: 4"></a-plane>
+  <a-plane color="#03FCC6" height="0.8" flex-col="sm: 12; md: 6; lg: 4"></a-plane>
+  <a-plane color="#03FCC6" height="0.8" flex-col="sm: 12; md: 12; lg: 4"></a-plane>
 </a-plane>
 ```
 
@@ -560,53 +599,61 @@ import "spatial-design-system/components/flexbox/Properties/flex-col.js";
 
 </ComponentExample>
 
-In the example above:
+For the same children:
 
-- On small screens, each item takes the full width (12 columns).
-- On medium screens, the first two items share a row (6 columns each) and the third takes a full row.
-- On large screens, all three items fit on a single row (4 columns each).
+- in a container narrower than 4&nbsp;m (`sm`), each item takes the full row (12 columns);
+- in a 4–7&nbsp;m container (`md`), the first two share a row (6 columns each) and the third takes a full row (12 columns);
+- in a container of at least 7&nbsp;m (`lg`), all three fit on one row (4 columns each).
 
 ## `flexbox` props
 
-| Property    | Type                                                | Default  | Description                                                                                                          |
-| ----------- | --------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------- |
-| _direction_ | enum(row, column)                                   | row      | Main layout direction (horizontal or vertical).                                                                      |
-| _justify_   | enum(start, end, center, space-between, space-around) | start  | Alignment along the main axis.                                                                                       |
-| _items_     | enum(start, end, center)                            | start    | Alignment along the cross axis.                                                                                      |
-| _wrap_      | boolean                                             | false    | Wrap items to new lines when they exceed the container's main-axis size.                                             |
-| _gap_       | vec2                                                | 0 0      | Spacing between items. First value is main-axis gap, second is cross-axis (between-line) gap.                        |
+| Property    | Type                                              | Default | Description                                                                                       |
+| ----------- | ------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------- |
+| _direction_ | enum(`row`, `column`)                             | `row`   | Main layout axis. `row` is horizontal, `column` is vertical.                                      |
+| _justify_   | enum(`start`, `end`, `center`, `between`, `around`) | `start` | Distribution along the main axis.                                                                |
+| _items_     | enum(`start`, `end`, `center`)                    | `start` | Alignment along the cross axis.                                                                   |
+| _wrap_      | boolean                                           | `false` | If `true`, items that don't fit on the main axis continue on the next line.                       |
+| _gap_       | vec2                                              | `0 0`   | Spacing between items in metres. First value = main-axis gap, second = cross-axis (line) gap.     |
 
 ## `flex-grow` props
 
-| Property | Type    | Default | Description                                            |
-| -------- | ------- | ------- | ------------------------------------------------------ |
-| –        | boolean | true    | When present (or `true`), the item expands into free space. |
+| Property | Type    | Default | Description                                                              |
+| -------- | ------- | ------- | ------------------------------------------------------------------------ |
+| –        | boolean | `true`  | When present (or set to `true`), the item expands into the free main-axis space. |
 
 ## `flex-col` props
 
-| Property | Type   | Default | Description                                                  |
-| -------- | ------ | ------- | ------------------------------------------------------------ |
-| _sm_     | number | 12      | Columns (out of 12) at small viewport widths.                |
-| _md_     | number | –       | Columns (out of 12) at medium viewport widths.               |
-| _lg_     | number | –       | Columns (out of 12) at large viewport widths.                |
-| _xl_     | number | –       | Columns (out of 12) at extra-large viewport widths.          |
-| _2xl_    | number | –       | Columns (out of 12) at 2x-large viewport widths.             |
-| _3xl_    | number | –       | Columns (out of 12) at 3x-large viewport widths.             |
+Each property declares the column count (out of 12) to use at the corresponding breakpoint.
+
+| Property | Type   | Default | Description                                              |
+| -------- | ------ | ------- | -------------------------------------------------------- |
+| _sm_     | number | –       | Columns when the container is at least the `sm` width.   |
+| _md_     | number | –       | Columns when the container is at least the `md` width.   |
+| _lg_     | number | –       | Columns when the container is at least the `lg` width.   |
+| _xl_     | number | –       | Columns when the container is at least the `xl` width.   |
+| _2xl_    | number | –       | Columns when the container is at least the `2xl` width.  |
+| _3xl_    | number | –       | Columns when the container is at least the `3xl` width.  |
+
+Only breakpoints you set are considered; the component picks the largest one whose threshold is less than or equal to the parent container's 3D width.
 
 ### Breakpoints
 
-| Breakpoint | Screen width |
-| ---------- | ------------ |
-| sm         | <640px       |
-| md         | ≥640px       |
-| lg         | ≥768px       |
-| xl         | ≥1024px      |
-| 2xl        | ≥1280px      |
-| 3xl        | ≥1536px      |
+Breakpoints are based on the parent container's **width in metres**, not on the browser viewport.
+
+| Breakpoint | Container width |
+| ---------- | --------------- |
+| `sm`       | ≥ 0 m           |
+| `md`       | ≥ 4 m           |
+| `lg`       | ≥ 7 m           |
+| `xl`       | ≥ 10 m          |
+| `2xl`      | ≥ 12 m          |
+| `3xl`      | ≥ 15 m          |
+
+You can also declare custom numeric breakpoints, e.g. `flex-col="3: 12; 6: 6"` (12 columns above 3&nbsp;m, 6 columns above 6&nbsp;m).
 
 ## Notes
 
-- The flexbox container must be a primitive with explicit width and height (e.g. `a-box`, `a-plane`, or an `a-entity` with a geometry).
-- `gap` adds spacing between items without changing their size. In wrapped layouts, the second value controls the spacing between lines.
-- `flex-grow` works in both row and column directions and reacts to container resizes.
-- For predictable layouts, give non-growing items a fixed size and combine `flex-col` with `wrap: true`.
+- The flexbox container must be a primitive with explicit width and height (e.g. `a-plane`, `a-box`, or an `a-entity` with a geometry). Children with no bounding box are placed using a 0.1&nbsp;m fallback size.
+- `gap` adds spacing without changing item sizes. The second value only matters when `wrap: true`.
+- `flex-grow` works in both row and column directions and recomputes when the container resizes.
+- For predictable responsive layouts, combine `flex-col` with `wrap: true` so wrapped lines flow naturally as the container width crosses breakpoints.
