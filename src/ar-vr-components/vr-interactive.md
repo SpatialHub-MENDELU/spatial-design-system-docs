@@ -2,50 +2,13 @@
 title: vr-interactive
 ---
 
-<script setup lang="ts">
-import { ref, onMounted } from "vue";
-import ComponentExample from "../vue/ComponentExample.vue";
-
-const renderScene = ref(false);
-
-onMounted(async () => {
-  try {
-    // await import("spatial-design-system/components/controllers.js");
-    // await import("spatial-design-system/components/vrinteractive.js");
-    renderScene.value = true;
-  } catch (e) {
-    console.error(e);
-  }
-});
-</script>
-
 # {{ $frontmatter.title }}
 
 The `vr-interactive` component adds enhanced interactivity to A-Frame entities when using VR controllers. It provides visual feedback through highlighting, handles controller button events, and animates elements on interaction.
 
 ## Example
 
-Below is an example of using the vr-interactive component with objects in a VR scene. Test this demo by opening this page in a VR headset and clicking on the "VR" button.
-
-<ComponentExample :fixed="true">
-
-<template #output v-if="renderScene">
-  <a-entity id="rig" position="0 1.6 0" controllers>
-    <a-camera></a-camera>
-  </a-entity>
-  
-  <a-box position="-1 3 -3" color="#03FCC6" vr-interactive="
-    highlightColor: #ffff00;
-    enabledButtons: trigger, grip;
-  "></a-box>
-  
-  <a-sphere position="1 3 -3" color="#03FCC6" vr-interactive="
-    highlightEnabled: false;
-    scaleOnClick: 0.8;
-  "></a-sphere>
-</template>
-
-<template #code>
+Below is an example of using the vr-interactive component with objects in a VR scene.
 
 ```js
 import "spatial-design-system/components/controllers.js";
@@ -70,10 +33,6 @@ import "spatial-design-system/components/vrinteractive.js";
   "></a-sphere>
 </a-scene>
 ```
-
-</template>
-
-</ComponentExample>
 
 ## Props
 

@@ -2,25 +2,6 @@
 title: stretchable
 ---
 
-<script setup lang="ts">
-import { ref, onMounted } from "vue";
-import ComponentExample from "../vue/ComponentExample.vue";
-
-const renderScene = ref(false);
-
-onMounted(async () => {
-  try {
-    // Component itself
-    // await import("spatial-design-system/components/stretchable.js");
-    // (Optional) Your gesture source that emits `stretch-*` events
-    // e.g. "hands" / "controllers" / "super-hands" wrapper in your project.
-    renderScene.value = true;
-  } catch (e) {
-    console.error(e);
-  }
-});
-</script>
-
 # {{ \$frontmatter.title }}
 
 The `stretchable` component enables interactive resizing of objects using a pinch gesture from **hand tracking** or trigger-based gestures from **VR controllers**.  
@@ -40,11 +21,7 @@ Scaling respects the configured minimum and maximum size limits, and works with 
 
 ## Example
 
-Below is an example showing how to use the `stretchable` component in a scene. Try this demo with hand tracking enabled AR hardware (e.g., Meta Quest Pro) or with controllers.
-
-<ComponentExample :fixed="true" :hideOutput="true">
-
-<template #code>
+Below is an example showing how to use the `stretchable` component in a scene.
 
 ```js
 import 'spatial-design-system/components/autoXr.js';
@@ -81,10 +58,6 @@ import 'spatial-design-system/components/stretchable.js';
   ></a-box>
 </a-scene>
 ```
-
-</template>
-
-</ComponentExample>
 
 ## Props
 

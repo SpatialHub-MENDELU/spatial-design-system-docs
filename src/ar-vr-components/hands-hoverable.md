@@ -2,21 +2,6 @@
 title: hands-hoverable
 ---
 
-<script setup lang="ts">
-import { ref, onMounted } from "vue";
-import ComponentExample from "../vue/ComponentExample.vue";
-
-const renderScene = ref(false);
-
-onMounted(async () => {
-  try {
-    renderScene.value = true;
-  } catch (e) {
-    console.error(e);
-  }
-});
-</script>
-
 # {{ $frontmatter.title }}
 
 The `hands-hoverable` component adds an interactive hover effect to any A‑Frame entity. When a hand intersects the entity’s oriented bounding box (via the companion `obb-collider` component), the entity is visually highlighted by rendering a 3D overlay box around it or a wireframe.
@@ -24,10 +9,6 @@ The `hands-hoverable` component adds an interactive hover effect to any A‑Fram
 ## Example
 
 This component is mainly prepared for hand gestures. You should use it with the `hands` component and test it on XR devices, that support hand gestures (e.g. Meta Quest Pro).
-
-<ComponentExample :fixed="true" :hideOutput="true">
-
-<template #code>
 
 ```js
 import 'spatial-design-system/components/autoXr.js';
@@ -50,10 +31,6 @@ import 'spatial-design-system/components/hands-hoverable.js';
   ></a-ar-button>
 </a-scene>
 ```
-
-</template>
-
-</ComponentExample>
 
 ## Props
 

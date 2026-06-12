@@ -2,32 +2,13 @@
 title: hands
 ---
 
-<script setup lang="ts">
-import { ref, onMounted } from "vue";
-import ComponentExample from "../vue/ComponentExample.vue";
-
-const renderScene = ref(false);
-
-onMounted(async () => {
-  try {
-    renderScene.value = true;
-  } catch (e) {
-    console.error(e);
-  }
-});
-</script>
-
 # {{ $frontmatter.title }}
 
 The `hands` component enables full hand tracking interaction in AR scenes using A-Frame and WebXR. It supports both left and right hands and allows detection of gestures, including pointing and pinch interactions, as well as triggering `click` events on interactive elements.
 
 ## Example
 
-Below is an example showing how to use the `hands` component in a scene. Try this demo with hand tracking enabled AR hardware (e.g., Meta Quest Pro).
-
-<ComponentExample :fixed="true" :hideOutput="true">
-
-<template #code>
+Below is an example showing how to use the `hands` component in a scene.
 
 ```js
 import 'spatial-design-system/components/autoXr.js';
@@ -52,10 +33,6 @@ import 'spatial-design-system/primitives/ar-button.js';
   ></a-ar-button>
 </a-scene>
 ```
-
-</template>
-
-</ComponentExample>
 
 ## Props
 

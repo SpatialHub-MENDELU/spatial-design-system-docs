@@ -2,21 +2,6 @@
 title: finger-touch
 ---
 
-<script setup lang="ts">
-import { ref, onMounted } from "vue";
-import ComponentExample from "../vue/ComponentExample.vue";
-
-const renderScene = ref(false);
-
-onMounted(async () => {
-  try {
-    renderScene.value = true;
-  } catch (e) {
-    console.error(e);
-  }
-});
-</script>
-
 # {{ \$frontmatter.title }}
 
 The `finger-touch` component turns a **pointing finger gesture** into `click` and `click-ended` events on an entity.  
@@ -25,10 +10,6 @@ It works together with the `hands` component by adding an OBB collider and liste
 ## Example
 
 Add the `finger-touch` component to any entity that should respond to hand touch interaction:
-
-<ComponentExample :fixed="true" :hideOutput="true">
-
-<template #code>
 
 ```js
 import 'spatial-design-system/components/autoXr.js';
@@ -46,10 +27,6 @@ import 'spatial-design-system/primitives/ar-button.js';
   <a-ar-button finger-touch position="0 1.5 -1" content="Button"></a-ar-button>
 </a-scene>
 ```
-
-</template>
-
-</ComponentExample>
 
 This will ensure the object is recognized as a potential interactive target for hand-tracked gestures, such as finger taps.
 

@@ -2,48 +2,13 @@
 title: controller-teleport
 ---
 
-<script setup lang="ts">
-import { ref, onMounted } from "vue";
-import ComponentExample from "../vue/ComponentExample.vue";
-
-const renderScene = ref(false);
-
-onMounted(async () => {
-  try {
-    // await import("spatial-design-system/components/controllers.js");
-    // await import("spatial-design-system/components/controllerTeleport.js");
-    renderScene.value = true;
-  } catch (e) {
-    console.error(e);
-  }
-});
-</script>
-
 # {{ $frontmatter.title }}
 
 The `controller-teleport` component enables instant teleportation in VR by pointing at a destination and pressing a controller button. This provides a comfortable locomotion method that minimizes motion sickness for many users.
 
 ## Example
 
-Below is an example of a basic teleportation setup. Test this demo by opening this page in a VR headset and clicking on the "VR" button.
-
-<ComponentExample :fixed="true">
-
-<template #output v-if="renderScene">
-  <a-sky color="#ECECEC"></a-sky>
-  <a-plane position="0 0 0" rotation="-90 0 0" width="20" height="20" color="#7BC8A4" class="interactive"></a-plane>
-  
-  <a-entity id="rig" position="0 1.6 0" controllers>
-    <a-camera></a-camera>
-    <a-entity controller-teleport="
-      hand: right;
-      button: trigger;
-      cameraHeight: 1.6;
-    "></a-entity>
-  </a-entity>
-</template>
-
-<template #code>
+Below is an example of a basic teleportation setup.
 
 ```js
 import "spatial-design-system/components/controllers.js";
@@ -68,10 +33,6 @@ import "spatial-design-system/components/controllerTeleport.js";
   </a-entity>
 </a-scene>
 ```
-
-</template>
-
-</ComponentExample>
 
 ## Props
 

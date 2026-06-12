@@ -2,49 +2,13 @@
 title: controllers
 ---
 
-<script setup lang="ts">
-import { ref, onMounted } from "vue";
-import ComponentExample from "../vue/ComponentExample.vue";
-
-const renderScene = ref(false);
-
-onMounted(async () => {
-  try {
-    // await import("spatial-design-system/components/controllers.js");
-    // await import("spatial-design-system/components/vrInteractive.js");
-
-    renderScene.value = true;
-  } catch (e) {
-    console.error(e);
-  }
-});
-</script>
-
 # {{ $frontmatter.title }}
 
 The `controllers` component provides a complete system for VR controller interaction in A-Frame scenes. It automatically creates and manages left and right hand controllers with raycasters, visual cursors, and event handling for all controller buttons.
 
 ## Example
 
-Below is an example of adding controllers to a scene. Test this demo by opening this page in a VR headset and clicking on the "VR" button. The controllers will automatically appear when using a compatible VR headset with controllers.
-
-<ComponentExample :fixed="true">
-
-<template #output v-if="renderScene">
-  <a-entity id="rig" position="0 1.6 0" controllers="
-    leftColor: #03FCC6;
-    rightColor: #018A6C;
-    cursorSize: 0.01;
-    raycastLength: 10
-  ">
-    <a-camera></a-camera>
-  </a-entity>
-  
-  <!-- Interactive objects will respond to controller events -->
-  <a-box position="0 1.5 -5" color="#03FCC6" vr-interactive></a-box>
-</template>
-
-<template #code>
+Below is an example of adding controllers to a scene.
 
 ```html
 <a-scene>
@@ -62,9 +26,6 @@ Below is an example of adding controllers to a scene. Test this demo by opening 
   <a-box position="0 1.5 -5" color="#03FCC6" vr-interactive></a-box>
 </a-scene>
 ```
-</template>
-
-</ComponentExample>
 
 ## Props
 

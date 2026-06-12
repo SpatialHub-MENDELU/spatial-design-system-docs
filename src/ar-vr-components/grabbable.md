@@ -2,21 +2,6 @@
 title: grabbable
 ---
 
-<script setup lang="ts">
-import { ref, onMounted } from "vue";
-import ComponentExample from "../vue/ComponentExample.vue";
-
-const renderScene = ref(false);
-
-onMounted(async () => {
-  try {
-    renderScene.value = true;
-  } catch (e) {
-    console.error(e);
-  }
-});
-</script>
-
 # {{ $frontmatter.title }}
 
 The `grabbable` component adds an interactive grab effect to any A‑Frame entity. When a hand intersects the entity’s oriented bounding box (via the companion `obb-collider` component) and create pinch gesture (grabs the object), user is able to move the object around and drop it elsewhere.
@@ -29,10 +14,6 @@ This components comes from [A‑Frame](https://aframe.io/docs/1.7.0/components/h
 
 This component is mainly prepared for hand gestures. You should use it with the `hands` component and test it on XR devices, that support hand gestures (e.g. Meta Quest Pro).
 
-<ComponentExample :fixed="true" :hideOutput="true">
-
-<template #code>
-
 ```js
 import 'spatial-design-system/components/autoXr.js';
 import 'spatial-design-system/components/hands.js';
@@ -44,10 +25,6 @@ import 'spatial-design-system/components/hands.js';
   <a-box position="0 1.5 -0.5" grabbable></a-box>
 </a-scene>
 ```
-
-</template>
-
-</ComponentExample>
 
 ## How It Works
 

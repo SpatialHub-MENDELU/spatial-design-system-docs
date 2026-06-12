@@ -2,21 +2,6 @@
 title: touch-raycaster
 ---
 
-<script setup lang="ts">
-import { ref, onMounted } from "vue";
-import ComponentExample from "../vue/ComponentExample.vue";
-
-const renderScene = ref(false);
-
-onMounted(async () => {
-  try {
-    renderScene.value = true;
-  } catch (e) {
-    console.error(e);
-  }
-});
-</script>
-
 # {{ \$frontmatter.title }}
 
 The `touch-raycaster` component enables **touch-based interaction** on mobile devices by converting screen taps into raycast-driven `click` events on scene entities.
@@ -26,13 +11,6 @@ It acts as a lightweight fallback interaction system for platforms **without han
 ## Example
 
 Add the `touch-raycaster` component to the `<a-scene>` to enable touch gesture support:
-
-<ComponentExample :fixed="true" :hideOutput="true">
-
-<template #output v-if="renderScene">
-</template>
-
-<template #code>
 
 ```js
 import 'spatial-design-system/components/autoXr.js';
@@ -46,10 +24,6 @@ import 'spatial-design-system/primitives/ar-button.js';
   <a-ar-button position="0 1.5 -1" content="Button"></a-ar-button>
 </a-scene>
 ```
-
-</template>
-
-</ComponentExample>
 
 ## How It Works
 
