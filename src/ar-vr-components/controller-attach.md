@@ -8,10 +8,22 @@ import ComponentExample from "../vue/ComponentExample.vue";
 
 const renderScene = ref(false);
 
+function waitForAframe(timeoutMs = 5000) {
+  return new Promise((resolve, reject) => {
+    const start = Date.now();
+    const check = () => {
+      if (typeof window !== "undefined" && window.AFRAME) return resolve(undefined);
+      if (Date.now() - start > timeoutMs) return reject(new Error("AFRAME global not loaded"));
+      setTimeout(check, 50);
+    };
+    check();
+  });
+}
+
 onMounted(async () => {
   try {
-    // await import("spatial-design-system/components/controllers.js");
-    // await import("spatial-design-system/components/controllerAttach.js");
+    await waitForAframe();
+    await import("spatial-design-system/components/controllerAttach.js");
     renderScene.value = true;
   } catch (e) {
     console.error(e);
@@ -25,22 +37,33 @@ The `controller-attach` component attaches entities to VR controllers, allowing 
 
 ## Example
 
-Below is an example of attaching UI panel to the right controller. Test this demo by opening this page in a VR headset and clicking on the "VR" button.
+Below is an example of attaching a UI panel to the right controller. The preview below uses a stand-in controller so you can see the attachment on desktop; in VR the same code attaches to your real controller — open this page in a VR headset and click the "VR" button.
 
 <ComponentExample :fixed="true">
 
 <template #output v-if="renderScene">
-  <a-entity id="rig" position="0 1.6 0" controllers>
-    <a-camera></a-camera>
+  <!-- Stand-in for the right VR controller (desktop preview only) -->
+  <a-entity
+    id="rightHand"
+    position="0.25 1.3 -0.8"
+    rotation="0 0 0"
+    animation__rotation="property: rotation; from: 0 0 0; to: 0 25 15; dir: alternate; loop: true; dur: 3000; easing: easeInOutSine"
+    animation__position="property: position; from: 0.25 1.3 -0.8; to: 0.15 1.5 -0.4; dir: alternate; loop: true; dur: 3000; easing: easeInOutSine"
+  >
+    <a-box depth="0.06" height="0.05" width="0.09" color="#3a3a3a" position="0 0 0"></a-box>
+    <a-cylinder radius="0.018" height="0.09" color="#2a2a2a" position="0 -0.06 0.03" rotation="-20 0 0"></a-cylinder>
   </a-entity>
-  
+
   <!-- UI panel attached to right controller -->
   <a-entity
     geometry="primitive: plane; width: 0.25; height: 0.15"
     material="color: #2196F3; opacity: 0.8"
-    controller-attach="hand: right; offset: 0.15 0.05 -0.1; rotation: 0 -30 0;">
+    controller-attach="hand: right; offset: 0.15 0.1 0; rotation: 0 -30 0;">
     <a-text value="Right Hand" align="center" position="0 0 0.001" scale="0.1 0.1 0.1" color="white"></a-text>
   </a-entity>
+
+  <!-- Reference ground for spatial context -->
+  <a-box position="0 0.9 -1" width="2" height="0.05" depth="1.2" src="../grid-light-1850w.png"></a-box>
 </template>
 
 <template #code>
@@ -59,7 +82,7 @@ import "spatial-design-system/components/controllerAttach.js";
   <a-entity
     geometry="primitive: plane; width: 0.25; height: 0.15"
     material="color: #2196F3; opacity: 0.8"
-    controller-attach="hand: right; offset: 0.15 0.05 -0.1; rotation: 0 -30 0;">
+    controller-attach="hand: right; offset: 0.15 0.1 0; rotation: 0 -30 0;">
     <a-text value="Right Hand" align="center" position="0 0 0.001" 
             scale="0.1 0.1 0.1" color="white"></a-text>
   </a-entity>
