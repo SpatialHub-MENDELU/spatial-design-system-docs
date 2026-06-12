@@ -123,15 +123,7 @@ export default defineConfig({
           { text: 'billboard', link: '/ar-vr-components/billboard' },
           { text: 'circle', link: '/ar-vr-components/circle' },
           { text: 'fit-into-fov', link: '/ar-vr-components/fit-into-fov' },
-          {
-            text: 'Flexbox components',
-            link: '/ar-vr-components/flexbox-introduction',
-            items: [
-              { text: 'flexbox', link: '/ar-vr-components/flexbox' },
-              { text: 'flex-col', link: '/ar-vr-components/flex-col' },
-              { text: 'flex-grow', link: '/ar-vr-components/flex-grow' },
-            ],
-          },
+          { text: 'flexbox', link: '/ar-vr-components/flexbox' },
           { text: 'grid', link: '/ar-vr-components/grid' },
         ],
       },
