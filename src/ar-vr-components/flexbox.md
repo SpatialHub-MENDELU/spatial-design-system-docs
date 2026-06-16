@@ -564,8 +564,8 @@ material="color: #018A6C"
 flexbox="direction: row; justify: start; items: start; wrap: true; gap: 0;">
 
   <a-plane color="#03FCC6" height="0.8" flex-col="sm: 12; md: 6; lg: 4"></a-plane>
-  <a-plane color="#03FCC6" height="0.8" flex-col="sm: 12; md: 6; lg: 4"></a-plane>
-  <a-plane color="#03FCC6" height="0.8" flex-col="sm: 12; md: 12; lg: 4"></a-plane>
+  <a-plane color="#00C170" height="0.8" flex-col="sm: 12; md: 6; lg: 4"></a-plane>
+  <a-plane color="white" height="0.8" flex-col="sm: 12; md: 12; lg: 4"></a-plane>
 </a-plane>
 </template>
 
@@ -590,8 +590,8 @@ import "spatial-design-system/components/flexbox/Properties/flex-col.js";
   "
 >
   <a-plane color="#03FCC6" height="0.8" flex-col="sm: 12; md: 6; lg: 4"></a-plane>
-  <a-plane color="#03FCC6" height="0.8" flex-col="sm: 12; md: 6; lg: 4"></a-plane>
-  <a-plane color="#03FCC6" height="0.8" flex-col="sm: 12; md: 12; lg: 4"></a-plane>
+  <a-plane color="#00C170" height="0.8" flex-col="sm: 12; md: 6; lg: 4"></a-plane>
+  <a-plane color="white" height="0.8" flex-col="sm: 12; md: 12; lg: 4"></a-plane>
 </a-plane>
 ```
 
