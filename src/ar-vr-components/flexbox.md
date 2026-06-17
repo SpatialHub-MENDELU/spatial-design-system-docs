@@ -587,13 +587,13 @@ flexbox="direction: row; justify: start; items: center; wrap: true; gap: 0;">
 
 ```html
 <a-plane
-  width="4"
-  height="0.8"
-  flexbox="direction: row; wrap: true; gap: 0;"
+  width="2"
+  height="0.5"
+  flexbox="direction: row; justify: start; items: center; wrap: true; gap: 0;"
 >
-  <a-plane color="white" height="0.6" flex-col="sm: 3"></a-plane>
-  <a-plane color="#03FCC6" height="0.6" flex-col="sm: 3" flex-grow></a-plane>
-  <a-plane color="white" height="0.6" flex-col="sm: 3"></a-plane>
+  <a-plane color="white" height="0.4" flex-col="sm: 3"></a-plane>
+  <a-plane color="#03FCC6" height="0.4" flex-col="sm: 3" flex-grow></a-plane>
+  <a-plane color="white" height="0.4" flex-col="sm: 3"></a-plane>
 </a-plane>
 ```
 
@@ -665,21 +665,21 @@ import "spatial-design-system/components/flexbox/Properties/flex-col.js";
 ```
 
 ```html
-<a-plane width="6" height="1" flexbox="direction: row; wrap: true; gap: 0;">
-  <a-plane color="#03FCC6" height="0.8" flex-col="sm: 4"></a-plane>
-  <a-plane color="#00C170" height="0.8" flex-col="sm: 4"></a-plane>
-  <a-plane color="white"   height="0.8" flex-col="sm: 4"></a-plane>
+<a-plane width="2" height="0.4" flexbox="direction: row; justify: start; items: start; wrap: true; gap: 0;">
+  <a-plane color="#03FCC6" height="0.3" flex-col="sm: 4"></a-plane>
+  <a-plane color="#00C170" height="0.3" flex-col="sm: 4"></a-plane>
+  <a-plane color="white"   height="0.3" flex-col="sm: 4"></a-plane>
 </a-plane>
 
-<a-plane width="6" height="1" flexbox="direction: row; wrap: true; gap: 0;">
-  <a-plane color="#03FCC6" height="0.8" flex-col="sm: 6"></a-plane>
-  <a-plane color="#00C170" height="0.8" flex-col="sm: 6"></a-plane>
+<a-plane width="2" height="0.4" flexbox="direction: row; justify: start; items: start; wrap: true; gap: 0;">
+  <a-plane color="#03FCC6" height="0.3" flex-col="sm: 6"></a-plane>
+  <a-plane color="#00C170" height="0.3" flex-col="sm: 6"></a-plane>
 </a-plane>
 
-<a-plane width="6" height="1.6" flexbox="direction: row; wrap: true; gap: 0;">
-  <a-plane color="#03FCC6" height="0.6" flex-col="sm: 5"></a-plane>
-  <a-plane color="#00C170" height="0.6" flex-col="sm: 5"></a-plane>
-  <a-plane color="white"   height="0.6" flex-col="sm: 5"></a-plane>
+<a-plane width="2" height="0.7" flexbox="direction: row; justify: start; items: start; wrap: true; gap: 0;">
+  <a-plane color="#03FCC6" height="0.25" flex-col="sm: 5"></a-plane>
+  <a-plane color="#00C170" height="0.25" flex-col="sm: 5"></a-plane>
+  <a-plane color="white"   height="0.25" flex-col="sm: 5"></a-plane>
 </a-plane>
 ```
 
@@ -788,10 +788,10 @@ flexbox="direction: row; justify: start; items: start; wrap: true; gap: 0;">
 <template #code>
 
 ```html
-<a-plane width="2" height="1" flexbox="direction: row; wrap: true; gap: 0 0;">
-  <a-plane color="#03FCC6" height="0.8" flex-col="0: 12; 1: 6; 1.7: 4"></a-plane>
-  <a-plane color="#00C170" height="0.8" flex-col="0: 12; 1: 6; 1.7: 4"></a-plane>
-  <a-plane color="white"   height="0.8" flex-col="0: 12; 1: 6; 1.7: 4"></a-plane>
+<a-plane width="2" height="0.4" flexbox="direction: row; justify: start; items: start; wrap: true; gap: 0;">
+  <a-plane color="#03FCC6" height="0.3" flex-col="0: 12; 1: 6; 1.7: 4;"></a-plane>
+  <a-plane color="#00C170" height="0.3" flex-col="0: 12; 1: 6; 1.7: 4;"></a-plane>
+  <a-plane color="white"   height="0.3" flex-col="0: 12; 1: 6; 1.7: 4;"></a-plane>
 </a-plane>
 ```
 
