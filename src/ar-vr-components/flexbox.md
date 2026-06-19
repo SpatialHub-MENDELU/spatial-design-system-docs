@@ -766,9 +766,11 @@ flexbox="direction: row; justify: start; items: start; wrap: true; gap: 0;">
 
 The 3 m container falls below the `md` threshold (4 m), so each child uses its `sm` value of 12 columns and they stack. The 6 m container matches `md`, so each child takes 6 columns (two per row, third wraps). The 8 m container matches `lg`, so each child takes 4 columns and all three fit on one row.
 
-### Custom numeric breakpoints
+### Custom breakpoints
 
-Instead of the named breakpoints (`sm`, `md`, …) you can use arbitrary numeric thresholds. Below, three items use `flex-col="0: 12; 1: 6; 1.7: 4"`: at the 2 m container width the `1.7` threshold applies, so each takes 4 columns and all three fit on one row.
+The named breakpoints (`sm`, `md`, `lg`, `xl`, `2xl`, `3xl`) use fixed default thresholds, but you can override those thresholds on the **container** with `customBreakpoints`. It accepts 1–6 numbers (metres) that are assigned to the named breakpoints in order: the first to `sm`, the second to `md`, and so on. Children keep using the named breakpoints in `flex-col`.
+
+Below the container sets `customBreakpoints: 0 1 1.7`, so `sm` = 0 m, `md` = 1 m and `lg` = 1.7 m. At the 2 m container width the `lg` threshold applies, so each child takes its `lg` value of 4 columns and all three fit on one row.
 
 <ComponentExample :fixed="true">
 
@@ -778,20 +780,20 @@ position="0 1.6 -3"
 width="2"
 height="0.4"
 material="color: #018A6C"
-flexbox="direction: row; justify: start; items: start; wrap: true; gap: 0;">
-  <a-plane color="#03FCC6" height="0.3" flex-col="0: 12; 1: 6; 1.7: 4;"><a-text value="1" position="0 0 0.01" align="center" color="black" width="3"></a-text></a-plane>
-  <a-plane color="#00C170" height="0.3" flex-col="0: 12; 1: 6; 1.7: 4;"><a-text value="2" position="0 0 0.01" align="center" color="black" width="3"></a-text></a-plane>
-  <a-plane color="white" height="0.3" flex-col="0: 12; 1: 6; 1.7: 4;"><a-text value="3" position="0 0 0.01" align="center" color="black" width="3"></a-text></a-plane>
+flexbox="direction: row; justify: start; items: start; wrap: true; gap: 0; customBreakpoints: 0 1 1.7">
+  <a-plane color="#03FCC6" height="0.3" flex-col="sm: 12; md: 6; lg: 4"><a-text value="1" position="0 0 0.01" align="center" color="black" width="3"></a-text></a-plane>
+  <a-plane color="#00C170" height="0.3" flex-col="sm: 12; md: 6; lg: 4"><a-text value="2" position="0 0 0.01" align="center" color="black" width="3"></a-text></a-plane>
+  <a-plane color="white" height="0.3" flex-col="sm: 12; md: 6; lg: 4"><a-text value="3" position="0 0 0.01" align="center" color="black" width="3"></a-text></a-plane>
 </a-plane>
 </template>
 
 <template #code>
 
 ```html
-<a-plane width="2" height="0.4" flexbox="direction: row; justify: start; items: start; wrap: true; gap: 0;">
-  <a-plane color="#03FCC6" height="0.3" flex-col="0: 12; 1: 6; 1.7: 4;"></a-plane>
-  <a-plane color="#00C170" height="0.3" flex-col="0: 12; 1: 6; 1.7: 4;"></a-plane>
-  <a-plane color="white"   height="0.3" flex-col="0: 12; 1: 6; 1.7: 4;"></a-plane>
+<a-plane width="2" height="0.4" flexbox="direction: row; justify: start; items: start; wrap: true; gap: 0; customBreakpoints: 0 1 1.7">
+  <a-plane color="#03FCC6" height="0.3" flex-col="sm: 12; md: 6; lg: 4"></a-plane>
+  <a-plane color="#00C170" height="0.3" flex-col="sm: 12; md: 6; lg: 4"></a-plane>
+  <a-plane color="white"   height="0.3" flex-col="sm: 12; md: 6; lg: 4"></a-plane>
 </a-plane>
 ```
 
@@ -799,7 +801,7 @@ flexbox="direction: row; justify: start; items: start; wrap: true; gap: 0;">
 
 </ComponentExample>
 
-If the same container were 1.2 m wide, the `1` threshold would apply (6 columns each, two per row); below 1 m the `0` threshold would stack them at 12 columns each.
+If the same container were 1.2 m wide, the `md` threshold (1 m) would apply (6 columns each, two per row); below 1 m the `sm` threshold (0 m) would stack them at 12 columns each.
 
 ## `flexbox` props
 
@@ -810,6 +812,7 @@ If the same container were 1.2 m wide, the `1` threshold would apply (6 columns 
 | _items_     | enum(`start`, `end`, `center`)                    | `start` | Alignment along the cross axis.                                                                   |
 | _wrap_      | boolean                                           | `false` | If `true`, items that don't fit on the main axis continue on the next line.                       |
 | _gap_       | vec2                                              | `0 0`   | Spacing between items in metres. First value = main-axis gap, second = cross-axis (line) gap.     |
+| _customBreakpoints_ | array (1–6 numbers)                       | `[]`    | Overrides the metre thresholds of the named breakpoints (`sm md lg xl 2xl 3xl`) in order, e.g. `customBreakpoints: 0 1 1.7`. |
 
 ## `flex-grow` props
 
@@ -834,7 +837,7 @@ Only breakpoints you set are considered; the component picks the largest one who
 
 ### Breakpoints
 
-Breakpoints are based on the parent container's **width in metres**, not on the browser viewport.
+Breakpoints are based on the parent container's **width in metres**, not on the browser viewport. The default thresholds are:
 
 | Breakpoint | Container width |
 | ---------- | --------------- |
@@ -845,7 +848,7 @@ Breakpoints are based on the parent container's **width in metres**, not on the 
 | `2xl`      | ≥ 12 m          |
 | `3xl`      | ≥ 15 m          |
 
-You can also declare custom numeric breakpoints, e.g. `flex-col="3: 12; 6: 6"` (12 columns above 3&nbsp;m, 6 columns above 6&nbsp;m).
+You can override these thresholds per container with the `customBreakpoints` property on the `flexbox` component. It takes 1–6 numbers assigned to `sm`, `md`, `lg`, `xl`, `2xl`, `3xl` in order. For example, `flexbox="… ; customBreakpoints: 3 6"` makes `sm` apply above 3&nbsp;m and `md` above 6&nbsp;m, so `flex-col="sm: 12; md: 6"` yields 12 columns above 3&nbsp;m and 6 columns above 6&nbsp;m. See [Custom breakpoints](#custom-breakpoints) above.
 
 ## Notes
 
