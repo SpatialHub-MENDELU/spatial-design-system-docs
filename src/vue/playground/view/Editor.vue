@@ -18,11 +18,16 @@ import { initViewEditorState } from '../states/ViewEditorState';
 import CreateProjectDialog from '../components/shared/CreateProjectDialog.vue';
 import { ProjectType } from '../types/projectType';
 import ConfirmDialog from 'primevue/confirmdialog';
+import { useConfirm } from 'primevue/useconfirm';
+import { useRouter } from 'vitepress';
 import EditorLoadError from '../components/editor/EditorLoadError.vue';
 import CustomCofirmDialog from '../components/dialogs/CustomCofirmDialog.vue';
+import * as ROUTES from '../constants/routes';
 
 const playgroundStore = useStore();
 const projectType = computed(() => playgroundStore.getters.projectType);
+const router = useRouter();
+const confirm = useConfirm();
 
 const loading = reactive<ILoading>({
   installing: true,
@@ -53,12 +58,56 @@ const updateShowError = () => {
   showError.value = true;
 };
 
+const closeProject = () => {
+  playgroundStore.commit('updateProjectType', null);
+  playgroundStore.commit('setOpenedFiles', []);
+  playgroundStore.commit('updateCurrentFileContent', null);
+  playgroundStore.commit('updateCurrentFilePath', '');
+  playgroundStore.commit('updateFoldersLoading', true);
+};
+
+let previousBeforeRouteChange: typeof router.onBeforeRouteChange;
+
+const handleBeforeRouteChange = (to: string) => {
+  // No open project or staying within the editor: let navigation proceed.
+  if (projectType.value == null || to.includes(ROUTES.EDITOR)) {
+    return previousBeforeRouteChange ? previousBeforeRouteChange(to) : undefined;
+  }
+
+  // Leaving the editor with an open project: confirm, then close the project.
+  confirm.require({
+    message:
+      'Are you sure you want to leave? This will close your current project and discard all changes.',
+    header: 'Leave Playground',
+    icon: 'pi pi-exclamation-triangle',
+    acceptLabel: 'Yes',
+    rejectLabel: 'No',
+    acceptClass: 'p-button-danger',
+    rejectClass: 'p-button-secondary',
+    blockScroll: true,
+    modal: true,
+    accept: () => {
+      closeProject();
+      confirm.close();
+      router.go(to);
+    },
+    reject: () => {
+      confirm.close();
+    },
+  });
+
+  return false;
+};
+
 onMounted(() => {
   window.addEventListener('beforeunload', handleBeforeUnload);
+  previousBeforeRouteChange = router.onBeforeRouteChange;
+  router.onBeforeRouteChange = handleBeforeRouteChange;
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener('beforeunload', handleBeforeUnload);
+  router.onBeforeRouteChange = previousBeforeRouteChange;
 });
 
 const showDialog = () => {
