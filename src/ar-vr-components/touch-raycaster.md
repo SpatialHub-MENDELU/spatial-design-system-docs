@@ -14,7 +14,7 @@ Add the `touch-raycaster` component to the `<a-scene>` to enable touch gesture s
 
 ```js
 import 'spatial-design-system/components/autoXr.js';
-import 'spatial-design-system/components/touch-raycaster.js';
+import 'spatial-design-system/components/ar/touch-raycaster.js';
 import 'spatial-design-system/primitives/ar-button.js';
 ```
 
