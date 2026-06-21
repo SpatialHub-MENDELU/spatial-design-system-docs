@@ -111,6 +111,19 @@ Automatically moves forward in fixed direction.
   "
 ></a-entity>
 ```
+You can also configure the speed of individual directions separately. When any of these is `0` (the default), it falls back to the base `speed`.
+- `ascendSpeed`: Speed when ascending / moving up (default value: `0` → uses `speed`).
+- `descendSpeed`: Speed when descending / moving down (default value: `0` → uses `speed`).
+- `horizontalSpeed`: Speed when dodging horizontally to the sides in `autoForwardFixedDirection` (default value: `0` → uses `speed`).
+```html
+<a-entity
+  fly="
+    ascendSpeed: 6;
+    descendSpeed: 3;
+    horizontalSpeed: 5;
+  "
+></a-entity>
+```
 
 ### **Controls:**
 - `keyUp`: Key for moving forward/up (default value: `w`).
@@ -339,13 +352,15 @@ You can customize the movement controls using the `keyUp`, `keyDown`, `keyLeft`,
 ></a-entity>
 ```
 
-The base flying speed is defined by the `speed` property, while the turning speed can be adjusted using `rotationSpeed`.
+The base flying speed is defined by the `speed` property, while the turning speed can be adjusted using `rotationSpeed`. Climbing and diving can be tuned separately with `ascendSpeed` and `descendSpeed`, which fall back to `speed` when left at their default value of `0`.
 ```html
 <a-entity
   fly="
     type: freeDirectionalFlight;
     speed: 5; 
     rotationSpeed: 60;
+    ascendSpeed: 6;
+    descendSpeed: 3;
  "
 ></a-entity>
 ```
@@ -506,12 +521,15 @@ You can customize the control keys using the `keyUp`, `keyDown`, `keyLeft` and `
 ></a-entity>
 ```
 
-The forward speed is set with the `speed` property.
+The forward speed is set with the `speed` property. The up/down and left/right dodging can be tuned independently with `ascendSpeed`, `descendSpeed`, and `horizontalSpeed`. Each of these falls back to `speed` when left at its default value of `0`.
 ```html
 <a-entity
   fly="
     type: autoForwardFixedDirection;
     speed: 5; 
+    ascendSpeed: 6;
+    descendSpeed: 3;
+    horizontalSpeed: 4;
  "
 ></a-entity>
 ```
@@ -653,6 +671,9 @@ To ensure stable flight and proper physics interaction, we recommend using a par
 | _allowGravity_ | boolean                                                              | false | If true, gravity affects the character when not flying.                                                                                                                                                                                                                                                                                       | freeDirectionalFlight              |
 | _speed_ | number                                                               | 4 | Defines the player's base flying speed.                                                                                                                                                                                                                                                                                                       | All types                          |
 | _rotationSpeed_ | number                                                               | 40 | Defines the turning speed.                                                                                                                                                                                                                                                                                                                    | freeDirectionalFlight, autoForward |
+| _ascendSpeed_ | number                                                               | 0 | Speed when ascending (moving up). When `0`, falls back to `speed`.                                                                                                                                                                                                                                                                            | freeDirectionalFlight, autoForwardFixedDirection |
+| _descendSpeed_ | number                                                               | 0 | Speed when descending (moving down). When `0`, falls back to `speed`.                                                                                                                                                                                                                                                                         | freeDirectionalFlight, autoForwardFixedDirection |
+| _horizontalSpeed_ | number                                                               | 0 | Speed when dodging horizontally to the sides. When `0`, falls back to `speed`.                                                                                                                                                                                                                                                                | autoForwardFixedDirection |
 | _sprint_ | boolean                                                              | false | If true, the player can sprint when holding the sprintKey, increasing their speed to sprintSpeed.                                                                                                                                                                                                                                             |  All types              |
 | _keySprint_ | string                                                               | shift | Key used to sprint with the character.                                                                                                                                                                                                                                                                                                        |  All types              |
 | _sprintSpeed_ | number                                                               | 10 | Defines the sprinting speed when the sprint mode is active.                                                                                                                                                                                                                                                                                   |  All types              |
