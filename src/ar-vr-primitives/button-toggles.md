@@ -186,7 +186,7 @@ import "spatial-design-system/primitives/ar-button-toggle.js";
 | _opacity_   | number                      | 1       | Sets the transparency level of the component. |
 | _color_     | string (blue, #fff)       | #00BA92 | Defines the color applied to selected buttons. Unselected buttons use a neutral style by default (white background and black text color). |
 | _mode_      | string (light, dark)        | ""      | Applies a `light` or `dark` visual theme to selected buttons for consistent styling. |
-| _buttons_   | array                       | [{ label: "Close", icon: "", iconpos: "left", action: "close" }] | Defines the buttons displayed in the toggle group. Each button may include a label, icon, icon position, and action. When selected, a buttonAction event is emitted with the associated action value. |
+| _buttons_   | array                       | [{ "label": "Close", "icon": "", "iconpos": "left", "action": "close" }] | Defines the buttons displayed in the toggle group. Each button may include a label, icon, icon position, and action. When selected, a buttonAction event is emitted with the associated action value. |
 | _mandatory_ | boolean                     | false   | Ensures that at least one button remains selected at all times. |
 | _multiple_  | boolean                     | false   | Allows multiple buttons to be selected simultaneously when enabled. |
 | _rounded_   | boolean                     | false   | Applies rounded corners to the entire toggle group. Takes precedence over the tile property. |
