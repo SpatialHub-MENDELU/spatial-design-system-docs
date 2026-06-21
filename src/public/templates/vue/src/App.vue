@@ -1,4 +1,5 @@
 <script setup>
+import "aframe";
 import "spatial-design-system/primitives/ar-menu.js";
 import "spatial-design-system/components/position.js";
 import { stringifyForHTML } from "spatial-design-system/utils/utils.js";
@@ -16,13 +17,10 @@ const items = [
     <a-ar-menu
       position="0 1.5 -3"
       visible="true"
-      primary="lightblue"
+      color="lightblue"
       :items="stringifyForHTML(items)"
-      variant="filled"
       layout="circle"
-      fit-info-fov
-      follow-camera="angle: 20"
-      billboard
+      showtext="true"
     ></a-ar-menu>
   </a-scene>
 </template>

@@ -9,10 +9,10 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "vite": "^6.0.1"
+    "vite": "^7.0.0"
   },
   "dependencies": {
-    "spatial-design-system": "^1.6.9"
+    "spatial-design-system": "^1.11.3"
   },
   "overrides": {
     "debug": "@spatialhub/three-bmfont-text",

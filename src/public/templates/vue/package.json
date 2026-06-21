@@ -9,12 +9,12 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "vite": "^6.0.1",
-    "@vitejs/plugin-vue": "^5.2.1"
+    "vite": "^7.0.0",
+    "@vitejs/plugin-vue": "^6.0.0"
   },
   "dependencies": {
-    "spatial-design-system": "^1.6.9",
-    "vue": "^3.5.13"
+    "spatial-design-system": "^1.11.3",
+    "vue": "^3.5.18"
   },
   "overrides": {
     "debug": "@spatialhub/three-bmfont-text",
