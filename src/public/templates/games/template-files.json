@@ -1,0 +1,7 @@
+[
+  { "path": "index.html", "isDirectory": false },
+  { "path": "package.json", "isDirectory": false },
+  { "path": "src", "isDirectory": true },
+  { "path": "src/main.js", "isDirectory": false },
+  { "path": "src/style.css", "isDirectory": false }
+]

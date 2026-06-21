@@ -378,10 +378,12 @@ export class WebContainerService {
     await this.stopCurrentProject();
 
     try {
-      const templatePath =
-        projectType === ProjectType.VANILLA
-          ? '/templates/vanilla'
-          : '/templates/vue';
+      const templatePaths: Record<ProjectType, string> = {
+        [ProjectType.VANILLA]: '/templates/vanilla',
+        [ProjectType.VUE]: '/templates/vue',
+        [ProjectType.GAMES]: '/templates/games',
+      };
+      const templatePath = templatePaths[projectType];
 
       const copyTemplate = async (srcPath: string, destPath: string) => {
         const response = await fetchWithTimeout(
@@ -413,6 +415,7 @@ export class WebContainerService {
             const targetPaths = {
               [ProjectType.VANILLA]: 'index.html',
               [ProjectType.VUE]: 'src/App.vue',
+              [ProjectType.GAMES]: 'src/main.js',
             };
 
             await this.writeFile(
@@ -490,7 +493,12 @@ export class WebContainerService {
   }
 
   private getMainProjectFile(projectType: ProjectType): string {
-    return projectType === ProjectType.VANILLA ? '/index.html' : '/src/App.vue';
+    if (projectType === ProjectType.VUE) {
+      return '/src/App.vue';
+    }
+    // Vanilla and game projects are HTML-based; the message handler is
+    // injected into index.html.
+    return '/index.html';
   }
 
   private async setupMessageHandling(
@@ -583,24 +591,25 @@ export class WebContainerService {
 
       fileContent = fileContent.replace(messageHandlerCode, '');
 
-      if (projectType === ProjectType.VANILLA) {
-        updatedContent = fileContent.replace(
-          '</body>',
-          `${messageHandlerCode}</body>`
-        );
-      } else if (projectType === ProjectType.VUE) {
+      if (projectType === ProjectType.VUE) {
         if (fileContent.includes('</script>')) {
           updatedContent = fileContent.replace(
             '</script>',
             `${messageHandlerCode}</script>`
           );
         } else {
-          updatedContent = `${fileContent} 
+          updatedContent = `${fileContent}
             <script setup>
               ${messageHandlerCode}
             </script>
           `;
         }
+      } else {
+        // HTML-based projects (vanilla, games): inject before </body>.
+        updatedContent = fileContent.replace(
+          '</body>',
+          `${messageHandlerCode}</body>`
+        );
       }
       await this.writeFile(filePath, updatedContent, false);
     } catch (error) {

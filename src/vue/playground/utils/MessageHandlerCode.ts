@@ -3,6 +3,7 @@ import { ProjectType } from '../types/projectType';
 export const getMessageHandlerCode = (projectType: ProjectType): string => {
   switch (projectType) {
     case 'vanilla':
+    case 'games':
       return `
         <script>
           window.addEventListener('message', (event) => {

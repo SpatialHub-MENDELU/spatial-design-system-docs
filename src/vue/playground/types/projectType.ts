@@ -1,4 +1,5 @@
 export enum ProjectType {
   VUE = 'vue',
-  VANILLA = 'vanilla'
+  VANILLA = 'vanilla',
+  GAMES = 'games'
 }

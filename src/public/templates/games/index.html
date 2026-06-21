@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + SDS Game</title>
+
+    <!--
+      Game components rely on A-Frame, its extras and a physics engine.
+      These libraries ship as UMD builds that register globals (AFRAME, Ammo, ...)
+      on `window`, so they must be loaded via <script> tags in this exact order,
+      before any game component is imported. Do NOT also install `aframe` via npm,
+      or A-Frame will be registered twice and the scene will throw runtime errors.
+
+      The `crossorigin="anonymous"` attribute is required: the playground runs
+      inside a WebContainer iframe served with `Cross-Origin-Embedder-Policy:
+      require-corp` (needed for SharedArrayBuffer). Without it these scripts are
+      fetched in no-cors mode and blocked by COEP
+      (ERR_BLOCKED_BY_RESPONSE.NotSameOriginAfterDefaultedToSameOriginByCoep).
+      All four CDNs send `Access-Control-Allow-Origin: *`, so CORS mode succeeds.
+    -->
+
+    <!-- A-Frame -->
+    <script crossorigin="anonymous" src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
+
+    <!-- A-Frame helpers (animation mixer, loaders, controls) -->
+    <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.4/dist/aframe-extras.min.js"></script>
+
+    <!-- Ammo.js physics engine (WebAssembly build) -->
+    <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/gh/MozillaReality/ammo.js@8bbc0ea/builds/ammo.wasm.js"></script>
+
+    <!-- A-Frame bindings for Ammo -->
+    <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/gh/c-frame/aframe-physics-system@v4.2.3/dist/aframe-physics-system.min.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
