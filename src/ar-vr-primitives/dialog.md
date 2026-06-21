@@ -260,7 +260,7 @@ button.addEventListener("click", () => {
 | _closingicon_ | boolean                   | false   | Determines whether a closing (X) icon is displayed. |
 | _title_     | string                      | "Dialog Title" | Sets the title text displayed at the top of the dialog. |
 | _content_   | string                      | "This is an example of the basic dialog component." | Sets the main body text of the dialog. | 
-| _buttons_   | array                       | [{ label: "Close", action: "close" }]  | Defines the action buttons displayed at the bottom of the dialog. Supports up to two buttons. Buttons emit a `dialogAction` event containing their action string. | 
+| _buttons_   | array                       | [{ "label": "Close", "action": "close" }]  | Defines the action buttons displayed at the bottom of the dialog. Supports up to two buttons. Buttons emit a `dialogAction` event containing their action string. | 
 | _transition_ | string (bottom-top, top-bottom) | ""  | Specifies the enter animation direction, either sliding in from the bottom or from the top. |
 
 ## Events
