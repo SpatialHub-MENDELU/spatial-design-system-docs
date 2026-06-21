@@ -32,6 +32,13 @@ const onIframeLoad = async () => {
   }
 };
 
+const reloadPreview = () => {
+  const iframe = iframeRef.value;
+  if (!iframe?.src) return;
+  // Reassigning src forces a full reload of the WebContainer preview.
+  iframe.src = iframe.src;
+};
+
 </script>
 
 <template>
@@ -53,10 +60,19 @@ const onIframeLoad = async () => {
     >
       <h2
         class="text-grey md:text-[15px] text-[14px]"
-       
+
       >
         Output
       </h2>
+      <button
+        type="button"
+        class="text-grey hover:text-text-color duration-150 flex items-center justify-center"
+        title="Reload preview"
+        aria-label="Reload preview"
+        @click="reloadPreview"
+      >
+        <i class="pi pi-refresh text-[14px]" />
+      </button>
     </div>
 
     <div
