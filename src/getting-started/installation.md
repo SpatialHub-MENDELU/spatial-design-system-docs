@@ -4,7 +4,10 @@ title: Installation
 
 # {{ $frontmatter.title }}
 
-This section will help you to install Spatial Design System library. Before that ensure you have already installed [Node.js](https://nodejs.org/en) and npm (included in Node.js).
+This section will help you to install Spatial Design System library for developing apps on your machine. 
+Before that ensure you have already installed [Node.js](https://nodejs.org/en) and npm (included in Node.js).
+
+Alternatively, you can start immediately in our [playground](/playground/editor) without installing anything on your system.
 
 ## Prepare project
 

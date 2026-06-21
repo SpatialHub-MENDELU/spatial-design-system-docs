@@ -10,6 +10,8 @@ Our mission is to simplify the development process, so you can focus on creating
 
 Start by [installing](/getting-started/installation) our components to your project and follow the [guidelines](/guidelines/overview) to make your AR/VR application more user-friendly and engaging.
 
+Alternatively, you can start immediately in our [playground](/playground/editor) without installing anything on your system! Just be sure to download your project before closing the browser.
+
 ::: warning ⚠️ BROWSER SUPPORT
 
 Sadly, Spatial Design System is currently supported in Chrome and Chromium-based browsers only. Related issues:
