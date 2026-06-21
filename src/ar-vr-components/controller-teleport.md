@@ -43,6 +43,24 @@ import "spatial-design-system/components/controllerTeleport.js";
 | _cameraHeight_     | number  | 1             | Height offset applied after teleporting (in meters)               |
 | _interactionClass_ | string  | "interactive" | CSS class that defines teleportable surfaces                      |
 
+## Events
+
+The `controller-teleport` component emits the following event:
+
+| Event        | Parameters                                            | Description                                                      |
+| ------------ | ----------------------------------------------------- | ---------------------------------------------------------------- |
+| _teleported_ | `{ from: object, to: object, intersection: object }`  | Emitted after a teleport completes. Returns the previous position (`from`), the new position (`to`), and the raycaster `intersection` that was teleported to. |
+
+::: tip Note
+Listen for `teleported` to react whenever the player moves to a new location.
+
+```js
+el.addEventListener("teleported", (event) => {
+  console.log(event.detail.to);
+});
+```
+:::
+
 ## Controller Buttons
 
 The following buttons can be configured for teleportation:

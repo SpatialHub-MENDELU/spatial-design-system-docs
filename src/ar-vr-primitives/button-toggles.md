@@ -191,3 +191,22 @@ import "spatial-design-system/primitives/ar-button-toggle.js";
 | _multiple_  | boolean                     | false   | Allows multiple buttons to be selected simultaneously when enabled. |
 | _rounded_   | boolean                     | false   | Applies rounded corners to the entire toggle group. Takes precedence over the tile property. |
 | _tile_      | boolean                     | false   | Renders the toggle group with square edges instead of rounded corners. | 
+
+## Events
+
+The button toggle component emits the following events when interacted with:
+
+| Event          | Parameters                       | Description                                                      |
+| -------------- | -------------------------------- | ---------------------------------------------------------------- |
+| _buttonAction_ | `{ action: string, label: string }` | Emitted whenever a button in the group is clicked. Returns the clicked button's `action` and `label`. |
+| _change_       | `{ value: object \| object[] \| null }` | Emitted after the selection state updates. Returns the selected button object (or an array of objects when `multiple` is enabled, or `null` when nothing is selected). |
+
+::: tip Note
+Use `buttonAction` to react to individual button presses, and `change` to track the current selection state.
+
+```js
+el.addEventListener("change", (event) => {
+  console.log(event.detail.value);
+});
+```
+:::

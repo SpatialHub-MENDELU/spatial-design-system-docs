@@ -165,3 +165,21 @@ import "spatial-design-system/primitives/ar-alert.js";
 | _prependicon_ | string                    | ""      | Defines the icon to be displayed within the alert. If set, the icon appears before the alert’s title. |
 | _closable_  | string                      | ""      | When `true`, displays a close icon in the top-right corner that allows the alert to be dismissed. |
 | _outlined_  | boolean                     | false   | When enabled, the alert is displayed with an outline instead of a solid background. |
+
+## Events
+
+The alert component emits the following event when interacted with:
+
+| Event          | Parameters | Description                                                      |
+| -------------- | ---------- | ---------------------------------------------------------------- |
+| _alert-closed_ | -          | Emitted when the alert is dismissed via its close icon (requires `closable`). The alert is then removed from the DOM. |
+
+::: tip Note
+You can listen to the `alert-closed` event to react when the user dismisses the alert.
+
+```js
+el.addEventListener("alert-closed", () => {
+  console.log("Alert dismissed");
+});
+```
+:::

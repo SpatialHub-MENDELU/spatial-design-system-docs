@@ -156,3 +156,21 @@ import "spatial-design-system/primitives/ar-progressbar.js";
 | _state_   | string (success, warning, error, disabled, indicating)        | ""      | Indicates the current state of the component. This property has priority over other appearance-related properties to reflect important statuses such as errors or warnings.      |
 | _rounded_   | boolean                     | false   | 	Specifies whether the progress bar has rounded edges.                                                    |
 | _reversed_   | boolean                     | false   | 	When `true`, the progress direction is reversed (right-to-left mode).  |
+
+## Events
+
+The progress bar component emits the following event:
+
+| Event               | Parameters           | Description                                                      |
+| ------------------- | -------------------- | ---------------------------------------------------------------- |
+| _progress-complete_ | `{ value: number }`  | Emitted when the `value` reaches 100 (completion). Returns the current value. |
+
+::: tip Note
+You can listen to the `progress-complete` event to react when a task finishes.
+
+```js
+el.addEventListener("progress-complete", (event) => {
+  console.log(event.detail.value);
+});
+```
+:::

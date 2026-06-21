@@ -307,6 +307,26 @@ You can use the zoom in any of the target-following modes (`thirdPersonFixed`, `
 |_position_|string|0 10 0|Sets the initial position of the camera in the scene.|fixed|
 |_rotation_|string|-20 0 0|Sets the initial rotation of the camera in degrees.|fixed|
 
+## Events
+
+The `gameview` component emits the following events when the camera changes, so other
+components can react to the view:
+
+| Event          | Parameters                            | Description                                                      |
+| -------------- | ------------------------------------- | ---------------------------------------------------------------- |
+| _zoom-changed_ | `{ distance: number, height: number }`| Emitted when the camera zoom changes (requires `zoom`). Returns the new camera `distance` and `height`. |
+| _view-rotated_ | `{ angle: number }`                   | Emitted when the view is rotated by a quarter turn (requires `quarterTurn`). Returns the new target angle in degrees. |
+
+::: tip Note
+You can listen to these events to sync UI (such as a minimap or compass) with the camera.
+
+```js
+el.addEventListener("view-rotated", (event) => {
+  console.log(event.detail.angle);
+});
+```
+:::
+
 ## Credits & 3D Models Attribution
 The project utilizes 3D assets from [Poly.pizza](https://poly.pizza/). Below is the attribution for each model used in the games.
 

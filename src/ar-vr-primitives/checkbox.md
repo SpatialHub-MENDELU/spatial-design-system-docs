@@ -64,3 +64,21 @@ import "spatial-design-system/primitives/ar-checkbox.js";
 | _primary_   | string (blue, #fff)         | #00BA92 | Defines the primary color of the checkbox (affecting text, background, icon background).            |
 | _value_      | boolean                      | false      | Specifies whether the checkbox is checked.                                   |
 | _variant_   | string (light, dark)        | ""      | Sets the button's color scheme mode, either "light" or "dark," for visual theme consistency.      |
+
+## Events
+
+The checkbox component emits the following event when interacted with:
+
+| Event           | Parameters            | Description                                                      |
+| --------------- | --------------------- | ---------------------------------------------------------------- |
+| _value-changed_ | `{ value: boolean }`  | Emitted when the checkbox is toggled. Returns the new checked state. |
+
+::: tip Note
+You can listen to the `value-changed` event to react whenever the checkbox state changes.
+
+```js
+el.addEventListener("value-changed", (event) => {
+  console.log(event.detail.value);
+});
+```
+:::

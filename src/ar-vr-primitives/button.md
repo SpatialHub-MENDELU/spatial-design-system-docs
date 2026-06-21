@@ -81,3 +81,21 @@ import "spatial-design-system/primitives/ar-button.js";
 | _roundedsides_ | string(full, left, right)| "full"  | Defines which sides of the button are `rounded` when rounded is enabled (full, left, or right). |
 | _tile_      | boolean                     | false   | Removes rounded styling and renders the button with square edges. |                             
 | _outlined_  | boolean                     | false   | When `true`, displays the button with an outline. |
+
+## Events
+
+The button component emits the following event when interacted with:
+
+| Event            | Parameters                | Description                                                      |
+| ---------------- | ------------------------- | ---------------------------------------------------------------- |
+| _button-clicked_ | `{ button: HTMLElement }` | Emitted when the button is clicked. Returns the button element that was clicked. |
+
+::: tip Note
+You can listen to the `button-clicked` event to react whenever the button is pressed.
+
+```js
+el.addEventListener("button-clicked", (event) => {
+  console.log(event.detail.button);
+});
+```
+:::

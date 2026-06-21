@@ -159,3 +159,22 @@ import "spatial-design-system/primitives/ar-card.js";
 | _buttons_   | array                      | [{ "label": "Close", "action": "close" }]  | Defines the action buttons displayed at the bottom of the card. Supports up to two buttons. Buttons emit a `cardAction` event containing their action string. | 
 | _outlined_  | boolean                    | false    | When enabled, the card is displayed with an outline instead of a solid background.  |
 | _image_     | string                     | ""       | Applies a specific background image to the card.     |
+
+## Events
+
+The card component emits the following events when interacted with:
+
+| Event               | Parameters                          | Description                                                      |
+| ------------------- | ----------------------------------- | ---------------------------------------------------------------- |
+| _cardAction_        | `{ action: string, label: string }` | Emitted when one of the card's action buttons is clicked. Returns the button's `action` and `label`. |
+| _appendIconClicked_ | -                                   | Emitted when the append icon (upper-right corner) is clicked.    |
+
+::: tip Note
+Use `cardAction` to handle button presses and `appendIconClicked` to react to the append icon (for example, a close or options icon).
+
+```js
+el.addEventListener("cardAction", (event) => {
+  console.log(event.detail.action);
+});
+```
+:::

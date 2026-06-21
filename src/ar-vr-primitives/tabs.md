@@ -155,3 +155,21 @@ import "spatial-design-system/primitives/ar-tabs.js";
 | _activecolor_ | string                    |  #00BA92 | Defines the color of the currently active tab, helping users identify the selected state. |
 | _mode_      | string (light, dark)        | ""      | Controls the visual theme of the component, supporting either a `light` or `dark` mode. |
 | _tabitems_  | array (`[{ "label": "Label", "content": "#content" }]`) | [] | Defines the tabs. Each item includes a `label` (tab title) and `content` (selector referencing the content entity to display). |
+
+## Events
+
+The tabs component emits the following event when the active tab changes:
+
+| Event         | Parameters            | Description                                                      |
+| ------------- | --------------------- | ---------------------------------------------------------------- |
+| _tab-changed_ | `{ value: object }`   | Emitted whenever a different tab is selected. Returns the active tab item (with its `label` and `content`). |
+
+::: tip Note
+You can listen to the `tab-changed` event to react whenever the user switches tabs.
+
+```js
+el.addEventListener("tab-changed", (event) => {
+  console.log(event.detail.value);
+});
+```
+:::

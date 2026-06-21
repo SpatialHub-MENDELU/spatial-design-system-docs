@@ -70,3 +70,21 @@ import "spatial-design-system/primitives/ar-switch.js";
 | _variant_   | string (light, dark)        | ""      | Sets the button's color scheme mode, either "light" or "dark," for visual theme consistency.      |
 | _opacity_   | number   | 1       | Sets switch's opacity.|
 | _inset_     | boolean   | false       | Controls the appearance of the switch. When set to `true`, the the thumb (toggle handle) is contained within the bar. When `false`, the thumb extends beyond the bar, creating a larger, overlapping effect.|
+
+## Events
+
+The switch component emits the following event when interacted with:
+
+| Event           | Parameters            | Description                                                      |
+| --------------- | --------------------- | ---------------------------------------------------------------- |
+| _value-changed_ | `{ value: boolean }`  | Emitted when the switch is toggled. Returns the new on/off state. |
+
+::: tip Note
+You can listen to the `value-changed` event to react whenever the switch is toggled.
+
+```js
+el.addEventListener("value-changed", (event) => {
+  console.log(event.detail.value);
+});
+```
+:::

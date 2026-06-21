@@ -26,6 +26,24 @@ import 'spatial-design-system/components/hands.js';
 </a-scene>
 ```
 
+## Events
+
+When used together with the SDS `hands` component, each hand entity emits the following
+events so you can build interactions on top of grabbing:
+
+| Event         | Parameters                  | Description                                                      |
+| ------------- | --------------------------- | ---------------------------------------------------------------- |
+| _grabstarted_ | `{ grabbedEl: HTMLElement }`| Emitted when a hand grabs an object. Returns the grabbed entity. |
+| _grabended_   | `{ grabbedEl: HTMLElement }`| Emitted when a hand releases a grabbed object. Returns the released entity. |
+
+These events bubble, so you can listen on the hand entity or on the scene:
+
+```js
+document.querySelector('a-scene').addEventListener('grabstarted', (event) => {
+  console.log('grabbed', event.detail.grabbedEl);
+});
+```
+
 ## How It Works
 
 Component `hands`uses under the hood [A‑Frame](https://aframe.io/docs/1.7.0/components/hand-tracking-grab-controls.html) component `hand-tracking-grab-controls` to detect pinch gesture and grab the object.

@@ -262,3 +262,23 @@ button.addEventListener("click", () => {
 | _content_   | string                      | "This is an example of the basic dialog component." | Sets the main body text of the dialog. | 
 | _buttons_   | array                       | [{ label: "Close", action: "close" }]  | Defines the action buttons displayed at the bottom of the dialog. Supports up to two buttons. Buttons emit a `dialogAction` event containing their action string. | 
 | _transition_ | string (bottom-top, top-bottom) | ""  | Specifies the enter animation direction, either sliding in from the bottom or from the top. |
+
+## Events
+
+The dialog component emits the following events:
+
+| Event          | Parameters                          | Description                                                      |
+| -------------- | ----------------------------------- | ---------------------------------------------------------------- |
+| _dialogAction_ | `{ action: string, label: string }` | Emitted when one of the dialog's buttons is clicked. Returns the button's `action` and `label`. The dialog then closes automatically. |
+| _dialogOpened_ | -                                   | Emitted when the dialog opens (after receiving the `open-dialog` event). |
+| _dialogClosed_ | -                                   | Emitted after the dialog's close animation finishes. |
+
+::: tip Note
+Use `dialogAction` to handle the user's choice, and `dialogOpened` / `dialogClosed` to track the dialog's lifecycle.
+
+```js
+el.addEventListener("dialogAction", (event) => {
+  console.log(event.detail.action);
+});
+```
+:::

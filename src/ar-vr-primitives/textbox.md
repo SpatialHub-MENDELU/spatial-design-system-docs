@@ -74,6 +74,25 @@ import 'spatial-design-system/primitives/ar-textbox.js';
 | _label_             | string                                   | `""`      | Specifies the text of the textbox's label.                                                          |
 | _useSystemKeyboard_ | boolean                                  | `false`   | Specifies whether to use the system keyboard.                                                       |
 
+## Events
+
+The textbox component emits the following events when interacted with:
+
+| Event                  | Parameters                            | Description                                                      |
+| ---------------------- | ------------------------------------- | ---------------------------------------------------------------- |
+| _is-textbox-activated_ | `{ isActivated: boolean, id: string }`| Emitted when the textbox is activated (focused). Returns the activation state and the textbox `id`. |
+| _text-changed_         | `{ value: string }`                   | Emitted whenever the text content changes. Returns the current text value. |
+
+::: tip Note
+You can listen to the `text-changed` event to react whenever the textbox value changes.
+
+```js
+el.addEventListener("text-changed", (event) => {
+  console.log(event.detail.value);
+});
+```
+:::
+
 ## Limitations
 
 - The use of the system keyboard is partially limited — when you enter text and then try to edit it, the existing textbox value gets overwritten with the new input (according to the [official documentation](https://developers.meta.com/horizon/documentation/web/webxr-keyboard/#webxr-system-keyboard-limitations)).

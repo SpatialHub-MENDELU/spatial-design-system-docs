@@ -258,6 +258,28 @@ direction.
 | _startMovingDirection_ | enum (up, down, left, right)                         | down       | Defines the initial logical direction for step turns. Important for alignment in grid-based movement.                                                                                                                                                                                                                                         |
 | _forwardOffsetAngle_   | number                                               | 0          | The angular offset (in degrees) that defines how much the model’s logical forward direction differs from its visual or model-space forward axis. In other words, it specifies how far the character’s or object’s “forward” (as understood by the user or game logic) is rotated relative to the model’s default orientation in the 3D scene. |
 
+## Events
+
+The `walk` component emits the following events on key movement interactions, so other
+components can react to character movement:
+
+| Event               | Parameters                                                                 | Description                                                      |
+| ------------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| _walk-move-start_   | `{ direction: string, speed: number, rotationSpeed?: number, targetPosition?: object }` | Emitted when the character starts moving. `direction` is one of `forward`, `backward`, `left`, `right`, or `target`. `rotationSpeed` is included for turning (`left` / `right` / `target`); `targetPosition` is included for point-and-click (`target`) movement. |
+| _walk-move-stop_    | `{ direction: string }`                                                    | Emitted when movement in a given direction stops.               |
+| _walk-sprint-start_ | `{ speed: number }`                                                        | Emitted when sprinting begins. Returns the sprint speed.        |
+| _walk-sprint-stop_  | -                                                                          | Emitted when sprinting ends.                                    |
+
+::: tip Note
+You can listen to these events to drive animations, sounds, or UI from character movement.
+
+```js
+el.addEventListener("walk-move-start", (event) => {
+  console.log(event.detail.direction, event.detail.speed);
+});
+```
+:::
+
 ## Parent and Child Structure
 To create a functional character controller, we recommend using a parent-child structure. This separates the physics
 calculations from the visual representation, allowing for better control over the character's pivot point and grounding.

@@ -47,6 +47,24 @@ import "spatial-design-system/components/controllerMovement.js";
 | _smoothing_    | number  | 0.1          | Movement smoothing factor (0-1, higher = more smoothing)    |
 | _deadzone_     | number  | 0.2          | Thumbstick deadzone (0-1, ignores small stick movements)    |
 
+## Events
+
+The `controller-movement` component emits the following event:
+
+| Event               | Parameters                                                | Description                                                      |
+| ------------------- | --------------------------------------------------------- | ---------------------------------------------------------------- |
+| _controllers-ready_ | `{ mainController: HTMLElement, offController: HTMLElement }` | Emitted once both controllers are detected and initialized. Returns the main (movement) and off-hand controller elements. |
+
+::: tip Note
+Listen for `controllers-ready` to safely run logic that depends on both controllers being available.
+
+```js
+el.addEventListener("controllers-ready", (event) => {
+  console.log(event.detail.mainController, event.detail.offController);
+});
+```
+:::
+
 ## How It Works
 
 1. The component uses a dual-controller approach for VR locomotion:

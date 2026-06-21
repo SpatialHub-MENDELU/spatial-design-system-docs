@@ -158,7 +158,7 @@ The ratings component emits the following event when interacted with:
 
 | Event            | Parameters            | Description                                                      |
 | ---------------- | --------------------- | ---------------------------------------------------------------- |
-| _rating-changed_ | `{ value: number }`   | Emitted whenever the selected rating changes. Returns the newly selected rating value. |
+| _rating-changed_ | `{ value: number }`   | Emitted whenever the selected rating changes. Returns the resulting rating value. When a selected star is clicked again with `clearable` enabled, the rating is cleared and the event reports `value: 0`. |
 
 ::: tip Note
 You can listen to the `rating-changed` event to react whenever the selected rating value changes.  

@@ -456,6 +456,28 @@ To create a functional NPC character, we strongly recommend using a parent-child
 | _yMin_                 | number                      | 0                                 | Minimum allowed position along the Y-axis. Applied only when `altitude` is true.                                | randomMoving |
 | _yMax_                 | number                      | 5                                 | Maximum allowed position along the Y-axis. Applied only when `altitude` is true.                                     | randomMoving |
 
+## Events
+
+The `npcWalk` component emits the following events as the NPC progresses along its path,
+so other components can react to its behavior:
+
+| Event                | Parameters                                        | Description                                                      |
+| -------------------- | ------------------------------------------------- | ---------------------------------------------------------------- |
+| _npc-point-reached_  | `{ index: number, position: { x, y, z } }`        | Emitted whenever the NPC reaches its current target point. `index` is the point index (in `points` mode). |
+| _npc-pause-start_    | `{ index: number }`                               | Emitted when the NPC starts pausing at a point (requires `pauseAtPoints`). |
+| _npc-pause-end_      | `{ index: number }`                               | Emitted when the NPC finishes pausing and resumes moving.       |
+| _npc-path-completed_ | `{ index: number }`                               | Emitted when the NPC reaches the final point of its path (requires `stopAtLastPoint`). |
+
+::: tip Note
+You can listen to these events to trigger dialogue, spawn objects, or update game state as the NPC moves.
+
+```js
+el.addEventListener("npc-point-reached", (event) => {
+  console.log(event.detail.index, event.detail.position);
+});
+```
+:::
+
 ## Credits & 3D Models Attribution
 The project utilizes 3D assets from [Poly.pizza](https://poly.pizza/). Below is the attribution for each model used in the games.
 

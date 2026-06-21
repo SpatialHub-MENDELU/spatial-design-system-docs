@@ -235,3 +235,5 @@ The menu component emits the following events when interacted with:
 | _select_      | `{ item: object }` | Emitted when a menu item is clicked. Returns the full item object (e.g. icon, title, color, textcolor). |
 | _back_        | - | Emitted when the back button is clicked (when `backbutton` is enabled). Typically used for navigation within menu hierarchies. |
 | _logo_        | - | Emitted when the center logo icon is clicked. Useful for triggering global actions such as navigating to a home view. |
+| _menu-shown_  | - | Emitted when the menu is shown (after receiving the `show` event and its open animation starts). |
+| _menu-hidden_ | - | Emitted when the menu is fully hidden (after the `hide` close animation completes). |

@@ -195,4 +195,4 @@ The list component emits the following events when interacted with:
 
 | Event         | Parameters                                       | Description                                                      |
 | ------------- | ------------------------------------------------ | ---------------------------------------------------------------- |
-| _selected_      | `{ item: object, index: number }` | Emitted when a list item is selected. Returns the selected item data and its index in the array. |
+| _selected_      | `{ item: object, index: number }` | Emitted when a list item is clicked. Returns the selected item data and its index in the array. Fired for both `text` and `card` list types (note: visual highlighting of the selected row only applies to the `card` type). |

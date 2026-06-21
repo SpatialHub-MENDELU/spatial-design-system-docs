@@ -648,6 +648,28 @@ To ensure stable flight and proper physics interaction, we recommend using a par
 | _canMoveHorizontally_ | boolean                                                              | true | When using AutoForwardFixedDirection movement, this property allows the character to move left and right.                                                                                                                                                                                                                                     | autoForwardFixedDirection          |
 
 
+## Events
+
+The `fly` component emits the following events on key movement interactions, so other
+components can react to flight:
+
+| Event              | Parameters                                                  | Description                                                      |
+| ------------------ | ---------------------------------------------------------- | ---------------------------------------------------------------- |
+| _fly-move-start_   | `{ direction: string, speed: number, rotationSpeed?: number }` | Emitted when the character starts moving. `direction` is one of `forward`, `backward`, `left`, `right`, `ascend`, or `descend`. `rotationSpeed` is included when turning (`left` / `right`). |
+| _fly-move-stop_    | `{ direction: string }`                                    | Emitted when movement in a given direction stops.               |
+| _fly-sprint-start_ | `{ speed: number }`                                        | Emitted when sprinting begins. Returns the sprint speed.        |
+| _fly-sprint-stop_  | -                                                          | Emitted when sprinting ends.                                    |
+
+::: tip Note
+You can listen to these events to drive animations, sounds, or UI from flight movement.
+
+```js
+el.addEventListener("fly-move-start", (event) => {
+  console.log(event.detail.direction, event.detail.speed);
+});
+```
+:::
+
 ## Credits & 3D Models Attribution
 
 The project utilizes 3D assets from [Poly.pizza](https://poly.pizza/). Below is the attribution for each model used in the games.
