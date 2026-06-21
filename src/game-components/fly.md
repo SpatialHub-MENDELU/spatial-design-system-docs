@@ -247,7 +247,7 @@ Only for `freeDirectionalFlight` type:
 
 ### **Restrict Movement:**
 - `canMoveVertically`: Allows the character to move up and down (default value: `true`).
-  - NOTE: Only applies when using the `autoForwardFixedDirection` type.
+  - Applies to all flight types. When `false`: `freeDirectionalFlight` disables ascend/descend, `autoForward` holds altitude (no pitch climb), and `autoForwardFixedDirection` disables up/down dodging.
 ```html
 <a-entity
   fly="
@@ -256,8 +256,8 @@ Only for `freeDirectionalFlight` type:
  "
 ></a-entity>
 ```
-- `canMoveHorizontally`: Allows the character to move left and right (default value: `true`).
-   - NOTE: Only applies when using the `autoForwardFixedDirection` type.
+- `canMoveHorizontally`: Allows the character to move/turn left and right (default value: `true`).
+   - Applies to all flight types. When `false`: `freeDirectionalFlight` and `autoForward` disable left/right turning, and `autoForwardFixedDirection` disables left/right dodging. Forward locomotion is preserved.
 ```html
 <a-entity
   fly="
@@ -388,6 +388,17 @@ The pitch and roll are in this flying mode automatically leveled back to neutral
 ></a-entity>
 ```
 
+You can restrict movement directions with `canMoveVertically` and `canMoveHorizontally`. In this mode, setting `canMoveVertically: false` disables ascend/descend, and `canMoveHorizontally: false` disables left/right turning (forward/backward movement is preserved).
+```html
+<a-entity
+  fly="
+    type: freeDirectionalFlight;
+    canMoveVertically: false;
+    canMoveHorizontally: false;
+ "
+></a-entity>
+```
+
 ## autoForward
 The `autoForward` mode simulates aircraft-style flight where the character moves forward automatically at a constant speed defined by the `speed` property, while the player controls pitch and roll to steer.
 
@@ -452,6 +463,17 @@ By default, the character automatically levels back to a neutral pitch and roll 
     rollSpeed: 80;
     autoLevelPitch: false; 
     autoLevelRoll: false;
+ "
+></a-entity>
+```
+
+You can restrict movement directions with `canMoveVertically` and `canMoveHorizontally`. Setting `canMoveVertically: false` keeps the character at a constant altitude (no pitch climb), and `canMoveHorizontally: false` disables left/right turning, so the character keeps flying straight forward.
+```html
+<a-entity
+  fly="
+    type: autoForward;
+    canMoveVertically: false;
+    canMoveHorizontally: false;
  "
 ></a-entity>
 ```
@@ -644,8 +666,8 @@ To ensure stable flight and proper physics interaction, we recommend using a par
 | _maxRollDeg_ | number                                                               | 20 | Maximum roll angle in degrees the character can tilt left or right.                                                                                                                                                                                                                                                                           | All types                          |
 | _rollSpeed_ | number                                                               | 60 | How fast the roll angle changes when the player banks left or right.                                                                                                                                                                                                                                                                          | All types                          |
 | _forwardOffsetAngle_ | number                                                               | 0 | The angular offset (in degrees) that defines how much the model’s logical forward direction differs from its visual or model-space forward axis. In other words, it specifies how far the character’s or object’s “forward” (as understood by the user or game logic) is rotated relative to the model’s default orientation in the 3D scene. | All types                          |
-| _canMoveVertically_ | boolean                                                              | true | When using AutoForwardFixedDirection movement, this property allows the character to move up and down                                                                                                                                                                                                                                         | autoForwardFixedDirection          |
-| _canMoveHorizontally_ | boolean                                                              | true | When using AutoForwardFixedDirection movement, this property allows the character to move left and right.                                                                                                                                                                                                                                     | autoForwardFixedDirection          |
+| _canMoveVertically_ | boolean                                                              | true | If false, the character cannot move up/down (ascend/descend, pitch climb, or vertical dodging).                                                                                                                                                                                                                                              | All types                          |
+| _canMoveHorizontally_ | boolean                                                              | true | If false, the character cannot move/turn left and right.                                                                                                                                                                                                                                                                                     | All types                          |
 
 
 ## Events
