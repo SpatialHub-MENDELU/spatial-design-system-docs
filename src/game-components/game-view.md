@@ -127,6 +127,8 @@ Camera follows the player but keeps the same world direction. The `target` must 
 - `maxDistance`: Maximum zoom distance from the target (default value: `15`).
 - `minHeight`: Minimum camera height when zooming (default value: `2`).
 - `maxHeight`: Maximum camera height when zooming (default value: `15`).
+- `minTilt`: Camera tilt (in degrees) when fully zoomed in, at `minDistance` (optional, disabled by default). When set together with `maxTilt`, the tilt is interpolated across the zoom range instead of staying fixed at `tilt`. Useful for showing a wider, more top-down area when zooming out.
+- `maxTilt`: Camera tilt (in degrees) when fully zoomed out, at `maxDistance` (optional, disabled by default). Remember that more negative values tilt the camera further toward a top-down view.
 ```html
 <a-entity camera 
   game-view="
@@ -137,6 +139,9 @@ Camera follows the player but keeps the same world direction. The `target` must 
     
     minHeight: 2;
     maxHeight: 15;
+    
+    minTilt: -20;
+    maxTilt: -50;
   "
 ></a-entity>
 ```
@@ -259,7 +264,8 @@ The zoom moves the camera forward and backward along a fixed diagonal line defin
 When the user scrolls the mouse wheel (if `zoom` is set to true), the camera moves closer to or farther from the target, 
 but only between the limits.
 This means the camera always stays within a safe range and never gets too close to the object or too far away.
-The speed of this movement is controlled by `zoomSpeed`, and the vertical viewing angle is defined by the `tilt` property.\
+The speed of this movement is controlled by `zoomSpeed`, and the vertical viewing angle is defined by the `tilt` property.
+Optionally, you can set `minTilt` and `maxTilt` to interpolate the tilt across the zoom range — for example, tilting the camera toward a more top-down angle as the player zooms out to reveal a wider area around the character.\
 You can use the zoom in any of the target-following modes (`thirdPersonFixed`, `thirdPersonFollow`, `quarterTurn`) to allow players to adjust their view dynamically.
 
 <picture>
@@ -287,6 +293,53 @@ You can use the zoom in any of the target-following modes (`thirdPersonFixed`, `
 ></a-entity>
 ```
 
+::: warning Keep the starting values aligned with one end of each range
+The zoom maps a single progress value (0 → 1) across the whole zoom line, so every
+range-based attribute moves together. Because of this, the initial `distance`, `height`,
+and `tilt` you set are **not** recalculated until the player actually scrolls — they are
+used exactly as written for the first frame.
+
+To avoid a visible jump on the first scroll, always set each starting value to match
+**the same end** of its range — either all the minimum values (fully zoomed in) or all
+the maximum values (fully zoomed out):
+
+- `distance` must equal `minDistance` **or** `maxDistance`
+- `height` must equal `minHeight` **or** `maxHeight` (the same end as `distance`)
+- `tilt` must equal `minTilt` **or** `maxTilt` (the same end), when tilt interpolation is enabled
+
+Mixing ends (for example starting at `maxDistance` but `minHeight`) places the camera
+off the zoom line, so the first scroll will snap it back onto the line.
+:::
+
+The following example shows an optimal, fully consistent configuration for a
+`thirdPersonFollow` camera. The character starts **fully zoomed out**, so every starting
+value is set to the maximum end of its range (`distance` = `maxDistance`,
+`height` = `maxHeight`, `tilt` = `maxTilt`):
+
+```html
+<a-entity camera 
+  game-view="
+    target: #monster-character; 
+    type: thirdPersonFollow;
+    zoom: true; 
+    zoomSpeed: 0.1;
+    
+    distance: 5; 
+    minDistance: 4; 
+    maxDistance: 5;
+    
+    height: 20; 
+    minHeight: 5; 
+    maxHeight: 20;
+    
+    tilt: -70; 
+    minTilt: -20; 
+    maxTilt: -70;
+  "
+  rotation="-30 0 0"
+></a-entity>
+```
+
 ## Props
 | Property | Type | Default | Description | Used in |
 |---|---|---|---|-|
@@ -301,6 +354,8 @@ You can use the zoom in any of the target-following modes (`thirdPersonFixed`, `
 |_maxDistance_|number|15|Sets the maximum allowed horizontal distance from the target or start position.|thirdPersonFixed, thirdPersonFollow, quarterTurn|
 |_minHeight_|number|2|Sets the minimum allowed height of the camera.|thirdPersonFixed, thirdPersonFollow, quarterTurn|
 |_maxHeight_|number|15|Sets the maximum allowed height of the camera.|thirdPersonFixed, thirdPersonFollow, quarterTurn|
+|_minTilt_|number|—|Camera tilt in degrees when fully zoomed in (at `minDistance`). Optional; when set with `maxTilt`, tilt is interpolated across the zoom range instead of staying fixed at `tilt`.|thirdPersonFixed, thirdPersonFollow, quarterTurn|
+|_maxTilt_|number|—|Camera tilt in degrees when fully zoomed out (at `maxDistance`). Optional; pairs with `minTilt`.|thirdPersonFixed, thirdPersonFollow, quarterTurn|
 |_rotationSpeed_|number|5|Defines how fast the camera rotates between 90-degree steps.|quarterTurn|
 |_keyTurnLeft_|string|q|Defines the key used to rotate the camera 90 degrees to the left.|quarterTurn|
 |_keyTurnRight_|string|e|Defines the key used to rotate the camera 90 degrees to the right.|quarterTurn|
@@ -314,7 +369,7 @@ components can react to the view:
 
 | Event          | Parameters                            | Description                                                      |
 | -------------- | ------------------------------------- | ---------------------------------------------------------------- |
-| _zoom-changed_ | `{ distance: number, height: number }`| Emitted when the camera zoom changes (requires `zoom`). Returns the new camera `distance` and `height`. |
+| _zoom-changed_ | `{ distance: number, height: number, tilt: number }`| Emitted when the camera zoom changes (requires `zoom`). Returns the new camera `distance`, `height`, and `tilt`. |
 | _view-rotated_ | `{ angle: number }`                   | Emitted when the view is rotated by a quarter turn (requires `quarterTurn`). Returns the new target angle in degrees. |
 
 ::: tip Note
