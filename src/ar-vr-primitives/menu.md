@@ -129,6 +129,115 @@ import "spatial-design-system/primitives/ar-menu.js";
 
 </br>
 
+### Selection Modes
+
+The `selectionmode` property defines what happens when a menu item is clicked:
+
+- `basic` – the item is highlighted only briefly and a `select` event is emitted on every click. Useful for menus that trigger actions.
+- `single` – the clicked item stays highlighted until it is clicked again. Only one item can be selected at once; selecting another item unselects the previous one.
+- `multiple` (default) – like `single`, but any number of items can be selected at once.
+
+In `single` and `multiple` modes, a `select` event is emitted when an item gets selected and a `deselect` event when it gets unselected. Both events also contain the list of currently selected items (`selectedItems`).
+
+<ComponentExample :fixed="true">
+
+<template #output v-if="renderScene">
+    <a-entity id="mouseRaycaster" raycaster="objects: .clickable"
+              cursor="rayOrigin: mouse; fuse: false;">
+    </a-entity>
+    <a-ar-menu
+        position="-0.6 1.6 -1"
+        color="#ECECEC"
+        size="small"
+        selectionmode="basic"
+        items="[
+            {'color':'#FF3333','icon':'/home.png','title':'Home','textColor':'white'},
+            {'color':'#efbf30','icon':'/info.png','title':'About','textColor':'white'},
+            {'color':'#33658A','icon':'/profile.png','title':'Profile','textColor':'white'},
+            {'color':'#9966CC','icon':'/contact.png','title':'Contact','textColor':'white'}
+        ]"
+    ></a-ar-menu>
+    <a-ar-menu
+        position="0 1.6 -1"
+        color="#ECECEC"
+        size="small"
+        selectionmode="single"
+        items="[
+            {'color':'#FF3333','icon':'/home.png','title':'Home','textColor':'white'},
+            {'color':'#efbf30','icon':'/info.png','title':'About','textColor':'white'},
+            {'color':'#33658A','icon':'/profile.png','title':'Profile','textColor':'white'},
+            {'color':'#9966CC','icon':'/contact.png','title':'Contact','textColor':'white'}
+        ]"
+    ></a-ar-menu>
+    <a-ar-menu
+        position="0.6 1.6 -1"
+        color="#ECECEC"
+        size="small"
+        selectionmode="multiple"
+        items="[
+            {'color':'#FF3333','icon':'/home.png','title':'Home','textColor':'white'},
+            {'color':'#efbf30','icon':'/info.png','title':'About','textColor':'white'},
+            {'color':'#33658A','icon':'/profile.png','title':'Profile','textColor':'white'},
+            {'color':'#9966CC','icon':'/contact.png','title':'Contact','textColor':'white'}
+        ]"
+    ></a-ar-menu>
+</template>
+
+<template #code>
+
+```js
+import "spatial-design-system/primitives/ar-menu.js";
+
+const menu = document.querySelector("a-ar-menu[selectionmode='multiple']");
+menu.addEventListener("select", (e) => console.log("selected", e.detail.item.title, e.detail.selectedItems));
+menu.addEventListener("deselect", (e) => console.log("unselected", e.detail.item.title, e.detail.selectedItems));
+```
+
+```html
+<a-ar-menu
+    position="-0.6 1.6 -1"
+    color="#ECECEC"
+    size="small"
+    selectionmode="basic"
+    items="[
+        {'color':'#FF3333','icon':'/home.png','title':'Home','textColor':'white'},
+        {'color':'#efbf30','icon':'/info.png','title':'About','textColor':'white'},
+        {'color':'#33658A','icon':'/profile.png','title':'Profile','textColor':'white'},
+        {'color':'#9966CC','icon':'/contact.png','title':'Contact','textColor':'white'}
+    ]"
+></a-ar-menu>
+<a-ar-menu
+    position="0 1.6 -1"
+    color="#ECECEC"
+    size="small"
+    selectionmode="single"
+    items="[
+        {'color':'#FF3333','icon':'/home.png','title':'Home','textColor':'white'},
+        {'color':'#efbf30','icon':'/info.png','title':'About','textColor':'white'},
+        {'color':'#33658A','icon':'/profile.png','title':'Profile','textColor':'white'},
+        {'color':'#9966CC','icon':'/contact.png','title':'Contact','textColor':'white'}
+    ]"
+></a-ar-menu>
+<a-ar-menu
+    position="0.6 1.6 -1"
+    color="#ECECEC"
+    size="small"
+    selectionmode="multiple"
+    items="[
+        {'color':'#FF3333','icon':'/home.png','title':'Home','textColor':'white'},
+        {'color':'#efbf30','icon':'/info.png','title':'About','textColor':'white'},
+        {'color':'#33658A','icon':'/profile.png','title':'Profile','textColor':'white'},
+        {'color':'#9966CC','icon':'/contact.png','title':'Contact','textColor':'white'}
+    ]"
+></a-ar-menu>
+```
+
+</template>
+
+</ComponentExample>
+
+</br>
+
 ### Custom Grid Layout
 
 This example shows how the [grid layout](/ar-vr-components/grid) can be customized by changing the number of columns using the menu's `gridcolumns` property.
@@ -225,6 +334,7 @@ import "spatial-design-system/primitives/ar-menu.js";
 | _backbutton_  | boolean                        | false   | Displays a back button in the center of the menu (useful for navigation hierarchies). |
 | _logoicon_    | string (image url or asset ID) | ""      | Displays a logo icon in the center of the menu. |
 | _showtext_    | boolean                        | false   | Toggles visibility of item labels (titles). |
+| _selectionmode_ | enum(`basic`, `single`, `multiple`) | multiple | Defines how items are selected: `basic` highlights a clicked item only briefly, `single` keeps one item selected at a time, `multiple` allows any number of selected items. See [Selection Modes](#selection-modes). |
 
 ## Events
 
@@ -232,7 +342,8 @@ The menu component emits the following events when interacted with:
 
 | Event         | Parameters                                       | Description                                                      |
 | ------------- | ------------------------------------------------ | ---------------------------------------------------------------- |
-| _select_      | `{ item: object }` | Emitted when a menu item is clicked. Returns the full item object (e.g. icon, title, color, textcolor). |
+| _select_      | `{ item: object, selectedItems: object[] }` | Emitted when a menu item is selected (in `basic` mode on every click). Returns the full item object (e.g. icon, title, color, textcolor) and the currently selected items. |
+| _deselect_    | `{ item: object, selectedItems: object[] }` | Emitted when a selected menu item is unselected (`single` and `multiple` modes), either by clicking it again or, in `single` mode, by selecting another item. |
 | _back_        | - | Emitted when the back button is clicked (when `backbutton` is enabled). Typically used for navigation within menu hierarchies. |
 | _logo_        | - | Emitted when the center logo icon is clicked. Useful for triggering global actions such as navigating to a home view. |
 | _menu-shown_  | - | Emitted when the menu is shown (after receiving the `show` event and its open animation starts). |
