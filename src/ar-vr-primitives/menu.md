@@ -139,7 +139,7 @@ The `selectionmode` property defines what happens when a menu item is clicked:
 
 In `single` and `multiple` modes, a `select` event is emitted when an item gets selected and a `deselect` event when it gets unselected. Both events also contain the list of currently selected items (`selectedItems`).
 
-<ComponentExample :fixed="true">
+<ComponentExample :fixed="false">
 
 <template #output v-if="renderScene">
     <a-entity id="mouseRaycaster" raycaster="objects: .clickable"
